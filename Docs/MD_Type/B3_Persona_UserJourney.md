@@ -1,0 +1,35 @@
+# **BƯỚC 3: TẠO PERSONA, VẼ USER JOURNEY**
+
+### **1. Tạo chân dung người dùng (Persona)**
+
+#### **Bảng 3.1: Chân dung nhân vật giả định Nguyễn Minh Đức**
+
+| Khía cạnh mô tả PDF                       | Chi tiết thông tin nhân vật PDF                                                                                                                                                                                                                                                                                                       |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Cá nhân hóa** *(Personalization)*       | • **Nguyễn Minh Đức**, 21 tuổi, hiện đang là sinh viên năm 3 tại Hà Nội. • Cậu có thói quen giải trí cuối tuần bằng cách đi xem phim rạp bom tấn cùng bạn bè hoặc bạn gái.                                                                                                                                                            |
+| **Bối cảnh/Công việc** *(Job-related)*    | • Là sinh viên đại học năng động, có lịch học khá dày và thường đi làm thêm vào các buổi tối trong tuần. • Thời gian rảnh của Đức không cố định nên cậu thường quyết định đặt vé rất sát giờ chiếu.                                                                                                                                   |
+| **Học vấn & Công nghệ** *(Education)*     | • Đang theo học khối ngành kỹ thuật, là một "power user" (người dùng am hiểu công nghệ). • Đức sử dụng smartphone cực kỳ thành thạo và quen thuộc với các hình thức thanh toán qua ví điện tử như MoMo, ZaloPay.                                                                                                                      |
+| **Tính phù hợp & Động lực** *(Relevance)* | • Đức cần một phần mềm giúp tra cứu suất chiếu nhanh và đặt chỗ giữ ghế lập tức ngay trên đường đi học/đi làm về. • Cậu cực kỳ ghét việc phải đứng xếp hàng chờ đợi mua vé giấy tại rạp vì tốn thời gian. • Cậu từng bực mình với các hệ thống cũ do cập nhật trạng thái ghế quá chậm, dẫn đến việc thanh toán xong bị báo trùng ghế. |
+
+### **2. Bản đồ hành trình người dùng (User Journey Map)**
+
+Bản đồ hành trình này trực quan hóa kịch bản tương tác (Scenario) từ góc nhìn của nhân vật Minh Đức, lồng ghép các yếu tố mục tiêu, hoạt động, nỗi đau và cơ hội cải thiện.
+
+```text
+  [ GIAI ĐOẠN 1 ]               [ GIAI ĐOẠN 2 ]               [ GIAI ĐOẠN 3 ]
+Khám phá & Tìm phim  ───>  Chọn rạp & Suất chiếu  ───>    Chọn ghế ngồi
+                                                                 │
+                                                                 ▼
+  [ GIAI ĐOẠN 5 ]               [ GIAI ĐOẠN 4 ]                  │
+Nhận vé & Đến rạp    <───         Thanh toán         <───────────┘
+```
+
+#### **Bảng 3.2: Chi tiết các giai đoạn trong User Journey Map**
+
+| Tiêu chí                       | 1. Khám phá & Tìm phim                                                                              | 2. Chọn rạp & Suất chiếu                                                                                        | 3. Chọn ghế ngồi                                                                                             | 4. Thanh toán                                                                                         | 5. Nhận vé & Đến rạp                                                                                       |
+| ------------------------------ | --------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| **Hành động** *(User Actions)* | Mở ứng dụng, lướt danh sách phim "Đang chiếu" tại trang chủ để xem poster và click xem thử trailer. | Sử dụng bộ lọc thông minh để tìm cụm rạp gần vị trí hiện tại và lọc khung giờ tối thứ Sáu.                      | Nhìn vào sơ đồ phòng chiếu, tìm khu vực hàng ghế đôi (Sweetbox) ở phía sau và click chọn.                    | Kiểm tra lại tổng tiền vé, chọn phương thức thanh toán qua Ví điện tử (MoMo) và xác thực bằng FaceID. | Thanh toán thành công, màn hình hiển thị Mã QR vé điện tử; đến rạp quét mã để vào phòng chiếu.             |
+| **Điểm chạm** *(Touchpoints)*  | Màn hình chính (Home Screen), Tab phim đang chiếu, Màn hình chi tiết phim.                          | Thanh tìm kiếm, Bộ lọc thông minh (Filter), Danh sách lịch chiếu trực tuyến.                                    | Giao diện sơ đồ ghế ngồi (Seat Map) cập nhật trạng thái real-time.                                           | Màn hình kiểm tra hóa đơn (Checkout), Cổng kết nối thanh toán kết hợp.                                | Màn hình thông báo thành công, Tab "Vé của tôi", Mã QR điện tử.                                            |
+| **Suy nghĩ & Cảm xúc**         | 🤔 *"Cuối tuần này có phim gì hay để đi xem không nhỉ?"* 😃 Hào hứng.                               | 🤔 *"Nên xem ở rạp nào gần đây và có suất tầm 20h không?"* 🙂 Chủ động.                                         | 🤔 *"Mong là hàng ghế đôi yêu thích vẫn chưa có ai đặt."* 😟 Hơi hồi hộp.                                    | 🤔 *"Không biết có áp được mã giảm giá nào không?"* 😐 Cẩn thận.                                      | 🤔 *"Đến rạp quét mã này là xong, không phải xếp hàng nữa!"* 😎 Rất hài lòng.                              |
+| **Nỗi đau** *(Pain Points)*    | Có quá nhiều phim, nội dung tóm tắt quá dài dòng khiến người dùng phân vân.                         | Lịch chiếu giữa các rạp bị rối mắt, thông tin cập nhật chậm hoặc không khớp thời gian thực.                     | Trạng thái ghế không đồng bộ real-time, vừa bấm chọn thì hệ thống báo lỗi do có người khác đang đặt trùng.   | Quy trình chuyển hướng sang app ví điện tử bị chậm, giao diện nhập thông tin quá rườm rà.             | Mạng Internet (3G/4G) tại rạp thường rất yếu, khiến việc mở ứng dụng tải mã QR gặp khó khăn.               |
+| **Cơ hội** *(Opportunities)*   | Hiển thị điểm đánh giá (Rating) sao trực quan ngay trên poster để dễ đưa ra quyết định.             | Thiết kế giao diện lịch chiếu dạng lưới tối giản, ưu tiên hiển thị các suất chiếu sắp diễn ra tại rạp gần nhất. | **Áp dụng cơ chế khóa ghế tạm thời** trong vòng 5 phút ngay khi user click chọn, hiển thị đồng hồ đếm ngược. | Tích hợp cổng thanh toán một chạm, tự động gợi ý các mã giảm giá (Voucher) khả dụng của thành viên.   | Cho phép hiển thị mã QR vé ở chế độ Offline (ngoại tuyến) khi mở mục "Vé của tôi" để phòng sự cố mất mạng. |
