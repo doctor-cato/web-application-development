@@ -10,6 +10,61 @@ function parseDataAmount(el) {
   return a ? Number(a) : 0;
 }
 
+function renderCheckout() {
+  const co = getCheckout();
+  if (!co) return;
+
+  // Basic fields
+  const titleEl = document.getElementById('order-summary-movie');
+  if (titleEl && co.movieTitle) titleEl.innerText = co.movieTitle;
+
+  const posterEl = document.getElementById('order-summary-poster');
+  if (posterEl && co.poster) posterEl.src = co.poster;
+
+  if (co.tags && Array.isArray(co.tags)) {
+    const tagsEl = document.getElementById('order-summary-tags');
+    if (tagsEl) tagsEl.innerHTML = co.tags.map(t => `<span class="text-[10px] bg-primary-container/20 text-primary-container border border-primary-container/40 rounded px-2 py-0.5 font-semibold uppercase tracking-wider">${t}</span>`).join(' ');
+  }
+
+  if (co.genre) {
+    const g = document.getElementById('order-summary-genre');
+    if (g) g.innerText = co.genre;
+  }
+
+  const showtimeEl = document.getElementById('order-summary-showtime');
+  if (showtimeEl && co.showtimeText) showtimeEl.innerText = co.showtimeText;
+
+  const roomEl = document.getElementById('order-summary-room');
+  if (roomEl && co.room) roomEl.innerText = co.room;
+
+  // Seats
+  const seatsEl = document.getElementById('order-summary-seats');
+  if (seatsEl && Array.isArray(co.seats)) {
+    seatsEl.innerHTML = '';
+    co.seats.forEach(s => {
+      const span = document.createElement('span');
+      span.className = 'bg-primary-container text-white text-xs font-bold px-3 py-1 rounded-full tracking-wider badge-seat';
+      span.innerText = s;
+      seatsEl.appendChild(span);
+    });
+  }
+
+  // amounts
+  const seatsAmount = Number(co.seatAmount || co.total || 0) - Number(co.comboPrice || 0);
+  const seatAmountEl = document.getElementById('order-summary-seat-amount');
+  if (seatAmountEl) {
+    seatAmountEl.setAttribute('data-amount', seatsAmount);
+    seatAmountEl.innerText = formatPrice(seatsAmount);
+  }
+
+  const totalEl = document.getElementById('order-total');
+  const total = Number(co.total || 0);
+  if (totalEl) {
+    totalEl.setAttribute('data-amount', total);
+    totalEl.innerText = formatPrice(total);
+  }
+}
+
 function init() {
   // Attach handlers
   const payBtn = document.getElementById('btn-pay');
@@ -31,6 +86,9 @@ function init() {
       if (inp && inp.value === 'vnpay') l.classList.add('selected-vnpay');
     });
   });
+
+  // render data from session
+  renderCheckout();
 }
 
 function getSelectedCombo() {
