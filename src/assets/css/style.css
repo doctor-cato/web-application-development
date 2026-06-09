@@ -1,0 +1,238 @@
+/* ==========================================================================
+   3HD2K Cinema — Global Stylesheet
+   Supplements Tailwind CDN with custom components not expressible as utilities
+   ========================================================================== */
+
+/* ── Avatar component (profile + register pages) ─────────────────────── */
+.avatar-container {
+  position: relative;
+  display: inline-block;
+  width: 88px;
+  height: 88px;
+  margin: 0 auto;
+}
+
+.avatar-preview {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #343535;
+}
+
+.avatar-upload-btn {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: #e50914;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.avatar-upload-btn:hover {
+  background: #c5070f;
+}
+
+.avatar-upload-btn .material-symbols-outlined {
+  font-size: 16px;
+  color: #fff;
+}
+
+/* ==========================================================================
+   Payment & QR Ticket Feature
+   ========================================================================== */
+
+/* ── Countdown timer ─────────────────────────────────────────────────── */
+.countdown {
+  font-family: 'Courier New', Courier, monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.05em;
+}
+
+.countdown--warning {
+  color: #e50914 !important;
+  animation: countdown-pulse 1s ease-in-out infinite;
+}
+
+@keyframes countdown-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.5; }
+}
+
+/* ── Pulsing live dot (used next to countdown) ───────────────────────── */
+@keyframes pulse-dot {
+  0%, 100% { transform: scale(1);   opacity: 1; }
+  50%       { transform: scale(1.6); opacity: 0.45; }
+}
+
+.pulse-dot {
+  animation: pulse-dot 1.2s ease-in-out infinite;
+}
+
+/* ── CSS loading spinner (pay button loading state) ──────────────────── */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.65s linear infinite;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+/* ── Combo selector cards ────────────────────────────────────────────── */
+.combo-card {
+  cursor: pointer;
+  border: 1px solid #343535;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: border-color 0.18s ease, background-color 0.18s ease;
+  position: relative;
+}
+
+.combo-card:hover {
+  border-color: #e50914;
+}
+
+.combo-card.selected {
+  border-color: #e50914;
+  background-color: rgba(229, 9, 20, 0.08);
+}
+
+/* ── Payment method cards ────────────────────────────────────────────── */
+.payment-card {
+  cursor: pointer;
+  border: 1px solid #343535;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: border-color 0.18s ease, background-color 0.18s ease, opacity 0.18s ease;
+}
+
+.payment-card:hover {
+  opacity: 0.88;
+}
+
+.payment-card.selected-momo {
+  border-color: #ae2070;
+  background-color: rgba(174, 32, 112, 0.09);
+}
+
+.payment-card.selected-vnpay {
+  border-color: #005baa;
+  background-color: rgba(0, 91, 170, 0.09);
+}
+
+/* ── Provider theme classes (payment_simulation.html) ────────────────── */
+.momo-theme .provider-header {
+  background: linear-gradient(135deg, #ae2070, #d4337a);
+}
+
+.momo-theme .provider-accent {
+  color: #ae2070;
+}
+
+.vnpay-theme .provider-header {
+  background: linear-gradient(135deg, #005baa, #0077cc);
+}
+
+.vnpay-theme .provider-accent {
+  color: #005baa;
+}
+
+/* Provider countdown warning (payment simulation page) */
+.countdown-warning {
+  color: #e50914;
+  animation: countdown-pulse 1s ease-in-out infinite;
+}
+
+/* ── Ticket tear / perforated separator (booking_invoice.html) ───────── */
+.ticket-tear {
+  position: relative;
+  overflow: visible;
+}
+
+.ticket-tear::before,
+.ticket-tear::after {
+  content: '';
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  background: #121414;
+  border-radius: 50%;
+  top: -12px;
+}
+
+.ticket-tear::before { left:  -12px; }
+.ticket-tear::after  { right: -12px; }
+
+/* ── Offline Ready badge ─────────────────────────────────────────────── */
+.offline-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(22, 163, 74, 0.25);   /* green-700/25 */
+  color: #86efac;                          /* green-300 */
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  border: 1px solid rgba(74, 222, 128, 0.35);
+}
+
+/* ── QR canvas wrapper ───────────────────────────────────────────────── */
+.qr-wrapper {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+}
+
+/* ── QR fallback text ────────────────────────────────────────────────── */
+.qr-fallback-text {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.7rem;
+  word-break: break-all;
+  text-align: center;
+  color: #6b7280;
+  max-width: 220px;
+  line-height: 1.5;
+}
+
+/* ── QR grid placeholder (payment_simulation.html) ───────────────────── */
+.qr-grid {
+  background-image:
+    linear-gradient(#cccccc 1px, transparent 1px),
+    linear-gradient(90deg, #cccccc 1px, transparent 1px);
+  background-size: 18px 18px;
+  background-color: #ffffff;
+}
+
+/* ── Ticket card ─────────────────────────────────────────────────────── */
+.ticket-card {
+  border-radius: 16px;
+  overflow: visible;
+  border: 1px solid #343535;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.7);
+}

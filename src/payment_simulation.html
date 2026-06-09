@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html class="dark" lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Thanh Toán - 3HD2K Cinema</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary-container": "#e50914",
+                        "background": "#121414",
+                        "surface-variant": "#343535",
+                        "secondary": "#c8c6c5",
+                        "surface-container-low": "#1a1c1c",
+                        "surface-container-lowest": "#0d0e0f"
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Provider theme overrides */
+        .momo-theme .provider-header {
+            background: linear-gradient(135deg, #ae2070, #d4337a);
+        }
+        .momo-theme .provider-accent {
+            color: #ae2070;
+        }
+        .vnpay-theme .provider-header {
+            background: linear-gradient(135deg, #005baa, #0077cc);
+        }
+        .vnpay-theme .provider-accent {
+            color: #005baa;
+        }
+
+        /* Countdown warning animation */
+        .countdown-warning {
+            color: #e50914;
+            animation: pulse-anim 1s infinite;
+        }
+        @keyframes pulse-anim {
+            0%, 100% { opacity: 1; }
+            50%       { opacity: 0.5; }
+        }
+
+        /* QR grid pattern placeholder */
+        .qr-grid {
+            background-image:
+                linear-gradient(#ccc 1px, transparent 1px),
+                linear-gradient(90deg, #ccc 1px, transparent 1px);
+            background-size: 20px 20px;
+            background-color: #fff;
+        }
+    </style>
+</head>
+
+<!--
+    THEME SWITCHING:
+    • MoMo  → <body class="momo-theme ...">
+    • VNPAY → <body class="vnpay-theme ...">
+    Change the class below to switch between providers.
+-->
+<body class="momo-theme bg-background antialiased text-white min-h-screen flex flex-col font-['Inter']">
+
+    <!-- ─── TOP HEADER BAR ─────────────────────────────────────────── -->
+    <header class="w-full z-50 px-6 h-16 flex items-center justify-between border-b border-surface-variant bg-surface-container-lowest">
+        <!-- Back link -->
+        <a href="checkout.html"
+           class="flex items-center gap-1 text-secondary hover:text-white transition duration-200 group text-sm font-medium">
+            <span class="material-symbols-outlined text-[20px] group-hover:-translate-x-1 transition-transform">arrow_back</span>
+            Quay lại
+        </a>
+
+        <!-- Provider logo — MoMo -->
+        <span class="momo-theme-logo font-['Bebas_Neue'] text-[28px] tracking-widest provider-accent">MoMo</span>
+        <!-- Provider logo — VNPAY (hidden by default; swap display with JS or manually) -->
+        <!-- <span class="vnpay-theme-logo font-['Bebas_Neue'] text-[28px] tracking-widest provider-accent">VNPAY</span> -->
+
+        <!-- Spacer to balance flex layout -->
+        <div class="w-20"></div>
+    </header>
+
+    <!-- ─── MAIN CONTENT ───────────────────────────────────────────── -->
+    <main class="flex-grow flex items-center justify-center px-4 py-10">
+        <div class="w-full max-w-md">
+
+            <!-- ── Payment card ── -->
+            <div class="bg-surface-container-low rounded-2xl border border-surface-variant shadow-2xl overflow-hidden">
+
+                <!-- 1. Provider branding header strip -->
+                <div class="provider-header px-6 py-5 flex flex-col items-center text-center">
+                    <span class="font-['Bebas_Neue'] text-[40px] tracking-widest text-white drop-shadow">Ví MoMo</span>
+                    <!-- For VNPAY theme, replace the line above with:
+                    <span class="font-['Bebas_Neue'] text-[40px] tracking-widest text-white drop-shadow">VNPAY</span>
+                    -->
+                    <p class="text-white/80 text-sm mt-0.5">Quét mã QR để thanh toán</p>
+                </div>
+
+                <!-- Card body -->
+                <div class="px-6 py-6 space-y-6">
+
+                    <!-- 2. Transaction info -->
+                    <div class="space-y-3">
+                        <!-- Amount with trust lock icon -->
+                        <div class="flex items-center justify-center gap-2">
+                            <span class="material-symbols-outlined text-[20px] text-secondary">lock</span>
+                            <span class="text-3xl font-bold text-white">225.000 đ</span>
+                        </div>
+
+                        <!-- Transaction IDs -->
+                        <div class="bg-background rounded-xl px-4 py-3 space-y-1.5 text-center border border-surface-variant">
+                            <p class="font-mono text-secondary text-sm tracking-wider">Mã GD: <span class="text-white">A3BX9KM2ZQ7T</span></p>
+                            <p class="text-secondary text-xs">Đặt vé: <span class="text-white font-mono">bk_1781018950</span></p>
+                        </div>
+                    </div>
+
+                    <!-- 3a. QR placeholder (MoMo theme) -->
+                    <div class="momo-qr-section flex flex-col items-center gap-3">
+                        <!-- White QR box with subtle grid pattern -->
+                        <div class="qr-grid w-[200px] h-[200px] rounded-xl flex items-center justify-center shadow-lg relative">
+                            <!-- Corner markers to feel like a real QR -->
+                            <div class="absolute top-3 left-3 w-8 h-8 border-4 border-gray-800 rounded-sm"></div>
+                            <div class="absolute top-3 right-3 w-8 h-8 border-4 border-gray-800 rounded-sm"></div>
+                            <div class="absolute bottom-3 left-3 w-8 h-8 border-4 border-gray-800 rounded-sm"></div>
+                            <span class="font-['Bebas_Neue'] text-gray-600 text-xl tracking-widest z-10">QR Code</span>
+                        </div>
+                        <p class="text-secondary text-xs text-center">Mở app MoMo và quét mã này</p>
+                    </div>
+
+                    <!-- 3b. Bank transfer info (VNPAY theme) — hidden by default -->
+                    <!-- To show: remove "hidden" class and add it to the momo-qr-section above when using vnpay-theme -->
+                    <!--
+                    <div class="vnpay-transfer-section hidden bg-background rounded-xl border border-surface-variant px-5 py-4 space-y-2.5 text-sm">
+                        <h3 class="font-['Bebas_Neue'] text-lg tracking-wide text-white border-b border-surface-variant pb-2 mb-3">
+                            Thông tin chuyển khoản
+                        </h3>
+                        <div class="flex justify-between">
+                            <span class="text-secondary">Ngân hàng</span>
+                            <span class="text-white font-medium">Vietcombank</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-secondary">Số tài khoản</span>
+                            <span class="text-white font-mono">1234567890</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-secondary">Số tiền</span>
+                            <span class="text-white font-bold">225.000 đ</span>
+                        </div>
+                        <div class="flex justify-between gap-4">
+                            <span class="text-secondary shrink-0">Nội dung CK</span>
+                            <span class="text-white font-mono text-right">TT VE A3BX9KM2ZQ7T</span>
+                        </div>
+                    </div>
+                    -->
+
+                    <!-- 4. Countdown timer -->
+                    <div class="flex flex-col items-center gap-1 py-2">
+                        <p class="text-secondary text-xs uppercase tracking-widest">Giao dịch hết hạn sau</p>
+                        <span class="font-mono text-4xl font-bold countdown-warning">04:47</span>
+                    </div>
+
+                    <!-- 5. Action buttons -->
+                    <div class="space-y-3 pt-1">
+                        <!-- Success -->
+                        <a href="booking_invoice.html"
+                           class="flex items-center justify-center gap-2 w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3.5 rounded-xl transition duration-200 uppercase tracking-wider text-sm">
+                            <span class="material-symbols-outlined text-[20px]">check_circle</span>
+                            Thanh Toán Thành Công
+                        </a>
+
+                        <!-- Cancel -->
+                        <a href="checkout.html"
+                           class="flex items-center justify-center gap-2 w-full bg-surface-variant hover:bg-red-900/30 border border-red-500/30 text-secondary hover:text-white font-bold py-3.5 rounded-xl transition duration-200 uppercase tracking-wider text-sm">
+                            <span class="material-symbols-outlined text-[20px]">cancel</span>
+                            Hủy Giao Dịch
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+            <!-- /Payment card -->
+
+            <!-- Secured by note -->
+            <div class="flex items-center justify-center gap-1.5 mt-5 text-secondary text-xs">
+                <span class="material-symbols-outlined text-[16px]">shield</span>
+                Kết nối được mã hóa SSL 256-bit
+            </div>
+
+        </div>
+    </main>
+
+    <!-- ─── FOOTER ─────────────────────────────────────────────────── -->
+    <footer class="bg-surface-container-lowest text-white border-t border-surface-variant px-8 py-4 flex flex-col md:flex-row justify-between items-center text-xs">
+        <span class="font-['Bebas_Neue'] text-xl tracking-tighter text-primary-container">3HD2K</span>
+        <div class="text-secondary mt-2 md:mt-0">© 2026 3HD2K Cinema. All rights reserved.</div>
+    </footer>
+
+</body>
+</html>
