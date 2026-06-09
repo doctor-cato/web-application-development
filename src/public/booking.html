@@ -62,7 +62,7 @@
             <div class="flex items-center gap-2 text-sm">
                 <span class="pulse-dot inline-block w-2 h-2 rounded-full bg-primary-container"></span>
                 <span class="text-secondary text-xs uppercase tracking-widest">Ghế giữ còn:</span>
-                <span id="countdown-header" class="countdown font-mono font-bold text-white text-base">--:--</span>
+                <span id="countdown-header" class="countdown font-mono font-bold text-white text-base">14:59</span>
             </div>
 
             <a href="javascript:history.back()" class="flex items-center gap-1 text-secondary hover:text-white transition text-sm group">
@@ -166,9 +166,58 @@
 
                     <!-- Seat grid (rendered by seatGrid.js) -->
                     <div id="seat-grid" class="flex flex-col items-center gap-2">
-                        <!-- Placeholder loading state -->
-                        <p class="text-secondary text-sm py-16">Đang tải sơ đồ ghế...</p>
-                    </div>
+                                            <!-- Static seat grid (HTML/CSS only prototype) -->
+                                            <div class="seat-rows space-y-3 w-full max-w-4xl">
+                                                <!-- Row A -->
+                                                <div class="flex items-center gap-3">
+                                                    <div class="w-6 text-sm text-secondary">A</div>
+                                                    <div class="grid grid-cols-10 gap-2 flex-1">
+                                                        <div class="seat seat--available w-9 h-9 rounded-sm"></div>
+                                                        <div class="seat seat--available w-9 h-9 rounded-sm"></div>
+                                                        <div class="seat seat--selected w-9 h-9 rounded-sm"></div>
+                                                        <div class="seat seat--selected w-9 h-9 rounded-sm"></div>
+                                                        <div class="seat seat--available w-9 h-9 rounded-sm"></div>
+                                                        <div class="seat seat--available w-9 h-9 rounded-sm"></div>
+                                                        <div class="seat seat--locked w-9 h-9 rounded-sm"></div>
+                                                        <div class="seat seat--available w-9 h-9 rounded-sm"></div>
+                                                        <div class="seat seat--available w-9 h-9 rounded-sm"></div>
+                                                        <div class="seat seat--available w-9 h-9 rounded-sm"></div>
+                                                    </div>
+                                                </div>
+                                                <!-- Row B -->
+                                                <div class="flex items-center gap-3">
+                                                    <div class="w-6 text-sm text-secondary">B</div>
+                                                    <div class="grid grid-cols-10 gap-2 flex-1">
+                                                        <div class="seat seat--available w-9 h-9 rounded-sm"></div>
+                                                        <div class="seat seat--available w-9 h-9 rounded-sm"></div>
+                                                        <div class="seat seat--available w-9 h-9 rounded-sm"></div>
+                                                        <div class="seat seat--available w-9 h-9 rounded-sm"></div>
+                                                        <div class="seat seat--available w-9 h-9 rounded-sm"></div>
+                                                        <div class="seat seat--locked w-9 h-9 rounded-sm"></div>
+                                                        <div class="seat seat--available w-9 h-9 rounded-sm"></div>
+                                                        <div class="seat seat--available w-9 h-9 rounded-sm"></div>
+                                                        <div class="seat seat--booked w-9 h-9 rounded-sm"></div>
+                                                        <div class="seat seat--available w-9 h-9 rounded-sm"></div>
+                                                    </div>
+                                                </div>
+                                                <!-- Row C (VIP) -->
+                                                <div class="flex items-center gap-3">
+                                                    <div class="w-6 text-sm text-secondary">C</div>
+                                                    <div class="grid grid-cols-10 gap-2 flex-1">
+                                                        <div class="seat seat--vip seat--available w-9 h-9 rounded-sm"></div>
+                                                        <div class="seat seat--vip seat--available w-9 h-9 rounded-sm"></div>
+                                                        <div class="seat seat--vip seat--available w-9 h-9 rounded-sm"></div>
+                                                        <div class="seat seat--vip seat--available w-9 h-9 rounded-sm"></div>
+                                                        <div class="seat seat--vip seat--available w-9 h-9 rounded-sm"></div>
+                                                        <div class="seat seat--vip seat--available w-9 h-9 rounded-sm"></div>
+                                                        <div class="seat seat--vip seat--available w-9 h-9 rounded-sm"></div>
+                                                        <div class="seat seat--vip seat--selected w-9 h-9 rounded-sm"></div>
+                                                        <div class="seat seat--vip seat--available w-9 h-9 rounded-sm"></div>
+                                                        <div class="seat seat--vip seat--available w-9 h-9 rounded-sm"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
 
                 </div>
             </div>
