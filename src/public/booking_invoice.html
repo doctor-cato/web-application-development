@@ -8,7 +8,6 @@
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
   <link rel="stylesheet" href="../assets/css/style.css">
 
   <script id="tailwind-config">
@@ -190,9 +189,7 @@
       <div class="flex flex-col items-center">
         <div class="bg-white rounded-2xl p-6 shadow-[0_4px_24px_rgba(0,0,0,0.5)] flex flex-col items-center gap-3">
           <!-- Canvas -->
-          <canvas id="qr-canvas" width="220" height="220"></canvas>
-                    <!-- Fallback text (hidden by default) -->
-                    <code id="qr-fallback" class="hidden text-xs break-all text-gray-600 font-mono text-center max-w-[220px]"></code>
+          <div class="qr-grid w-[220px] h-[220px] rounded-xl flex items-center justify-center shadow-lg relative"><span class="font-['Bebas_Neue'] text-gray-600 text-xl tracking-widest">QR Code</span></div>
           <!-- Label -->
           <p class="text-gray-500 text-xs text-center font-medium mt-1">
             Xuất trình mã QR này tại quầy soát vé
@@ -232,7 +229,7 @@
     <div class="text-secondary mt-2 md:mt-0">© 2026 3HD2K Cinema. All rights reserved.</div>
   </footer>
 
-  <script type="module" src="../assets/js/pages/invoice.js"></script>
+
 
 </body>
 </html>
