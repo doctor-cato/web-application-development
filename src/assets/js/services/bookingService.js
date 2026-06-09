@@ -1,34 +1,40 @@
 /**
- * bookingService.js
- * ─────────────────────────────────────────────────────────────
- * Quản lý ghế, lock ghế và xác nhận đặt vé.
- * Dùng BroadcastChannel API để đồng bộ trạng thái ghế giữa các tab.
- *
- * Trách nhiệm:
- *   initSeats(showtimeId)           — Tạo sơ đồ ghế cho suất chiếu
- *   getSeatMap(showtimeId)          — Lấy trạng thái tất cả ghế
- *   lockSeat(showtimeId, seatId, userId)   — Khóa ghế 5 phút (300s)
- *   unlockSeat(showtimeId, seatId, userId) — Giải phóng ghế đang lock
- *   confirmBooking(checkoutData)    — Chuyển ghế locked → booked, tạo booking record
- *   getUserBookings(userId)         — Lịch sử đặt vé của user
- *   releaseExpiredLocks()           — Cleanup ghế hết hạn lock
- *
- * BroadcastChannel:
- *   Channel name: 'cinema_seat_sync'
- *   Message types: SEAT_LOCKED | SEAT_UNLOCKED | SEAT_BOOKED
- * ─────────────────────────────────────────────────────────────
+ * bookingService.js — minimal booking record management for demo
  */
 
-import { lsGet, lsSet, getBookings, saveBookings } from './storage.js';
+import { getBookings, saveBookings } from './storage.js';
 
-// TODO: const LOCK_DURATION_MS = 5 * 60 * 1000; // 300s
-// TODO: const channel = new BroadcastChannel('cinema_seat_sync');
+function makeBookingId() {
+  return 'bk_' + Date.now().toString(36) + Math.random().toString(36).slice(2,6).toUpperCase();
+}
 
-// TODO: export function initSeats(showtimeId, layout) { ... }
-// TODO: export function getSeatMap(showtimeId) { ... }
-// TODO: export function lockSeat(showtimeId, seatId, userId) { ... }
-// TODO: export function unlockSeat(showtimeId, seatId, userId) { ... }
-// TODO: export function confirmBooking(checkoutData) { ... }
-// TODO: export function getUserBookings(userId) { ... }
-// TODO: export function releaseExpiredLocks() { ... }
-// TODO: export function subscribeSeatUpdates(showtimeId, callback) { ... }
+export function confirmBooking(checkoutData) {
+  // checkoutData expected to contain: movieTitle, showtimeId, showtimeText, room, seats (array), combo, total, userId, transactionId, paymentMethod
+  const bookings = getBookings();
+  const id = makeBookingId();
+  const now = new Date();
+  const booking = {
+    id,
+    movieTitle: checkoutData.movieTitle || 'Unknown Movie',
+    showtimeId: checkoutData.showtimeId || null,
+    showtimeText: checkoutData.showtimeText || '',
+    room: checkoutData.room || '',
+    seats: checkoutData.seats || [],
+    combo: checkoutData.combo || 'none',
+    total: checkoutData.total || checkoutData.amount || 0,
+    userId: checkoutData.userId || null,
+    transactionId: checkoutData.transactionId || null,
+    paymentMethod: checkoutData.paymentMethod || null,
+    createdAt: now.toISOString()
+  };
+
+  bookings.push(booking);
+  saveBookings(bookings);
+  return booking;
+}
+
+export function getUserBookings(userId) {
+  const bookings = getBookings();
+  if (!userId) return bookings;
+  return bookings.filter(b => b.userId === userId);
+}
