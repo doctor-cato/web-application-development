@@ -132,17 +132,17 @@
                     <!-- Movie poster + title row -->
                     <div class="flex gap-4 items-start">
                         <div class="w-16 h-24 rounded-xl overflow-hidden flex-shrink-0 bg-surface-variant">
-                            <img
+                                                <img id="order-summary-poster"
                                 src="https://images.unsplash.com/photo-1635805737707-575885ab0820?w=200&auto=format&fit=crop"
-                                alt="Spider-Man: Across the Spider-Verse"
+                                                    alt="Poster"
                                 class="w-full h-full object-cover"
                             >
                         </div>
                         <div class="flex-1 min-w-0">
-                            <p class="font-bold text-white text-sm leading-tight">Spider-Man: Across the Spider-Verse</p>
+                                                <p id="order-summary-movie" class="font-bold text-white text-sm leading-tight">Spider-Man: Across the Spider-Verse</p>
                             <div class="mt-2 flex flex-wrap gap-1.5">
-                                <span class="text-[10px] bg-primary-container/20 text-primary-container border border-primary-container/40 rounded px-2 py-0.5 font-semibold uppercase tracking-wider">IMAX</span>
-                                <span class="text-[10px] bg-surface-variant text-secondary rounded px-2 py-0.5">Animation</span>
+                                                    <span id="order-summary-tags" class="text-[10px] bg-primary-container/20 text-primary-container border border-primary-container/40 rounded px-2 py-0.5 font-semibold uppercase tracking-wider">IMAX</span>
+                                                    <span id="order-summary-genre" class="text-[10px] bg-surface-variant text-secondary rounded px-2 py-0.5">Animation</span>
                             </div>
                         </div>
                     </div>
@@ -169,9 +169,8 @@
                             <span class="material-symbols-outlined text-primary-container text-[18px] mt-0.5">event_seat</span>
                             <div>
                                 <p class="text-secondary text-xs mb-1.5">Ghế đã chọn</p>
-                                <div class="flex flex-wrap gap-2">
-                                    <span class="bg-primary-container text-white text-xs font-bold px-3 py-1 rounded-full tracking-wider">A3</span>
-                                    <span class="bg-primary-container text-white text-xs font-bold px-3 py-1 rounded-full tracking-wider">A4</span>
+                                <div id="order-summary-seats" class="flex flex-wrap gap-2">
+                                    <!-- seats injected here -->
                                 </div>
                             </div>
                         </div>
@@ -179,8 +178,8 @@
                         <div class="flex items-center gap-3 pt-2 border-t border-surface-variant">
                             <span class="material-symbols-outlined text-primary-container text-[18px]">payments</span>
                             <div class="flex items-center justify-between w-full">
-                                <p class="text-secondary text-xs">Tiền ghế (2 ghế)</p>
-                                <p class="text-white font-bold">160.000 đ</p>
+                                <p class="text-secondary text-xs">Tiền ghế</p>
+                                <p id="order-summary-seat-amount" class="text-white font-bold">--</p>
                             </div>
                         </div>
                     </div>
@@ -316,7 +315,7 @@
                         <div class="border-t border-surface-variant my-2 pt-2">
                             <div class="flex justify-between items-center">
                                 <span class="text-white font-semibold text-base">Tổng cộng:</span>
-                                <span class="font-['Bebas_Neue'] text-3xl text-primary-container tracking-wider">160.000 đ</span>
+                                <span id="order-total" data-amount="160000" class="font-['Bebas_Neue'] text-3xl text-primary-container tracking-wider">160.000 đ</span>
                             </div>
                         </div>
 
@@ -325,7 +324,7 @@
                 </div>
 
                 <!-- PAY BUTTON (active) -->
-                <a href="payment_simulation.html"
+                <a id="btn-pay" href="payment_simulation.html"
                    class="block w-full text-center bg-primary-container hover:bg-red-700 active:scale-[0.98] transition-all duration-200 text-white py-4 rounded-xl font-['Bebas_Neue'] text-2xl tracking-widest uppercase shadow-lg shadow-primary-container/30">
                     THANH TOÁN NGAY
                 </a>
