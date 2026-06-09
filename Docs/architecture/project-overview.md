@@ -35,19 +35,29 @@ The project is designed to:
 * **Vanilla JavaScript (ES6+ Modules)**: Application logic, DOM manipulation.
 * **QRCode.js**: Lightweight client-side library for QR Code ticket rendering.
 
+## Backend & Database
+
+* **ASP.NET Core Web API**: RESTful backend exposing `/api` endpoints.
+* **Microsoft SQL Server**: Primary data store for all application data (users, movies, bookings, payments, seats).
+* **Entity Framework Core / Dapper**: ORM and query layer for SQL Server access.
+* **JWT (JSON Web Tokens)**: Stateless authentication — access token (15 min) + refresh token (7 days).
+
 ## State & Persistence
 
-* **LocalStorage**: Persists accounts, movie catalog metadata, and transaction history.
-* **SessionStorage**: Handles current login sessions and temporary seat selections.
+* **SQL Server `dbo.*` tables**: Single source of truth for all persistent data.
+* **LocalStorage (browser)**: Offline cache for the QR ticket invoice page only — not a primary data store.
+* **SessionStorage (browser)**: Temporary cart/checkout state during the booking flow.
 
 ## Synchronization
 
-* **BroadcastChannel API**: Broadcasts selections, locks, and bookings instantly between open tabs.
-* **JavaScript Web Timers (`setInterval` / `setTimeout`)**: Simulates concurrent booking actions from virtual clients.
+* **SignalR (WebSocket)**: Real-time seat lock/unlock/book events broadcast from `SeatHub` to all connected clients viewing the same showtime.
+* **Background hosted service**: Runs every 60s to release expired seat locks (`DATEDIFF(SECOND, LockTime, GETUTCDATE()) > 300`).
 
 ## Deployment
 
-* **GitHub Pages / Vercel / Netlify**: Free static hosting directly connected to repository branches.
+* **Frontend**: Static files deployable to Vercel / Netlify / Azure Static Web Apps.
+* **Backend**: ASP.NET Core app deployable to Azure App Service / IIS / Docker container.
+* **Database**: SQL Server on Azure SQL Database or on-premise SQL Server instance.
 
 ---
 
@@ -56,27 +66,30 @@ The project is designed to:
 ## Catalog Browsing
 * Dynamic homepage displaying cinema banners, filters, and categories.
 * Movie description details, casting information, and showtime schedules.
+* Data served from `GET /api/movies` and `GET /api/movies/{id}/showtimes`.
 
-## Authentication (Local Auth)
-* User account registration.
-* User login matching credentials against LocalStorage.
-* Protected checkout and profile screens based on SessionStorage session state.
+## Authentication
+* User account registration and login via `POST /api/auth/register` and `POST /api/auth/login`.
+* JWT-based session — access token stored in memory; refresh token in `HttpOnly` cookie.
+* Protected checkout and profile screens require valid JWT.
 
-## Seating Map & simulated Realtime Locking
+## Seating Map & Real-time Locking
 * Interactive seat selection matrix (Normal, VIP, Double).
-* Multi-tab seat sync using `BroadcastChannel`.
-* Automated javascript timeout locks (auto-release after 5 minutes).
-* Randomly simulated seat lock activity mimicking other users.
+* Seat state stored in `dbo.Seats` (SQL Server), fetched via `GET /api/showtimes/{id}/seats`.
+* Lock/unlock via `POST /api/bookings/lock` with atomic SQL update (`WHERE Status = 'available'`).
+* Real-time cross-client sync via **SignalR** — seat events pushed to all clients on the same showtime.
+* Background service auto-releases locks expired > 300 seconds.
 
-## Checkout & Simulated Payments
-* Bắp nước / concessions up-selling.
-* Mock checkouts showing transaction summaries.
-* Simulated payment interfaces (mock MoMo/VNPAY payment success pages).
-* Dynamic QR Code receipt ticket generation.
+## Checkout & Payment
+* Bắp nước / concessions up-selling on the checkout page.
+* Payment initiated via `POST /api/payments/create` → MoMo / VNPAY redirect URL.
+* Provider sends webhook to `POST /api/payments/callback` — backend verifies HMAC and confirms booking atomically.
+* QR Code ticket generated client-side using `qrcode.js` from the `qrString` stored in `dbo.Bookings`.
 
 ## Administrative Dashboard
-* Admin dashboard mockup (integrated in Profile page if user role is `admin`).
-* Edit catalog movies list, showtimes, and view simulated income logs.
+* Admin panel integrated in the Profile page for users with `role: "admin"`.
+* Edit movie catalog and showtimes via admin API endpoints.
+* View booking and payment records.
 
 ---
 
@@ -84,9 +97,9 @@ The project is designed to:
 
 The application code should remain:
 
-* **modular**: distinct responsibilities for page scripts, render components, and storage services.
-* **clean & simple**: avoid complex dependencies or server-side runtimes.
-* **readable**: clear DOM interactions and descriptive method structures.
+* **modular**: distinct responsibilities for page scripts, API controllers, and SQL service layer.
+* **clean & simple**: frontend calls REST API; backend handles all data logic.
+* **readable**: clear HTTP contracts, parameterized SQL queries, and descriptive method names.
 
 Avoid:
 * setting up Node express configs or MongoDB mongoose connections.

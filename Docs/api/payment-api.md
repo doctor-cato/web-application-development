@@ -1,70 +1,172 @@
-# Simulated Payment Service API
+# Payment API
 
 ## Overview
 
-The payment checkout process is simulated in the client using `js/services/paymentService.js`. It mocks integrations with payment providers (VNPAY and MoMo) by displaying mock transaction screens and resolving callback state transitions locally.
+The payment flow is handled by `/api/payments` endpoints. The backend integrates with **MoMo** and **VNPAY** sandbox gateways. Payment records are stored in `dbo.Payments` (SQL Server). On successful payment, the webhook handler atomically updates `dbo.Payments`, `dbo.Bookings`, and `dbo.Seats` in a single SQL transaction.
 
 ---
 
-# Exported Functions
-
-## createPaymentRequest(bookingId, provider, amount)
+# POST /api/payments/create
 
 ### Description
-Registers a pending payment transaction record in `LocalStorage` (`3hd2k_payments`) and generates a redirect path to a mock checkout view.
+Creates a `pending` payment record and returns the provider redirect URL. Called when the user clicks "Thanh toán ngay" on the checkout page.
 
-### Parameters
-* `bookingId` (string): The associated booking ID.
-* `provider` (string): Either `"VNPAY"` or `"MoMo"`.
-* `amount` (number): The payment total.
+### Headers
+```
+Authorization: Bearer <access_token>
+```
 
-### Returns (Promise)
-* Resolves with a redirect target path for the simulated payment screen:
-  ```json
-  {
-    "success": true,
-    "paymentUrl": "payment_simulation.html?bookingId=bk_1781018950&provider=MoMo&amount=95000"
+### Request Body
+```json
+{
+  "bookingId": "bk_1781018950",
+  "provider": "MoMo",
+  "amount": 255000
+}
+```
+
+### Response — 200 OK
+```json
+{
+  "success": true,
+  "data": {
+    "paymentId": "pay_1781018955",
+    "paymentUrl": "https://test-payment.momo.vn/pay?partnerCode=...&orderId=pay_1781018955&..."
   }
-  ```
+}
+```
+
+### SQL Operation
+```sql
+INSERT INTO dbo.Payments (PaymentId, BookingId, Provider, TransactionId, Amount, Status)
+VALUES (@paymentId, @bookingId, @provider, @transactionId, @amount, 'pending');
+```
+
+### Provider URL Generation
+- **MoMo**: HMAC-SHA256 signed request to MoMo sandbox `https://test-payment.momo.vn/v2/gateway/api/create`.
+- **VNPAY**: HMAC-SHA512 signed redirect to `https://sandbox.vnpayment.vn/paymentv2/vpcpay.html`.
 
 ---
 
-## verifyPaymentLocal(bookingId, simulatedStatus)
+# POST /api/payments/callback
 
 ### Description
-Simulates the webhook callback process. Updates booking records and changes seat status.
+Webhook endpoint called by MoMo or VNPAY after the user completes or cancels payment. Verifies the provider signature, then atomically updates all related records.
 
-### Parameters
-* `bookingId` (string): The target booking ID.
-* `simulatedStatus` (string): Either `"success"` or `"failed"`.
+**This endpoint does NOT require JWT** — it is called directly by the payment provider server.
 
-### Returns (Promise)
-* Resolves on successful confirmation:
-  ```json
-  {
-    "success": true,
-    "payment": {
-      "id": "pay_1781018955",
-      "bookingId": "bk_1781018950",
-      "status": "success",
-      "provider": "MoMo"
-    }
-  }
-  ```
-* Rejects on mock failure:
-  ```json
-  {
-    "success": false,
-    "message": "Payment simulation was marked as failed by user."
-  }
-  ```
+### Request Body (MoMo example)
+```json
+{
+  "partnerCode": "MOMO",
+  "orderId": "pay_1781018955",
+  "requestId": "...",
+  "amount": 255000,
+  "resultCode": 0,
+  "message": "Successful",
+  "signature": "hmac_sha256_signature"
+}
+```
+
+### Response — 200 OK (must always return 200 to provider)
+```json
+{ "success": true }
+```
+
+### Success Flow (resultCode == 0)
+```sql
+BEGIN TRANSACTION;
+
+  UPDATE dbo.Payments
+  SET    Status = 'success', RawCallback = @rawJson
+  WHERE  PaymentId = @orderId;
+
+  UPDATE dbo.Bookings
+  SET    BookingStatus = 'confirmed', PaymentStatus = 'success',
+         QrString = @qrString, TransactionId = @transactionId
+  WHERE  BookingId = (SELECT BookingId FROM dbo.Payments WHERE PaymentId = @orderId);
+
+  UPDATE dbo.Seats
+  SET    Status = 'booked', LockedBy = NULL, LockTime = NULL
+  WHERE  SeatId IN (
+    SELECT bs.SeatId FROM dbo.BookingSeats bs
+    JOIN dbo.Payments p ON bs.BookingId = p.BookingId
+    WHERE p.PaymentId = @orderId
+  );
+
+COMMIT;
+```
+
+### Failure Flow (resultCode != 0)
+```sql
+BEGIN TRANSACTION;
+  UPDATE dbo.Payments  SET Status = 'failed'    WHERE PaymentId = @orderId;
+  UPDATE dbo.Bookings  SET BookingStatus = 'cancelled', PaymentStatus = 'failed'
+    WHERE BookingId = (SELECT BookingId FROM dbo.Payments WHERE PaymentId = @orderId);
+  UPDATE dbo.Seats
+  SET Status = 'available', LockedBy = NULL, LockTime = NULL
+  WHERE SeatId IN (SELECT SeatId FROM dbo.BookingSeats WHERE BookingId = ...);
+COMMIT;
+```
+
+### SignalR Broadcast (on success)
+```json
+{ "type": "SeatBooked", "showtimeId": "st_200", "seatLabels": ["A3", "A4"] }
+```
 
 ---
 
-# Payment Flow Simulation
+# GET /api/payments/{bookingId}
 
-1. The user selects seats and clicks "Tiến hành thanh toán".
-2. The page calls `createPaymentRequest()`, which saves a pending payment record and redirects to `payment_simulation.html`.
-3. `payment_simulation.html` displays a mock screen showing the booking details and payment instructions (with a simulated QR Code to scan).
-4. The user clicks either a **"Simulate Success (Thanh toán thành công)"** or **"Simulate Failure (Thanh toán thất bại)"** button.
-5. The script triggers `verifyPaymentLocal()`, updating `3hd2k_bookings` to `confirmed` or `cancelled`, and then redirects the user back to `profile.html` or a success invoice page.
+### Description
+Returns the payment record associated with a booking. Used by the invoice page to display transaction details.
+
+### Headers
+```
+Authorization: Bearer <access_token>
+```
+
+### Response — 200 OK
+```json
+{
+  "success": true,
+  "data": {
+    "paymentId": "pay_1781018955",
+    "bookingId": "bk_1781018950",
+    "provider": "MoMo",
+    "transactionId": "A3BX9KM2ZQ7T",
+    "amount": 255000,
+    "status": "success",
+    "createdAt": "2026-06-09T15:25:05Z"
+  }
+}
+```
+
+---
+
+# Payment Flow Summary
+
+```
+1. User clicks "Thanh toán ngay"
+   → Frontend: POST /api/payments/create
+   → Backend: INSERT dbo.Payments (status: pending), return provider URL
+
+2. Frontend redirects user to payment_simulation.html (dev) or provider URL (prod)
+
+3. User completes payment on provider page
+
+4. Provider server calls: POST /api/payments/callback
+   → Backend: verify HMAC signature
+   → SQL transaction: update Payments + Bookings + Seats atomically
+   → SignalR broadcast to all clients
+
+5. Frontend polls or receives SignalR event → redirects to booking_invoice.html
+```
+
+---
+
+# Security Notes
+
+- Webhook signatures verified with **HMAC-SHA256** (MoMo) or **HMAC-SHA512** (VNPAY) before any DB write.
+- API keys and secret keys stored in `appsettings.json` / environment variables — never in source code.
+- `POST /api/payments/callback` is IP-whitelisted to provider server IPs in production.

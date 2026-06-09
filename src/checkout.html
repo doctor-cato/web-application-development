@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html class="dark" lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Xác nhận đặt vé - 3HD2K Cinema</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary-container": "#e50914",
+                        "background": "#121414",
+                        "surface-variant": "#343535",
+                        "secondary": "#c8c6c5",
+                        "surface-container-low": "#1a1c1c",
+                        "surface-container-lowest": "#0d0e0f"
+                    },
+                    fontFamily: {
+                        mono: ["'Courier New'", "Courier", "monospace"]
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Countdown warning state */
+        .countdown--warning {
+            color: #e50914;
+            animation: pulse-warning 1s ease-in-out infinite;
+        }
+
+        @keyframes pulse-warning {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.55; }
+        }
+
+        /* Pulsing dot */
+        @keyframes pulse-dot {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.5); opacity: 0.5; }
+        }
+        .pulse-dot {
+            animation: pulse-dot 1.2s ease-in-out infinite;
+        }
+
+        /* CSS spinner */
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            vertical-align: middle;
+        }
+
+        /* Combo card selected state */
+        .combo-card.selected {
+            border-color: #e50914;
+            background-color: rgba(229, 9, 20, 0.08);
+        }
+        .combo-card:hover {
+            border-color: #e50914;
+        }
+
+        /* Payment card selected state */
+        .payment-card.selected-momo {
+            border-color: #ae2070;
+            background-color: rgba(174, 32, 112, 0.1);
+        }
+        .payment-card.selected-vnpay {
+            border-color: #005baa;
+            background-color: rgba(0, 91, 170, 0.1);
+        }
+        .payment-card:hover {
+            opacity: 0.85;
+        }
+    </style>
+</head>
+
+<body class="bg-background antialiased text-white min-h-screen flex flex-col font-['Inter']">
+
+    <!-- ═══════════════════════════════════════════
+         HEADER
+    ═══════════════════════════════════════════ -->
+    <header class="w-full z-50 px-8 h-20 flex items-center justify-between border-b border-surface-variant bg-surface-container-low sticky top-0">
+        <a class="font-['Bebas_Neue'] text-[48px] text-primary-container font-bold tracking-tighter hover:scale-105 transition-transform duration-200" href="index.html">3HD2K</a>
+
+        <a href="javascript:history.back()" class="flex items-center gap-1 text-secondary hover:text-white transition duration-200 group text-sm font-medium">
+            <span class="material-symbols-outlined text-[20px] group-hover:-translate-x-1 transition-transform">arrow_back</span>
+            Quay lại
+        </a>
+    </header>
+
+    <!-- ═══════════════════════════════════════════
+         MAIN CONTENT
+    ═══════════════════════════════════════════ -->
+    <main class="flex-grow w-full max-w-6xl mx-auto px-4 md:px-8 py-8">
+
+        <!-- Page heading -->
+        <div class="mb-8">
+            <h1 class="font-['Bebas_Neue'] text-4xl md:text-5xl tracking-wide text-white">Xác Nhận Đặt Vé</h1>
+            <p class="text-secondary text-sm mt-1">Kiểm tra thông tin và hoàn tất thanh toán của bạn.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+
+            <!-- ────────────────────────────────────
+                 LEFT COLUMN  (2/5 width on lg)
+            ──────────────────────────────────── -->
+            <div class="lg:col-span-2 flex flex-col gap-6">
+
+                <!-- ORDER SUMMARY CARD -->
+                <div class="bg-surface-container-low border border-surface-variant rounded-2xl p-6 space-y-5">
+                    <h2 class="font-['Bebas_Neue'] text-2xl tracking-wide text-white border-b border-surface-variant pb-3">
+                        Thông Tin Đơn Vé
+                    </h2>
+
+                    <!-- Movie poster + title row -->
+                    <div class="flex gap-4 items-start">
+                        <div class="w-16 h-24 rounded-xl overflow-hidden flex-shrink-0 bg-surface-variant">
+                            <img
+                                src="https://images.unsplash.com/photo-1635805737707-575885ab0820?w=200&auto=format&fit=crop"
+                                alt="Spider-Man: Across the Spider-Verse"
+                                class="w-full h-full object-cover"
+                            >
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="font-bold text-white text-sm leading-tight">Spider-Man: Across the Spider-Verse</p>
+                            <div class="mt-2 flex flex-wrap gap-1.5">
+                                <span class="text-[10px] bg-primary-container/20 text-primary-container border border-primary-container/40 rounded px-2 py-0.5 font-semibold uppercase tracking-wider">IMAX</span>
+                                <span class="text-[10px] bg-surface-variant text-secondary rounded px-2 py-0.5">Animation</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Info rows -->
+                    <div class="space-y-3 text-sm">
+                        <div class="flex items-start gap-3">
+                            <span class="material-symbols-outlined text-primary-container text-[18px] mt-0.5">calendar_today</span>
+                            <div>
+                                <p class="text-secondary text-xs">Suất chiếu</p>
+                                <p class="text-white font-medium">Thứ Ba, 10/06/2026 — 19:30</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-3">
+                            <span class="material-symbols-outlined text-primary-container text-[18px] mt-0.5">meeting_room</span>
+                            <div>
+                                <p class="text-secondary text-xs">Phòng chiếu</p>
+                                <p class="text-white font-medium">Phòng 3 — IMAX</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-3">
+                            <span class="material-symbols-outlined text-primary-container text-[18px] mt-0.5">event_seat</span>
+                            <div>
+                                <p class="text-secondary text-xs mb-1.5">Ghế đã chọn</p>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="bg-primary-container text-white text-xs font-bold px-3 py-1 rounded-full tracking-wider">A3</span>
+                                    <span class="bg-primary-container text-white text-xs font-bold px-3 py-1 rounded-full tracking-wider">A4</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-3 pt-2 border-t border-surface-variant">
+                            <span class="material-symbols-outlined text-primary-container text-[18px]">payments</span>
+                            <div class="flex items-center justify-between w-full">
+                                <p class="text-secondary text-xs">Tiền ghế (2 ghế)</p>
+                                <p class="text-white font-bold">160.000 đ</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COUNTDOWN TIMER CARD -->
+                <div class="bg-surface-container-low border border-surface-variant rounded-2xl p-6">
+                    <div class="flex flex-col items-center text-center gap-3">
+                        <!-- Timer display -->
+                        <div class="flex items-center gap-3">
+                            <!-- Pulsing live dot -->
+                            <span class="pulse-dot inline-block w-2.5 h-2.5 rounded-full bg-primary-container flex-shrink-0"></span>
+                            <!-- The countdown value — has countdown--warning class for demo (shows red) -->
+                            <span class="countdown countdown--warning font-mono text-6xl font-bold tracking-widest leading-none">
+                                04:59
+                            </span>
+                        </div>
+                        <p class="text-secondary text-xs font-medium uppercase tracking-widest">Thời gian giữ ghế còn lại</p>
+                        <p class="text-secondary/60 text-xs">Hoàn tất thanh toán trước khi ghế được giải phóng.</p>
+                    </div>
+                </div>
+
+            </div><!-- /LEFT COLUMN -->
+
+            <!-- ────────────────────────────────────
+                 RIGHT COLUMN  (3/5 width on lg)
+            ──────────────────────────────────── -->
+            <div class="lg:col-span-3 flex flex-col gap-6">
+
+                <!-- COMBO SELECTOR -->
+                <div class="bg-surface-container-low border border-surface-variant rounded-2xl p-6 space-y-4">
+                    <h2 class="font-['Bebas_Neue'] text-2xl tracking-wide text-white">Chọn Combo Bắp Nước</h2>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+
+                        <!-- Option 1: Không chọn (selected by default) -->
+                        <label class="combo-card selected cursor-pointer border border-surface-variant rounded-xl p-4 flex flex-col gap-1.5 transition-all duration-200 relative">
+                            <input type="radio" name="combo" value="none" class="hidden" checked>
+                            <!-- Checkmark badge -->
+                            <span class="absolute top-2 right-2 w-5 h-5 rounded-full bg-primary-container flex items-center justify-center">
+                                <span class="material-symbols-outlined text-white text-[14px]" style="font-variation-settings:'FILL' 1">check</span>
+                            </span>
+                            <span class="material-symbols-outlined text-secondary text-[24px]">do_not_disturb</span>
+                            <p class="font-semibold text-white text-sm">Không chọn</p>
+                            <p class="text-primary-container font-bold text-sm">0 đ</p>
+                        </label>
+
+                        <!-- Option 2: Single Combo -->
+                        <label class="combo-card cursor-pointer border border-surface-variant rounded-xl p-4 flex flex-col gap-1.5 transition-all duration-200 relative">
+                            <input type="radio" name="combo" value="single" class="hidden">
+                            <span class="material-symbols-outlined text-secondary text-[24px]">local_cafe</span>
+                            <p class="font-semibold text-white text-sm">Single Combo</p>
+                            <p class="text-[11px] text-secondary">1 bắp + 1 nước</p>
+                            <p class="text-primary-container font-bold text-sm">65.000 đ</p>
+                        </label>
+
+                        <!-- Option 3: Double Combo -->
+                        <label class="combo-card cursor-pointer border border-surface-variant rounded-xl p-4 flex flex-col gap-1.5 transition-all duration-200 relative">
+                            <input type="radio" name="combo" value="double" class="hidden">
+                            <!-- Popular badge -->
+                            <span class="absolute -top-2 left-1/2 -translate-x-1/2 bg-amber-500 text-black text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide whitespace-nowrap">Phổ biến</span>
+                            <span class="material-symbols-outlined text-secondary text-[24px]">fastfood</span>
+                            <p class="font-semibold text-white text-sm">Double Combo</p>
+                            <p class="text-[11px] text-secondary">2 bắp + 2 nước</p>
+                            <p class="text-primary-container font-bold text-sm">95.000 đ</p>
+                        </label>
+
+                    </div>
+                </div>
+
+                <!-- PAYMENT METHOD -->
+                <div class="bg-surface-container-low border border-surface-variant rounded-2xl p-6 space-y-4">
+                    <h2 class="font-['Bebas_Neue'] text-2xl tracking-wide text-white">Phương Thức Thanh Toán</h2>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+
+                        <!-- MoMo (selected by default) -->
+                        <label class="payment-card selected-momo cursor-pointer border border-surface-variant rounded-xl p-4 flex items-center gap-4 transition-all duration-200">
+                            <input type="radio" name="payment" value="momo" class="hidden" checked>
+                            <!-- MoMo logo placeholder -->
+                            <div class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style="background-color: rgba(174,32,112,0.15); border: 1px solid rgba(174,32,112,0.4)">
+                                <span class="font-['Bebas_Neue'] text-lg font-bold leading-none" style="color: #ae2070">MoMo</span>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="font-bold text-white text-sm">MoMo</p>
+                                <p class="text-secondary text-xs">Ví điện tử MoMo</p>
+                                <!-- Selected indicator -->
+                                <div class="mt-1.5 flex items-center gap-1">
+                                    <span class="w-4 h-4 rounded-full flex items-center justify-center" style="background-color: #ae2070">
+                                        <span class="material-symbols-outlined text-white text-[12px]" style="font-variation-settings:'FILL' 1">check</span>
+                                    </span>
+                                    <span class="text-[10px] font-medium" style="color: #ae2070">Đã chọn</span>
+                                </div>
+                            </div>
+                        </label>
+
+                        <!-- VNPAY -->
+                        <label class="payment-card cursor-pointer border border-surface-variant rounded-xl p-4 flex items-center gap-4 transition-all duration-200">
+                            <input type="radio" name="payment" value="vnpay" class="hidden">
+                            <!-- VNPAY logo placeholder -->
+                            <div class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style="background-color: rgba(0,91,170,0.15); border: 1px solid rgba(0,91,170,0.4)">
+                                <span class="font-['Bebas_Neue'] text-sm font-bold leading-none" style="color: #005baa">VNPAY</span>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="font-bold text-white text-sm">VNPAY</p>
+                                <p class="text-secondary text-xs">Cổng thanh toán VNPAY</p>
+                            </div>
+                        </label>
+
+                    </div>
+                </div>
+
+                <!-- ORDER TOTAL -->
+                <div class="bg-surface-container-low border border-surface-variant rounded-2xl p-6 space-y-3">
+                    <h2 class="font-['Bebas_Neue'] text-2xl tracking-wide text-white border-b border-surface-variant pb-3">
+                        Tổng Đơn Hàng
+                    </h2>
+
+                    <div class="space-y-2 text-sm">
+                        <!-- Line item: seats -->
+                        <div class="flex justify-between items-center">
+                            <span class="text-secondary">Ghế (2):</span>
+                            <span class="text-white font-medium">160.000 đ</span>
+                        </div>
+
+                        <!-- Line item: combo -->
+                        <div class="flex justify-between items-center">
+                            <span class="text-secondary">Combo bắp nước:</span>
+                            <span class="text-white font-medium">0 đ</span>
+                        </div>
+
+                        <!-- Divider -->
+                        <div class="border-t border-surface-variant my-2 pt-2">
+                            <div class="flex justify-between items-center">
+                                <span class="text-white font-semibold text-base">Tổng cộng:</span>
+                                <span class="font-['Bebas_Neue'] text-3xl text-primary-container tracking-wider">160.000 đ</span>
+                            </div>
+                        </div>
+
+                        <p class="text-secondary/60 text-[11px]">* Giá đã bao gồm VAT. Vé đã mua không được hoàn trả.</p>
+                    </div>
+                </div>
+
+                <!-- PAY BUTTON (active) -->
+                <a href="payment_simulation.html"
+                   class="block w-full text-center bg-primary-container hover:bg-red-700 active:scale-[0.98] transition-all duration-200 text-white py-4 rounded-xl font-['Bebas_Neue'] text-2xl tracking-widest uppercase shadow-lg shadow-primary-container/30">
+                    THANH TOÁN NGAY
+                </a>
+
+                <!-- PAY BUTTON (loading / disabled variant — for demo) -->
+                <div class="w-full text-center bg-surface-variant opacity-50 cursor-not-allowed text-white py-4 rounded-xl font-['Bebas_Neue'] text-2xl tracking-widest uppercase flex items-center justify-center gap-3 select-none pointer-events-none">
+                    <span class="spinner"></span>
+                    <span>Đang Xử Lý...</span>
+                </div>
+
+                <p class="text-secondary/50 text-xs text-center -mt-2">
+                    Trạng thái trên chỉ là bản demo của nút loading — không thể nhấn.
+                </p>
+
+            </div><!-- /RIGHT COLUMN -->
+
+        </div><!-- /grid -->
+    </main>
+
+    <!-- ═══════════════════════════════════════════
+         FOOTER
+    ═══════════════════════════════════════════ -->
+    <footer class="bg-surface-container-lowest text-white border-t border-surface-variant px-8 py-4 flex flex-col md:flex-row justify-between items-center text-xs mt-8">
+        <span class="font-['Bebas_Neue'] text-xl tracking-tighter text-primary-container">3HD2K</span>
+        <div class="text-secondary mt-2 md:mt-0">© 2026 3HD2K Cinema. All rights reserved.</div>
+    </footer>
+
+</body>
+</html>

@@ -1,86 +1,172 @@
-# JavaScript Object Relationships (Local Storage)
+# Database Relationships — SQL Server
 
 ## Overview
 
-Since data in 3HD2Kcinema is persisted as plain JSON lists in browser `LocalStorage`, document relationships are modeled using simple ID strings (foreign keys). The relationships are resolved programmatically in the JavaScript service layer using array searching and mapping (e.g., `.find()` and `.filter()`) instead of ODM populations (like Mongoose `.populate()`).
+3HD2Kcinema uses a normalized relational schema in SQL Server. Relationships are enforced via **foreign key constraints** at the database level, and resolved in the application layer through EF Core navigation properties or Dapper JOINs.
 
 ---
 
-# Main Relationship Structure
+# Entity Relationship Diagram
 
-```txt
-3hd2k_users (id)
+```
+dbo.Users (UserId PK)
    │
-   └───► 3hd2k_bookings (userId)
+   ├──► dbo.Seats (LockedBy FK)          -- user who currently holds a seat lock
+   │
+   └──► dbo.Bookings (UserId FK)
             │
-            └───► 3hd2k_payments (bookingId)
+            ├──► dbo.BookingSeats (BookingId FK) ──► dbo.Seats (SeatId FK)
+            │
+            └──► dbo.Payments (BookingId FK)
 
-3hd2k_movies (id)
+dbo.Movies (MovieId PK)
    │
-   └───► 3hd2k_showtimes (movieId)
+   └──► dbo.Showtimes (MovieId FK)
             │
-            └───► 3hd2k_bookings (showtimeId)
+            └──► dbo.Seats (ShowtimeId FK)
+            │
+            └──► dbo.Bookings (ShowtimeId FK)
 ```
 
 ---
 
-# User & Booking Relation
+# Relationship Details
 
-* **One User to Many Bookings**:
-  - A user object has an `id` string (e.g., `"usr_1717891200"`).
-  - Each booking record in the `3hd2k_bookings` array has a `userId` field matching the owner's ID.
-* **Resolution Example in JS**:
-  ```javascript
-  // Get all bookings belonging to Nguyen Van A
-  const bookings = storage.read('3hd2k_bookings') || [];
-  const myBookings = bookings.filter(b => b.userId === currentUserId);
-  ```
+## User → Bookings (One-to-Many)
 
----
+One user can have multiple bookings over time.
 
-# Movie & Showtime Relation
+```sql
+-- FK definition on dbo.Bookings
+FOREIGN KEY (UserId) REFERENCES dbo.Users(UserId)
 
-* **One Movie to Many Showtimes**:
-  - A movie object has an `id` string (e.g., `"mov_001"`).
-  - Each showtime entry in `3hd2k_showtimes` has a `movieId` field referring to the movie shown.
-* **Resolution Example in JS**:
-  ```javascript
-  // Populate movie details for a selected showtime page
-  const showtimes = storage.read('3hd2k_showtimes') || [];
-  const movies = storage.read('3hd2k_movies') || [];
-  
-  const targetShowtime = showtimes.find(st => st.id === showtimeId);
-  const associatedMovie = movies.find(m => m.id === targetShowtime.movieId);
-  
-  // Combine data
-  const showtimeWithMovie = { ...targetShowtime, movie: associatedMovie };
-  ```
+-- Query: get all bookings for a user
+SELECT b.*, s.ShowDate, s.ShowTime, s.Room, m.Title
+FROM dbo.Bookings b
+JOIN dbo.Showtimes s ON b.ShowtimeId = s.ShowtimeId
+JOIN dbo.Movies m    ON s.MovieId    = m.MovieId
+WHERE b.UserId = @userId
+ORDER BY b.CreatedAt DESC;
+```
 
 ---
 
-# Booking & Payment Relation
+## Movie → Showtimes (One-to-Many)
 
-* **One Booking to One Payment**:
-  - Each payment record in `3hd2k_payments` holds a `bookingId` field.
-* **Resolution Example in JS**:
-  ```javascript
-  // Fetch transaction details for a ticket
-  const payments = storage.read('3hd2k_payments') || [];
-  const paymentDetails = payments.find(p => p.bookingId === bookingId);
-  ```
+One movie has multiple scheduled screening sessions.
 
----
+```sql
+-- FK definition on dbo.Showtimes
+FOREIGN KEY (MovieId) REFERENCES dbo.Movies(MovieId)
 
-# Seat Status Logic
-
-Seat status values (`available`, `locked`, `booked`) are kept nested directly inside the specific Showtime record. This ensures:
-* Easy loading: when viewing a showtime, the seating grid layout can be loaded directly from the `seats` dictionary on the showtime object.
-* Fast sync: updates to seat locks require writing to a single showtime element in the showtimes array.
+-- Query: get all upcoming showtimes for a movie
+SELECT * FROM dbo.Showtimes
+WHERE MovieId = @movieId
+  AND ShowDate >= CAST(GETUTCDATE() AS DATE)
+  AND IsActive = 1
+ORDER BY ShowDate, ShowTime;
+```
 
 ---
 
-# Validation Rules
+## Showtime → Seats (One-to-Many)
 
-JavaScript services must enforce referential integrity during mutations:
-1. **Existing Reference Check**: Before generating a booking record, `bookingService.js` confirms that both the user session (in SessionStorage) and showtime configurations (in LocalStorage) actually exist.
-2. **Double Booking Prevention**: Before confirming payment, the system parses the latest showtimes list from LocalStorage to double-check that the requested seats have not transitioned to `booked` state by another concurrent action.
+Each showtime has its own set of seat rows. Seat status is tracked per showtime, so the same physical seat (e.g. "A3") can have different states across different showtimes.
+
+```sql
+-- FK definition on dbo.Seats
+FOREIGN KEY (ShowtimeId) REFERENCES dbo.Showtimes(ShowtimeId)
+
+-- Query: get full seat map for a showtime
+SELECT SeatId, SeatLabel, SeatType, Price, Status
+FROM dbo.Seats
+WHERE ShowtimeId = @showtimeId
+ORDER BY SeatLabel;
+```
+
+---
+
+## Booking ↔ Seats (Many-to-Many via dbo.BookingSeats)
+
+One booking can include multiple seats. Each seat can only belong to one confirmed booking.
+
+```sql
+-- FK definitions on dbo.BookingSeats
+FOREIGN KEY (BookingId) REFERENCES dbo.Bookings(BookingId),
+FOREIGN KEY (SeatId)    REFERENCES dbo.Seats(SeatId)
+
+-- Query: get seat labels for a booking
+SELECT s.SeatLabel, s.SeatType, s.Price
+FROM dbo.BookingSeats bs
+JOIN dbo.Seats s ON bs.SeatId = s.SeatId
+WHERE bs.BookingId = @bookingId;
+```
+
+---
+
+## Booking → Payment (One-to-One)
+
+Each booking has at most one payment record. The payment record is created when the user initiates checkout and updated when the provider callback arrives.
+
+```sql
+-- FK definition on dbo.Payments
+FOREIGN KEY (BookingId) REFERENCES dbo.Bookings(BookingId)
+
+-- Query: get payment details for a booking
+SELECT p.PaymentId, p.Provider, p.TransactionId, p.Amount, p.Status, p.CreatedAt
+FROM dbo.Payments p
+WHERE p.BookingId = @bookingId;
+```
+
+---
+
+# Seat Locking — Atomic Update Pattern
+
+To prevent race conditions (two users booking the same seat simultaneously), the seat lock uses an **atomic SQL UPDATE with a status guard**:
+
+```sql
+-- Lock a seat — only succeeds if still 'available'
+UPDATE dbo.Seats
+SET    Status   = 'locked',
+       LockedBy = @userId,
+       LockTime = GETUTCDATE()
+WHERE  ShowtimeId = @showtimeId
+  AND  SeatLabel  = @seatLabel
+  AND  Status     = 'available';
+
+-- Check rows affected: if 0, seat was already taken
+```
+
+Confirming a booking transitions seat status from `locked → booked` inside a SQL transaction:
+
+```sql
+BEGIN TRANSACTION;
+
+  -- 1. Mark seats as booked
+  UPDATE dbo.Seats
+  SET    Status = 'booked', LockedBy = NULL, LockTime = NULL
+  WHERE  SeatId IN (SELECT SeatId FROM dbo.BookingSeats WHERE BookingId = @bookingId);
+
+  -- 2. Confirm the booking
+  UPDATE dbo.Bookings
+  SET    BookingStatus = 'confirmed', PaymentStatus = 'success',
+         QrString = @qrString, TransactionId = @transactionId
+  WHERE  BookingId = @bookingId;
+
+  -- 3. Update payment record
+  UPDATE dbo.Payments SET Status = 'success' WHERE BookingId = @bookingId;
+
+COMMIT;
+```
+
+---
+
+# Referential Integrity Rules
+
+| Rule | Enforcement |
+|---|---|
+| Email uniqueness | `UNIQUE` constraint on `dbo.Users.Email` |
+| Seat uniqueness per showtime | `UNIQUE (ShowtimeId, SeatLabel)` on `dbo.Seats` |
+| No orphan payments | `FOREIGN KEY (BookingId)` on `dbo.Payments` |
+| No orphan bookings | `FOREIGN KEY (UserId)` and `FOREIGN KEY (ShowtimeId)` on `dbo.Bookings` |
+| Seat lock expiry | Background job: `UPDATE dbo.Seats SET Status = 'available' WHERE Status = 'locked' AND DATEDIFF(SECOND, LockTime, GETUTCDATE()) > 300` |

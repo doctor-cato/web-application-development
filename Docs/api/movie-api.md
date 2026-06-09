@@ -1,95 +1,179 @@
-# Movie Catalog Service API
+# Movie Catalog API
 
 ## Overview
 
-The movie and showtime datasets are managed by `js/services/movieService.js`. It queries the `3hd2k_movies` and `3hd2k_showtimes` keys in `LocalStorage` and supplies catalog data to page scripts.
+Movie and showtime data is managed by `/api/movies` and `/api/showtimes` endpoints. Data is stored in `dbo.Movies` and `dbo.Showtimes` (SQL Server).
 
 ---
 
-# Exported Functions
-
-## getMovies()
+# GET /api/movies
 
 ### Description
-Retrieves all movies currently in the catalog (both Now Showing and Coming Soon categories).
+Returns all active movies in the catalog.
 
-### Parameters
-* None.
-
-### Returns (Promise)
-* Resolves with an array of movie objects:
-  ```json
-  [
+### Response — 200 OK
+```json
+{
+  "success": true,
+  "data": [
     {
-      "id": "mov_001",
+      "movieId": "mov_001",
       "title": "Spider-Man: Across the Spider-Verse",
       "poster": "images/posters/spiderman.jpg",
       "description": "Miles Morales encounters a team of Spider-People...",
-      "genres": ["Animation", "Action"],
+      "genres": ["Animation", "Action", "Adventure"],
       "duration": 140,
       "releaseDate": "2023-06-02",
       "rating": 9.0,
       "trailerUrl": "https://www.youtube.com/embed/shW9i6k8Mc0"
     }
   ]
-  ```
+}
+```
+
+### SQL Operation
+```sql
+SELECT MovieId, Title, Poster, Description, Genres, Duration, ReleaseDate, Rating, TrailerUrl
+FROM dbo.Movies
+WHERE IsActive = 1
+ORDER BY ReleaseDate DESC;
+```
 
 ---
 
-## getMovieById(id)
+# GET /api/movies/{id}
 
 ### Description
-Fetches detailed info for a single movie profile.
+Returns details for a single movie.
 
-### Parameters
-* `id` (string): The movie's unique ID.
+### Response — 200 OK
+Single movie object (same schema as above).
 
-### Returns (Promise)
-* Resolves with the matching movie object, or `null` if the movie does not exist.
+### Response — 404 Not Found
+```json
+{ "success": false, "message": "Movie not found." }
+```
 
 ---
 
-## getShowtimes(movieId)
+# GET /api/movies/{id}/showtimes
 
 ### Description
-Retrieves all scheduled screening sessions for a specific movie.
+Returns all upcoming scheduled showtimes for a given movie.
 
-### Parameters
-* `movieId` (string): The target movie ID.
-
-### Returns (Promise)
-* Resolves with an array of showtime slot objects:
-  ```json
-  [
+### Response — 200 OK
+```json
+{
+  "success": true,
+  "data": [
     {
-      "id": "st_200",
+      "showtimeId": "st_200",
       "movieId": "mov_001",
-      "date": "2026-06-10",
-      "time": "19:30",
+      "showDate": "2026-06-10",
+      "showTime": "19:30",
       "room": "Room 3"
     }
   ]
-  ```
+}
+```
+
+### SQL Operation
+```sql
+SELECT ShowtimeId, MovieId, ShowDate, ShowTime, Room
+FROM dbo.Showtimes
+WHERE MovieId   = @movieId
+  AND ShowDate  >= CAST(GETUTCDATE() AS DATE)
+  AND IsActive  = 1
+ORDER BY ShowDate, ShowTime;
+```
 
 ---
 
-## getShowtimeById(id)
+# Admin Endpoints
 
-### Description
-Fetches details of a specific showtime slot (including its room number, time, and date). Note: To get seats, use `getShowtimeSeats()` from the booking service.
+The following endpoints require `role: "admin"` in the JWT claims.
 
-### Parameters
-* `id` (string): Showtime unique ID.
+## POST /api/movies
 
-### Returns (Promise)
-* Resolves with the showtime slot object, or `null` if not found.
+Creates a new movie entry.
+
+### Request Body
+```json
+{
+  "title": "New Movie",
+  "poster": "images/posters/new.jpg",
+  "description": "...",
+  "genres": ["Action"],
+  "duration": 120,
+  "releaseDate": "2026-07-01",
+  "rating": 8.5,
+  "trailerUrl": "https://youtube.com/embed/..."
+}
+```
+
+### Response — 201 Created
+```json
+{ "success": true, "data": { "movieId": "mov_002", ... } }
+```
 
 ---
 
-# Administrative Capabilities
+## PUT /api/movies/{id}
 
-If the active session belongs to an `"admin"` user, `movieService.js` provides helper actions:
-* `addMovie(movieData)`: Inserts a new movie profile.
-* `updateMovie(id, movieData)`: Edits fields for an existing movie.
-* `deleteMovie(id)`: Removes a movie and deletes its associated showtime records.
-* `addShowtime(showtimeData)`: Inserts a new screening session slot.
+Updates fields for an existing movie.
+
+### Response — 200 OK
+```json
+{ "success": true, "data": { ...updatedMovie } }
+```
+
+---
+
+## DELETE /api/movies/{id}
+
+Soft-deletes a movie by setting `IsActive = 0`. Associated showtimes are also deactivated.
+
+### SQL Operation
+```sql
+UPDATE dbo.Movies    SET IsActive = 0 WHERE MovieId = @id;
+UPDATE dbo.Showtimes SET IsActive = 0 WHERE MovieId = @id;
+```
+
+### Response — 200 OK
+```json
+{ "success": true }
+```
+
+---
+
+## POST /api/showtimes
+
+Creates a new showtime slot for a movie.
+
+### Request Body
+```json
+{
+  "movieId": "mov_001",
+  "showDate": "2026-06-15",
+  "showTime": "14:00",
+  "room": "Room 1",
+  "seats": [
+    { "seatLabel": "A1", "seatType": "normal", "price": 80000 },
+    { "seatLabel": "A2", "seatType": "vip",    "price": 110000 }
+  ]
+}
+```
+
+### SQL Operation
+```sql
+BEGIN TRANSACTION;
+  INSERT INTO dbo.Showtimes (ShowtimeId, MovieId, ShowDate, ShowTime, Room) VALUES (...);
+  INSERT INTO dbo.Seats     (ShowtimeId, SeatLabel, SeatType, Price, Status)
+  VALUES (...), (...), ...;
+COMMIT;
+```
+
+### Response — 201 Created
+```json
+{ "success": true, "data": { "showtimeId": "st_201", ... } }
+```

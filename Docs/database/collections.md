@@ -1,136 +1,206 @@
-# LocalStorage JSON Collections
+# SQL Server Tables & Schemas
 
 ## Overview
 
-In this static frontend architecture, the database is stored in the browser's `LocalStorage` as serialized JSON arrays. Each "collection" corresponds to a unique key prefix.
-
-Main keys in LocalStorage:
-
-* `3hd2k_users`: Array of user profiles.
-* `3hd2k_movies`: Array of movie specifications.
-* `3hd2k_showtimes`: Array of showtime slot configurations, including seat maps.
-* `3hd2k_bookings`: Array of confirmed booking orders.
-* `3hd2k_payments`: Array of transaction billing records.
-
-Active session key in SessionStorage:
-* `3hd2k_current_user`: Active login session object.
+3HD2Kcinema uses **Microsoft SQL Server** as its database. All application data is stored in relational tables under the `dbo` schema in the `3hd2kcinema_db` database. This document describes each table's purpose, columns, and example rows.
 
 ---
 
-# Users Collection (`3hd2k_users`)
+# dbo.Users
 
 ## Purpose
-Stores registered customer accounts and profile data.
+Stores registered customer accounts and admin profiles.
 
-## JSON Schema Example
-```json
-{
-  "id": "usr_1717891200",
-  "name": "Nguyen Van A",
-  "email": "a@example.com",
-  "password": "hashed_or_plain_string",
-  "role": "user",
-  "createdAt": "2026-06-09T15:21:00Z"
-}
-```
+## Columns
+| Column | Type | Constraints | Description |
+|---|---|---|---|
+| `UserId` | `NVARCHAR(50)` | PK | App-generated ID, e.g. `usr_1717891200` |
+| `Name` | `NVARCHAR(100)` | NOT NULL | Display name |
+| `Email` | `NVARCHAR(200)` | NOT NULL, UNIQUE | Login key |
+| `Password` | `NVARCHAR(255)` | NOT NULL | bcrypt hash |
+| `Role` | `NVARCHAR(20)` | DEFAULT `'user'` | `'user'` or `'admin'` |
+| `CreatedAt` | `DATETIME2` | DEFAULT GETUTCDATE() | Registration timestamp |
 
-## Rules
-* `email`: Must be verified for uniqueness against the array contents before adding a user during registration.
-* `role`: Default value is `"user"`. Can be set to `"admin"` to access simulated administrative panels.
-
----
-
-# Movies Collection (`3hd2k_movies`)
-
-## Purpose
-Stores details of movies available for viewing.
-
-## JSON Schema Example
-```json
-{
-  "id": "mov_001",
-  "title": "Spider-Man: Across the Spider-Verse",
-  "poster": "images/posters/spiderman.jpg",
-  "description": "Miles Morales encounters a team of Spider-People charged with protecting the Multiverse.",
-  "genres": ["Animation", "Action", "Adventure"],
-  "duration": 140,
-  "releaseDate": "2023-06-02",
-  "rating": 9.0,
-  "trailerUrl": "https://www.youtube.com/embed/shW9i6k8Mc0"
-}
+## Example Row
+```sql
+INSERT INTO dbo.Users VALUES (
+  'usr_1717891200', 'Nguyen Van A', 'a@example.com',
+  '$2b$12$...bcrypt_hash...', 'user', '2026-06-09T15:21:00'
+);
 ```
 
 ---
 
-# Showtimes Collection (`3hd2k_showtimes`)
+# dbo.Movies
 
 ## Purpose
-Defines show times for specific movies and keeps track of the seat map states.
+Stores the cinema film catalog.
 
-## JSON Schema Example
-```json
-{
-  "id": "st_200",
-  "movieId": "mov_001",
-  "date": "2026-06-10",
-  "time": "19:30",
-  "room": "Room 3",
-  "seats": {
-    "A1": { "status": "available" },
-    "A2": { "status": "locked", "lockedBy": "usr_999", "lockTime": 1781018400000 },
-    "A3": { "status": "booked" }
-  }
-}
+## Columns
+| Column | Type | Description |
+|---|---|---|
+| `MovieId` | `NVARCHAR(50)` PK | e.g. `mov_001` |
+| `Title` | `NVARCHAR(255)` | Film title |
+| `Poster` | `NVARCHAR(500)` | Image URL or path |
+| `Description` | `NVARCHAR(MAX)` | Synopsis |
+| `Genres` | `NVARCHAR(255)` | Comma-separated, e.g. `Animation,Action` |
+| `Duration` | `INT` | Runtime in minutes |
+| `ReleaseDate` | `DATE` | |
+| `Rating` | `DECIMAL(3,1)` | 0.0–10.0 |
+| `TrailerUrl` | `NVARCHAR(500)` | YouTube embed URL |
+| `IsActive` | `BIT` | `1` = visible in catalog |
+
+## Example Row
+```sql
+INSERT INTO dbo.Movies VALUES (
+  'mov_001', 'Spider-Man: Across the Spider-Verse',
+  'images/posters/spiderman.jpg',
+  'Miles Morales encounters a team of Spider-People...',
+  'Animation,Action,Adventure', 140, '2023-06-02', 9.0,
+  'https://www.youtube.com/embed/shW9i6k8Mc0', 1
+);
 ```
+
+---
+
+# dbo.Showtimes
+
+## Purpose
+Defines scheduled screening sessions for each movie.
+
+## Columns
+| Column | Type | Description |
+|---|---|---|
+| `ShowtimeId` | `NVARCHAR(50)` PK | e.g. `st_200` |
+| `MovieId` | `NVARCHAR(50)` FK → Movies | |
+| `ShowDate` | `DATE` | Screening date |
+| `ShowTime` | `TIME` | e.g. `19:30:00` |
+| `Room` | `NVARCHAR(50)` | e.g. `Room 3` |
+| `IsActive` | `BIT` | `1` = bookable |
+
+## Example Row
+```sql
+INSERT INTO dbo.Showtimes VALUES (
+  'st_200', 'mov_001', '2026-06-10', '19:30:00', 'Room 3', 1
+);
+```
+
+---
+
+# dbo.Seats
+
+## Purpose
+One row per seat per showtime. Status is updated atomically via SQL transactions to prevent double-booking.
+
+## Columns
+| Column | Type | Description |
+|---|---|---|
+| `SeatId` | `BIGINT IDENTITY` PK | Auto-increment surrogate key |
+| `ShowtimeId` | `NVARCHAR(50)` FK → Showtimes | |
+| `SeatLabel` | `NVARCHAR(10)` | e.g. `A3`, `B12` |
+| `SeatType` | `NVARCHAR(20)` | `normal`, `vip`, or `double` |
+| `Price` | `INT` | VND price for this seat |
+| `Status` | `NVARCHAR(20)` | `available`, `locked`, or `booked` |
+| `LockedBy` | `NVARCHAR(50)` FK → Users | NULL unless locked |
+| `LockTime` | `DATETIME2` | NULL unless locked |
 
 ## Seat States
-* `available`: Available for selection.
-* `locked`: Temporarily held by a user. Requires a `lockedBy` user ID and `lockTime` (unix milliseconds) to track expirations.
-* `booked`: Confirmed sold seat.
+| Status | Meaning |
+|---|---|
+| `available` | Open for selection |
+| `locked` | Temporarily held; released after 300 seconds if not confirmed |
+| `booked` | Permanently reserved after successful payment |
 
----
+## Example Row
+```sql
+-- Available seat
+INSERT INTO dbo.Seats (ShowtimeId, SeatLabel, SeatType, Price, Status)
+VALUES ('st_200', 'A3', 'normal', 80000, 'available');
 
-# Bookings Collection (`3hd2k_bookings`)
-
-## Purpose
-Stores finalized booking transactions and references ticket receipts.
-
-## JSON Schema Example
-```json
-{
-  "id": "bk_1781018950",
-  "userId": "usr_1717891200",
-  "showtimeId": "st_200",
-  "seats": ["A3"],
-  "totalPrice": 95000,
-  "paymentStatus": "success",
-  "bookingStatus": "confirmed",
-  "qrCodeData": "TICKET_bk_1781018950_SEAT_A3",
-  "createdAt": "2026-06-09T15:25:00Z"
-}
+-- Locked seat
+UPDATE dbo.Seats
+SET Status = 'locked', LockedBy = 'usr_1717891200', LockTime = GETUTCDATE()
+WHERE ShowtimeId = 'st_200' AND SeatLabel = 'A3' AND Status = 'available';
 ```
 
-## Booking States
-* `pending`: Selected but checkout in process.
-* `confirmed`: Successfully paid and reserved.
-* `cancelled`: Payment timed out or failed.
+---
+
+# dbo.Bookings
+
+## Purpose
+Stores finalized booking records. A booking aggregates the seat selection, combo choice, and payment outcome.
+
+## Columns
+| Column | Type | Description |
+|---|---|---|
+| `BookingId` | `NVARCHAR(50)` PK | e.g. `bk_1781018950` |
+| `UserId` | `NVARCHAR(50)` FK → Users | |
+| `ShowtimeId` | `NVARCHAR(50)` FK → Showtimes | |
+| `ComboType` | `NVARCHAR(20)` | `NONE`, `SINGLE`, or `DOUBLE` |
+| `ComboPrice` | `INT` | VND |
+| `SeatTotal` | `INT` | Sum of seat prices |
+| `TotalPrice` | `INT` | `SeatTotal + ComboPrice` |
+| `PaymentStatus` | `NVARCHAR(20)` | `pending`, `success`, `failed` |
+| `BookingStatus` | `NVARCHAR(20)` | `pending`, `confirmed`, `cancelled` |
+| `QrString` | `NVARCHAR(500)` | Full QR content for offline display |
+| `TransactionId` | `NVARCHAR(50)` | Payment provider TX ID |
+| `CreatedAt` | `DATETIME2` | |
+
+## Example Row
+```sql
+INSERT INTO dbo.Bookings VALUES (
+  'bk_1781018950', 'usr_1717891200', 'st_200',
+  'DOUBLE', 95000, 160000, 255000,
+  'success', 'confirmed',
+  'TICKET_bk_1781018950_SEATS_A3_A4_COMBO_DOUBLE',
+  'A3BX9KM2ZQ7T', '2026-06-09T15:25:00'
+);
+```
 
 ---
 
-# Payments Collection (`3hd2k_payments`)
+# dbo.BookingSeats
 
 ## Purpose
-Records simulated billing data for accounting references.
+Junction table linking a booking to its individual seat rows. Allows one booking to reference multiple seats.
 
-## JSON Schema Example
-```json
-{
-  "id": "pay_1781018955",
-  "bookingId": "bk_1781018950",
-  "provider": "MoMo",
-  "transactionId": "MOMO_TX_83217983",
-  "amount": 95000,
-  "status": "success",
-  "createdAt": "2026-06-09T15:25:05Z"
-}
+## Columns
+| Column | Type | Description |
+|---|---|---|
+| `BookingId` | `NVARCHAR(50)` FK → Bookings | |
+| `SeatId` | `BIGINT` FK → Seats | |
+
+## Example
+```sql
+INSERT INTO dbo.BookingSeats VALUES ('bk_1781018950', 101);
+INSERT INTO dbo.BookingSeats VALUES ('bk_1781018950', 102);
+```
+
+---
+
+# dbo.Payments
+
+## Purpose
+Records billing transactions from MoMo or VNPAY. Each payment maps 1:1 to a booking.
+
+## Columns
+| Column | Type | Description |
+|---|---|---|
+| `PaymentId` | `NVARCHAR(50)` PK | e.g. `pay_1781018955` |
+| `BookingId` | `NVARCHAR(50)` FK → Bookings | |
+| `Provider` | `NVARCHAR(20)` | `MoMo` or `VNPAY` |
+| `TransactionId` | `NVARCHAR(100)` | Provider-issued TX ID |
+| `Amount` | `INT` | VND |
+| `Status` | `NVARCHAR(20)` | `pending`, `success`, `failed` |
+| `RawCallback` | `NVARCHAR(MAX)` | Raw JSON webhook payload from provider |
+| `CreatedAt` | `DATETIME2` | |
+
+## Example Row
+```sql
+INSERT INTO dbo.Payments VALUES (
+  'pay_1781018955', 'bk_1781018950', 'MoMo',
+  'A3BX9KM2ZQ7T', 255000, 'success',
+  '{"resultCode":0,"message":"Successful"}',
+  '2026-06-09T15:25:05'
+);
 ```
