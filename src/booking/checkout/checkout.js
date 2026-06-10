@@ -1,5 +1,5 @@
 import { getCheckout, saveCheckout } from '../../shared/utils/storage.js';
-import { createTransaction, getPaymentRedirectUrl } from '../services/paymentService.js';
+import { createTransaction } from '../../shared/utils/paymentService.js';
 import { formatPrice } from '../../explore/home-page/movieService.js';
 
 const COMBOS = { none: 0, single: 65000, double: 95000 };

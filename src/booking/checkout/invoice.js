@@ -1,10 +1,10 @@
 import { getLastBooking } from '../../shared/utils/storage.js';
-import { buildQrString } from '../services/paymentService.js';
+import { generateQRCodeString } from '../../shared/utils/paymentService.js';
 
 function renderQr(booking) {
   const canvas = document.getElementById('qr-canvas');
   const fallback = document.getElementById('qr-fallback');
-  const qrString = buildQrString(booking);
+  const qrString = booking ? generateQRCodeString(booking) : 'NO_DATA';
   if (typeof QRCode !== 'undefined' && canvas) {
     QRCode.toCanvas(canvas, qrString, { width: 220, errorCorrectionLevel: 'M' });
     if (fallback) fallback.classList.add('hidden');

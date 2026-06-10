@@ -1,4 +1,6 @@
-import { confirmPayment, cancelPayment } from '../services/paymentService.js';
+import { getCheckout, lsSet, KEYS } from '../../shared/utils/storage.js';
+import { simulatePayment } from '../../shared/utils/paymentService.js';
+import { confirmBooking } from '../seat-booking/bookingService.js';
 
 let countdownTimer = null;
 const PAYMENT_TIMEOUT = 300; // seconds
@@ -12,18 +14,28 @@ function formatSeconds(s) {
 }
 
 async function handleSuccess(txId) {
-  try {
-    confirmPayment(txId);
-    // redirect to invoice
-    window.location.href = './booking_invoice.html';
-  } catch (e) {
-    console.error(e);
-    alert('Xác nhận thất bại: ' + e.message);
-  }
+  const btn = qs('.btn-success');
+  if (btn) btn.innerText = 'Đang xử lý...';
+  
+  simulatePayment(txId, (result) => {
+    if (result.status === 'success') {
+      try {
+        const checkoutData = getCheckout();
+        checkoutData.transactionId = txId;
+        const booking = confirmBooking(checkoutData);
+        // Lưu ID booking vào session để trang invoice hiển thị
+        lsSet(KEYS.LAST_BOOKING, booking);
+        window.location.href = './booking_invoice.html';
+      } catch (e) {
+        console.error(e);
+        alert('Xác nhận thất bại: ' + e.message);
+      }
+    }
+  });
 }
 
 function handleCancel(txId) {
-  cancelPayment(txId);
+  // in a real app we'd mark the tx as cancelled in DB
   window.location.href = './checkout.html';
 }
 
@@ -48,24 +60,24 @@ function init() {
   const provider = params.get('provider') || 'momo';
   const txId = params.get('txId');
 
-  // apply theme (body class already set in HTML default)
-  document.querySelector('.momo-theme-logo')?.textContent = provider.toUpperCase();
-
-  // show txId and amount if present in pending payments
-  // For simplicity, we get pending map from storage via paymentService via window scope
-  // But paymentService stores pending in localStorage; we can read it using a small helper here by importing storage if needed.
+  // apply theme
+  const logoEl = document.querySelector('.momo-theme-logo');
+  if (logoEl) logoEl.textContent = provider.toUpperCase();
 
   const successBtn = document.querySelector('a[href="booking_invoice.html"]');
   const cancelBtn = document.querySelector('a[href="checkout.html"]');
+  
   if (successBtn) {
+    // replace anchor behavior with our handleSuccess
+    successBtn.href = '#';
     successBtn.addEventListener('click', (e) => { e.preventDefault(); handleSuccess(txId); });
   }
   if (cancelBtn) {
+    cancelBtn.href = '#';
     cancelBtn.addEventListener('click', (e) => { e.preventDefault(); handleCancel(txId); });
   }
 
   startCountdown(PAYMENT_TIMEOUT, () => {
-    // auto-cancel
     handleCancel(txId);
   });
 }

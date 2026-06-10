@@ -1,11 +1,11 @@
 /**
- * bookingService.js — seat locking with optional Socket.io integration
+ * bookingService.js — seat locking with BroadcastChannel API
  */
 
-import { lsGet, lsSet, getBookings, saveBookings, KEYS } from './storage.js';
-import * as seatSocket from './seatSocket.js';
+import { lsGet, lsSet, getBookings, saveBookings, KEYS } from '../../shared/utils/storage.js';
 
 const LOCK_DURATION_MS = 15 * 60 * 1000; // 15 minutes
+const channel = new BroadcastChannel('seat_sync');
 
 function makeBookingId() {
   return 'bk_' + Date.now().toString(36) + Math.random().toString(36).slice(2,6).toUpperCase();
@@ -17,6 +17,12 @@ function _getLocksMap() {
 
 function _saveLocksMap(m) {
   lsSet(KEYS.SEAT_LOCKS, m);
+}
+
+export function subscribeSeatUpdates(callback) {
+  channel.onmessage = (event) => {
+    callback(event.data);
+  };
 }
 
 export function getSeatMap(showtimeId) {
@@ -33,15 +39,15 @@ export function lockSeat(showtimeId, seatId, userId) {
   map[showtimeId][seatId] = { seatId, userId, expiresAt };
   _saveLocksMap(map);
 
-  try { seatSocket.emit('seat_locked', { showtimeId, seatId, userId, expiresAt }); } catch (e) {}
+  try { channel.postMessage({ type: 'seat_locked', showtimeId, seatId, userId, expiresAt }); } catch (e) {}
 
-  // schedule local cleanup (best-effort — server should also enforce)
+  // schedule local cleanup (best-effort)
   setTimeout(() => {
     const m = _getLocksMap();
     if (m[showtimeId] && m[showtimeId][seatId] && m[showtimeId][seatId].expiresAt <= Date.now()) {
       delete m[showtimeId][seatId];
       _saveLocksMap(m);
-      try { seatSocket.emit('seat_unlocked', { showtimeId, seatId }); } catch (e) {}
+      try { channel.postMessage({ type: 'seat_unlocked', showtimeId, seatId }); } catch (e) {}
     }
   }, LOCK_DURATION_MS + 1000);
 
@@ -53,7 +59,7 @@ export function unlockSeat(showtimeId, seatId, userId) {
   if (map[showtimeId] && map[showtimeId][seatId]) {
     delete map[showtimeId][seatId];
     _saveLocksMap(map);
-    try { seatSocket.emit('seat_unlocked', { showtimeId, seatId }); } catch (e) {}
+    try { channel.postMessage({ type: 'seat_unlocked', showtimeId, seatId }); } catch (e) {}
     return true;
   }
   return false;
@@ -67,7 +73,7 @@ export function releaseExpiredLocks() {
     Object.keys(map[showId]).forEach(seat => {
       if (map[showId][seat].expiresAt <= now) {
         delete map[showId][seat];
-        try { seatSocket.emit('seat_unlocked', { showtimeId: showId, seatId: seat }); } catch (e) {}
+        try { channel.postMessage({ type: 'seat_unlocked', showtimeId: showId, seatId: seat }); } catch (e) {}
         changed = true;
       }
     });
@@ -105,7 +111,7 @@ export function confirmBooking(checkoutData) {
     if (map[booking.showtimeId] && map[booking.showtimeId][s]) {
       delete map[booking.showtimeId][s];
     }
-    try { seatSocket.emit('seat_booked', { showtimeId: booking.showtimeId, seatId: s }); } catch (e) {}
+    try { channel.postMessage({ type: 'seat_booked', showtimeId: booking.showtimeId, seatId: s }); } catch (e) {}
   });
   _saveLocksMap(map);
 
