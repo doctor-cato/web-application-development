@@ -26,6 +26,6 @@ Tài liệu này định nghĩa các quy tắc cốt lõi để các AI Agent (C
 - **Tự động nhả (unlock) ghế:** Luôn tự động giải phóng ghế đang tạm giữ sau 5 phút nếu người dùng không tiến hành thanh toán hoặc khi tab bị đóng (sử dụng sự kiện `beforeunload` hoặc `pagehide`).
 
 ## 5. Quy trình làm việc & Tài liệu (Workflow & Docs)
-- **Đồng bộ tài liệu:** Khi có bất kỳ thay đổi nào về tính năng, AI phải tự động nhắc nhở hoặc thực hiện việc cập nhật các file tài liệu chuẩn. **LƯU Ý:** Chỉ đọc và chỉnh sửa các file `.md` trong thư mục `Docs/`. TUYỆT ĐỐI KHÔNG đọc hay cố gắng chỉnh sửa các file `.docx` trong thư mục `Docs/Docx_Type/`.
+- **Đồng bộ tài liệu:** Khi có bất kỳ thay đổi nào về tính năng, AI phải tự động nhắc nhở hoặc thực hiện việc cập nhật các file tài liệu chuẩn. **LƯU Ý:** Chỉ đọc và chỉnh sửa các file `.md` trong thư mục `Docs/`.
 - Các nhánh chính: `main`, `develop`.
 - Quy ước Commit: Dùng các tiền tố `feat:`, `fix:`, `refactor:`, `docs:`, `chore:`.
