@@ -40,7 +40,7 @@ Mặc dù hiện tại chưa có cơ sở dữ liệu backend, các lớp kiến
 ## 2. Phân nhóm Thư mục theo Lĩnh vực (Domain-Based)
 
 Thay vì nhóm các file theo loại (tất cả HTML nằm chung, tất cả JS nằm chung), chúng tôi nhóm các file theo **Domain/Feature** (Lĩnh vực/Tính năng).
-Điều này có nghĩa là `src/auth/` sẽ chứa các tính năng phụ như `login/` (chứa `login.html`, `login.js`), `register/`, và các dịch vụ dùng chung trong `services/` (chứa `authService.js`).
+Điều này có nghĩa là `src/auth/` sẽ chứa các tính năng phụ như `user-login/` (chứa `login.html`, `login.js`), `user-register/`, và các dịch vụ dùng chung trong `auth-services/` (chứa `authService.js`).
 
 * **Controller Tính năng**: Xử lý các sự kiện DOM, render giao diện và logic bố cục. Chúng **không bao giờ** được phép tương tác trực tiếp với `LocalStorage`.
 * **Service Tính năng**: Đóng vai trò như một API backend mô phỏng cho tính năng cụ thể đó.

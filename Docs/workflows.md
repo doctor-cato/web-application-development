@@ -4,7 +4,7 @@
 
 Khi làm việc với codebase này:
 1. **Không bao giờ** import các module Node bên ngoài hoặc sử dụng các gói bundler trừ khi hoàn toàn bắt buộc. Luôn phải bám sát theo chuẩn Vanilla ES6 `<script type="module">`.
-2. **Không bao giờ** viết các logic thao tác với DOM bên trong các thư mục `services/`.
+2. **Không bao giờ** viết các logic thao tác với DOM bên trong các thư mục dịch vụ (ví dụ: `auth-services/`).
 3. **Không bao giờ** viết các lệnh `setItem`/`getItem` của `LocalStorage` trực tiếp bên trong các trang. Mọi thứ phải luôn đi qua file `storage.js`.
 
 ---

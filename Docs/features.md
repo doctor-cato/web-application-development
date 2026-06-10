@@ -4,18 +4,18 @@ Tài liệu này chi tiết các tính năng tương tác cốt lõi của hệ 
 
 ---
 
-## 1. Duyệt Danh mục (`explore/home/index.html`)
+## 1. Duyệt Danh mục (`explore/home-page/index.html`)
 - Hiển thị danh sách phim được tải động từ `movieService.js`.
 - Tích hợp tính năng lọc theo thể loại.
 - Hiển thị các poster phim và lịch chiếu.
 
-## 2. Xác thực (`auth/login/login.html` & `auth/register/register.html`)
+## 2. Xác thực (`auth/user-login/login.html` & `auth/user-register/register.html`)
 - Xác minh tính hợp lệ của dữ liệu đầu vào người dùng một cách sạch sẽ.
 - Mô phỏng quá trình mã hóa mật khẩu (password hashing) và tạo token.
 - Lưu trữ phiên đăng nhập trong `SessionStorage`.
 - Component `navbar.js` sẽ tự động phản ứng với trạng thái `active_session`, thay thế nút "Đăng nhập" bằng menu thả xuống của Hồ sơ Người dùng.
 
-## 3. Khóa Ghế Thời gian thực (`booking/core/booking.html`)
+## 3. Khóa Ghế Thời gian thực (`booking/seat-booking/booking.html`)
 Đây là tính năng quan trọng nhất của bản mô phỏng. Nó bắt chước các vấn đề về tương tranh (concurrency) của một nền tảng đặt vé rạp chiếu phim có lưu lượng truy cập cao.
 
 ### Cơ chế Khóa (Locking Mechanism):

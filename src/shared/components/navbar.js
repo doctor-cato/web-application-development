@@ -14,7 +14,7 @@
  * ─────────────────────────────────────────────────────────────
  */
 
-import { getSession, logout } from '../../auth/services/authService.js';
+import { getSession, logout } from '../../auth/auth-services/authService.js';
 
 // TODO: export function renderNavbar(container) { ... }
 // TODO: function _buildGuestNav() { ... }

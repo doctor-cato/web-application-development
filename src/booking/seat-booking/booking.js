@@ -16,11 +16,11 @@
  * ─────────────────────────────────────────────────────────────
  */
 
-import { getMovieById, getShowtimeById } from '../../explore/home/movieService.js';
+import { getMovieById, getShowtimeById } from '../../explore/home-page/movieService.js';
 import { getSeatMap, lockSeat, unlockSeat, subscribeSeatUpdates } from './bookingService.js';
 import { renderSeatGrid, updateSeat, getSelectedSeats } from '../../shared/components/seatGrid.js';
 import { saveCheckout } from '../../shared/utils/storage.js';
-import { getSession } from '../../auth/services/authService.js';
+import { getSession } from '../../auth/auth-services/authService.js';
 import { toast } from '../../shared/components/toast.js';
 
 // TODO: let countdownTimer = null;
