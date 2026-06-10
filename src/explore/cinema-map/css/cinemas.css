@@ -1,0 +1,311 @@
+/* ===== CINEMAS PAGE STYLES ===== */
+
+/* --- PAGE LAYOUT --- */
+.cinemas-page {
+    padding-top: 100px;
+    min-height: 100vh;
+}
+
+.cinemas-layout {
+    display: grid;
+    grid-template-columns: 420px 1fr;
+    min-height: calc(100vh - 100px);
+}
+
+/* --- LEFT PANEL (Cinema List) --- */
+.cinemas-list-panel {
+    padding: 40px var(--page-padding) 40px 0;
+    padding-left: var(--page-padding);
+    overflow-y: auto;
+    max-height: calc(100vh - 100px);
+    scrollbar-width: thin;
+    scrollbar-color: rgba(229, 9, 20, 0.4) transparent;
+}
+
+.cinemas-list-panel::-webkit-scrollbar {
+    width: 4px;
+}
+
+.cinemas-list-panel::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.cinemas-list-panel::-webkit-scrollbar-thumb {
+    background: rgba(229, 9, 20, 0.4);
+    border-radius: 4px;
+}
+
+.cinemas-header {
+    margin-bottom: 30px;
+}
+
+.cinemas-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+    line-height: 1.1;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.cinemas-header p {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+}
+
+/* --- CINEMA CARD --- */
+.cinema-card {
+    padding: 24px 20px;
+    border-left: 3px solid transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 4px;
+    border-radius: 0 8px 8px 0;
+    position: relative;
+}
+
+.cinema-card:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.cinema-card.active {
+    border-left-color: var(--primary-red);
+    background: rgba(229, 9, 20, 0.06);
+}
+
+.cinema-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+}
+
+.cinema-name {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: var(--text-main);
+    line-height: 1.2;
+    text-transform: uppercase;
+}
+
+.cinema-card.active .cinema-name {
+    color: var(--primary-red);
+}
+
+.cinema-distance {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--primary-red);
+    white-space: nowrap;
+    padding: 3px 10px;
+    border-radius: 20px;
+    background: rgba(229, 9, 20, 0.1);
+    border: 1px solid rgba(229, 9, 20, 0.2);
+}
+
+.cinema-address {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 14px;
+}
+
+.cinema-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cinema-features {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.cinema-feature-tag {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    padding: 3px 10px;
+    border: 1px solid var(--glass-border);
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+}
+
+.cinema-card.active .cinema-feature-tag {
+    border-color: rgba(229, 9, 20, 0.3);
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.btn-directions {
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    border: 1px solid var(--glass-border);
+    background: var(--glass-bg);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.875rem;
+    flex-shrink: 0;
+}
+
+.btn-directions:hover {
+    background: rgba(229, 9, 20, 0.15);
+    border-color: var(--primary-red);
+    color: var(--primary-red);
+}
+
+.cinema-card.active .btn-directions {
+    background: rgba(229, 9, 20, 0.15);
+    border-color: rgba(229, 9, 20, 0.4);
+    color: var(--primary-red);
+}
+
+/* --- CINEMA DETAILS (Screens info) --- */
+.cinema-screens {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 14px;
+}
+
+.cinema-screens i {
+    color: var(--primary-red);
+    font-size: 0.7rem;
+}
+
+/* --- RIGHT PANEL (Map) --- */
+.cinemas-map-panel {
+    position: relative;
+    background: var(--bg-elevated);
+    overflow: hidden;
+}
+
+.cinemas-map-panel iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    filter: invert(90%) hue-rotate(180deg) brightness(0.7) contrast(1.3) saturate(0.3);
+}
+
+/* Map overlay branding */
+.map-overlay-brand {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 3px;
+    color: rgba(229, 9, 20, 0.6);
+    background: rgba(0, 0, 0, 0.7);
+    padding: 6px 20px;
+    border-radius: 6px;
+    backdrop-filter: blur(8px);
+    z-index: 10;
+    pointer-events: none;
+}
+
+/* Map markers */
+.map-marker {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    background: var(--primary-red);
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px rgba(229, 9, 20, 0.5);
+}
+
+.map-marker::after {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    border: 2px solid rgba(229, 9, 20, 0.3);
+    animation: pulse-ring 2s ease-out infinite;
+}
+
+@keyframes pulse-ring {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(1.8); opacity: 0; }
+}
+
+.map-marker.active {
+    width: 24px;
+    height: 24px;
+    box-shadow: 0 0 25px rgba(229, 9, 20, 0.7);
+}
+
+.map-marker-label {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: rgba(0, 0, 0, 0.85);
+    color: white;
+    padding: 5px 12px;
+    border-radius: 6px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    backdrop-filter: blur(4px);
+}
+
+.map-marker:hover .map-marker-label,
+.map-marker.active .map-marker-label {
+    opacity: 1;
+}
+
+/* Location button */
+.btn-my-location {
+    position: absolute;
+    bottom: 25px;
+    right: 25px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--primary-red);
+    border: none;
+    color: white;
+    font-size: 1.1rem;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(229, 9, 20, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-my-location:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 25px rgba(229, 9, 20, 0.6);
+}
+
+/* --- FOOTER ADJUSTMENT --- */
+.cinemas-page + footer {
+    margin-top: 0;
+}
