@@ -1,21 +1,21 @@
-# Data Storage Simulation
+# Mô phỏng Lưu trữ Dữ liệu
 
-Since 3HD2Kcinema does not use an external database (SQL Server, MongoDB), all application state is preserved locally in the user's browser.
+Vì 3HD2Kcinema không sử dụng cơ sở dữ liệu bên ngoài (như SQL Server, MongoDB), nên toàn bộ trạng thái của ứng dụng được bảo lưu cục bộ ngay trong trình duyệt của người dùng.
 
-We use two mechanisms:
-1. **`LocalStorage`**: Persistent data (Users, Movie Catalogs, Seat Statuses).
-2. **`SessionStorage`**: Transient data (Current logged-in session, active shopping cart).
+Chúng tôi sử dụng hai cơ chế:
+1. **`LocalStorage`**: Dữ liệu vĩnh viễn (Người dùng, Danh mục Phim, Trạng thái Ghế).
+2. **`SessionStorage`**: Dữ liệu tạm thời (Phiên đăng nhập hiện tại, Giỏ hàng đang kích hoạt).
 
-All data interactions are centralized in `js/services/storage.js` to ensure JSON integrity and schema consistency.
+Tất cả các tương tác với dữ liệu đều được tập trung xử lý trong `shared/utils/storage.js` để đảm bảo tính toàn vẹn của JSON và tính nhất quán của lược đồ (schema).
 
 ---
 
-## LocalStorage Schema
+## Lược đồ LocalStorage
 
-The `LocalStorage` acts as our global database containing several "collections" (keys).
+`LocalStorage` đóng vai trò như một cơ sở dữ liệu toàn cục của chúng ta chứa một số "bộ sưu tập" (tương ứng với các khóa - keys).
 
-### 1. `users_db` (Array of Objects)
-Stores registered accounts.
+### 1. `users_db` (Mảng Đối tượng)
+Lưu trữ thông tin các tài khoản đã đăng ký.
 ```json
 [
   {
@@ -28,8 +28,8 @@ Stores registered accounts.
 ]
 ```
 
-### 2. `movies_db` (Array of Objects)
-The catalog of available films.
+### 2. `movies_db` (Mảng Đối tượng)
+Danh mục các bộ phim hiện có.
 ```json
 [
   {
@@ -42,8 +42,8 @@ The catalog of available films.
 ]
 ```
 
-### 3. `showtimes_db` (Array of Objects)
-Maps movie screenings to specific dates and times.
+### 3. `showtimes_db` (Mảng Đối tượng)
+Ánh xạ các suất chiếu phim tới các ngày và khung giờ cụ thể.
 ```json
 [
   {
@@ -56,8 +56,8 @@ Maps movie screenings to specific dates and times.
 ]
 ```
 
-### 4. `seat_status_db` (Object Dictionary)
-Tracks the real-time availability, locks, and bookings for seats per showtime.
+### 4. `seat_status_db` (Từ điển Đối tượng)
+Theo dõi tình trạng sẵn sàng, đã khóa, và đã đặt chỗ trong thời gian thực của các ghế ngồi ứng với từng suất chiếu.
 ```json
 {
   "st_200": {
@@ -78,12 +78,12 @@ Tracks the real-time availability, locks, and bookings for seats per showtime.
 
 ---
 
-## SessionStorage Schema
+## Lược đồ SessionStorage
 
-The `SessionStorage` acts as our active session environment. It clears when the tab/browser is fully closed.
+`SessionStorage` đóng vai trò như một môi trường phiên làm việc chủ động của chúng ta. Nó sẽ tự động xóa sạch khi tab hoặc trình duyệt bị đóng hoàn toàn.
 
 ### 1. `active_session`
-Stores the JWT/Mock Token of the currently logged-in user.
+Lưu trữ JWT/Mock Token của người dùng đang đăng nhập ở thời điểm hiện tại.
 ```json
 {
   "token": "mock_jwt_abc123",
@@ -93,7 +93,7 @@ Stores the JWT/Mock Token of the currently logged-in user.
 ```
 
 ### 2. `pending_checkout`
-Stores the active cart when navigating from the booking page to the checkout and payment pages.
+Lưu trữ giỏ hàng hiện tại khi chuyển hướng từ trang đặt vé sang trang thanh toán và hóa đơn.
 ```json
 {
   "showtimeId": "st_200",

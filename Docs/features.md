@@ -1,38 +1,38 @@
-# Application Features & Flows
+# Tính năng & Luồng Ứng dụng
 
-This document details the core interactive features of the 3HD2Kcinema simulation.
+Tài liệu này chi tiết các tính năng tương tác cốt lõi của hệ thống mô phỏng 3HD2Kcinema.
 
 ---
 
-## 1. Catalog Browsing (`index.html`)
-- Displays dynamically loaded movies from `movieService.js`.
-- Integrates genre filtering.
-- Renders posters and showtimes.
+## 1. Duyệt Danh mục (`explore/home/index.html`)
+- Hiển thị danh sách phim được tải động từ `movieService.js`.
+- Tích hợp tính năng lọc theo thể loại.
+- Hiển thị các poster phim và lịch chiếu.
 
-## 2. Authentication (`login.html` & `register.html`)
-- Validates user input cleanly.
-- Simulates password hashing and token generation.
-- Stores session in `SessionStorage`.
-- The `navbar.js` component dynamically reacts to the `active_session`, replacing the "Login" button with a User Profile dropdown.
+## 2. Xác thực (`auth/login/login.html` & `auth/register/register.html`)
+- Xác minh tính hợp lệ của dữ liệu đầu vào người dùng một cách sạch sẽ.
+- Mô phỏng quá trình mã hóa mật khẩu (password hashing) và tạo token.
+- Lưu trữ phiên đăng nhập trong `SessionStorage`.
+- Component `navbar.js` sẽ tự động phản ứng với trạng thái `active_session`, thay thế nút "Đăng nhập" bằng menu thả xuống của Hồ sơ Người dùng.
 
-## 3. Real-Time Seat Locking (`booking.html`)
-This is the most critical feature of the simulator. It mimics the concurrency issues of a high-traffic cinema booking platform.
+## 3. Khóa Ghế Thời gian thực (`booking/core/booking.html`)
+Đây là tính năng quan trọng nhất của bản mô phỏng. Nó bắt chước các vấn đề về tương tranh (concurrency) của một nền tảng đặt vé rạp chiếu phim có lưu lượng truy cập cao.
 
-### The Locking Mechanism:
-- When a seat is clicked, it becomes **"Locked"**.
-- A 5-minute lease timer starts. If the timer expires before checkout completes, the seat is forcefully unlocked.
-- The `BroadcastChannel` sends the lock event to all other tabs, preventing double bookings.
-- If the user closes the tab mid-booking, the `beforeunload` event handler clears the locks from `LocalStorage` and broadcasts an unlock event.
+### Cơ chế Khóa (Locking Mechanism):
+- Khi một ghế được click chọn, nó sẽ chuyển sang trạng thái **"Đã khóa" (Locked)**.
+- Một đồng hồ đếm ngược 5 phút sẽ bắt đầu. Nếu thời gian kết thúc trước khi quá trình thanh toán hoàn tất, ghế sẽ bị tự động mở khóa.
+- `BroadcastChannel` gửi sự kiện khóa đến tất cả các tab khác, ngăn chặn việc đặt trùng vé.
+- Nếu người dùng đóng tab giữa chừng lúc đang đặt vé, trình xử lý sự kiện `beforeunload` sẽ dọn dẹp các ghế đã khóa khỏi `LocalStorage` và phát đi sự kiện mở khóa.
 
-### Bot Simulation:
-- To visually demonstrate the real-time UI, `booking.js` contains a mock bot loop (`setInterval`) that randomly locks and unlocks unselected seats every few seconds.
+### Mô phỏng Bot (Bot Simulation):
+- Để thể hiện trực quan khả năng của giao diện thời gian thực, `booking.js` chứa một vòng lặp bot mô phỏng (`setInterval`) tự động khóa và mở khóa ngẫu nhiên các ghế trống sau mỗi vài giây.
 
-## 4. Checkout & Payment Simulation (`checkout.html` & `payment_simulation.html`)
-- The checkout page reads the `pending_checkout` payload from `SessionStorage`.
-- Users can up-sell via Concessions (Bắp Nước).
-- Upon initiating payment, the user is redirected to a mock Payment Gateway screen (`payment_simulation.html`), replicating MoMo or VNPAY.
-- Successful payment triggers an atomic update in `LocalStorage`: transitioning the seats from `"locked"` to `"booked"`, and saving the final order to the user's booking history.
+## 4. Thanh toán & Mô phỏng Thanh toán (`booking/checkout/checkout.html` & `payment_simulation.html`)
+- Trang checkout sẽ đọc dữ liệu `pending_checkout` từ `SessionStorage`.
+- Người dùng có thể mua thêm Bắp Nước (Concessions).
+- Khi tiến hành thanh toán, người dùng sẽ được chuyển hướng tới một màn hình Cổng thanh toán mô phỏng (`payment_simulation.html`), sao chép giao diện của MoMo hoặc VNPAY.
+- Thanh toán thành công sẽ kích hoạt một bản cập nhật nguyên tử (atomic update) vào `LocalStorage`: chuyển trạng thái ghế từ `"locked"` sang `"booked"`, đồng thời lưu đơn hàng cuối cùng vào lịch sử đặt vé của người dùng.
 
-## 5. QR Code Invoice (`booking_invoice.html`)
-- Reads the confirmed booking details.
-- Uses `qrcode.js` to render a scannable ticket QR code entirely on the client side based on a unique ticket hash string.
+## 5. Hóa đơn Mã QR (`booking/checkout/booking_invoice.html`)
+- Đọc thông tin chi tiết của giao dịch đặt vé đã được xác nhận.
+- Sử dụng thư viện `qrcode.js` để tạo ra một mã QR vé có thể quét được hoàn toàn ở phía client, dựa trên một chuỗi băm vé duy nhất.

@@ -1,57 +1,54 @@
-# Project Overview
+# Tổng quan Dự án
 
-## Introduction
+## Giới thiệu
 
-**3HD2Kcinema** is a modern, static, server-free client-side cinema booking web application. It focuses on simulating a real-time cinematic user experience entirely within the browser.
+**3HD2Kcinema** là một ứng dụng web tĩnh, không sử dụng server (server-free client-side) mô phỏng hệ thống đặt vé xem phim. Dự án tập trung vào việc mô phỏng một trải nghiệm người dùng chuẩn điện ảnh theo thời gian thực (real-time) hoàn toàn bên trong trình duyệt.
 
-The project is designed to:
-* Demonstrate modular vanilla web development using HTML, CSS, and JS without heavy frameworks (No React, Vue, or Angular).
-* Showcase browser-native real-time synchronization using the **BroadcastChannel API**.
-* Utilize browser local storage (`LocalStorage`, `SessionStorage`) for data persistence.
-* Remain easy to run locally without installing any backend SDKs (Node, ASP.NET, SQL Server).
-
----
-
-## Core Technologies
-
-* **HTML5**: Structured markup.
-* **CSS3 / Tailwind CSS**: Styled via native CSS classes and Tailwind via CDN.
-* **JavaScript (ES6 Modules)**: Modular logic separated into components, services, and page controllers.
-* **LocalStorage & SessionStorage**: Serves as the simulated "database".
-* **BroadcastChannel API**: Syncs real-time events (like locking seats) across multiple tabs.
+Dự án này được thiết kế nhằm:
+* Trình diễn cách phát triển web Vanilla theo hướng module sử dụng HTML, CSS, và JS mà không cần các framework nặng nề (Không dùng React, Vue, hay Angular).
+* Giới thiệu khả năng đồng bộ hóa thời gian thực nguyên bản của trình duyệt bằng cách sử dụng **BroadcastChannel API**.
+* Vận dụng bộ nhớ cục bộ của trình duyệt (`LocalStorage`, `SessionStorage`) để duy trì và lưu trữ dữ liệu.
+* Đảm bảo tính dễ dàng khi chạy cục bộ mà không cần phải cài đặt bất kỳ bộ SDK backend nào (Node, ASP.NET, SQL Server).
 
 ---
 
-## How to Run the App
+## Công nghệ Cốt lõi
 
-Because the app is purely static HTML/CSS/JS with ES6 Modules, you **must run it via a local static HTTP server** (due to browser CORS policies on `file://` imports).
-
-### Quick Start (Python)
-1. Open a terminal in the project root `3hd2kcinema/src`.
-2. Run `python -m http.server 8000`.
-3. Open your browser and navigate to `http://localhost:8000/index.html`.
-
-### Quick Start (VSCode)
-1. Open the project in VSCode.
-2. Install the **Live Server** extension.
-3. Right-click on `src/index.html` and select **"Open with Live Server"**.
+* **HTML5**: Cấu trúc nội dung đánh dấu.
+* **CSS3 / Tailwind CSS**: Tạo kiểu thông qua các class CSS nguyên bản và Tailwind qua CDN.
+* **JavaScript (ES6 Modules)**: Logic theo module được tách biệt thành các component, service, và controller của từng trang.
+* **LocalStorage & SessionStorage**: Đóng vai trò là "cơ sở dữ liệu" mô phỏng.
+* **BroadcastChannel API**: Đồng bộ hóa các sự kiện thời gian thực (ví dụ như việc khóa ghế ngồi) trên nhiều tab trình duyệt khác nhau.
 
 ---
 
-## Directory Structure
+## Cách chạy Ứng dụng
+
+Do ứng dụng hoàn toàn là HTML/CSS/JS tĩnh kết hợp với ES6 Modules, bạn **bắt buộc phải chạy ứng dụng thông qua một máy chủ HTTP tĩnh cục bộ** (do chính sách CORS của trình duyệt đối với các liên kết `file://`).
+
+### Khởi chạy Nhanh (với Python)
+1. Mở terminal tại thư mục gốc của dự án `src`.
+2. Chạy lệnh `python -m http.server 8000`.
+3. Mở trình duyệt và điều hướng tới địa chỉ `http://localhost:8000/index.html`.
+
+### Khởi chạy Nhanh (với VSCode)
+1. Mở dự án trong VSCode.
+2. Cài đặt extension **Live Server**.
+3. Click chuột phải vào file `src/index.html` và chọn **"Open with Live Server"**.
+
+---
+
+## Cấu trúc Thư mục
 
 ```text
-3hd2kcinema/
-├── Docs/                    # Project documentation
-├── src/                     # Source code directory
-│   ├── css/                 # Stylesheets
-│   ├── js/                  # JavaScript logic (components, pages, services)
-│   ├── index.html           # Homepage
-│   ├── login.html           # Login page
-│   ├── register.html        # Registration
-│   ├── booking.html         # Seat selection map
-│   ├── checkout.html        # Checkout & combos
-│   ├── payment_simulation.html # Payment gateway simulator
-│   ├── booking_invoice.html # QR Code ticket invoice
-│   └── profile.html         # User profile and history
+/
+├── Docs/                    # Tài liệu dự án
+├── src/                     # Thư mục chứa mã nguồn (Source code)
+│   ├── auth/                # Domain: Xác thực (đăng nhập, đăng ký)
+│   ├── booking/             # Domain: Đặt vé và thanh toán
+│   ├── user/                # Domain: Thông tin & Hồ sơ người dùng
+│   ├── explore/             # Domain: Khám phá phim và trang chủ
+│   ├── engagement/          # Domain: Các tính năng tương tác ngoài lề
+│   ├── shared/              # Thư mục dùng chung (components, css, utils)
+│   └── index.html           # Trang chủ (Redirect)
 ```

@@ -1,34 +1,34 @@
-# Development & Git Workflows
+# Quy trình Phát triển & Git
 
-## Code Rules
+## Quy tắc Code
 
-When working on this codebase:
-1. **Never** import external Node modules or bundler packages unless strictly necessary. Stay true to Vanilla ES6 `<script type="module">`.
-2. **Never** write DOM manipulation logic inside `js/services/`.
-3. **Never** write `LocalStorage` `setItem`/`getItem` inside `js/pages/`. Always go through `storage.js`.
+Khi làm việc với codebase này:
+1. **Không bao giờ** import các module Node bên ngoài hoặc sử dụng các gói bundler trừ khi hoàn toàn bắt buộc. Luôn phải bám sát theo chuẩn Vanilla ES6 `<script type="module">`.
+2. **Không bao giờ** viết các logic thao tác với DOM bên trong các thư mục `services/`.
+3. **Không bao giờ** viết các lệnh `setItem`/`getItem` của `LocalStorage` trực tiếp bên trong các trang. Mọi thứ phải luôn đi qua file `storage.js`.
 
 ---
 
-## Git Flow
+## Luồng Git (Git Flow)
 
-The project relies on a clean, isolated branching strategy:
+Dự án dựa trên một chiến lược phân nhánh cô lập và gọn gàng:
 
-* **`main`**: The stable branch. Code here must run flawlessly via a static HTTP server.
-* **`develop`**: The integration branch.
-* **`feature/*`**: Create feature branches off `develop` (e.g., `feature/payment-gateway`).
+* **`main`**: Nhánh ổn định. Code tại nhánh này bắt buộc phải chạy mượt mà thông qua một máy chủ HTTP tĩnh.
+* **`develop`**: Nhánh để hội nhập (integration branch).
+* **`feature/*`**: Tạo các nhánh tính năng (feature branches) tách ra từ `develop` (Ví dụ: `feature/payment-gateway`).
 
 ### Commits
-Use semantic commit prefixes:
-* `feat:` for new UI/logic.
-* `fix:` for bug fixes.
-* `docs:` for markdown changes.
-* `refactor:` for rearranging structure (like moving files out of `assets/`).
+Sử dụng các tiền tố commit theo chuẩn ngữ nghĩa (semantic):
+* `feat:` dành cho UI/logic mới.
+* `fix:` dành cho việc sửa lỗi (bug fixes).
+* `docs:` dành cho các thay đổi về file markdown tài liệu.
+* `refactor:` dành cho các thay đổi tái cấu trúc (ví dụ: di chuyển các file ra khỏi `assets/`).
 
 ---
 
-## AI Collaboration Workflow (Cursor / Copilot / Antigravity)
+## Quy trình làm việc cùng AI (Cursor / Copilot / Antigravity)
 
-When using AI agents on this repository:
-1. **Context Limit**: Only point the AI to the `Docs/` markdown files. Absolutely forbid the AI from reading or writing `.docx` files.
-2. **No Over-Engineering**: If an AI tries to generate React components (`.jsx`) or Express routes, immediately stop the generation. Remind the AI to read `Docs/architecture.md` to adhere to the pure Vanilla HTML/CSS/JS constraints.
-3. **Clean Diffs**: Instruct the AI to use modular updates instead of rewriting massive 500-line HTML files from scratch.
+Khi sử dụng các agent AI trên repository này:
+1. **Giới hạn Ngữ cảnh (Context Limit)**: Chỉ hướng AI đến việc đọc các tệp markdown trong thư mục `Docs/`. Tuyệt đối ngăn cấm AI đọc hoặc ghi các tệp `.docx`.
+2. **Không Thiết kế quá mức (No Over-Engineering)**: Nếu một AI cố gắng tạo ra các component React (`.jsx`) hoặc các route Express, hãy lập tức dừng quá trình khởi tạo đó lại. Nhắc nhở AI đọc file `Docs/architecture.md` để tuân thủ nghiêm ngặt các ràng buộc chỉ sử dụng Vanilla HTML/CSS/JS.
+3. **Sửa đổi gọn gàng (Clean Diffs)**: Hãy chỉ thị cho AI cập nhật code theo dạng module (từng phần nhỏ) thay vì bắt AI viết lại toàn bộ một tệp HTML dài 500 dòng từ đầu.
