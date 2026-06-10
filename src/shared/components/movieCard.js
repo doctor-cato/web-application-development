@@ -4,7 +4,7 @@
  * Component tạo HTML card hiển thị thông tin phim.
  *
  * Cách dùng:
- *   import { createMovieCard } from '../shared/components/movieCard.js';
+ *   import { createMovieCard } from '../../shared/components/movieCard.js';
  *   container.appendChild(createMovieCard(movie));
  *
  * Trách nhiệm:

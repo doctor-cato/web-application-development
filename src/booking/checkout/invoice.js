@@ -1,4 +1,4 @@
-import { getLastBooking } from '../shared/utils/storage.js';
+import { getLastBooking } from '../../shared/utils/storage.js';
 import { buildQrString } from '../services/paymentService.js';
 
 function renderQr(booking) {

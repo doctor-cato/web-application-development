@@ -4,7 +4,7 @@
  * Render thanh điều hướng dựa trên trạng thái đăng nhập.
  *
  * Cách dùng:
- *   import { renderNavbar } from '../shared/components/navbar.js';
+ *   import { renderNavbar } from '../../shared/components/navbar.js';
  *   renderNavbar(document.getElementById('navbar'));
  *
  * Trách nhiệm:
@@ -14,7 +14,7 @@
  * ─────────────────────────────────────────────────────────────
  */
 
-import { getSession, logout } from '../auth/authService.js';
+import { getSession, logout } from '../../auth/services/authService.js';
 
 // TODO: export function renderNavbar(container) { ... }
 // TODO: function _buildGuestNav() { ... }

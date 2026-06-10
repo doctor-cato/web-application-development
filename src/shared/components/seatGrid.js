@@ -4,7 +4,7 @@
  * Component tạo sơ đồ ghế tương tác cho trang booking.
  *
  * Cách dùng:
- *   import { renderSeatGrid, updateSeat } from '../shared/components/seatGrid.js';
+ *   import { renderSeatGrid, updateSeat } from '../../shared/components/seatGrid.js';
  *   renderSeatGrid(container, seatMap, { onSelect, onDeselect });
  *
  * Seat states:   available | locked | booked | selected

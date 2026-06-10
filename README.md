@@ -28,13 +28,12 @@ Dự án được tổ chức theo từng tính năng (Feature) giống như cá
 ├─ Docs/                     # Toàn bộ tài liệu kiến trúc & ASCII Diagram
 └─ src/                      # Source code chính
    ├─ index.html             # Chuyển hướng (Redirect)
-   ├─ auth/                  # Tính năng: Đăng nhập & Đăng ký
-   ├─ home/                  # Tính năng: Trang chủ & Danh sách phim
-   ├─ booking/               # Tính năng: Đặt ghế (Realtime sync)
-   ├─ checkout/              # Tính năng: Thanh toán & Xuất vé QR Code
-   ├─ profile/               # Tính năng: Quản lý hồ sơ
-   ├─ shared/                # Dùng chung (Shared Services, Components, CSS)
-   └─ ... (Các thư mục chờ tính năng mới: loyalty, search, history, map...)
+   ├─ auth/                  # Domain: Xác thực (login, register, forgot-password)
+   ├─ booking/               # Domain: Đặt vé (chọn ghế, thanh toán, hóa đơn)
+   ├─ user/                  # Domain: Người dùng (hồ sơ, lịch sử, khách hàng thân thiết)
+   ├─ explore/               # Domain: Khám phá (trang chủ, phim, bản đồ rạp)
+   ├─ engagement/            # Domain: Tương tác (hẹn hò, minigame)
+   └─ shared/                # Dùng chung (Shared Services, Components, CSS)
 ```
 
 ## Tài liệu

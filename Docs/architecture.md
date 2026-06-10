@@ -13,7 +13,7 @@ Even though it currently lacks a backend database, the architectural layers are 
 ```text
 +-------------------------------------------------------------+
 |                       USER INTERFACE                        |
-|  (auth/*.html, home/*.html, booking/*.html, checkout/*.html)|
+|  (auth/*/*.html, explore/*/*.html, booking/*/*.html, etc.)  |
 +------------------------------+------------------------------+
                                | DOM Events / Renders
 +------------------------------v------------------------------+
@@ -40,7 +40,7 @@ Even though it currently lacks a backend database, the architectural layers are 
 ## 2. Directory Grouping by Feature
 
 Instead of grouping files by their file type (all HTMLs together, all JS together), we group files by **Domain/Feature**.
-This means `src/auth/` will contain `login.html`, `register.html`, as well as `login.js` and `authService.js`. 
+This means `src/auth/` will contain sub-features like `login/` (containing `login.html`, `login.js`), `register/`, and shared `services/` (containing `authService.js`). 
 
 * **Feature Controllers**: Handle DOM events, rendering, and layout logic. They must **never** interact with `LocalStorage` directly.
 * **Feature Services**: The simulated backend API for that specific feature.

@@ -15,9 +15,9 @@
  * ─────────────────────────────────────────────────────────────
  */
 
-import { getSession, logout, updateProfile } from '../auth/authService.js';
-import { getUserBookings } from '../booking/bookingService.js';
-import { renderNavbar } from '../shared/components/navbar.js';
+import { getSession, logout, updateProfile } from '../../auth/services/authService.js';
+import { getUserBookings } from '../../booking/core/bookingService.js';
+import { renderNavbar } from '../../shared/components/navbar.js';
 
 // TODO: function init() { ... }
 // TODO: function renderProfile(user) { ... }
