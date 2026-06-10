@@ -1,22 +1,57 @@
-Overview
+# Project Overview
 
-Mục tiêu: Tài liệu này mô tả mục đích, cách chạy và cấu trúc mã nguồn của dự án front-end.
+## Introduction
 
-1) Mục đích
-Ứng dụng mô phỏng hệ thống đặt vé rạp chiếu, dùng để học tập và demo các pattern JS thuần.
+**3HD2Kcinema** is a modern, static, server-free client-side cinema booking web application. It focuses on simulating a real-time cinematic user experience entirely within the browser.
 
-2) Chạy local
-- Mở trực tiếp `src/index.html` hoặc chạy server tĩnh như Python:
-  `cd C:\Users\Admin\Documents\CODE_WORKSPACE\web-application-development`
-  `python -m http.server 8000`
-  Truy cập: http://localhost:8000/src/index.html
+The project is designed to:
+* Demonstrate modular vanilla web development using HTML, CSS, and JS without heavy frameworks (No React, Vue, or Angular).
+* Showcase browser-native real-time synchronization using the **BroadcastChannel API**.
+* Utilize browser local storage (`LocalStorage`, `SessionStorage`) for data persistence.
+* Remain easy to run locally without installing any backend SDKs (Node, ASP.NET, SQL Server).
 
-3) Kiến trúc mã
-- Components: các thành phần UI tái sử dụng (src/js/components)
-- Pages: logic riêng cho từng trang (src/js/pages)
-- Services: lớp truy cập dữ liệu/logic nghiệp vụ (src/js/services)
+---
 
-4) Ghi chú
-- Nếu thêm API backend, cập nhật hướng dẫn cấu hình endpoint trong services.
-- Lưu trữ tạm (localStorage) được xử lý trong src/js/services/storage.js
+## Core Technologies
 
+* **HTML5**: Structured markup.
+* **CSS3 / Tailwind CSS**: Styled via native CSS classes and Tailwind via CDN.
+* **JavaScript (ES6 Modules)**: Modular logic separated into components, services, and page controllers.
+* **LocalStorage & SessionStorage**: Serves as the simulated "database".
+* **BroadcastChannel API**: Syncs real-time events (like locking seats) across multiple tabs.
+
+---
+
+## How to Run the App
+
+Because the app is purely static HTML/CSS/JS with ES6 Modules, you **must run it via a local static HTTP server** (due to browser CORS policies on `file://` imports).
+
+### Quick Start (Python)
+1. Open a terminal in the project root `3hd2kcinema/src`.
+2. Run `python -m http.server 8000`.
+3. Open your browser and navigate to `http://localhost:8000/index.html`.
+
+### Quick Start (VSCode)
+1. Open the project in VSCode.
+2. Install the **Live Server** extension.
+3. Right-click on `src/index.html` and select **"Open with Live Server"**.
+
+---
+
+## Directory Structure
+
+```text
+3hd2kcinema/
+├── Docs/                    # Project documentation
+├── src/                     # Source code directory
+│   ├── css/                 # Stylesheets
+│   ├── js/                  # JavaScript logic (components, pages, services)
+│   ├── index.html           # Homepage
+│   ├── login.html           # Login page
+│   ├── register.html        # Registration
+│   ├── booking.html         # Seat selection map
+│   ├── checkout.html        # Checkout & combos
+│   ├── payment_simulation.html # Payment gateway simulator
+│   ├── booking_invoice.html # QR Code ticket invoice
+│   └── profile.html         # User profile and history
+```
