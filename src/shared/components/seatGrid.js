@@ -107,9 +107,14 @@ function _createSeatEl(seatId, seatInfo) {
   el.dataset.id = seatId;
 
   // Determine type
-  if (['H','I','J'].includes(seatId.charAt(0))) {
+  const type = getSeatType(seatId);
+  if (type === 'vip') {
     el.classList.add('seat-vip');
     el.classList.replace('btn-outline-secondary', 'btn-outline-danger');
+  } else if (type === 'couple') {
+    el.classList.add('seat-couple');
+    el.classList.replace('btn-outline-secondary', 'btn-outline-info');
+    // Couple seats often look wider, let's just make it visually distinct
   }
 
   if (seatInfo) {
@@ -150,12 +155,21 @@ function _createSeatEl(seatId, seatInfo) {
 
 function _getLegend() {
   const div = document.createElement('div');
-  div.className = 'seat-legend d-flex justify-content-center gap-4 mt-4 text-muted small';
+  div.className = 'seat-legend d-flex justify-content-center flex-wrap gap-4 mt-4 text-muted small';
   div.innerHTML = `
-    <div class="d-flex align-items-center gap-2"><div style="width:20px;height:20px;border:1px solid #ccc;border-radius:4px;"></div> Trống</div>
+    <div class="d-flex align-items-center gap-2"><div style="width:20px;height:20px;border:1px solid #ccc;border-radius:4px;"></div> Thường</div>
+    <div class="d-flex align-items-center gap-2"><div style="width:20px;height:20px;border:1px solid #dc3545;border-radius:4px;"></div> VIP</div>
+    <div class="d-flex align-items-center gap-2"><div style="width:20px;height:20px;border:1px solid #0dcaf0;border-radius:4px;"></div> Đôi</div>
     <div class="d-flex align-items-center gap-2"><div style="width:20px;height:20px;background:#28a745;border-radius:4px;"></div> Đang chọn</div>
     <div class="d-flex align-items-center gap-2"><div style="width:20px;height:20px;background:#ffc107;border-radius:4px;"></div> Đang giữ</div>
     <div class="d-flex align-items-center gap-2"><div style="width:20px;height:20px;background:#6c757d;border-radius:4px;"></div> Đã đặt</div>
   `;
   return div;
+}
+
+export function getSeatType(seatId) {
+  const row = seatId.charAt(0);
+  if (row === 'J') return 'couple';
+  if (['H', 'I'].includes(row)) return 'vip';
+  return 'regular';
 }

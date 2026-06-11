@@ -3,8 +3,13 @@
  */
 
 import { getSeatMap, lockSeat, unlockSeat, subscribeSeatUpdates } from './bookingService.js';
-import { renderSeatGrid, updateSeat, getSelectedSeats } from '../../shared/components/seatGrid.js';
+import { renderSeatGrid, updateSeat, getSelectedSeats, getSeatType } from '../../shared/components/seatGrid.js';
 import { lsSet, KEYS } from '../../shared/utils/storage.js';
+
+const PRICING = {
+  weekday: { regular: 50000, vip: 65000, couple: 100000 },
+  weekend: { regular: 65000, vip: 80000, couple: 150000 }
+};
 
 let countdownTimer = null;
 let simulationTimer = null;
@@ -19,7 +24,7 @@ function init() {
   renderMovieInfo();
   
   const seatMap = getSeatMap(currentShowtimeId);
-  const container = document.getElementById('seatGridContainer');
+  const container = document.getElementById('seat-grid');
   
   if (container) {
     renderSeatGrid(container, seatMap, {
@@ -41,16 +46,19 @@ function init() {
     }
   });
 
-  document.getElementById('btnContinue')?.addEventListener('click', handleContinue);
+  document.getElementById('btn-continue')?.addEventListener('click', handleContinue);
 
+  updatePricesTable();
   simulateActivity();
 }
 
 function renderMovieInfo() {
-  const titleEl = document.getElementById('movieTitle');
-  const showtimeEl = document.getElementById('showtimeInfo');
+  const titleEl = document.getElementById('movie-title');
+  const showtimeEl = document.getElementById('showtime-datetime');
+  const roomEl = document.getElementById('showtime-room');
   if (titleEl) titleEl.innerText = movieData.title;
-  if (showtimeEl) showtimeEl.innerText = `Suất chiếu: ${currentShowtimeId} | Phòng chiếu: Room 3`;
+  if (showtimeEl) showtimeEl.innerText = `19:30 | ${currentShowtimeId}`;
+  if (roomEl) roomEl.innerText = 'Phòng 3';
 }
 
 function handleSeatSelect(seatId) {
@@ -71,22 +79,62 @@ function handleSeatDeselect(seatId) {
   if (seats.length === 0 && countdownTimer) {
     clearInterval(countdownTimer);
     countdownTimer = null;
-    const cdEl = document.getElementById('bookingCountdown');
-    if (cdEl) cdEl.innerText = '05:00';
+    const cdEl = document.getElementById('countdown-header');
+    if (cdEl) cdEl.innerText = '15:00';
   }
+}
+
+function getDayType() {
+  const day = new Date().getDay();
+  // 0 is Sunday, 6 is Saturday
+  return (day === 0 || day === 6) ? 'weekend' : 'weekday';
+}
+
+function calculateTotal() {
+  const seats = getSelectedSeats();
+  const dayType = getDayType();
+  let total = 0;
+  seats.forEach(seatId => {
+    const type = getSeatType(seatId);
+    total += PRICING[dayType][type];
+  });
+  return total;
+}
+
+function updatePricesTable() {
+  const dayType = getDayType();
+  const prices = PRICING[dayType];
+  const pn = document.getElementById('price-normal');
+  const pv = document.getElementById('price-vip');
+  const pc = document.getElementById('price-couple');
+  if (pn) pn.innerText = prices.regular.toLocaleString('vi-VN') + ' đ';
+  if (pv) pv.innerText = prices.vip.toLocaleString('vi-VN') + ' đ';
+  if (pc) pc.innerText = prices.couple.toLocaleString('vi-VN') + ' đ';
 }
 
 function updateSummary() {
   const seats = getSelectedSeats();
-  const selectedSeatsEl = document.getElementById('selectedSeats');
-  const totalPriceEl = document.getElementById('totalPrice');
+  const selectedSeatsEl = document.getElementById('selected-seats-list');
+  const totalPriceEl = document.getElementById('total-price');
+  const btnContinue = document.getElementById('btn-continue');
   
-  if (selectedSeatsEl) selectedSeatsEl.innerText = seats.length ? seats.join(', ') : 'Chưa chọn';
-  if (totalPriceEl) totalPriceEl.innerText = (seats.length * 80000).toLocaleString('vi-VN') + ' đ';
+  if (selectedSeatsEl) {
+    if (seats.length) {
+      selectedSeatsEl.innerHTML = seats.map(s => `<span class="bg-primary-container text-white text-xs font-bold px-2 py-1 rounded tracking-wider">${s}</span>`).join('');
+    } else {
+      selectedSeatsEl.innerHTML = `<p class="text-secondary text-xs italic">Chưa chọn ghế nào.</p>`;
+    }
+  }
+  
+  if (totalPriceEl) totalPriceEl.innerText = calculateTotal().toLocaleString('vi-VN') + ' đ';
+  
+  if (btnContinue) {
+    btnContinue.disabled = seats.length === 0;
+  }
 }
 
 function startCountdown(seconds) {
-  const cdEl = document.getElementById('bookingCountdown');
+  const cdEl = document.getElementById('countdown-header');
   if (!cdEl) return;
   
   let remain = seconds;
@@ -131,10 +179,11 @@ function handleContinue() {
   const checkoutData = {
     showtimeId: currentShowtimeId,
     movieTitle: movieData.title,
-    room: 'Room 3',
+    room: 'Phòng 3',
     showtimeText: '19:30',
     selectedSeats: seats,
-    seatTotal: seats.length * 80000,
+    seatTotal: calculateTotal(),
+    seatAmount: calculateTotal(), // for checkout.js
     expiresAt: Date.now() + 5 * 60 * 1000 // 5 mins
   };
   
