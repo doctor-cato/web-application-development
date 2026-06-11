@@ -1,6 +1,6 @@
 /**
  * seatGrid.js
- * Component tạo sơ đồ ghế tương tác cho trang booking.
+ * Component tạo sơ đồ ghế tương tác cho trang booking, sử dụng giao diện Tailwind CSS chuẩn.
  */
 
 let _selectedSeats = new Set();
@@ -15,38 +15,45 @@ export function renderSeatGrid(container, seatMap, callbacks) {
   container.innerHTML = '';
   
   const screen = document.createElement('div');
-  screen.className = 'screen-arc';
-  screen.innerHTML = '<div class="screen-text text-center text-muted mb-4">SCREEN</div>';
+  screen.className = 'mb-8 text-center';
+  screen.innerHTML = `
+      <div class="screen-glow h-3 rounded-full w-4/5 mx-auto"></div>
+      <p class="text-secondary text-xs mt-2 uppercase tracking-[0.3em]">Màn hình</p>
+  `;
   container.appendChild(screen);
 
   const gridContainer = document.createElement('div');
-  gridContainer.className = 'seat-grid d-flex flex-column align-items-center gap-2';
+  gridContainer.className = 'seat-rows space-y-3 w-full max-w-4xl flex flex-col items-center';
 
   const rows = ['A','B','C','D','E','F','G','H','I','J'];
   
   rows.forEach(row => {
     const rowEl = document.createElement('div');
-    rowEl.className = 'seat-row d-flex gap-2 justify-content-center';
+    rowEl.className = 'flex items-center gap-3 w-full justify-center';
     
     // Row label start
     const labelStart = document.createElement('div');
-    labelStart.className = 'seat-row-label text-muted';
-    labelStart.style.width = '20px';
+    labelStart.className = 'w-6 text-sm text-secondary text-right';
     labelStart.innerText = row;
     rowEl.appendChild(labelStart);
+
+    // Seats container
+    const seatsContainer = document.createElement('div');
+    seatsContainer.className = 'flex gap-2 flex-wrap justify-center';
 
     for (let i = 1; i <= 12; i++) {
       const seatId = `${row}${i}`;
       const seatInfo = seatMap[seatId] || null;
       const seatEl = _createSeatEl(seatId, seatInfo);
       _seatElements[seatId] = seatEl;
-      rowEl.appendChild(seatEl);
+      seatsContainer.appendChild(seatEl);
     }
+
+    rowEl.appendChild(seatsContainer);
 
     // Row label end
     const labelEnd = document.createElement('div');
-    labelEnd.className = 'seat-row-label text-muted';
-    labelEnd.style.width = '20px';
+    labelEnd.className = 'w-6 text-sm text-secondary text-left';
     labelEnd.innerText = row;
     rowEl.appendChild(labelEnd);
 
@@ -54,7 +61,6 @@ export function renderSeatGrid(container, seatMap, callbacks) {
   });
 
   container.appendChild(gridContainer);
-  container.appendChild(_getLegend());
 }
 
 export function updateSeat(seatId, newState, userId) {
@@ -62,23 +68,23 @@ export function updateSeat(seatId, newState, userId) {
   if (!el) return;
   
   // Clear old states
-  el.classList.remove('seat-locked', 'seat-booked', 'seat-selected');
+  el.classList.remove('seat--locked', 'seat--booked', 'seat--selected', 'seat--available');
   el.title = `Seat ${seatId}`;
 
   if (newState === 'locked') {
     if (_selectedSeats.has(seatId) && el.dataset.userId !== userId) {
-       // Someone else locked it, and we had it selected? 
-       // In real life, we should deselect it
        _selectedSeats.delete(seatId);
        if (_callbacks.onDeselect) _callbacks.onDeselect(seatId);
     }
-    el.classList.add('seat-locked');
+    el.classList.add('seat--locked');
     el.title = `Seat ${seatId} (Locked)`;
   } else if (newState === 'booked') {
-    el.classList.add('seat-booked');
+    el.classList.add('seat--booked');
     el.title = `Seat ${seatId} (Booked)`;
   } else if (_selectedSeats.has(seatId)) {
-    el.classList.add('seat-selected');
+    el.classList.add('seat--selected');
+  } else {
+    el.classList.add('seat--available');
   }
 }
 
@@ -89,7 +95,8 @@ export function getSelectedSeats() {
 export function clearSelection() {
   _selectedSeats.forEach(seatId => {
     if (_seatElements[seatId]) {
-      _seatElements[seatId].classList.remove('seat-selected');
+      _seatElements[seatId].classList.remove('seat--selected');
+      _seatElements[seatId].classList.add('seat--available');
     }
   });
   _selectedSeats.clear();
@@ -97,67 +104,50 @@ export function clearSelection() {
 
 function _createSeatEl(seatId, seatInfo) {
   const el = document.createElement('div');
-  el.className = 'seat-item btn btn-outline-secondary p-0 text-center';
-  el.style.width = '35px';
-  el.style.height = '35px';
-  el.style.lineHeight = '35px';
-  el.style.fontSize = '12px';
-  el.style.cursor = 'pointer';
+  // Match Tailwind mockup exactly
+  el.className = 'seat seat--available w-9 h-9 rounded-sm flex justify-center items-center text-[9px] text-white/30 font-bold';
   el.innerText = seatId;
   el.dataset.id = seatId;
 
   // Determine type
-  if (['H','I','J'].includes(seatId.charAt(0))) {
-    el.classList.add('seat-vip');
-    el.classList.replace('btn-outline-secondary', 'btn-outline-danger');
+  const type = getSeatType(seatId);
+  if (type === 'vip') {
+    el.classList.add('seat--vip');
+  } else if (type === 'couple') {
+    el.classList.add('seat--couple');
   }
 
   if (seatInfo) {
     if (seatInfo.status === 'booked' || seatInfo.bookingId) {
-      el.classList.add('seat-booked', 'disabled');
-      el.style.backgroundColor = '#6c757d';
-      el.style.color = '#fff';
+      el.classList.remove('seat--available');
+      el.classList.add('seat--booked');
       el.title = `Seat ${seatId} (Booked)`;
     } else if (seatInfo.expiresAt) {
-      el.classList.add('seat-locked', 'disabled');
-      el.style.backgroundColor = '#ffc107';
+      el.classList.remove('seat--available');
+      el.classList.add('seat--locked');
       el.title = `Seat ${seatId} (Locked)`;
     }
   }
 
   el.addEventListener('click', () => {
-    if (el.classList.contains('seat-booked') || el.classList.contains('seat-locked')) {
+    if (el.classList.contains('seat--booked') || el.classList.contains('seat--locked')) {
       return; // cannot click
     }
     
     if (_selectedSeats.has(seatId)) {
       _selectedSeats.delete(seatId);
-      el.classList.remove('seat-selected');
-      el.style.backgroundColor = '';
-      el.style.color = '';
+      el.classList.remove('seat--selected');
+      el.classList.add('seat--available');
       if (_callbacks.onDeselect) _callbacks.onDeselect(seatId);
     } else {
       _selectedSeats.add(seatId);
-      el.classList.add('seat-selected');
-      el.style.backgroundColor = '#28a745';
-      el.style.color = '#fff';
+      el.classList.remove('seat--available');
+      el.classList.add('seat--selected');
       if (_callbacks.onSelect) _callbacks.onSelect(seatId);
     }
   });
 
   return el;
-}
-
-function _getLegend() {
-  const div = document.createElement('div');
-  div.className = 'seat-legend d-flex justify-content-center gap-4 mt-4 text-muted small';
-  div.innerHTML = `
-    <div class="d-flex align-items-center gap-2"><div style="width:20px;height:20px;border:1px solid #ccc;border-radius:4px;"></div> Trống</div>
-    <div class="d-flex align-items-center gap-2"><div style="width:20px;height:20px;background:#28a745;border-radius:4px;"></div> Đang chọn</div>
-    <div class="d-flex align-items-center gap-2"><div style="width:20px;height:20px;background:#ffc107;border-radius:4px;"></div> Đang giữ</div>
-    <div class="d-flex align-items-center gap-2"><div style="width:20px;height:20px;background:#6c757d;border-radius:4px;"></div> Đã đặt</div>
-  `;
-  return div;
 }
 
 export function getSeatType(seatId) {
