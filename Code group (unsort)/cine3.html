@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html class="dark" lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>3HD2K | Cine-Match</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "background": "#121414",
+                        "surface-container": "#1e2020",
+                        "surface-container-low": "#1a1c1c",
+                        "primary-container": "#e50914",
+                        "primary": "#ffb4aa",
+                        "on-background": "#e3e2e2",
+                        "on-surface-variant": "#e9bcb6",
+                    },
+                    fontFamily: {
+                        "headline-xl": ["Be Vietnam Pro", "sans-serif"],
+                        "display-lg": ["Be Vietnam Pro", "sans-serif"],
+                        "body-md": ["Inter", "sans-serif"],
+                        "headline-lg": ["Be Vietnam Pro", "sans-serif"],
+                        "label-md": ["Inter", "sans-serif"],
+                        "label-sm": ["Inter", "sans-serif"],
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .text-glow { text-shadow: 0 0 15px rgba(229, 9, 20, 0.6); }
+        .glass-card { background: rgba(30, 32, 32, 0.6); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        @keyframes radar-beam { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .radar-scan { animation: radar-beam 4s linear infinite; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        .candidate-card:hover { border-color: rgba(229, 9, 20, 0.6); box-shadow: 0 0 20px rgba(229, 9, 20, 0.2); }
+        /* Chat message bubbles */
+        .chat-message.me .bubble { background-color: #e50914; color: white; border-radius: 1rem 1rem 0.25rem 1rem; }
+        .chat-message.peer .bubble { background-color: #2a2a2a; color: white; border-radius: 1rem 1rem 1rem 0.25rem; }
+        .chat-message { margin-bottom: 0.5rem; }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md selection:bg-primary-container selection:text-white overflow-x-hidden">
+
+<!-- ==================== LANDING PAGE ==================== -->
+<div id="landing-page">
+    <!-- Navigation giữ nguyên như code cũ -->
+    <nav class="fixed top-0 w-full z-40 bg-background/90 backdrop-blur-md flex justify-between items-center px-8 md:px-16 h-20 bg-gradient-to-b from-black/80 to-transparent">
+        <div class="font-display-lg text-4xl text-primary uppercase italic" style="color: rgb(229, 9, 20);">3HD2K</div>
+        <div class="hidden md:flex gap-8 items-center">
+            <a class="font-headline-lg text-xl hover:text-primary transition-colors duration-300 text-white" href="#">Phim</a>
+            <a class="font-headline-lg text-xl hover:text-primary transition-colors duration-300 text-white" href="#">Rạp</a>
+            <a class="font-headline-lg text-xl hover:text-primary transition-colors duration-300 text-white" href="#">Ưu đãi</a>
+            <a class="text-primary font-headline-xl text-2xl border-b-2 border-primary pb-1 text-white" href="#">Cine-Match</a>
+        </div>
+        <div class="flex gap-4 items-center">
+            <span class="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer">notifications</span>
+            <span class="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer">account_circle</span>
+        </div>
+    </nav>
+    <!-- Hero, Intro, Preferences... (giữ nguyên) -->
+    <section class="relative h-screen w-full flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 z-0"><img alt="Cine-Match Hero" class="w-full h-full object-cover opacity-80" src="https://lh3.googleusercontent.com/aida/ADBb0uju5ES5sMw5EZKZje1PcqYkX0OO4ubIPGEO5k2qpGnQWyhZFidAX2S00CKcbKg1iFVNYdBKq-lLACkwoorfTVx5Q4qsg8ojOuweB5QyyfjCj1Qw4JoOTc4A1X9Gd36pbmffINTUc1IdESCrNBsmwQFXEPXOBxLJmxChUJSJYVCBnNSiIvfvRIaABQM2_DGemBle3XSz-M410GZQnp4pveMzfE5qg1v2CAUSu9NmjRFuJgmOmz8tOjuf7dNP"><div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-black/60"></div></div>
+        <div class="relative z-10 text-center px-4 md:px-0">
+            <h1 class="font-display-lg text-5xl md:text-8xl uppercase tracking-tight text-white mb-4 text-glow">CINE-MATCH</h1>
+            <p class="font-headline-lg text-3xl text-primary uppercase tracking-widest mb-12">Tìm kiếm tri kỷ điện ảnh</p>
+            <button class="bg-primary-container text-white font-headline-lg text-2xl px-10 py-4 uppercase tracking-widest hover:brightness-125 transition-all duration-300 shadow-[0_0_20px_rgba(229,9,20,0.4)]" onclick="document.getElementById('preferences').scrollIntoView({behavior: 'smooth'})">Tham gia Social Zone</button>
+        </div>
+        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce opacity-60"><span class="material-symbols-outlined text-white text-4xl">keyboard_double_arrow_down</span></div>
+    </section>
+    <section class="py-24 px-4 md:px-16 max-w-7xl mx-auto"> <!-- intro social zone --> </section>
+    <section class="py-24 bg-surface-container-low" id="preferences">
+        <div class="max-w-4xl mx-auto px-4 md:px-0">
+            <div class="glass-card p-10 md:p-16 rounded-xl border-primary/10 relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-4 opacity-10"><span class="material-symbols-outlined text-[120px]">favorite</span></div>
+                <h2 class="font-headline-xl text-5xl text-white uppercase text-center mb-12">Sở thích ghép đôi</h2>
+                <div class="space-y-12">
+                    <div>
+                        <label class="block font-headline-lg text-3xl text-primary uppercase mb-6 text-center">Tôi muốn được ghép đôi với...</label>
+                        <div class="grid grid-cols-3 gap-4">
+                            <button class="pref-gender px-6 py-4 border-2 border-outline-variant hover:border-primary text-white font-headline-lg uppercase tracking-wider transition-all flex flex-col items-center gap-2" onclick="selectMatch(this)"><span class="material-symbols-outlined">man</span> Nam</button>
+                            <button class="pref-gender px-6 py-4 border-2 border-outline-variant hover:border-primary text-white font-headline-lg uppercase tracking-wider transition-all flex flex-col items-center gap-2" onclick="selectMatch(this)"><span class="material-symbols-outlined">woman</span> Nữ</button>
+                            <button class="pref-gender px-6 py-4 border-2 border-primary bg-primary-container/10 text-primary font-headline-lg uppercase tracking-wider transition-all flex flex-col items-center gap-2" onclick="selectMatch(this)"><span class="material-symbols-outlined">group</span> Bất kỳ ai</button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block font-headline-lg text-3xl text-primary uppercase mb-6 text-center">Đồng bộ gu phim</label>
+                        <div class="flex flex-wrap justify-center gap-4">
+                            <button class="pref-tag px-6 py-2 rounded-full border border-outline-variant text-white text-sm font-medium hover:border-primary transition-colors" onclick="toggleTag(this)">Hành động</button>
+                            <button class="pref-tag px-6 py-2 rounded-full border border-primary bg-primary-container text-white text-sm font-medium transition-colors" onclick="toggleTag(this)">Viễn tưởng</button>
+                            <button class="pref-tag px-6 py-2 rounded-full border border-outline-variant text-white text-sm font-medium hover:border-primary transition-colors" onclick="toggleTag(this)">Kinh dị</button>
+                            <button class="pref-tag px-6 py-2 rounded-full border border-primary bg-primary-container text-white text-sm font-medium transition-colors" onclick="toggleTag(this)">Lãng mạn</button>
+                            <button class="pref-tag px-6 py-2 rounded-full border border-outline-variant text-white text-sm font-medium hover:border-primary transition-colors" onclick="toggleTag(this)">Tài liệu</button>
+                            <button class="pref-tag px-6 py-2 rounded-full border border-outline-variant text-white text-sm font-medium hover:border-primary transition-colors" onclick="toggleTag(this)">Anime</button>
+                            <button class="pref-tag px-6 py-2 rounded-full border border-outline-variant text-white text-sm font-medium hover:border-primary transition-colors" onclick="toggleTag(this)">Độc lập</button>
+                            <button class="pref-tag px-6 py-2 rounded-full border border-outline-variant text-white text-sm font-medium hover:border-primary transition-colors" onclick="toggleTag(this)">Giật gân</button>
+                        </div>
+                    </div>
+                    <div class="pt-8 flex flex-col items-center gap-6">
+                        <button id="start-search-btn" class="w-full md:w-auto bg-primary-container text-white font-headline-lg text-2xl px-16 py-6 uppercase tracking-widest hover:brightness-125 transition-all duration-300 shadow-[0_0_30px_rgba(229,9,20,0.3)] text-center">Tham gia Social Zone</button>
+                        <div class="flex items-center gap-3 text-on-surface-variant/60"><span class="material-symbols-outlined text-sm">lock</span><span class="text-xs uppercase tracking-tighter">Ghép đôi an toàn và bảo mật</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="py-24 relative overflow-hidden"> <!-- privacy --> </section>
+    <footer class="bg-black/40 border-t border-white/5 py-16 px-8 md:px-16"> <!-- footer --> </footer>
+</div>
+
+<!-- ==================== SEARCHING STATE ==================== -->
+<div id="searching-state" class="hidden fixed inset-0 z-50 bg-background flex items-center justify-center px-4">
+    <div class="text-center max-w-md w-full space-y-8">
+        <h1 class="font-headline-xl text-4xl text-white uppercase">Đang đồng bộ gu phim...</h1>
+        <p class="text-sm text-on-surface-variant/80">Thuật toán đang tìm kiếm các tín đồ điện ảnh có cùng tần số quanh khu vực của bạn.</p>
+        <div class="relative w-64 h-64 mx-auto my-12 rounded-full border border-primary-container/20 flex items-center justify-center overflow-hidden bg-surface-container-low">
+            <div class="absolute w-48 h-48 rounded-full border border-primary-container/10"></div>
+            <div class="absolute w-32 h-32 rounded-full border border-primary-container/5"></div>
+            <div class="absolute inset-0 radar-scan" style="background: conic-gradient(from 0deg, rgba(229,9,20,0.15) 0deg, rgba(229,9,20,0) 90deg);"></div>
+            <div class="relative z-10 w-16 h-16 rounded-full bg-primary-container/20 flex items-center justify-center animate-pulse border border-primary-container/40"><span class="material-symbols-outlined text-3xl text-primary-container">hub</span></div>
+        </div>
+        <p class="text-xs text-primary-container tracking-widest uppercase animate-pulse">Vui lòng giữ kết nối định vị thời gian thực</p>
+        <button class="mt-8 text-primary-container/70 hover:text-white underline text-sm" onclick="goBackToLanding()">← Quay lại trang chính</button>
+    </div>
+</div>
+
+<!-- ==================== SELECTION STATE ==================== -->
+<div id="selection-state" class="hidden fixed inset-0 z-50 bg-background overflow-y-auto py-32 px-4">
+    <div class="max-w-4xl mx-auto text-center space-y-8 animate-fade-in">
+        <h2 class="font-headline-xl text-4xl md:text-5xl text-white uppercase">Đã tìm thấy <span class="text-primary-container">4 tri kỷ</span> tiềm năng</h2>
+        <p class="text-on-surface-variant/80 text-sm">Chọn người bạn cảm thấy hợp gu nhất để bắt đầu kết nối.</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mt-8">
+            <!-- cards giữ nguyên -->
+            <div class="candidate-card glass-card p-5 rounded-xl flex flex-col items-center transition-all duration-300 cursor-pointer" data-candidate="0">
+                <div class="w-16 h-16 rounded-full bg-primary-container/20 flex items-center justify-center mb-3 border border-primary-container/30"><span class="material-symbols-outlined text-2xl text-primary-container">person</span></div>
+                <h3 class="font-headline-lg text-xl text-white">Ẩn danh #421</h3><div class="text-3xl font-headline-xl text-primary-container mt-2">96%</div>
+                <div class="flex flex-wrap gap-1 mt-3 justify-center"><span class="bg-white/5 px-2 py-0.5 rounded text-white text-[10px]">#MêKhoaHọcVT</span><span class="bg-white/5 px-2 py-0.5 rounded text-white text-[10px]">#NghiềnHànhĐộng</span><span class="bg-white/5 px-2 py-0.5 rounded text-white text-[10px]">#MêBắpRang</span></div>
+                <button class="w-full mt-4 bg-primary-container/20 text-primary-container border border-primary-container/50 py-2 rounded text-xs font-bold uppercase tracking-wider hover:bg-primary-container hover:text-white transition-colors">Chọn người này</button>
+            </div>
+            <div class="candidate-card glass-card p-5 rounded-xl flex flex-col items-center transition-all duration-300 cursor-pointer" data-candidate="1">
+                <div class="w-16 h-16 rounded-full bg-primary-container/20 flex items-center justify-center mb-3 border border-primary-container/30"><span class="material-symbols-outlined text-2xl text-primary-container">person</span></div>
+                <h3 class="font-headline-lg text-xl text-white">Ẩn danh #739</h3><div class="text-3xl font-headline-xl text-primary-container mt-2">89%</div>
+                <div class="flex flex-wrap gap-1 mt-3 justify-center"><span class="bg-white/5 px-2 py-0.5 rounded text-white text-[10px]">#TìnhCảmHài</span><span class="bg-white/5 px-2 py-0.5 rounded text-white text-[10px]">#FanAnime</span><span class="bg-white/5 px-2 py-0.5 rounded text-white text-[10px]">#GhiềnGhibli</span></div>
+                <button class="w-full mt-4 bg-primary-container/20 text-primary-container border border-primary-container/50 py-2 rounded text-xs font-bold uppercase tracking-wider hover:bg-primary-container hover:text-white transition-colors">Chọn người này</button>
+            </div>
+            <div class="candidate-card glass-card p-5 rounded-xl flex flex-col items-center transition-all duration-300 cursor-pointer" data-candidate="2">
+                <div class="w-16 h-16 rounded-full bg-primary-container/20 flex items-center justify-center mb-3 border border-primary-container/30"><span class="material-symbols-outlined text-2xl text-primary-container">person</span></div>
+                <h3 class="font-headline-lg text-xl text-white">Ẩn danh #105</h3><div class="text-3xl font-headline-xl text-primary-container mt-2">82%</div>
+                <div class="flex flex-wrap gap-1 mt-3 justify-center"><span class="bg-white/5 px-2 py-0.5 rounded text-white text-[10px]">#ĐêmKinhDị</span><span class="bg-white/5 px-2 py-0.5 rounded text-white text-[10px]">#NghiềnGiậtGân</span><span class="bg-white/5 px-2 py-0.5 rounded text-white text-[10px]">#XoắnNão</span></div>
+                <button class="w-full mt-4 bg-primary-container/20 text-primary-container border border-primary-container/50 py-2 rounded text-xs font-bold uppercase tracking-wider hover:bg-primary-container hover:text-white transition-colors">Chọn người này</button>
+            </div>
+            <div class="candidate-card glass-card p-5 rounded-xl flex flex-col items-center transition-all duration-300 cursor-pointer" data-candidate="3">
+                <div class="w-16 h-16 rounded-full bg-primary-container/20 flex items-center justify-center mb-3 border border-primary-container/30"><span class="material-symbols-outlined text-2xl text-primary-container">person</span></div>
+                <h3 class="font-headline-lg text-xl text-white">Ẩn danh #582</h3><div class="text-3xl font-headline-xl text-primary-container mt-2">75%</div>
+                <div class="flex flex-wrap gap-1 mt-3 justify-center"><span class="bg-white/5 px-2 py-0.5 rounded text-white text-[10px]">#HàiĐỉnh</span><span class="bg-white/5 px-2 py-0.5 rounded text-white text-[10px]">#GiaĐìnhVui</span><span class="bg-white/5 px-2 py-0.5 rounded text-white text-[10px]">#PhimẤmÁp</span></div>
+                <button class="w-full mt-4 bg-primary-container/20 text-primary-container border border-primary-container/50 py-2 rounded text-xs font-bold uppercase tracking-wider hover:bg-primary-container hover:text-white transition-colors">Chọn người này</button>
+            </div>
+        </div>
+        <button class="mt-12 text-primary-container/70 hover:text-white underline text-sm" onclick="goBackToLanding()">← Quay lại trang chính</button>
+    </div>
+</div>
+
+<!-- ==================== MATCHED DETAIL STATE ==================== -->
+<div id="matched-state" class="hidden fixed inset-0 z-50 bg-background overflow-y-auto py-32 px-4 md:px-16">
+    <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch animate-fade-in">
+        <div class="col-span-full flex justify-between items-center mb-4">
+            <button class="flex items-center gap-2 text-primary-container hover:text-white bg-surface-container/50 hover:bg-primary-container/20 px-4 py-2 rounded-full text-sm font-bold uppercase tracking-wider transition-all" onclick="goBackToSelection()"><span class="material-symbols-outlined text-xl">arrow_back</span> Quay lại danh sách</button>
+            <button class="text-primary-container/70 hover:text-white underline text-sm" onclick="goBackToLanding()">← Về trang chính</button>
+        </div>
+        <!-- Column 1: Your Ticket Info -->
+        <div class="glass-card p-6 rounded-xl flex flex-col justify-between border-l-4 border-l-primary-container">
+            <div><span class="text-xs font-semibold tracking-widest text-primary-container uppercase">Hồ sơ của bạn</span><h3 class="font-headline-lg text-2xl text-white mt-2 mb-4">Ẩn danh #206</h3>
+            <div class="space-y-3 text-sm text-on-surface-variant"><div class="flex justify-between border-b border-white/5 pb-2"><span>Phòng chiếu:</span><span class="text-white font-medium">P.04 (Dolby Atmos)</span></div><div class="flex justify-between border-b border-white/5 pb-2"><span>Suất chiếu:</span><span class="text-white font-medium">21:45 | Hôm nay</span></div><div class="flex justify-between"><span>Gu đã chọn:</span><span class="text-white font-medium">Viễn tưởng, Lãng mạn</span></div></div></div>
+            <div class="pt-6 border-t border-dashed border-white/10 mt-6 text-center"><span class="material-symbols-outlined text-4xl text-on-surface-variant/40">qr_code_2</span><p class="text-[10px] uppercase text-on-surface-variant/40 mt-1">Mã ghế sẽ kích hoạt tại quầy soát vé</p></div>
+        </div>
+        <!-- Column 2: Connection Card -->
+        <div class="glass-card p-8 rounded-xl text-center flex flex-col justify-center items-center relative overflow-hidden bg-gradient-to-b from-primary-container/10 to-transparent border border-primary-container/20">
+            <div class="absolute top-4 right-4 bg-primary-container text-white text-[10px] font-bold px-2 py-0.5 uppercase tracking-widest">Đã kết nối</div>
+            <div class="w-20 h-20 rounded-full bg-primary-container flex items-center justify-center shadow-[0_0_25px_rgba(229,9,20,0.4)] mb-4"><span class="material-symbols-outlined text-4xl text-white">favorite</span></div>
+            <h2 id="match-percentage" class="text-4xl font-headline-xl text-white tracking-wide text-glow">96% TƯƠNG ĐỒNG</h2>
+            <p id="match-common-desc" class="text-xs text-on-surface-variant mt-2 max-w-xs">Hai bạn có lịch sử xem phim cực kỳ trùng khớp tại hệ thống rạp 3HD2K.</p>
+            <div class="my-6 space-y-1"><div class="text-xs uppercase tracking-widest text-primary-container font-semibold">Điểm chung lớn nhất</div><div id="match-shared-interest" class="text-sm font-medium text-white">Cùng hâm mộ đạo diễn Christopher Nolan & Anime bom tấn</div></div>
+            <button id="start-chat-btn" class="w-full bg-primary-container text-white font-headline-lg text-lg py-3 uppercase tracking-widest hover:brightness-125 transition-all duration-300 shadow-md">Chấp nhận ghép đôi & Đặt ghế cặp</button>
+        </div>
+        <!-- Column 3: Peer Profile -->
+        <div class="glass-card p-6 rounded-xl flex flex-col justify-between border-r-4 border-r-primary-container/40">
+            <div><span class="text-xs font-semibold tracking-widest text-primary uppercase text-on-surface-variant/60">Tri kỷ điện ảnh của bạn</span><h3 id="match-peer-name" class="font-headline-lg text-2xl text-white mt-2 mb-4 tracking-wide">Đối phương ẩn danh</h3>
+            <div class="space-y-4"><div class="p-3 bg-surface-container-low rounded"><div class="text-[11px] text-primary-container uppercase font-bold tracking-wider mb-1">Dấu hiệu nhận biết tại rạp</div><p class="text-xs text-white">Sẽ cầm theo một phụ kiện hoặc trang phục có tone màu đỏ hồng.</p></div>
+            <div class="space-y-2 text-xs"><div class="text-on-surface-variant/60 uppercase font-bold tracking-wider">Hashtags sở thích:</div><div id="match-hashtags" class="flex flex-wrap gap-1.5"></div></div></div></div>
+            <div class="pt-6 border-t border-white/5 mt-6 flex items-center gap-3 text-xs text-on-surface-variant/70"><span class="material-symbols-outlined text-xl text-primary">visibility_off</span><span>Danh tính cá nhân và số ghế chính xác sẽ lộ diện khi phòng chiếu tắt đèn.</span></div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== CHAT STATE ==================== -->
+<div id="chat-state" class="hidden fixed inset-0 z-50 bg-background flex flex-col">
+    <!-- Chat Header -->
+    <div class="bg-surface-container border-b border-white/10 px-6 py-4 flex items-center gap-4">
+        <button onclick="goBackToMatched()" class="material-symbols-outlined text-on-surface-variant hover:text-white">arrow_back</button>
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-primary-container/30 flex items-center justify-center"><span class="material-symbols-outlined text-primary-container">person</span></div>
+            <div>
+                <h3 id="chat-peer-name" class="font-headline-lg text-lg text-white">Tri kỷ #421</h3>
+                <div class="flex items-center gap-1 text-xs text-green-400"><span class="w-2 h-2 rounded-full bg-green-400"></span> Đang trực tuyến</div>
+            </div>
+        </div>
+        <div class="ml-auto text-right">
+            <p class="text-xs text-on-surface-variant">Suất chiếu <span class="text-white font-medium">21:45</span></p>
+            <p id="countdown" class="text-sm font-bold text-primary-container"></p>
+        </div>
+    </div>
+
+    <!-- Chat Messages -->
+    <div id="chat-messages" class="flex-1 overflow-y-auto p-6 space-y-2">
+        <!-- Tin nhắn mẫu đầu tiên -->
+        <div class="chat-message peer"><div class="bubble px-4 py-2 max-w-[75%] inline-block">Chào bạn, rất vui được ghép đôi cùng! Bạn thích đạo diễn nào nhất?</div></div>
+    </div>
+
+    <!-- Cảnh báo từ cấm -->
+    <div id="warning-toast" class="hidden absolute bottom-24 left-1/2 -translate-x-1/2 bg-red-900/90 text-white px-6 py-3 rounded-full text-sm font-medium backdrop-blur-sm z-10">
+        ⚠️ Tin nhắn chứa từ ngữ không phù hợp. Vui lòng nhập lại.
+    </div>
+
+    <!-- Chat Input -->
+    <div class="bg-surface-container border-t border-white/10 px-6 py-4 flex gap-3 items-center">
+        <input id="chat-input" type="text" placeholder="Nhập tin nhắn..." class="flex-1 bg-surface-container-low border border-white/10 rounded-full px-5 py-3 text-white placeholder-on-surface-variant focus:outline-none focus:border-primary-container">
+        <button id="send-btn" class="w-12 h-12 rounded-full bg-primary-container flex items-center justify-center hover:brightness-125 transition-all"><span class="material-symbols-outlined text-white">send</span></button>
+    </div>
+</div>
+
+<script>
+    // ---------- Bộ lọc từ thô tục ----------
+    const forbiddenWords = [
+        "địt", "đĩ", "cặc", "lồn", "buồi", "chó", "ngu", "khốn", "đần", "mẹ mày", "bố mày", "đụ", "cút", "xạo l", "vãi l",
+        "fuck", "shit", "bitch", "ass", "dick", "pussy", "cock", "whore", "slut"
+    ]; // Có thể bổ sung thêm
+
+    function containsForbidden(text) {
+        const lower = text.toLowerCase();
+        return forbiddenWords.some(word => lower.includes(word));
+    }
+
+    // ---------- Đếm ngược đến 21:45 ----------
+    function startCountdown() {
+        const countdownEl = document.getElementById('countdown');
+        function update() {
+            const now = new Date();
+            const target = new Date(now);
+            target.setHours(21, 45, 0, 0);
+            if (now > target) target.setDate(target.getDate() + 1); // Nếu đã qua thì đếm tới ngày mai
+            const diff = target - now;
+            const hours = Math.floor(diff / 3600000);
+            const minutes = Math.floor((diff % 3600000) / 60000);
+            const seconds = Math.floor((diff % 60000) / 1000);
+            countdownEl.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        update();
+        setInterval(update, 1000);
+    }
+
+    // ---------- Quản lý chat ----------
+    const chatMessages = document.getElementById('chat-messages');
+    const chatInput = document.getElementById('chat-input');
+    const sendBtn = document.getElementById('send-btn');
+    const warningToast = document.getElementById('warning-toast');
+    let currentPeerName = "Tri kỷ #421";
+
+    function addMessage(text, isMe = true) {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `chat-message ${isMe ? 'me' : 'peer'} flex ${isMe ? 'justify-end' : 'justify-start'}`;
+        msgDiv.innerHTML = `<div class="bubble px-4 py-2 max-w-[75%] inline-block">${escapeHtml(text)}</div>`;
+        chatMessages.appendChild(msgDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function escapeHtml(unsafe) {
+        return unsafe.replace(/[&<>"']/g, function(m) {
+            switch(m) {
+                case '&': return '&amp;';
+                case '<': return '&lt;';
+                case '>': return '&gt;';
+                case '"': return '&quot;';
+                case "'": return '&#039;';
+            }
+        });
+    }
+
+    function showWarning() {
+        warningToast.classList.remove('hidden');
+        setTimeout(() => warningToast.classList.add('hidden'), 3000);
+    }
+
+    sendBtn.addEventListener('click', sendMessage);
+    chatInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') sendMessage();
+    });
+
+    function sendMessage() {
+        const text = chatInput.value.trim();
+        if (!text) return;
+
+        if (containsForbidden(text)) {
+            showWarning();
+            chatInput.value = '';
+            return;
+        }
+
+        addMessage(text, true);
+        chatInput.value = '';
+
+        // Giả lập phản hồi từ đối phương sau 1-2 giây
+        setTimeout(() => {
+            const peerReplies = [
+                "Mình cũng thích vậy!",
+                "Bạn có hay xem phim ở rạp này không?",
+                "Mình rất hào hứng cho buổi chiếu tối nay.",
+                "Gu phim của bạn nghe hay quá!",
+                "Chúng ta có vẻ hợp nhau đấy."
+            ];
+            const randomReply = peerReplies[Math.floor(Math.random() * peerReplies.length)];
+            addMessage(randomReply, false);
+        }, 1000 + Math.random() * 2000);
+    }
+
+    // ---------- Chuyển đổi trạng thái ----------
+    const landingPage = document.getElementById('landing-page');
+    const searchingState = document.getElementById('searching-state');
+    const selectionState = document.getElementById('selection-state');
+    const matchedState = document.getElementById('matched-state');
+    const chatState = document.getElementById('chat-state');
+
+    // Nút "Tham gia Social Zone"
+    document.getElementById('start-search-btn').addEventListener('click', () => {
+        landingPage.style.display = 'none';
+        searchingState.classList.remove('hidden');
+        setTimeout(() => {
+            searchingState.classList.add('hidden');
+            selectionState.classList.remove('hidden');
+        }, 3500);
+    });
+
+    // Chọn ứng viên -> matched
+    document.querySelectorAll('.candidate-card').forEach(card => {
+        card.addEventListener('click', function() {
+            const idx = parseInt(this.getAttribute('data-candidate'));
+            const candidates = [
+                { name: "Ẩn danh #421", percent: "96%", commonDesc: "...", sharedInterest: "Cùng hâm mộ Christopher Nolan & Anime", hashtags: ["#MêKhoaHọcVT","#NghiềnHànhĐộng","#MêBắpRang"] },
+                { name: "Ẩn danh #739", percent: "89%", commonDesc: "...", sharedInterest: "Mê tình cảm Nhật & Ghibli", hashtags: ["#TìnhCảmHài","#FanAnime","#GhiềnGhibli"] },
+                { name: "Ẩn danh #105", percent: "82%", commonDesc: "...", sharedInterest: "Kinh dị, trinh thám", hashtags: ["#ĐêmKinhDị","#NghiềnGiậtGân","#XoắnNão"] },
+                { name: "Ẩn danh #582", percent: "75%", commonDesc: "...", sharedInterest: "Hài, gia đình", hashtags: ["#HàiĐỉnh","#GiaĐìnhVui","#PhimẤmÁp"] }
+            ];
+            const c = candidates[idx];
+            document.getElementById('match-percentage').textContent = c.percent + " TƯƠNG ĐỒNG";
+            document.getElementById('match-common-desc').textContent = c.commonDesc;
+            document.getElementById('match-shared-interest').textContent = c.sharedInterest;
+            document.getElementById('match-peer-name').textContent = c.name;
+            currentPeerName = c.name;
+            const hashtagsDiv = document.getElementById('match-hashtags');
+            hashtagsDiv.innerHTML = '';
+            c.hashtags.forEach(tag => {
+                const span = document.createElement('span');
+                span.className = 'bg-white/5 px-2 py-1 rounded text-white text-[11px]';
+                span.textContent = tag;
+                hashtagsDiv.appendChild(span);
+            });
+            selectionState.classList.add('hidden');
+            matchedState.classList.remove('hidden');
+        });
+    });
+
+    // Nút "Chấp nhận ghép đôi" -> mở chat
+    document.getElementById('start-chat-btn').addEventListener('click', () => {
+        matchedState.classList.add('hidden');
+        chatState.classList.remove('hidden');
+        document.getElementById('chat-peer-name').textContent = currentPeerName;
+        // Reset chat messages (giữ lại lời chào mẫu)
+        chatMessages.innerHTML = `<div class="chat-message peer"><div class="bubble px-4 py-2 max-w-[75%] inline-block">Chào bạn, rất vui được ghép đôi cùng! Bạn thích đạo diễn nào nhất?</div></div>`;
+        startCountdown();
+    });
+
+    function goBackToSelection() {
+        matchedState.classList.add('hidden');
+        selectionState.classList.remove('hidden');
+    }
+    function goBackToMatched() {
+        chatState.classList.add('hidden');
+        matchedState.classList.remove('hidden');
+    }
+    function goBackToLanding() {
+        searchingState.classList.add('hidden');
+        selectionState.classList.add('hidden');
+        matchedState.classList.add('hidden');
+        chatState.classList.add('hidden');
+        landingPage.style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Hàm toggleTag, selectMatch giữ nguyên
+    function toggleTag(el) {
+        el.classList.toggle('bg-primary-container');
+        el.classList.toggle('text-white');
+        el.classList.toggle('border-primary');
+        el.classList.toggle('border-outline-variant');
+    }
+    function selectMatch(el) {
+        const buttons = el.parentElement.querySelectorAll('.pref-gender');
+        buttons.forEach(btn => {
+            btn.classList.remove('border-primary', 'bg-primary-container/10', 'text-primary');
+            btn.classList.add('border-outline-variant', 'text-white');
+        });
+        el.classList.add('border-primary', 'bg-primary-container/10', 'text-primary');
+        el.classList.remove('border-outline-variant', 'text-white');
+    }
+</script>
+
+</body>
+</html>

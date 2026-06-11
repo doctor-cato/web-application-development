@@ -3,168 +3,301 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3HD2K - Khám phá phim</title>
+    <title>3HD2K - Danh sách phim</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;900&family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-    <script>
+    <!-- FontAwesome for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    
+    <script id="tailwind-config">
         tailwind.config = {
-            darkMode: 'class',
+            darkMode: "class",
             theme: {
                 extend: {
-                    fontFamily: {
-                        display: ['Outfit', 'sans-serif'],
-                        body: ['Geist', 'sans-serif'],
-                    },
                     colors: {
-                        base: '#09090b',
-                        surface: '#18181b',
-                        'surface-high': '#27272a',
-                        accent: '#be123c',
-                        'accent-hover': '#9f1239',
+                        "primary-container": "#e50914",
+                        "background": "#121414",
+                        "surface-variant": "#343535",
+                        "secondary": "#c8c6c5",
+                        "surface-container-low": "#1a1c1c",
+                        "surface-container-lowest": "#0d0e0f"
                     }
                 }
             }
         }
     </script>
+
     <style>
-        body { font-family: 'Geist', sans-serif; background-color: #09090b; color: #fafafa; }
-        h1, h2, h3, h4, .font-display { font-family: 'Outfit', sans-serif; }
-        *:focus-visible { outline: 2px solid #be123c; outline-offset: 2px; }
-        .liquid-glass { background: rgba(24, 24, 27, 0.4); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.05); box-shadow: inset 0 1px 0 rgba(255,255,255,0.1); }
-        .hover-lift { transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
-        .hover-lift:hover { transform: translateY(-4px) scale(1.01); box-shadow: 0 20px 40px -15px rgba(0,0,0,0.5); }
-        .noise-bg::before { content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 50; opacity: 0.03; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"); }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #121414;
+            color: #f5f5f5;
+        }
+        h1, h2, h3, h4, .logo, .btn-load-more, .tag, .tab {
+            font-family: 'Bebas Neue', sans-serif;
+            letter-spacing: 1px;
+        }
+        
+        /* Underline indicator for active tabs */
+        .tab::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: #e50914;
+            border-radius: 2px 2px 0 0;
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        .tab:hover {
+            color: rgba(255, 255, 255, 0.8);
+        }
+        .tab.active {
+            color: #e50914;
+        }
+        .tab.active::after {
+            transform: scaleX(1);
+        }
+
+        /* Movie card card hover zoom and layout */
+        .movies-grid .movie-card {
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .movies-grid .movie-card:hover {
+            transform: translateY(-5px);
+        }
+        .movies-grid .poster {
+            height: 320px;
+            background-color: #1a1c1c;
+            background-size: cover;
+            background-position: center;
+            border-radius: 8px;
+            margin-bottom: 14px;
+            position: relative;
+            overflow: hidden;
+            transition: box-shadow 0.3s ease;
+        }
+        .movies-grid .movie-card:hover .poster {
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+        }
+
+        /* Age badges on poster card */
+        .poster .age-badge-overlay {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 4px;
+            letter-spacing: 0.5px;
+            z-index: 5;
+        }
+        .age-badge-overlay.age-t13 { background: #2ecc71; }
+        .age-badge-overlay.age-t16 { background: #e67e22; }
+        .age-badge-overlay.age-t18, .age-badge-overlay.age-c18 { background: #e50914; }
+        .age-badge-overlay.age-p { background: #3498db; }
+
+        .movies-grid .poster.placeholder {
+            background: linear-gradient(135deg, #111 0%, #222 100%);
+        }
+
+        /* Expanded search input styling */
+        .search-pill.active #search-input {
+            width: 200px;
+            opacity: 1;
+        }
+        .search-pill.active #search-text {
+            display: none;
+        }
+
+        /* Navigation link hover indicators */
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%) scaleX(0);
+            width: 60%;
+            height: 2px;
+            background: #e50914;
+            border-radius: 2px;
+            transition: transform 0.3s ease;
+            box-shadow: 0 0 8px rgba(229, 9, 20, 0.4);
+        }
+        .nav-links a:hover::after {
+            transform: translateX(-50%) scaleX(1);
+        }
+        .nav-links a.active::after {
+            transform: translateX(-50%) scaleX(1);
+        }
     </style>
 </head>
-<body class="antialiased min-h-[100dvh] flex flex-col relative noise-bg">
+<body class="bg-background text-white min-h-screen flex flex-col font-['Inter'] antialiased">
     
-    <!-- NAVIGATION -->
-    <header class="fixed top-0 w-full z-40 liquid-glass border-b border-white/5 h-20 flex items-center justify-between px-6 md:px-12">
-        <div class="flex items-center gap-12">
-            <a href="../home-page/index.html" class="font-display font-black text-3xl tracking-tighter text-white hover:text-accent transition-colors" aria-label="3HD2K Home">3HD2K</a>
-            <nav class="hidden md:flex gap-8">
-                <a href="../home-page/index.html" class="text-sm font-medium text-zinc-400 hover:text-white transition-colors">Trang chủ</a>
-                <a href="index.html" class="text-sm font-medium text-white border-b border-accent pb-1">Phim đang chiếu</a>
-                <a href="../cinema-map/index.html" class="text-sm font-medium text-zinc-400 hover:text-white transition-colors">Cụm rạp</a>
-                <a href="../../engagement/dating/index.html" class="text-sm font-medium text-zinc-400 hover:text-white transition-colors">Cine-Match</a>
+    <!-- HEADER -->
+    <header class="fixed top-0 left-0 w-full px-6 lg:px-14 h-20 flex justify-between items-center z-50 bg-[#080808]/92 backdrop-blur-md border-b border-primary-container/30 shadow-[0_2px_20px_rgba(0,0,0,0.5)]">
+        <div class="flex items-center gap-10 h-full">
+            <a href="../home-page/index.html" class="logo text-primary-container text-4xl font-normal tracking-widest leading-none">3HD2K</a>
+            <nav class="nav-links hidden md:flex items-center gap-1.5 h-full">
+                <a href="../home-page/index.html" class="relative flex items-center h-full text-white/55 hover:text-white px-4 text-base transition-all hover:bg-white/5 rounded-md">Trang chủ</a>
+                <a href="#" class="active relative flex items-center h-full text-white font-bold px-4 text-base transition-all">Phim Đang Chiếu</a>
+                <a href="../cinema-map/index.html" class="relative flex items-center h-full text-white/55 hover:text-white px-4 text-base transition-all hover:bg-white/5 rounded-md">Cụm Rạp</a>
+                <a href="#" class="relative flex items-center h-full text-white/55 hover:text-white px-4 text-base transition-all hover:bg-white/5 rounded-md">Khuyến Mãi</a>
+                <a href="../../booking/booking-food/index.html" class="relative flex items-center h-full text-white/55 hover:text-white px-4 text-base transition-all hover:bg-white/5 rounded-md">Đặt vé</a>
             </nav>
         </div>
-        <div class="flex items-center gap-4">
-            <button class="w-10 h-10 rounded-full bg-surface-high flex items-center justify-center hover:bg-zinc-700 transition-colors" aria-label="Search movies">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <div class="nav-actions flex items-center gap-4.5">
+            <div class="search-pill flex items-center gap-2 px-6 py-2.5 rounded-full bg-white/7 border border-white/10 cursor-pointer transition-all duration-300 hover:bg-white/12 hover:border-white/20 hover:shadow-[0_0_12px_rgba(229,9,20,0.15)]" id="search-pill">
+                <i class="fas fa-search text-white/50 hover:text-primary-container transition-colors" id="search-icon"></i>
+                <input type="text" id="search-input" class="bg-transparent border-none text-white text-sm w-0 opacity-0 transition-all duration-400 outline-none p-0 focus:ring-0" placeholder="Tìm kiếm phim..." />
+                <span id="search-text" class="inter-text text-sm text-white/40 font-normal transition-colors">Tìm kiếm</span>
+            </div>
+            
+            <button class="hover:text-primary-container text-white/50 hover:scale-115 transition-all p-1.5 text-lg" aria-label="Thông báo">
+                <i class="fas fa-bell"></i>
             </button>
-            <button class="w-10 h-10 rounded-full bg-surface-high flex items-center justify-center hover:bg-zinc-700 transition-colors" aria-label="User profile">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            </button>
+            <a href="../../user/loyalty-points/index.html" class="hover:text-primary-container text-white/50 hover:scale-115 transition-all p-1.5 text-lg" aria-label="Tài khoản">
+                <i class="fas fa-user"></i>
+            </a>
         </div>
     </header>
 
-    <main class="flex-grow pt-32 pb-24 px-6 md:px-12 max-w-[1600px] mx-auto w-full">
-        <!-- HEADER & TABS -->
-        <div class="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12">
-            <div>
-                <h1 class="text-5xl md:text-7xl font-display font-black tracking-tighter mb-4">KHÁM PHÁ</h1>
-                <div class="flex gap-6 border-b border-white/10 w-max">
-                    <button id="tab-now-showing" class="text-lg font-display font-bold pb-2 border-b-2 border-accent text-white" aria-selected="true">Đang Chiếu</button>
-                    <button id="tab-coming-soon" class="text-lg font-display font-bold pb-2 border-b-2 border-transparent text-zinc-500 hover:text-zinc-300 transition-colors" aria-selected="false">Sắp Chiếu</button>
+    <main class="movies-page pt-28 min-h-screen">
+        <!-- BREADCRUMB -->
+        <div class="breadcrumb px-6 lg:px-14 mb-3 flex items-center gap-2 text-xs text-white/50 font-['Inter']">
+            <a href="../home-page/index.html" class="hover:text-white transition-colors">Trang chủ</a>
+            <span class="separator text-[10px]"><i class="fas fa-chevron-right"></i></span>
+            <span class="current text-white font-medium" id="breadcrumb-current">Phim Sắp Chiếu</span>
+        </div>
+
+        <!-- TABS -->
+        <div class="page-tabs px-6 lg:px-14 mb-9 flex items-center gap-10 border-b border-white/8">
+            <button class="tab text-xl font-bold text-white/50 pb-3.5 relative bg-transparent border-none outline-none cursor-pointer uppercase tracking-wider transition-colors" id="tab-now-showing" data-tab="now-showing">Phim Đang Chiếu</button>
+            <button class="tab active text-xl font-bold pb-3.5 relative bg-transparent border-none outline-none cursor-pointer uppercase tracking-wider transition-colors" id="tab-coming-soon" data-tab="coming-soon">Phim Sắp Chiếu</button>
+        </div>
+
+        <!-- FILTER BAR -->
+        <div class="movies-filters px-6 lg:px-14 mb-10 flex flex-wrap justify-between items-center gap-4">
+            <div class="filter-pills flex flex-wrap gap-3">
+                <div class="filter-pill flex items-center gap-2 px-5 py-2.5 rounded-lg bg-white/4 border border-white/8 cursor-pointer hover:bg-white/8 hover:border-white/15 transition-all">
+                    <select id="movies-filter-genre" class="bg-transparent border-none text-white text-sm outline-none cursor-pointer focus:ring-0 p-0 pr-1.5">
+                        <option class="bg-surface-container-low text-white" value="all">Thể loại</option>
+                        <option class="bg-surface-container-low text-white" value="Hành Động">Hành Động</option>
+                        <option class="bg-surface-container-low text-white" value="Viễn Tưởng">Viễn Tưởng</option>
+                        <option class="bg-surface-container-low text-white" value="Kinh Dị">Kinh Dị</option>
+                        <option class="bg-surface-container-low text-white" value="Tình Cảm">Tình Cảm</option>
+                        <option class="bg-surface-container-low text-white" value="Anime">Anime</option>
+                        <option class="bg-surface-container-low text-white" value="Hoạt Hình">Hoạt Hình</option>
+                        <option class="bg-surface-container-low text-white" value="Phiêu Lưu">Phiêu Lưu</option>
+                        <option class="bg-surface-container-low text-white" value="Hài">Hài</option>
+                    </select>
+                    <i class="fas fa-chevron-down text-white/50 text-[10px]"></i>
                 </div>
+                
+                <div class="filter-pill flex items-center gap-2 px-5 py-2.5 rounded-lg bg-white/4 border border-white/8 cursor-pointer hover:bg-white/8 hover:border-white/15 transition-all">
+                    <select id="movies-filter-format" class="bg-transparent border-none text-white text-sm outline-none cursor-pointer focus:ring-0 p-0 pr-1.5">
+                        <option class="bg-surface-container-low text-white" value="all">Định dạng</option>
+                        <option class="bg-surface-container-low text-white" value="2D">2D</option>
+                        <option class="bg-surface-container-low text-white" value="3D">3D</option>
+                        <option class="bg-surface-container-low text-white" value="IMAX">IMAX</option>
+                        <option class="bg-surface-container-low text-white" value="4DX">4DX</option>
+                    </select>
+                    <i class="fas fa-chevron-down text-white/50 text-[10px]"></i>
+                </div>
+                
+                <div class="filter-pill flex items-center gap-2 px-5 py-2.5 rounded-lg bg-white/4 border border-white/8 cursor-pointer hover:bg-white/8 hover:border-white/15 transition-all">
+                    <select id="movies-filter-age" class="bg-transparent border-none text-white text-sm outline-none cursor-pointer focus:ring-0 p-0 pr-1.5">
+                        <option class="bg-surface-container-low text-white" value="all">Độ tuổi</option>
+                        <option class="bg-surface-container-low text-white" value="P">P - Phổ thông</option>
+                        <option class="bg-surface-container-low text-white" value="T13">T13</option>
+                        <option class="bg-surface-container-low text-white" value="T16">T16</option>
+                        <option class="bg-surface-container-low text-white" value="T18">T18</option>
+                        <option class="bg-surface-container-low text-white" value="C18">C18</option>
+                    </select>
+                    <i class="fas fa-chevron-down text-white/50 text-[10px]"></i>
+                </div>
+            </div>
+            
+            <div class="sort-pill flex items-center gap-2.5 px-5 py-2.5 rounded-lg bg-white/4 border border-white/8 cursor-pointer hover:bg-white/8 hover:border-white/15 transition-all">
+                <select id="movies-sort" class="bg-transparent border-none text-white text-sm outline-none cursor-pointer focus:ring-0 p-0 pr-1.5">
+                    <option class="bg-surface-container-low text-white" value="newest">Sắp xếp: Mới nhất</option>
+                    <option class="bg-surface-container-low text-white" value="name-az">Tên: A → Z</option>
+                    <option class="bg-surface-container-low text-white" value="name-za">Tên: Z → A</option>
+                    <option class="bg-surface-container-low text-white" value="duration">Thời lượng</option>
+                </select>
+                <i class="fas fa-sliders-h text-white/50"></i>
             </div>
         </div>
 
-        <!-- FILTERS (Accessible) -->
-        <div class="flex flex-wrap gap-4 mb-12 bg-surface p-4 rounded-3xl border border-white/5">
-            <label class="sr-only" for="movies-filter-genre">Thể loại</label>
-            <select id="movies-filter-genre" class="bg-surface-high border-none text-sm text-white rounded-full px-6 py-3 focus:ring-accent w-full md:w-auto cursor-pointer">
-                <option value="all">Tất cả thể loại</option>
-                <option value="action">Hành Động</option>
-                <option value="scifi">Viễn Tưởng</option>
-                <option value="horror">Kinh Dị</option>
-                <option value="romance">Tình Cảm</option>
-            </select>
-
-            <label class="sr-only" for="movies-filter-format">Định dạng</label>
-            <select id="movies-filter-format" class="bg-surface-high border-none text-sm text-white rounded-full px-6 py-3 focus:ring-accent w-full md:w-auto cursor-pointer">
-                <option value="all">Mọi định dạng</option>
-                <option value="2d">2D</option>
-                <option value="3d">3D</option>
-                <option value="imax">IMAX</option>
-            </select>
-
-            <label class="sr-only" for="movies-filter-age">Độ tuổi</label>
-            <select id="movies-filter-age" class="bg-surface-high border-none text-sm text-white rounded-full px-6 py-3 focus:ring-accent w-full md:w-auto cursor-pointer">
-                <option value="all">Mọi độ tuổi</option>
-                <option value="p">Phổ thông</option>
-                <option value="t13">T13</option>
-                <option value="t16">T16</option>
-                <option value="t18">T18</option>
-            </select>
-            
-            <div class="flex-grow"></div>
-            
-            <label class="sr-only" for="movies-sort">Sắp xếp</label>
-            <select id="movies-sort" class="bg-base border border-white/10 text-sm text-white rounded-full px-6 py-3 focus:ring-accent w-full md:w-auto cursor-pointer">
-                <option value="newest">Mới nhất</option>
-                <option value="name-az">Tên A-Z</option>
-                <option value="name-za">Tên Z-A</option>
-            </select>
-        </div>
-
         <!-- MOVIE GRID -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6" id="movies-grid">
-            <!-- Rendered via JS normally, but providing some static high-end placeholders -->
-            <article class="hover-lift relative group rounded-[2rem] overflow-hidden bg-surface border border-white/5 aspect-[2/3]">
-                <img src="https://images.unsplash.com/photo-1505635552518-3448ff116af3?auto=format&fit=crop&w=400&q=80" alt="Ác Quỷ Ma Sơ II Poster" class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" loading="lazy">
-                <div class="absolute inset-0 bg-gradient-to-t from-base via-base/60 to-transparent"></div>
-                <div class="absolute bottom-0 left-0 p-6 w-full flex flex-col justify-end h-full">
-                    <span class="inline-block self-start py-1 px-3 bg-accent text-white text-[10px] font-bold rounded mb-2">T18</span>
-                    <h3 class="text-2xl font-display font-bold text-white mb-2 leading-tight">Ác Quỷ Ma Sơ II</h3>
-                    <div class="flex flex-wrap gap-2 mb-6">
-                        <span class="text-xs text-zinc-400 border border-zinc-700 px-2 py-1 rounded-md">2D</span>
-                        <span class="text-xs text-zinc-400 border border-zinc-700 px-2 py-1 rounded-md">IMAX</span>
-                    </div>
-                    <button class="w-full inline-flex justify-center items-center bg-white text-black px-4 py-3 rounded-full text-sm font-semibold hover:bg-zinc-200 transition-colors">Mua vé</button>
-                </div>
-            </article>
-            
-            <!-- Skeleton Loader (for layout demo) -->
-            <article class="relative rounded-[2rem] overflow-hidden bg-surface border border-white/5 aspect-[2/3] animate-pulse">
-                <div class="w-full h-full bg-surface-high"></div>
-            </article>
-            <article class="relative rounded-[2rem] overflow-hidden bg-surface border border-white/5 aspect-[2/3] animate-pulse">
-                <div class="w-full h-full bg-surface-high"></div>
-            </article>
-            <article class="relative rounded-[2rem] overflow-hidden bg-surface border border-white/5 aspect-[2/3] animate-pulse">
-                <div class="w-full h-full bg-surface-high"></div>
-            </article>
-            <article class="relative rounded-[2rem] overflow-hidden bg-surface border border-white/5 aspect-[2/3] animate-pulse">
-                <div class="w-full h-full bg-surface-high"></div>
-            </article>
+        <div class="movies-grid-container px-6 lg:px-14 mb-12">
+            <div class="movies-grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6" id="movies-grid">
+                <!-- Rendered dynamically by JS -->
+            </div>
         </div>
 
-        <div class="mt-16 text-center">
-            <button id="btn-load-more" class="inline-flex items-center justify-center border border-white/20 text-white px-8 py-3 rounded-full text-sm font-medium hover:bg-white/5 transition-colors">
-                Xem thêm
+        <!-- LOAD MORE -->
+        <div class="load-more-container flex justify-center pb-16 px-6" id="load-more-container">
+            <button class="btn-load-more flex items-center gap-2.5 px-10 py-3.5 rounded-full bg-transparent border-2 border-white/25 text-white hover:border-primary-container hover:bg-white/5 hover:shadow-[0_0_20px_rgba(229,9,20,0.2)] transition-all font-semibold" id="btn-load-more">
+                Xem thêm <i class="fas fa-chevron-down text-xs transition-transform duration-200"></i>
             </button>
         </div>
     </main>
 
-    <!-- MINIMAL FOOTER -->
-    <footer class="border-t border-white/5 bg-base py-12 px-6 md:px-12">
-        <div class="max-w-[1600px] mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
-            <div>
-                <a href="../home-page/index.html" class="font-display font-black text-2xl tracking-tighter text-white">3HD2K</a>
-                <p class="text-sm text-zinc-500 mt-2">Đẳng cấp điện ảnh. Trải nghiệm khác biệt.</p>
+    <!-- FOOTER -->
+    <footer class="border-t border-white/8 px-6 lg:px-14 py-12 bg-[#050505]/50">
+        <div class="footer-content flex flex-col md:flex-row justify-between gap-12 mb-12 flex-wrap">
+            <div class="footer-brand max-w-[320px]">
+                <h2 class="logo text-primary-container text-3xl font-normal tracking-widest mb-5 leading-none">3HD2K</h2>
+                <p class="text-secondary text-sm leading-relaxed mb-6 font-['Inter']">Trải nghiệm điện ảnh đỉnh cao, mang Hollywood đến gần bạn hơn.</p>
+                <div class="social-icons flex gap-5 text-secondary text-lg">
+                    <i class="fas fa-share-alt cursor-pointer hover:text-white transition-colors"></i>
+                    <i class="fas fa-globe cursor-pointer hover:text-white transition-colors"></i>
+                </div>
             </div>
-            <nav class="flex flex-wrap gap-6 text-sm font-medium text-zinc-400">
-                <a href="#" class="hover:text-white transition-colors">Điều khoản</a>
-                <a href="#" class="hover:text-white transition-colors">Bảo mật</a>
-                <a href="#" class="hover:text-white transition-colors">Tuyển dụng</a>
-                <a href="#" class="hover:text-white transition-colors">Liên hệ</a>
-            </nav>
+            <div class="footer-links flex gap-12 md:gap-20 flex-wrap">
+                <div class="link-column">
+                    <h4 class="text-xs font-bold text-white mb-6 uppercase tracking-wider">KHÁM PHÁ</h4>
+                    <ul class="flex flex-col gap-3">
+                        <li><a href="#" class="text-secondary hover:text-white text-sm transition-colors font-['Inter']">Phim Đang Chiếu</a></li>
+                        <li><a href="#" class="text-secondary hover:text-white text-sm transition-colors font-['Inter']">Phim Sắp Chiếu</a></li>
+                        <li><a href="#" class="text-secondary hover:text-white text-sm transition-colors font-['Inter']">Rạp Phim</a></li>
+                        <li><a href="#" class="text-secondary hover:text-white text-sm transition-colors font-['Inter']">Khuyến Mãi</a></li>
+                    </ul>
+                </div>
+                <div class="link-column">
+                    <h4 class="text-xs font-bold text-white mb-6 uppercase tracking-wider">HỖ TRỢ</h4>
+                    <ul class="flex flex-col gap-3">
+                        <li><a href="#" class="text-secondary hover:text-white text-sm transition-colors font-['Inter']">Help Center</a></li>
+                        <li><a href="#" class="text-secondary hover:text-white text-sm transition-colors font-['Inter']">Terms of Use</a></li>
+                        <li><a href="#" class="text-secondary hover:text-white text-sm transition-colors font-['Inter']">Privacy Policy</a></li>
+                        <li><a href="#" class="text-secondary hover:text-white text-sm transition-colors font-['Inter']">Cookie Preferences</a></li>
+                    </ul>
+                </div>
+                <div class="link-column">
+                    <h4 class="text-xs font-bold text-white mb-6 uppercase tracking-wider">VỀ CHÚNG TÔI</h4>
+                    <ul class="flex flex-col gap-3">
+                        <li><a href="#" class="text-secondary hover:text-white text-sm transition-colors font-['Inter']">About Us</a></li>
+                        <li><a href="#" class="text-secondary hover:text-white text-sm transition-colors font-['Inter']">Corporate Information</a></li>
+                        <li><a href="#" class="text-secondary hover:text-white text-sm transition-colors font-['Inter']">Tuyển Dụng</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom border-t border-white/8 pt-6 flex flex-col md:flex-row justify-between items-center text-xs text-secondary gap-4">
+            <p>&copy; 2024 3HD2K Entertainment. All rights reserved.</p>
+            <p class="flex items-center gap-1.5"><i class="fas fa-globe"></i> Tiếng Việt</p>
         </div>
     </footer>
 

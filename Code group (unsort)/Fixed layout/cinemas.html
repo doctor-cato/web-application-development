@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3HD2K - Cụm Rạp</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/cinemas.css">
+    <!-- Load custom fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@600;700;800;900&family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <!-- Leaflet.js Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- FontAwesome for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- NAVBAR -->
+    <header class="navbar">
+        <div class="nav-left">
+            <a href="index.html" class="logo">3HD2K</a>
+            <nav class="nav-links">
+                <a href="index.html">Trang chủ</a>
+                <a href="movies.html">Phim Đang Chiếu</a>
+                <a href="cinemas.html" class="active">Cụm Rạp</a>
+                <a href="#">Khuyến Mãi</a>
+                <a href="#">Đặt vé</a>
+            </nav>
+        </div>
+        <div class="nav-actions">
+            <div class="search-pill" id="search-pill">
+                <i class="fas fa-search" id="search-icon"></i>
+                <input type="text" id="search-input" placeholder="Tìm kiếm phim..." />
+                <span id="search-text">Tìm kiếm</span>
+            </div>
+            <i class="fas fa-bell"></i>
+            <i class="fas fa-user"></i>
+        </div>
+    </header>
+
+    <main class="cinemas-page">
+        <div class="cinemas-layout">
+            <!-- LEFT: Cinema List -->
+            <div class="cinemas-list-panel">
+                <div class="cinemas-header">
+                    <h1>Rạp chiếu gần đây</h1>
+                    <p>Khám phá các phòng chiếu 3HD2K chân thực gần bạn</p>
+                </div>
+                <div id="cinemas-list">
+                    <!-- Rendered by JS -->
+                </div>
+            </div>
+
+            <!-- RIGHT: Tactical Map -->
+            <div class="cinemas-map-panel">
+                <!-- HUD Frame -->
+                <div class="hud-frame">
+                    <span class="hud-corner hud-tl"></span>
+                    <span class="hud-corner hud-tr"></span>
+                    <span class="hud-corner hud-bl"></span>
+                    <span class="hud-corner hud-br"></span>
+                </div>
+
+                <!-- Scanline overlay -->
+                <div class="hud-scanlines"></div>
+
+                <!-- HUD Top Bar -->
+                <div class="hud-top-bar">
+                    <span class="map-overlay-brand"><i class="fas fa-film" style="margin-right: 6px;"></i> CINEMAS 3HD2K</span>
+                    <span class="hud-coordinates" id="hud-coordinates">COORDINATE: 20.9850° N, 105.8542° E</span>
+                </div>
+
+                <!-- Leaflet Map -->
+                <div id="leaflet-map"></div>
+
+                <!-- HUD Bottom Bar -->
+                <div class="hud-bottom-bar">
+                    <div class="hud-bottom-left">
+                        <span class="hud-mission">MISSION: FIND YOUR CINEMA</span>
+                        <span class="hud-system">SYSTEM <span style="color: var(--primary-red);">ONLINE</span></span>
+                    </div>
+                    <div class="hud-bottom-right">
+                        <div class="hud-legend">
+                            <span class="hud-legend-title">LEGEND</span>
+                            <div class="hud-legend-item">
+                                <span class="hud-legend-marker"></span>
+                                <span>3HD2K CINEMA</span>
+                            </div>
+                        </div>
+                        <span class="hud-tracking">TRACKING SYSTEM: <span style="color: var(--primary-red);">ACTIVE</span></span>
+                    </div>
+                </div>
+
+                <!-- Location button -->
+                <button class="btn-my-location" id="btn-my-location" title="Vị trí của tôi">
+                    <i class="fas fa-crosshairs"></i>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h2 class="logo">3HD2K</h2>
+                <p>Trải nghiệm điện ảnh đỉnh cao, mang Hollywood đến gần bạn hơn.</p>
+                <div class="social-icons">
+                    <i class="fas fa-share-alt"></i>
+                    <i class="fas fa-globe"></i>
+                </div>
+            </div>
+            <div class="footer-links">
+                <div class="link-column">
+                    <h4>KHÁM PHÁ</h4>
+                    <ul>
+                        <li><a href="#">Phim Đang Chiếu</a></li>
+                        <li><a href="#">Phim Sắp Chiếu</a></li>
+                        <li><a href="#">Rạp Phim</a></li>
+                        <li><a href="#">Khuyến Mãi</a></li>
+                    </ul>
+                </div>
+                <div class="link-column">
+                    <h4>HỖ TRỢ</h4>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Terms of Use</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Cookie Preferences</a></li>
+                    </ul>
+                </div>
+                <div class="link-column">
+                    <h4>VỀ CHÚNG TÔI</h4>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Corporate Information</a></li>
+                        <li><a href="#">Tuyển Dụng</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 3HD2K Entertainment. All rights reserved.</p>
+            <p><i class="fas fa-globe" style="margin-right: 5px;"></i> Tiếng Việt</p>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/cinemas.js"></script>
+</body>
+</html>

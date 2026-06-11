@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="vi" class="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>3HD2K | Đặt đồ ăn</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary-container": "#e50914",
+            "background": "#121414",
+            "surface-variant": "#343535",
+            "secondary": "#c8c6c5",
+            "surface-container-low": "#1a1c1c",
+            "surface-container-lowest": "#0d0e0f"
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #121414;
+      color: #e6e6e6;
+    }
+    h1, h2, h3, h4, .font-display {
+      font-family: 'Bebas Neue', sans-serif;
+    }
+
+    /* Scrollbar for grid scroll */
+    .grid::-webkit-scrollbar {
+      height: 10px;
+    }
+    .grid::-webkit-scrollbar-track {
+      background: rgba(255,255,255,0.04);
+      border-radius: 999px;
+      margin: 0 12px;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(255,255,255,0.04);
+    }
+    .grid::-webkit-scrollbar-thumb {
+      background: linear-gradient(90deg, rgba(229, 9, 20, 0.5), #e50914);
+      border-radius: 999px;
+      border: 2px solid transparent;
+      background-clip: padding-box;
+      transition: background 0.2s ease, box-shadow 0.2s ease;
+    }
+    .grid::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(90deg, rgba(229, 9, 20, 0.75), #ff1a27);
+      box-shadow: 0 0 12px rgba(229, 9, 20, 0.4);
+    }
+    .grid::-webkit-scrollbar-thumb:active {
+      background: #ff1a27;
+      box-shadow: 0 0 16px rgba(229, 9, 20, 0.55);
+    }
+
+    /* Qty +/- buttons hover glow */
+    .qty-row .qty-label {
+      transition: all 0.25s ease;
+    }
+    .qty-row .qty-label:hover {
+      background: rgba(229, 9, 20, 0.25) !important;
+      color: #fff !important;
+      box-shadow: 0 0 12px rgba(229, 9, 20, 0.4), 0 0 4px rgba(229, 9, 20, 0.2);
+      transform: scale(1.1);
+    }
+    .qty-row .qty-label:active {
+      transform: scale(0.95);
+    }
+
+    /* Add button hover glow */
+    .add-label {
+      transition: all 0.3s ease;
+    }
+    .add-label:hover {
+      background: #ff1a27 !important;
+      color: #fff !important;
+      box-shadow: 0 0 20px rgba(229, 9, 20, 0.6), 0 0 40px rgba(229, 9, 20, 0.3);
+      transform: translateY(-2px);
+    }
+    .add-label:active {
+      transform: translateY(0px) scale(0.98);
+    }
+
+    /* "ĐÃ THÊM" state button hover override */
+    .add-label[aria-pressed="true"] {
+      background: rgba(255, 255, 255, 0.05) !important;
+      color: #8a8a8a !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    }
+    .add-label[aria-pressed="true"]:hover {
+      background: rgba(255, 255, 255, 0.1) !important;
+      color: #fff !important;
+    }
+
+    /* Primary CTA hover */
+    .btn.primary {
+      transition: all 0.3s ease;
+    }
+    .btn.primary:hover {
+      background: #ff1a27;
+      box-shadow: 0 0 24px rgba(229, 9, 20, 0.5), 0 0 48px rgba(229, 9, 20, 0.2);
+      transform: translateY(-2px);
+    }
+
+    /* Card hover lift */
+    .card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.7), 0 0 20px rgba(229, 9, 20, 0.08);
+    }
+
+    /* Step active indicator */
+    .step.active::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: -6px;
+      width: 100%;
+      height: 2px;
+      background: #e50914;
+      transform: translateX(-50%);
+    }
+
+    /* Hide all state-based quantity displays and buttons by default */
+    .qty-row .btn-minus-1, .qty-row .btn-minus-2, .qty-row .btn-minus-3, .qty-row .btn-minus-4, .qty-row .btn-minus-5, .qty-row .btn-minus-6, .qty-row .btn-minus-7, .qty-row .btn-minus-8, .qty-row .btn-minus-9, .qty-row .btn-minus-10,
+    .qty-row .val-1, .qty-row .val-2, .qty-row .val-3, .qty-row .val-4, .qty-row .val-5, .qty-row .val-6, .qty-row .val-7, .qty-row .val-8, .qty-row .val-9, .qty-row .val-10,
+    .qty-row .btn-plus-2, .qty-row .btn-plus-3, .qty-row .btn-plus-4, .qty-row .btn-plus-5, .qty-row .btn-plus-6, .qty-row .btn-plus-7, .qty-row .btn-plus-8, .qty-row .btn-plus-9, .qty-row .btn-plus-10, .qty-row .btn-plus-11 {
+      display: none;
+    }
+  </style>
+</head>
+<body class="bg-background text-white min-h-screen flex flex-col font-['Inter'] antialiased">
+
+<!-- TOPBAR -->
+<header class="fixed top-0 left-0 right-0 h-20 z-50 bg-[#080808]/92 border-b border-primary-container/20 shadow-[inset_0_-1px_0_rgba(255,255,255,0.02)]">
+  <div class="max-w-[1109px] h-full mx-auto px-6 md:px-14 flex items-center justify-between">
+    <a class="brand font-['Bebas_Neue'] text-[37px] text-primary-container font-bold tracking-wider hover:scale-105 transition-transform duration-200" href="../../explore/home-page/index.html" aria-label="3HD2K trang chủ">3HD2K</a>
+    
+    <nav class="nav hidden md:flex items-center gap-7 h-full ml-7" aria-label="Điều hướng chính">
+      <a href="../../explore/home-page/index.html" class="relative flex items-center h-full text-secondary hover:text-white transition-colors duration-150 text-[15px] font-semibold">Trang chủ</a>
+      <a href="../../explore/movie-search/index.html" class="relative flex items-center h-full text-secondary hover:text-white transition-colors duration-150 text-[15px] font-semibold">Phim Đang Chiếu</a>
+      <a href="../../explore/cinema-map/index.html" class="relative flex items-center h-full text-secondary hover:text-white transition-colors duration-150 text-[15px] font-semibold">Cụm Rạp</a>
+      <a href="#" class="relative flex items-center h-full text-secondary hover:text-white transition-colors duration-150 text-[15px] font-semibold">Khuyến Mãi</a>
+      <a class="relative flex items-center h-full text-white transition-colors duration-150 text-[15px] font-semibold active" href="#" aria-current="page">Đặt vé</a>
+    </nav>
+    
+    <div class="actions flex items-center gap-3 ml-auto">
+      <label class="search-wrap flex items-center gap-2.5 w-36 h-11 px-3.5 rounded-full border border-white/5 bg-[#0c0c0c] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.015)]" aria-label="Tìm kiếm">
+        <svg class="search-icon w-[18px] h-[18px] flex-none fill-secondary" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M10 4a6 6 0 1 0 3.74 10.69l4.28 4.28 1.41-1.41-4.28-4.28A6 6 0 0 0 10 4zm0 2a4 4 0 1 1 0 8 4 4 0 0 1 0-8z"></path>
+        </svg>
+        <input class="search w-full border-0 outline-none bg-transparent text-secondary text-sm" placeholder="Tìm kiếm" />
+      </label>
+      
+      <button class="icon-btn w-7 h-7 inline-flex items-center justify-center p-0 border-0 bg-transparent text-secondary hover:text-white transition-colors duration-150" type="button" aria-label="Thông báo">
+        <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 3a6 6 0 0 0-6 6v2.5c0 .94-.34 1.83-.96 2.53L3.5 15.2V17h17v-1.8l-1.54-1.17c-.62-.7-.96-1.59-.96-2.53V9a6 6 0 0 0-6-6zm0 19a2.5 2.5 0 0 0 2.45-2H9.55A2.5 2.5 0 0 0 12 22z"></path>
+        </svg>
+      </button>
+      
+      <a href="../../user/loyalty-points/index.html" class="icon-btn w-7 h-7 inline-flex items-center justify-center p-0 border-0 bg-transparent text-secondary hover:text-white transition-colors duration-150" aria-label="Tài khoản">
+        <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 12a4.25 4.25 0 1 0-4.25-4.25A4.26 4.26 0 0 0 12 12zm0 2c-3.2 0-8 1.6-8 4.75V20h16v-1.25C20 15.6 15.2 14 12 14z"></path>
+        </svg>
+      </a>
+    </div>
+  </div>
+</header>
+
+<main class="page pt-28 px-8 pb-14 max-w-[1200px] mx-auto">
+  <div class="steps flex gap-7 justify-center mb-6">
+    <div class="step text-[13px] text-secondary">Thanh toán</div>
+    <div class="step active text-[13px] text-[#e50914] relative">Đồ ăn</div>
+    <div class="step text-[13px] text-secondary">Thanh toán</div>
+  </div>
+
+  <form class="content grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8 items-start">
+    
+    <!-- Items list -->
+    <section class="items flex-1 min-w-0">
+      <h2 class="text-[26px] font-['Bebas_Neue'] font-bold tracking-wider uppercase text-white mb-4">Đồ ăn</h2>
+
+      <!-- Category: Combo riêng -->
+      <section class="category mb-7 min-w-0">
+        <h3 class="text-lg text-[#f2f2f2] tracking-wide mb-3.5 font-semibold">Combo riêng</h3>
+        
+        <div class="grid flex w-full max-w-full gap-5 overflow-x-auto overflow-y-hidden pb-5 scroll-snap-x scroll-smooth">
+          
+          <!-- Card 1 -->
+          <article class="card flex flex-col justify-between bg-gradient-to-b from-white/2 to-black/2 rounded-lg overflow-hidden border border-white/5 shadow-md flex-none w-[480px] min-w-[480px] min-h-[420px] md:min-h-[480px]" data-product="combo">
+            <div class="media h-[240px] bg-cover bg-center relative" style="background-image:linear-gradient(135deg,#262626,#111);">
+              <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+            </div>
+            <div class="body p-5 md:p-6 flex flex-col gap-2.5 flex-grow">
+              <h3 class="text-sm font-extrabold text-white uppercase tracking-wide">Combo Người Yêu Phim</h3>
+              <div class="price text-[#e50914] font-extrabold text-base mt-2">150.000đ</div>
+              <p class="desc text-xs text-secondary leading-relaxed h-16 overflow-hidden">Bữa combo lớn cho 2 người, gồm bắp và nước.</p>
+              
+              <div class="controls mt-auto pt-2.5 flex flex-col items-stretch gap-2.5">
+                <div class="qty-row self-start inline-flex items-center justify-center gap-1.5 bg-[#0d0d0d] rounded-lg border border-white/5 min-h-[36px] px-2">
+                  <label class="qty-label btn-minus-1 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="combo-q1">-</label>
+                  <label class="qty-label btn-minus-2 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="combo-q1">-</label>
+                  <label class="qty-label btn-minus-3 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="combo-q2">-</label>
+                  <label class="qty-label btn-minus-4 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="combo-q3">-</label>
+                  <label class="qty-label btn-minus-5 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="combo-q4">-</label>
+                  <label class="qty-label btn-minus-6 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="combo-q5">-</label>
+                  <label class="qty-label btn-minus-7 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="combo-q6">-</label>
+                  <label class="qty-label btn-minus-8 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="combo-q7">-</label>
+                  <label class="qty-label btn-minus-9 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="combo-q8">-</label>
+                  <label class="qty-label btn-minus-10 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="combo-q9">-</label>
+                  
+                  <span class="qty-display val-1 text-sm font-bold text-white w-5 text-center">1</span>
+                  <span class="qty-display val-2 text-sm font-bold text-white w-5 text-center">2</span>
+                  <span class="qty-display val-3 text-sm font-bold text-white w-5 text-center">3</span>
+                  <span class="qty-display val-4 text-sm font-bold text-white w-5 text-center">4</span>
+                  <span class="qty-display val-5 text-sm font-bold text-white w-5 text-center">5</span>
+                  <span class="qty-display val-6 text-sm font-bold text-white w-5 text-center">6</span>
+                  <span class="qty-display val-7 text-sm font-bold text-white w-5 text-center">7</span>
+                  <span class="qty-display val-8 text-sm font-bold text-white w-5 text-center">8</span>
+                  <span class="qty-display val-9 text-sm font-bold text-white w-5 text-center">9</span>
+                  <span class="qty-display val-10 text-sm font-bold text-white w-5 text-center">10</span>
+                  
+                  <label class="qty-label btn-plus-2 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="combo-q2">+</label>
+                  <label class="qty-label btn-plus-3 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="combo-q3">+</label>
+                  <label class="qty-label btn-plus-4 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="combo-q4">+</label>
+                  <label class="qty-label btn-plus-5 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="combo-q5">+</label>
+                  <label class="qty-label btn-plus-6 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="combo-q6">+</label>
+                  <label class="qty-label btn-plus-7 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="combo-q7">+</label>
+                  <label class="qty-label btn-plus-8 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="combo-q8">+</label>
+                  <label class="qty-label btn-plus-9 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="combo-q9">+</label>
+                  <label class="qty-label btn-plus-10 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="combo-q10">+</label>
+                  <label class="qty-label btn-plus-11 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="combo-q10">+</label>
+                </div>
+                <div class="add-row w-full flex justify-end items-center">
+                  <label class="add-label combo-btn-label cursor-pointer text-xs font-extrabold text-[#0b0b0b] bg-primary-container hover:bg-red-700 hover:text-white w-full py-2.5 px-4 rounded-lg flex items-center justify-center transition-all duration-200 uppercase"></label>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Card 2 -->
+          <article class="card flex flex-col justify-between bg-gradient-to-b from-white/2 to-black/2 rounded-lg overflow-hidden border border-white/5 shadow-md flex-none w-[480px] min-w-[480px] min-h-[420px] md:min-h-[480px]" data-product="comboBimBim">
+            <div class="media h-[240px] bg-cover bg-center relative" style="background-image:linear-gradient(135deg,#2a2a2a,#111);">
+              <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+            </div>
+            <div class="body p-5 md:p-6 flex flex-col gap-2.5 flex-grow">
+              <h3 class="text-sm font-extrabold text-white uppercase tracking-wide">Combo 2 Bỏng</h3>
+              <div class="price text-[#e50914] font-extrabold text-base mt-2">125.000đ</div>
+              <p class="desc text-xs text-secondary leading-relaxed h-16 overflow-hidden">1 bắp rang + 1 bim bim khoai tây.</p>
+              
+              <div class="controls mt-auto pt-2.5 flex flex-col items-stretch gap-2.5">
+                <div class="qty-row self-start inline-flex items-center justify-center gap-1.5 bg-[#0d0d0d] rounded-lg border border-white/5 min-h-[36px] px-2">
+                  <label class="qty-label btn-minus-1 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="comboBimBim-q1">-</label>
+                  <label class="qty-label btn-minus-2 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="comboBimBim-q1">-</label>
+                  <label class="qty-label btn-minus-3 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="comboBimBim-q2">-</label>
+                  <label class="qty-label btn-minus-4 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="comboBimBim-q3">-</label>
+                  <label class="qty-label btn-minus-5 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="comboBimBim-q4">-</label>
+                  <label class="qty-label btn-minus-6 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="comboBimBim-q5">-</label>
+                  <label class="qty-label btn-minus-7 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="comboBimBim-q6">-</label>
+                  <label class="qty-label btn-minus-8 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="comboBimBim-q7">-</label>
+                  <label class="qty-label btn-minus-9 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="comboBimBim-q8">-</label>
+                  <label class="qty-label btn-minus-10 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="comboBimBim-q9">-</label>
+                  
+                  <span class="qty-display val-1 text-sm font-bold text-white w-5 text-center">1</span>
+                  <span class="qty-display val-2 text-sm font-bold text-white w-5 text-center">2</span>
+                  <span class="qty-display val-3 text-sm font-bold text-white w-5 text-center">3</span>
+                  <span class="qty-display val-4 text-sm font-bold text-white w-5 text-center">4</span>
+                  <span class="qty-display val-5 text-sm font-bold text-white w-5 text-center">5</span>
+                  <span class="qty-display val-6 text-sm font-bold text-white w-5 text-center">6</span>
+                  <span class="qty-display val-7 text-sm font-bold text-white w-5 text-center">7</span>
+                  <span class="qty-display val-8 text-sm font-bold text-white w-5 text-center">8</span>
+                  <span class="qty-display val-9 text-sm font-bold text-white w-5 text-center">9</span>
+                  <span class="qty-display val-10 text-sm font-bold text-white w-5 text-center">10</span>
+                  
+                  <label class="qty-label btn-plus-2 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="comboBimBim-q2">+</label>
+                  <label class="qty-label btn-plus-3 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="comboBimBim-q3">+</label>
+                  <label class="qty-label btn-plus-4 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="comboBimBim-q4">+</label>
+                  <label class="qty-label btn-plus-5 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="comboBimBim-q5">+</label>
+                  <label class="qty-label btn-plus-6 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="comboBimBim-q6">+</label>
+                  <label class="qty-label btn-plus-7 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="comboBimBim-q7">+</label>
+                  <label class="qty-label btn-plus-8 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="comboBimBim-q8">+</label>
+                  <label class="qty-label btn-plus-9 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="comboBimBim-q9">+</label>
+                  <label class="qty-label btn-plus-10 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="comboBimBim-q10">+</label>
+                  <label class="qty-label btn-plus-11 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="comboBimBim-q10">+</label>
+                </div>
+                <div class="add-row w-full flex justify-end items-center">
+                  <label class="add-label comboBimBim-btn-label cursor-pointer text-xs font-extrabold text-[#0b0b0b] bg-primary-container hover:bg-red-700 hover:text-white w-full py-2.5 px-4 rounded-lg flex items-center justify-center transition-all duration-200 uppercase"></label>
+                </div>
+              </div>
+            </div>
+          </article>
+          
+        </div>
+      </section>
+
+      <!-- Category: Đồ ăn riêng -->
+      <section class="category mb-7 min-w-0">
+        <h3 class="text-lg text-[#f2f2f2] tracking-wide mb-3.5 font-semibold">Đồ ăn riêng</h3>
+        
+        <div class="grid flex w-full max-w-full gap-5 overflow-x-auto overflow-y-hidden pb-5 scroll-snap-x scroll-smooth">
+          
+          <!-- Card 3 -->
+          <article class="card flex flex-col justify-between bg-gradient-to-b from-white/2 to-black/2 rounded-lg overflow-hidden border border-white/5 shadow-md flex-none w-[480px] min-w-[480px] min-h-[420px] md:min-h-[480px]" data-product="popcorn">
+            <div class="media h-[240px] bg-cover bg-center relative" style="background-image:linear-gradient(135deg,#272727,#111);">
+              <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+            </div>
+            <div class="body p-5 md:p-6 flex flex-col gap-2.5 flex-grow">
+              <h3 class="text-sm font-extrabold text-white uppercase tracking-wide">Bắp Đơn</h3>
+              <div class="price text-[#e50914] font-extrabold text-base mt-2">65.000đ</div>
+              <p class="desc text-xs text-secondary leading-relaxed h-16 overflow-hidden">Bắp rang bơ cỡ lớn.</p>
+              
+              <div class="controls mt-auto pt-2.5 flex flex-col items-stretch gap-2.5">
+                <div class="qty-row self-start inline-flex items-center justify-center gap-1.5 bg-[#0d0d0d] rounded-lg border border-white/5 min-h-[36px] px-2">
+                  <label class="qty-label btn-minus-1 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="popcorn-q1">-</label>
+                  <label class="qty-label btn-minus-2 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="popcorn-q1">-</label>
+                  <label class="qty-label btn-minus-3 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="popcorn-q2">-</label>
+                  <label class="qty-label btn-minus-4 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="popcorn-q3">-</label>
+                  <label class="qty-label btn-minus-5 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="popcorn-q4">-</label>
+                  <label class="qty-label btn-minus-6 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="popcorn-q5">-</label>
+                  <label class="qty-label btn-minus-7 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="popcorn-q6">-</label>
+                  <label class="qty-label btn-minus-8 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="popcorn-q7">-</label>
+                  <label class="qty-label btn-minus-9 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="popcorn-q8">-</label>
+                  <label class="qty-label btn-minus-10 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="popcorn-q9">-</label>
+                  
+                  <span class="qty-display val-1 text-sm font-bold text-white w-5 text-center">1</span>
+                  <span class="qty-display val-2 text-sm font-bold text-white w-5 text-center">2</span>
+                  <span class="qty-display val-3 text-sm font-bold text-white w-5 text-center">3</span>
+                  <span class="qty-display val-4 text-sm font-bold text-white w-5 text-center">4</span>
+                  <span class="qty-display val-5 text-sm font-bold text-white w-5 text-center">5</span>
+                  <span class="qty-display val-6 text-sm font-bold text-white w-5 text-center">6</span>
+                  <span class="qty-display val-7 text-sm font-bold text-white w-5 text-center">7</span>
+                  <span class="qty-display val-8 text-sm font-bold text-white w-5 text-center">8</span>
+                  <span class="qty-display val-9 text-sm font-bold text-white w-5 text-center">9</span>
+                  <span class="qty-display val-10 text-sm font-bold text-white w-5 text-center">10</span>
+                  
+                  <label class="qty-label btn-plus-2 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="popcorn-q2">+</label>
+                  <label class="qty-label btn-plus-3 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="popcorn-q3">+</label>
+                  <label class="qty-label btn-plus-4 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="popcorn-q4">+</label>
+                  <label class="qty-label btn-plus-5 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="popcorn-q5">+</label>
+                  <label class="qty-label btn-plus-6 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="popcorn-q6">+</label>
+                  <label class="qty-label btn-plus-7 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="popcorn-q7">+</label>
+                  <label class="qty-label btn-plus-8 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="popcorn-q8">+</label>
+                  <label class="qty-label btn-plus-9 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="popcorn-q9">+</label>
+                  <label class="qty-label btn-plus-10 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="popcorn-q10">+</label>
+                  <label class="qty-label btn-plus-11 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="popcorn-q10">+</label>
+                </div>
+                <div class="add-row w-full flex justify-end items-center">
+                  <label class="add-label popcorn-btn-label cursor-pointer text-xs font-extrabold text-[#0b0b0b] bg-primary-container hover:bg-red-700 hover:text-white w-full py-2.5 px-4 rounded-lg flex items-center justify-center transition-all duration-200 uppercase"></label>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Card 4 -->
+          <article class="card flex flex-col justify-between bg-gradient-to-b from-white/2 to-black/2 rounded-lg overflow-hidden border border-white/5 shadow-md flex-none w-[480px] min-w-[480px] min-h-[420px] md:min-h-[480px]" data-product="popcornDuo">
+            <div class="media h-[240px] bg-cover bg-center relative" style="background-image:linear-gradient(135deg,#2b2b2b,#111);">
+              <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+            </div>
+            <div class="body p-5 md:p-6 flex flex-col gap-2.5 flex-grow">
+              <h3 class="text-sm font-extrabold text-white uppercase tracking-wide">Bắp Rang Đôi</h3>
+              <div class="price text-[#e50914] font-extrabold text-base mt-2">95.000đ</div>
+              <p class="desc text-xs text-secondary leading-relaxed h-16 overflow-hidden">Bắp cho 2 người.</p>
+              
+              <div class="controls mt-auto pt-2.5 flex flex-col items-stretch gap-2.5">
+                <div class="qty-row self-start inline-flex items-center justify-center gap-1.5 bg-[#0d0d0d] rounded-lg border border-white/5 min-h-[36px] px-2">
+                  <label class="qty-label btn-minus-1 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="popcornDuo-q1">-</label>
+                  <label class="qty-label btn-minus-2 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="popcornDuo-q1">-</label>
+                  <label class="qty-label btn-minus-3 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="popcornDuo-q2">-</label>
+                  <label class="qty-label btn-minus-4 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="popcornDuo-q3">-</label>
+                  <label class="qty-label btn-minus-5 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="popcornDuo-q4">-</label>
+                  <label class="qty-label btn-minus-6 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="popcornDuo-q5">-</label>
+                  <label class="qty-label btn-minus-7 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="popcornDuo-q6">-</label>
+                  <label class="qty-label btn-minus-8 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="popcornDuo-q7">-</label>
+                  <label class="qty-label btn-minus-9 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="popcornDuo-q8">-</label>
+                  <label class="qty-label btn-minus-10 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="popcornDuo-q9">-</label>
+                  
+                  <span class="qty-display val-1 text-sm font-bold text-white w-5 text-center">1</span>
+                  <span class="qty-display val-2 text-sm font-bold text-white w-5 text-center">2</span>
+                  <span class="qty-display val-3 text-sm font-bold text-white w-5 text-center">3</span>
+                  <span class="qty-display val-4 text-sm font-bold text-white w-5 text-center">4</span>
+                  <span class="qty-display val-5 text-sm font-bold text-white w-5 text-center">5</span>
+                  <span class="qty-display val-6 text-sm font-bold text-white w-5 text-center">6</span>
+                  <span class="qty-display val-7 text-sm font-bold text-white w-5 text-center">7</span>
+                  <span class="qty-display val-8 text-sm font-bold text-white w-5 text-center">8</span>
+                  <span class="qty-display val-9 text-sm font-bold text-white w-5 text-center">9</span>
+                  <span class="qty-display val-10 text-sm font-bold text-white w-5 text-center">10</span>
+                  
+                  <label class="qty-label btn-plus-2 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="popcornDuo-q2">+</label>
+                  <label class="qty-label btn-plus-3 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="popcornDuo-q3">+</label>
+                  <label class="qty-label btn-plus-4 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="popcornDuo-q4">+</label>
+                  <label class="qty-label btn-plus-5 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="popcornDuo-q5">+</label>
+                  <label class="qty-label btn-plus-6 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="popcornDuo-q6">+</label>
+                  <label class="qty-label btn-plus-7 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="popcornDuo-q7">+</label>
+                  <label class="qty-label btn-plus-8 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="popcornDuo-q8">+</label>
+                  <label class="qty-label btn-plus-9 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="popcornDuo-q9">+</label>
+                  <label class="qty-label btn-plus-10 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="popcornDuo-q10">+</label>
+                  <label class="qty-label btn-plus-11 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="popcornDuo-q10">+</label>
+                </div>
+                <div class="add-row w-full flex justify-end items-center">
+                  <label class="add-label popcornDuo-btn-label cursor-pointer text-xs font-extrabold text-[#0b0b0b] bg-primary-container hover:bg-red-700 hover:text-white w-full py-2.5 px-4 rounded-lg flex items-center justify-center transition-all duration-200 uppercase"></label>
+                </div>
+              </div>
+            </div>
+          </article>
+          
+        </div>
+      </section>
+
+      <h2 class="text-[26px] font-['Bebas_Neue'] font-bold tracking-wider uppercase text-white mb-4 mt-6">Nước uống</h2>
+
+      <!-- Category: Combo riêng (Nước) -->
+      <section class="category mb-7 min-w-0">
+        <h3 class="text-lg text-[#f2f2f2] tracking-wide mb-3.5 font-semibold">Combo riêng</h3>
+        
+        <div class="grid flex w-full max-w-full gap-5 overflow-x-auto overflow-y-hidden pb-5 scroll-snap-x scroll-smooth">
+          
+          <!-- Card 5 -->
+          <article class="card flex flex-col justify-between bg-gradient-to-b from-white/2 to-black/2 rounded-lg overflow-hidden border border-white/5 shadow-md flex-none w-[480px] min-w-[480px] min-h-[420px] md:min-h-[480px]" data-product="coupleDrink">
+            <div class="media h-[240px] bg-cover bg-center relative" style="background-image:linear-gradient(135deg,#27313a,#111);">
+              <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+            </div>
+            <div class="body p-5 md:p-6 flex flex-col gap-2.5 flex-grow">
+              <h3 class="text-sm font-extrabold text-white uppercase tracking-wide">Combo Cặp Đôi</h3>
+              <div class="price text-[#e50914] font-extrabold text-base mt-2">55.000đ</div>
+              <p class="desc text-xs text-secondary leading-relaxed h-16 overflow-hidden">Một cốc nước to kèm 2 ống hút chia đôi.</p>
+              
+              <div class="controls mt-auto pt-2.5 flex flex-col items-stretch gap-2.5">
+                <div class="qty-row self-start inline-flex items-center justify-center gap-1.5 bg-[#0d0d0d] rounded-lg border border-white/5 min-h-[36px] px-2">
+                  <label class="qty-label btn-minus-1 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="drinks-q1">-</label>
+                  <label class="qty-label btn-minus-2 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="drinks-q1">-</label>
+                  <label class="qty-label btn-minus-3 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="drinks-q2">-</label>
+                  <label class="qty-label btn-minus-4 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="drinks-q3">-</label>
+                  <label class="qty-label btn-minus-5 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="drinks-q4">-</label>
+                  <label class="qty-label btn-minus-6 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="drinks-q5">-</label>
+                  <label class="qty-label btn-minus-7 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="drinks-q6">-</label>
+                  <label class="qty-label btn-minus-8 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="drinks-q7">-</label>
+                  <label class="qty-label btn-minus-9 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="drinks-q8">-</label>
+                  <label class="qty-label btn-minus-10 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="drinks-q9">-</label>
+                  
+                  <span class="qty-display val-1 text-sm font-bold text-white w-5 text-center">1</span>
+                  <span class="qty-display val-2 text-sm font-bold text-white w-5 text-center">2</span>
+                  <span class="qty-display val-3 text-sm font-bold text-white w-5 text-center">3</span>
+                  <span class="qty-display val-4 text-sm font-bold text-white w-5 text-center">4</span>
+                  <span class="qty-display val-5 text-sm font-bold text-white w-5 text-center">5</span>
+                  <span class="qty-display val-6 text-sm font-bold text-white w-5 text-center">6</span>
+                  <span class="qty-display val-7 text-sm font-bold text-white w-5 text-center">7</span>
+                  <span class="qty-display val-8 text-sm font-bold text-white w-5 text-center">8</span>
+                  <span class="qty-display val-9 text-sm font-bold text-white w-5 text-center">9</span>
+                  <span class="qty-display val-10 text-sm font-bold text-white w-5 text-center">10</span>
+                  
+                  <label class="qty-label btn-plus-2 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="drinks-q2">+</label>
+                  <label class="qty-label btn-plus-3 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="drinks-q3">+</label>
+                  <label class="qty-label btn-plus-4 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="drinks-q4">+</label>
+                  <label class="qty-label btn-plus-5 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="drinks-q5">+</label>
+                  <label class="qty-label btn-plus-6 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="drinks-q6">+</label>
+                  <label class="qty-label btn-plus-7 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="drinks-q7">+</label>
+                  <label class="qty-label btn-plus-8 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="drinks-q8">+</label>
+                  <label class="qty-label btn-plus-9 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="drinks-q9">+</label>
+                  <label class="qty-label btn-plus-10 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="drinks-q10">+</label>
+                  <label class="qty-label btn-plus-11 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="drinks-q10">+</label>
+                </div>
+                <div class="add-row w-full flex justify-end items-center">
+                  <label class="add-label drinks-btn-label cursor-pointer text-xs font-extrabold text-[#0b0b0b] bg-primary-container hover:bg-red-700 hover:text-white w-full py-2.5 px-4 rounded-lg flex items-center justify-center transition-all duration-200 uppercase"></label>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Card 6 -->
+          <article class="card flex flex-col justify-between bg-gradient-to-b from-white/2 to-black/2 rounded-lg overflow-hidden border border-white/5 shadow-md flex-none w-[480px] min-w-[480px] min-h-[420px] md:min-h-[480px]" data-product="drinksCombo2">
+            <div class="media h-[240px] bg-cover bg-center relative" style="background-image:linear-gradient(135deg,#2b323c,#111);">
+              <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+            </div>
+            <div class="body p-5 md:p-6 flex flex-col gap-2.5 flex-grow">
+              <h3 class="text-sm font-extrabold text-white uppercase tracking-wide">Combo 2 Nước</h3>
+              <div class="price text-[#e50914] font-extrabold text-base mt-2">65.000đ</div>
+              <p class="desc text-xs text-secondary leading-relaxed h-16 overflow-hidden">Combo gồm 2 ly nước riêng cho 2 người.</p>
+              
+              <div class="controls mt-auto pt-2.5 flex flex-col items-stretch gap-2.5">
+                <div class="qty-row self-start inline-flex items-center justify-center gap-1.5 bg-[#0d0d0d] rounded-lg border border-white/5 min-h-[36px] px-2">
+                  <label class="qty-label btn-minus-1 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="drinksCombo2-q1">-</label>
+                  <label class="qty-label btn-minus-2 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="drinksCombo2-q1">-</label>
+                  <label class="qty-label btn-minus-3 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="drinksCombo2-q2">-</label>
+                  <label class="qty-label btn-minus-4 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="drinksCombo2-q3">-</label>
+                  <label class="qty-label btn-minus-5 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="drinksCombo2-q4">-</label>
+                  <label class="qty-label btn-minus-6 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="drinksCombo2-q5">-</label>
+                  <label class="qty-label btn-minus-7 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="drinksCombo2-q6">-</label>
+                  <label class="qty-label btn-minus-8 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="drinksCombo2-q7">-</label>
+                  <label class="qty-label btn-minus-9 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="drinksCombo2-q8">-</label>
+                  <label class="qty-label btn-minus-10 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="drinksCombo2-q9">-</label>
+                  
+                  <span class="qty-display val-1 text-sm font-bold text-white w-5 text-center">1</span>
+                  <span class="qty-display val-2 text-sm font-bold text-white w-5 text-center">2</span>
+                  <span class="qty-display val-3 text-sm font-bold text-white w-5 text-center">3</span>
+                  <span class="qty-display val-4 text-sm font-bold text-white w-5 text-center">4</span>
+                  <span class="qty-display val-5 text-sm font-bold text-white w-5 text-center">5</span>
+                  <span class="qty-display val-6 text-sm font-bold text-white w-5 text-center">6</span>
+                  <span class="qty-display val-7 text-sm font-bold text-white w-5 text-center">7</span>
+                  <span class="qty-display val-8 text-sm font-bold text-white w-5 text-center">8</span>
+                  <span class="qty-display val-9 text-sm font-bold text-white w-5 text-center">9</span>
+                  <span class="qty-display val-10 text-sm font-bold text-white w-5 text-center">10</span>
+                  
+                  <label class="qty-label btn-plus-2 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="drinksCombo2-q2">+</label>
+                  <label class="qty-label btn-plus-3 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="drinksCombo2-q3">+</label>
+                  <label class="qty-label btn-plus-4 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="drinksCombo2-q4">+</label>
+                  <label class="qty-label btn-plus-5 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="drinksCombo2-q5">+</label>
+                  <label class="qty-label btn-plus-6 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="drinksCombo2-q6">+</label>
+                  <label class="qty-label btn-plus-7 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="drinksCombo2-q7">+</label>
+                  <label class="qty-label btn-plus-8 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="drinksCombo2-q8">+</label>
+                  <label class="qty-label btn-plus-9 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="drinksCombo2-q9">+</label>
+                  <label class="qty-label btn-plus-10 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="drinksCombo2-q10">+</label>
+                  <label class="qty-label btn-plus-11 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="drinksCombo2-q10">+</label>
+                </div>
+                <div class="add-row w-full flex justify-end items-center">
+                  <label class="add-label drinksCombo2-btn-label cursor-pointer text-xs font-extrabold text-[#0b0b0b] bg-primary-container hover:bg-red-700 hover:text-white w-full py-2.5 px-4 rounded-lg flex items-center justify-center transition-all duration-200 uppercase"></label>
+                </div>
+              </div>
+            </div>
+          </article>
+          
+        </div>
+      </section>
+
+      <!-- Category: Nước thường -->
+      <section class="category mb-7 min-w-0">
+        <h3 class="text-lg text-[#f2f2f2] tracking-wide mb-3.5 font-semibold">Nước thường</h3>
+        
+        <div class="grid flex w-full max-w-full gap-5 overflow-x-auto overflow-y-hidden pb-5 scroll-snap-x scroll-smooth">
+          
+          <!-- Card 7 -->
+          <article class="card flex flex-col justify-between bg-gradient-to-b from-white/2 to-black/2 rounded-lg overflow-hidden border border-white/5 shadow-md flex-none w-[480px] min-w-[480px] min-h-[420px] md:min-h-[480px]" data-product="coca">
+            <div class="media h-[240px] bg-cover bg-center relative" style="background-image:linear-gradient(135deg,#29323a,#111);">
+              <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+            </div>
+            <div class="body p-5 md:p-6 flex flex-col gap-2.5 flex-grow">
+              <h3 class="text-sm font-extrabold text-white uppercase tracking-wide">Coca</h3>
+              <div class="price text-[#e50914] font-extrabold text-base mt-2">35.000đ</div>
+              <p class="desc text-xs text-secondary leading-relaxed h-16 overflow-hidden">Nước ngọt Coca mát lạnh.</p>
+              
+              <div class="controls mt-auto pt-2.5 flex flex-col items-stretch gap-2.5">
+                <div class="qty-row self-start inline-flex items-center justify-center gap-1.5 bg-[#0d0d0d] rounded-lg border border-white/5 min-h-[36px] px-2">
+                  <label class="qty-label btn-minus-1 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="coca-q1">-</label>
+                  <label class="qty-label btn-minus-2 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="coca-q1">-</label>
+                  <label class="qty-label btn-minus-3 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="coca-q2">-</label>
+                  <label class="qty-label btn-minus-4 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="coca-q3">-</label>
+                  <label class="qty-label btn-minus-5 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="coca-q4">-</label>
+                  <label class="qty-label btn-minus-6 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="coca-q5">-</label>
+                  <label class="qty-label btn-minus-7 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="coca-q6">-</label>
+                  <label class="qty-label btn-minus-8 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="coca-q7">-</label>
+                  <label class="qty-label btn-minus-9 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="coca-q8">-</label>
+                  <label class="qty-label btn-minus-10 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="coca-q9">-</label>
+                  
+                  <span class="qty-display val-1 text-sm font-bold text-white w-5 text-center">1</span>
+                  <span class="qty-display val-2 text-sm font-bold text-white w-5 text-center">2</span>
+                  <span class="qty-display val-3 text-sm font-bold text-white w-5 text-center">3</span>
+                  <span class="qty-display val-4 text-sm font-bold text-white w-5 text-center">4</span>
+                  <span class="qty-display val-5 text-sm font-bold text-white w-5 text-center">5</span>
+                  <span class="qty-display val-6 text-sm font-bold text-white w-5 text-center">6</span>
+                  <span class="qty-display val-7 text-sm font-bold text-white w-5 text-center">7</span>
+                  <span class="qty-display val-8 text-sm font-bold text-white w-5 text-center">8</span>
+                  <span class="qty-display val-9 text-sm font-bold text-white w-5 text-center">9</span>
+                  <span class="qty-display val-10 text-sm font-bold text-white w-5 text-center">10</span>
+                  
+                  <label class="qty-label btn-plus-2 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="coca-q2">+</label>
+                  <label class="qty-label btn-plus-3 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="coca-q3">+</label>
+                  <label class="qty-label btn-plus-4 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="coca-q4">+</label>
+                  <label class="qty-label btn-plus-5 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="coca-q5">+</label>
+                  <label class="qty-label btn-plus-6 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="coca-q6">+</label>
+                  <label class="qty-label btn-plus-7 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="coca-q7">+</label>
+                  <label class="qty-label btn-plus-8 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="coca-q8">+</label>
+                  <label class="qty-label btn-plus-9 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="coca-q9">+</label>
+                  <label class="qty-label btn-plus-10 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="coca-q10">+</label>
+                  <label class="qty-label btn-plus-11 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="coca-q10">+</label>
+                </div>
+                <div class="add-row w-full flex justify-end items-center">
+                  <label class="add-label coca-btn-label cursor-pointer text-xs font-extrabold text-[#0b0b0b] bg-primary-container hover:bg-red-700 hover:text-white w-full py-2.5 px-4 rounded-lg flex items-center justify-center transition-all duration-200 uppercase"></label>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Card 8 -->
+          <article class="card flex flex-col justify-between bg-gradient-to-b from-white/2 to-black/2 rounded-lg overflow-hidden border border-white/5 shadow-md flex-none w-[480px] min-w-[480px] min-h-[420px] md:min-h-[480px]" data-product="pepsi">
+            <div class="media h-[240px] bg-cover bg-center relative" style="background-image:linear-gradient(135deg,#2f3742,#111);">
+              <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+            </div>
+            <div class="body p-5 md:p-6 flex flex-col gap-2.5 flex-grow">
+              <h3 class="text-sm font-extrabold text-white uppercase tracking-wide">Pepsi</h3>
+              <div class="price text-[#e50914] font-extrabold text-base mt-2">35.000đ</div>
+              <p class="desc text-xs text-secondary leading-relaxed h-16 overflow-hidden">Nước ngọt Pepsi mát lạnh.</p>
+              
+              <div class="controls mt-auto pt-2.5 flex flex-col items-stretch gap-2.5">
+                <div class="qty-row self-start inline-flex items-center justify-center gap-1.5 bg-[#0d0d0d] rounded-lg border border-white/5 min-h-[36px] px-2">
+                  <label class="qty-label btn-minus-1 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="pepsi-q1">-</label>
+                  <label class="qty-label btn-minus-2 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="pepsi-q1">-</label>
+                  <label class="qty-label btn-minus-3 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="pepsi-q2">-</label>
+                  <label class="qty-label btn-minus-4 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="pepsi-q3">-</label>
+                  <label class="qty-label btn-minus-5 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="pepsi-q4">-</label>
+                  <label class="qty-label btn-minus-6 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="pepsi-q5">-</label>
+                  <label class="qty-label btn-minus-7 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="pepsi-q6">-</label>
+                  <label class="qty-label btn-minus-8 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="pepsi-q7">-</label>
+                  <label class="qty-label btn-minus-9 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="pepsi-q8">-</label>
+                  <label class="qty-label btn-minus-10 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="pepsi-q9">-</label>
+                  
+                  <span class="qty-display val-1 text-sm font-bold text-white w-5 text-center">1</span>
+                  <span class="qty-display val-2 text-sm font-bold text-white w-5 text-center">2</span>
+                  <span class="qty-display val-3 text-sm font-bold text-white w-5 text-center">3</span>
+                  <span class="qty-display val-4 text-sm font-bold text-white w-5 text-center">4</span>
+                  <span class="qty-display val-5 text-sm font-bold text-white w-5 text-center">5</span>
+                  <span class="qty-display val-6 text-sm font-bold text-white w-5 text-center">6</span>
+                  <span class="qty-display val-7 text-sm font-bold text-white w-5 text-center">7</span>
+                  <span class="qty-display val-8 text-sm font-bold text-white w-5 text-center">8</span>
+                  <span class="qty-display val-9 text-sm font-bold text-white w-5 text-center">9</span>
+                  <span class="qty-display val-10 text-sm font-bold text-white w-5 text-center">10</span>
+                  
+                  <label class="qty-label btn-plus-2 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="pepsi-q2">+</label>
+                  <label class="qty-label btn-plus-3 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="pepsi-q3">+</label>
+                  <label class="qty-label btn-plus-4 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="pepsi-q4">+</label>
+                  <label class="qty-label btn-plus-5 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="pepsi-q5">+</label>
+                  <label class="qty-label btn-plus-6 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="pepsi-q6">+</label>
+                  <label class="qty-label btn-plus-7 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="pepsi-q7">+</label>
+                  <label class="qty-label btn-plus-8 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="pepsi-q8">+</label>
+                  <label class="qty-label btn-plus-9 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="pepsi-q9">+</label>
+                  <label class="qty-label btn-plus-10 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="pepsi-q10">+</label>
+                  <label class="qty-label btn-plus-11 text-sm font-bold text-white bg-surface-variant hover:bg-primary-container/25 cursor-pointer w-6.5 h-6.5 rounded flex items-center justify-center transition-all duration-200" for="pepsi-q10">+</label>
+                </div>
+                <div class="add-row w-full flex justify-end items-center">
+                  <label class="add-label pepsi-btn-label cursor-pointer text-xs font-extrabold text-[#0b0b0b] bg-primary-container hover:bg-red-700 hover:text-white w-full py-2.5 px-4 rounded-lg flex items-center justify-center transition-all duration-200 uppercase"></label>
+                </div>
+              </div>
+            </div>
+          </article>
+          
+        </div>
+      </section>
+    </section>
+
+    <!-- Sidebar summary -->
+    <aside class="summary lg:sticky lg:top-24 w-full lg:w-[340px]">
+      <div class="summary-card bg-gradient-to-b from-[#121212]/95 to-[#0c0c0c]/95 p-5 border border-white/5 rounded-xl">
+        <h4 class="text-xs font-bold text-secondary uppercase mb-3">Tóm tắt đơn hàng</h4>
+        <div class="movie text-white font-bold text-sm mb-3">Dune: Part Two • IMAX 2D • G12, G13, G14</div>
+        
+        <div class="lines mt-3 flex flex-col gap-2">
+          <div class="line line-ticket flex justify-between py-1.5 border-b border-dashed border-white/2 text-secondary text-sm">
+            <span class="muted">3x Vé người lớn</span>
+            <span class="price text-white font-semibold">450.000đ</span>
+          </div>
+          <div class="summary-products flex flex-col gap-2 mt-2"></div>
+        </div>
+        
+        <div class="total flex justify-between items-end mt-4 pt-3 border-t border-white/5">
+          <span class="text-secondary text-sm">Tổng tiền</span>
+          <strong class="amount text-primary-container text-xl font-extrabold"></strong>
+        </div>
+        
+        <a class="btn primary block text-center bg-primary-container text-white py-3 rounded-lg font-bold hover:bg-red-700 transition-all duration-200 uppercase mt-4 text-xs tracking-wider" href="#">TIẾP TỤC THANH TOÁN</a>
+        <a class="btn ghost block text-center bg-transparent text-secondary py-2.5 rounded-lg border border-white/5 hover:border-white/10 hover:text-white transition-all duration-200 mt-2 text-xs font-semibold" href="#">Quay lại chọn ghế</a>
+      </div>
+    </aside>
+  </form>
+</main>
+
+<footer class="footer border-t border-white/5 mt-12 py-6 bg-transparent">
+  <div class="foot-inner max-w-[1200px] mx-auto flex flex-col md:flex-row justify-between gap-6 px-6">
+    <div>
+      <h3 class="font-['Bebas_Neue'] text-2xl text-primary-container mb-2 tracking-wider">3HD2K</h3>
+      <p class="text-xs text-secondary leading-relaxed max-w-[40ch]">Nâng tầm trải nghiệm điện ảnh của bạn thông qua công nghệ và hương vị.</p>
+    </div>
+    <div class="links flex flex-col gap-2">
+      <a href="#" class="text-xs text-secondary hover:text-white transition-colors">Chính sách bảo mật</a>
+      <a href="#" class="text-xs text-secondary hover:text-white transition-colors">Điều khoản dịch vụ</a>
+      <a href="#" class="text-xs text-secondary hover:text-white transition-colors">Hỗ trợ khách hàng</a>
+    </div>
+  </div>
+  <div class="copyright text-center text-[10px] text-secondary/60 mt-3">© 2024 Trải nghiệm điện ảnh 3HD2K. Bảo lưu mọi quyền.</div>
+</footer>
+
+<script src="js/app.js"></script>
+</body>
+</html>
