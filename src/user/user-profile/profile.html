@@ -1,180 +1,479 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3HD2K - Hồ sơ cá nhân</title>
-    <!-- Load custom fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- FontAwesome for Icons -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    
-    <link rel="stylesheet" href="../../shared/css/main.css">
-    <link rel="stylesheet" href="profile.css">
+<!DOCTYPE html><html class="dark" lang="vi"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Hồ sơ cá nhân - 3HD2K Cinema</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-primary": "#690003",
+                      "inverse-surface": "#e3e2e2",
+                      "secondary-container": "#4a4949",
+                      "tertiary-fixed": "#e5e2e1",
+                      "primary-fixed": "#ffdad5",
+                      "secondary": "#c8c6c5",
+                      "on-primary-container": "#fff7f6",
+                      "on-secondary": "#313030",
+                      "on-secondary-fixed-variant": "#474646",
+                      "on-primary-fixed-variant": "#930007",
+                      "background": "#121414",
+                      "on-tertiary-fixed": "#1c1b1b",
+                      "on-surface": "#e3e2e2",
+                      "error": "#ffb4ab",
+                      "tertiary-fixed-dim": "#c8c6c5",
+                      "primary": "#ffb4aa",
+                      "on-error-container": "#ffdad6",
+                      "inverse-primary": "#c0000c",
+                      "surface-dim": "#121414",
+                      "surface-variant": "#343535",
+                      "surface-container-low": "#1a1c1c",
+                      "on-tertiary-fixed-variant": "#474746",
+                      "secondary-fixed": "#e5e2e1",
+                      "surface-container-high": "#292a2a",
+                      "outline": "#af8782",
+                      "inverse-on-surface": "#2f3131",
+                      "on-tertiary": "#313030",
+                      "outline-variant": "#5e3f3b",
+                      "surface-container-lowest": "#0d0e0f",
+                      "on-surface-variant": "#e9bcb6",
+                      "error-container": "#93000a",
+                      "surface-bright": "#38393a",
+                      "on-primary-fixed": "#410001",
+                      "primary-fixed-dim": "#ffb4aa",
+                      "surface-container-highest": "#343535",
+                      "on-error": "#690005",
+                      "on-tertiary-container": "#fbf8f7",
+                      "on-secondary-fixed": "#1c1b1b",
+                      "primary-container": "#e50914",
+                      "secondary-fixed-dim": "#c8c6c5",
+                      "on-secondary-container": "#bab8b7",
+                      "tertiary": "#c8c6c5",
+                      "surface-tint": "#ffb4aa",
+                      "surface-container": "#1e2020",
+                      "on-background": "#e3e2e2",
+                      "surface": "#121414",
+                      "tertiary-container": "#737272"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "container-max": "1440px",
+                      "section-gap": "3rem",
+                      "margin-desktop": "4rem",
+                      "margin-mobile": "1rem",
+                      "gutter": "1.5rem"
+              },
+              "fontFamily": {
+                      "display-lg": ["Oswald"],
+                      "headline-xl": ["Oswald"],
+                      "headline-lg": ["Oswald"],
+                      "label-sm": ["Inter"],
+                      "display-lg-mobile": ["Oswald"],
+                      "body-md": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "label-md": ["Inter"]
+              },
+              "fontSize": {
+                      "display-lg": ["80px", {"lineHeight": "80px", "letterSpacing": "0.02em", "fontWeight": "400"}],
+                      "headline-xl": ["48px", {"lineHeight": "48px", "letterSpacing": "0.01em", "fontWeight": "400"}],
+                      "headline-lg": ["32px", {"lineHeight": "36px", "fontWeight": "400"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                      "display-lg-mobile": ["48px", {"lineHeight": "48px", "letterSpacing": "0.02em", "fontWeight": "400"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        body { background-color: #121414; color: #e3e2e2; }
+        /* Hide scrollbar for clean horizontal scrolls */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
 </head>
-<body>
-    <!-- NAVBAR (giống trang chủ) -->
-    <header class="navbar">
-        <div class="nav-left">
-            <a href="../../explore/home-page/index.html" class="logo">3HD2K</a>
-            <nav class="nav-links">
-                <a href="../../explore/home-page/index.html" class="active">Trang chủ</a>
-                <a href="../../explore/movie-search/index.html">Phim Đang Chiếu</a>
-                <a href="../../explore/cinema-map/index.html">Cụm Rạp</a>
-                <a href="../loyalty-points/index.html">Khuyến Mãi</a>
-                <a href="../../../seat_booking_stitch.html">Đặt vé</a>
-            </nav>
-        </div>
-        <div class="nav-actions">
-            <div class="search-pill" id="search-pill">
-                <i class="fas fa-search" id="search-icon"></i>
-                <input type="text" id="search-input" placeholder="Tìm kiếm phim..." />
-                <span id="search-text">Tìm kiếm</span>
-            </div>
-            <i class="fas fa-bell"></i>
-            <a href="../../user/user-profile/profile.html" style="color: inherit;"><a href="profile.html" style="color: inherit;"><i class="fas fa-user"></i></a></a>
-        </div>
-    </header>
+<body class="bg-background font-body-md antialiased selection:bg-primary-container selection:text-white text-white">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-background/90 backdrop-blur-md bg-gradient-to-b from-background to-transparent flat no shadows hidden md:flex justify-between items-center px-margin-desktop h-20 transition-all duration-300" id="top-app-bar">
+<div class="flex items-center gap-12">
+<a class="font-display-lg text-display-lg text-primary-container tracking-tighter" href="../../explore/home-page/index.html" style="color: rgb(229, 9, 20);">3HD2K</a>
+<nav class="hidden lg:flex items-center gap-8">
+<a class="hover:text-primary-container transition-colors duration-300 hover:scale-105 font-label-md text-label-md text-white" href="../../explore/movie-search/index.html">Phim Đang Chiếu</a>
+<a class="hover:text-primary-container transition-colors duration-300 hover:scale-105 font-label-md text-label-md text-white" href="../../explore/cinema-map/index.html">Hệ Thống Rạp</a>
+<a class="hover:text-primary-container transition-colors duration-300 hover:scale-105 font-label-md text-label-md text-white" href="../loyalty-points/index.html">Khuyến mãi</a>
+<a class="hover:text-primary-container transition-colors duration-300 hover:scale-105 font-label-md text-label-md text-white" href="../../booking/seat-booking/booking.html">Cine-Match</a>
+</nav>
+</div>
+<div class="flex items-center gap-6">
+<button class="hover:text-primary-container transition-colors duration-300 hover:scale-105 active:opacity-80 active:scale-95 text-white">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">search</span>
+</button>
+<button class="hover:text-primary-container transition-colors duration-300 hover:scale-105 active:opacity-80 active:scale-95 text-white">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">notifications</span>
+</button>
+<button class="hover:text-primary-container transition-colors duration-300 hover:scale-105 active:opacity-80 active:scale-95 relative text-white">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">confirmation_number</span>
+<span class="absolute -top-1 -right-1 bg-primary-container text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">2</span>
+</button>
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary-container ml-4 cursor-pointer hover:scale-105 transition-transform duration-200">
+<img alt="User Avatar" class="w-full h-full object-cover" data-alt="A high-quality, professional headshot of a modern individual in a cinematic lighting setup. The background is a deep, moody neutral black #121414, with a subtle rim light emphasizing their profile. The overall aesthetic is sleek, corporate yet artistic, fitting a premium digital entertainment platform profile picture." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC2fWDaOIbjK6do7Vh_VA08l1f2TRK3FzGAFb75nUQXv6Pu-pIQL1df2o4iusmGjaFweh_BL0YKnHC2_SSRP-fcNQPxB17A9D8GlCFMobfEhwibIrZCUFTBukIDnZ9WcgKtw9TONZCm7s7uO01LWXTZ7fA6Rz8XahasN6DWfkC4i-uDtBslERjdDGx5tCKYJ7YluNjPAlClk3N1Oq2TkG9apJfimw-3fpNMc0N1bhxi37cX4HqO4PovOey0R-5yzTUh_amsFo5bKgyz">
+</div>
+</div>
+</header>
+<!-- Main Content Layout -->
+<main class="pt-6 md:pt-28 pb-24 md:pb-12 max-w-[container-max] mx-auto px-margin-mobile md:px-margin-desktop min-h-screen">
+<!-- Back Button -->
+<a href="../../explore/home-page/index.html" class="inline-flex items-center gap-2 text-secondary hover:text-white transition-colors mb-4 md:mb-8 group font-label-md">
+    <span class="material-symbols-outlined group-hover:-translate-x-1 transition-transform text-[20px]">arrow_back</span>
+    Về trang chủ
+</a>
+<!-- Page Title (Mobile Only) -->
+<h1 class="font-headline-lg text-headline-lg md:hidden mb-6 text-white">Hồ sơ cá nhân</h1>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Left Sidebar (Desktop) -->
+<aside class="hidden md:block md:col-span-3">
+<div class="sticky top-32 space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg bg-surface-variant text-primary-container font-label-md text-label-md transition-colors border-l-4 border-primary-container" href="profile.html">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+                        Thông tin cá nhân
+                    </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-surface-container-high hover:text-on-surface font-label-md text-label-md transition-colors border-l-4 border-transparent hover:border-surface-variant text-white" href="../booking-history/index.html">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">history</span>
+                        Lịch sử đặt vé
+                    </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-surface-container-high hover:text-on-surface font-label-md text-label-md transition-colors border-l-4 border-transparent hover:border-surface-variant text-white" href="../loyalty-points/index.html">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">star</span>
+                        3HD2K Rewards
+                    </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-surface-container-high hover:text-on-surface font-label-md text-label-md transition-colors border-l-4 border-transparent hover:border-surface-variant text-white" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">settings</span>
+                        Cài đặt
+                    </a>
+<div class="pt-8 mt-8 border-t border-surface-variant/30"><p class="text-label-sm font-label-sm text-white/50 mb-3 px-4">CẦN GIÚP ĐỠ?</p><a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-surface-container-high hover:text-on-surface font-label-md text-label-md transition-colors text-white"><span class="material-symbols-outlined">help_center</span>Trung tâm hỗ trợ</a></div></div>
+</aside>
+<!-- Main Content Area -->
+<div class="col-span-1 md:col-span-9 space-y-section-gap">
+<!-- Top Section: Profile & Rewards (Bento Layout) -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-gutter">
+<!-- Personal Info Card -->
+<div class="bg-surface-container-low rounded-xl p-6 md:p-8 flex flex-col md:flex-row items-center md:items-start gap-6 relative overflow-hidden group">
+<!-- Ambient Glow -->
+<div class="absolute -top-20 -right-20 w-40 h-40 bg-primary-container/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+<div class="relative">
+<div class="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden border-4 border-surface-variant z-10 relative bg-surface-container-high flex items-center justify-center">
+<img alt="User Avatar" id="profileAvatar" class="w-full h-full object-cover" data-alt="A high-quality, professional headshot of a modern individual in a cinematic lighting setup. The background is a deep, moody neutral black #121414, with a subtle rim light emphasizing their profile. The overall aesthetic is sleek, corporate yet artistic, fitting a premium digital entertainment platform profile picture." src="https://api.dicebear.com/7.x/bottts/svg?seed=3HD2K">
+</div>
+<label for="changeAvatarInput" class="absolute bottom-0 right-0 bg-surface-variant w-8 h-8 rounded-full flex items-center justify-center hover:bg-primary-container hover:text-white transition-colors z-20 shadow-lg border border-background text-white cursor-pointer">
+<span class="material-symbols-outlined text-[16px]">edit</span>
+</label>
+<input type="file" id="changeAvatarInput" accept="image/*" class="hidden">
+</div>
+<div class="flex-1 text-center md:text-left z-10 w-full">
+<div class="flex justify-between items-start">
+<div>
+<h2 id="view-fullname" class="font-headline-lg text-headline-lg mb-1" contenteditable="false" spellcheck="false">Nguyễn Văn A</h2>
+<p class="font-body-md mb-4 text-white">Thành viên Vàng</p>
+</div>
+<button id="edit-profile-btn" onclick="toggleEdit()" class="hidden md:flex items-center gap-2 text-primary-container font-label-md text-label-md hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined text-[18px]" id="edit-icon">edit</span> <span id="edit-text">Chỉnh sửa</span>
+                                </button>
+</div>
+<div class="space-y-3 mt-2 md:mt-4">
+<div class="flex items-center gap-3 bg-background/50 p-3 rounded-lg border border-surface-variant/50">
+<span class="material-symbols-outlined text-[20px] text-white">mail</span>
+<span id="view-email" class="font-body-md truncate text-white" contenteditable="false" spellcheck="false">nguyenvana.cinephile@email.com</span>
+</div>
+<div class="flex items-center gap-3 bg-background/50 p-3 rounded-lg border border-surface-variant/50">
+<span class="material-symbols-outlined text-[20px] text-white">phone</span>
+<span id="view-phone" class="font-body-md text-white" contenteditable="false" spellcheck="false">090 123 4567</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Rewards Card -->
+<div class="bg-gradient-to-br from-surface-container-high to-surface-container-lowest rounded-xl p-6 md:p-8 flex flex-col justify-between relative border border-surface-variant/30 overflow-hidden">
+<!-- Decorative Cinematic Element -->
+<div class="absolute top-0 right-0 w-full h-full bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary-container/10 via-transparent to-transparent pointer-events-none"></div>
+<div class="relative z-10 flex justify-between items-start mb-6">
+<div>
+<h3 class="font-headline-lg text-headline-lg mb-1 uppercase tracking-wider text-white">3HD2K Rewards</h3>
+<p class="font-label-md text-label-md text-white">Điểm hiện tại của bạn</p>
+</div>
+<span class="material-symbols-outlined text-primary-container text-[40px]" style="font-variation-settings: 'FILL' 1;">stars</span>
+</div>
+<div class="relative z-10">
+<div class="flex items-baseline gap-2 mb-2">
+<span class="font-display-lg text-display-lg text-white">850</span>
+<span class="text-primary-container font-label-md text-label-md font-bold">ĐIỂM</span>
+</div>
+<div class="mt-4">
+<div class="flex justify-between text-label-sm font-label-sm mb-2 text-white">
+<span class="">Vàng</span>
+<span class="">VIP (1000 PTS)</span>
+</div>
+<!-- Progress Bar -->
+<div class="w-full bg-background rounded-full h-1.5 overflow-hidden">
+<div class="bg-primary-container h-1.5 rounded-full relative" style="width: 85%; background-color: #e50914;">
+<div class="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 bg-white rounded-full shadow-[0_0_8px_rgba(229,9,20,0.8)]"></div>
+</div>
+</div>
+<p class="text-label-sm font-label-sm mt-3 text-white">Còn <strong class="text-white">150 ĐIỂM</strong> nữa để thăng hạng VIP. <a class="text-primary-container hover:underline" href="../loyalty-points/index.html">Xem quyền lợi</a></p>
+</div>
+</div>
+</div>
+</div>
+<!-- Upcoming Ticket Section -->
+<section>
+<div class="flex items-center justify-between mb-6">
+<h2 class="font-headline-lg text-headline-lg flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-container">local_activity</span>
+                            Vé sắp xem
+                        </h2>
+<a class="text-primary-container font-label-md text-label-md hover:underline" href="../booking-history/index.html">Xem tất cả</a>
+</div>
+<!-- Cinematic Ticket Card -->
+<div class="relative w-full rounded-xl overflow-hidden group cursor-pointer aspect-auto md:aspect-[21/9]">
+<!-- Background Image with Gradient Overlay -->
+<div class="absolute inset-0 bg-black">
+<img alt="Dune: Part Two Scene" class="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700 ease-out" data-alt="A highly cinematic still representing a sci-fi epic film, akin to Dune. Vast, sweeping desert dunes under a harsh, atmospheric light. Deep shadows create a moody, tense environment. The color palette is dominated by warm, desaturated oranges and deep cinematic blacks, fitting perfectly into a dark-mode streaming UI." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC93rq81if1q6clH4PUR2z5a-Z9w-VGrAM-91NcIJBpBsRwnq3mK7k8QQFlTSxF_ZYJwPz5F_QPyFtSPxJjW624AYtx1oOVy4qmRMSlEPwHW209O-bG16srMoRPNqCBf-5NnnRFHm4_jj8PeY_UChXCVY5cI-yogwwY5QXfwaMYp2BHynQfUXXHyGLV8qO4Nz0BvAg6bLI_wznkx1ouglub29GOYEUjwmDbe9-Dm3GEafYhafEJuaeYmz5RAKVen-sps99zivHBaJPL">
+<div class="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent"></div>
+<div class="absolute inset-0 bg-gradient-to-r from-background via-background/40 to-transparent"></div>
+</div>
+<div class="relative z-10 p-6 md:p-8 h-full flex flex-col justify-end md:flex-row md:items-end md:justify-between gap-6 border border-surface-variant/20 rounded-xl">
+<!-- Movie Info -->
+<div class="flex-1">
+<div class="inline-block px-2 py-1 bg-primary-container text-white font-label-sm text-label-sm uppercase rounded mb-3">IMAX 2D (LỒNG TIẶNG)</div>
+<h3 class="font-display-lg text-display-lg-mobile md:text-[56px] leading-none mb-2 text-white">Dune: Part Two</h3>
+<div class="flex flex-wrap items-center gap-x-6 gap-y-2 font-body-md mt-4 text-white">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]">calendar_today</span>
+<span class="">20:00 - T6, 15 Th03</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]">location_on</span>
+<span class="">3HD2K Landmark 81</span>
+</div>
+<div class="flex items-center gap-1 text-white">
+<span class="material-symbols-outlined text-[18px] text-primary-container">chair</span>
+<span class="font-bold">Ghế: G12, G13</span>
+</div>
+</div>
+</div>
+<!-- Action / QR Trigger -->
+<div class="flex flex-row md:flex-col items-center justify-between gap-4 mt-4 md:mt-0 bg-surface/40 backdrop-blur-md p-4 rounded-lg border border-surface-variant/50 min-w-[140px]">
+<div class="text-center w-full">
+<span class="material-symbols-outlined text-[48px] text-white opacity-80 mb-1">qr_code_2</span>
+<p class="font-label-sm text-label-sm uppercase tracking-widest text-white">Mã vé</p>
+</div>
+<a href="#" class="w-full bg-primary-container text-white py-2 px-4 rounded font-label-md text-label-md hover:brightness-110 transition-all text-center block">Xem mã QR</a>
+</div>
+</div>
+</div>
+</section>
+<!-- Past History Section -->
+<section class="mt-section-gap">
+<h2 class="font-headline-lg text-headline-lg mb-6 border-b border-surface-variant pb-4 text-white">Lịch sử vé cũ</h2>
+<div class="space-y-4">
+<!-- History Item 1 -->
+<div class="flex items-center gap-4 p-4 rounded-lg bg-surface-container-low border border-transparent hover:border-surface-variant transition-colors group">
+<div class="w-16 h-24 rounded bg-surface-variant overflow-hidden flex-shrink-0">
+<img alt="Movie Poster" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-300" data-alt="A dark, moody movie poster graphic featuring abstract action elements. Deep blacks, muted grays, and a sharp hit of neon red. Designed to fit seamlessly into a dark-mode entertainment UI as a small thumbnail image." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB0bSTLvFERITTQrbcdKXBZlrEX6bgY0u5MQ0alaZVeLqd7oYLuzoK8cl0GPHyT1JgvIEOPaB-XWWRxS0ZubwCB2hWovgZ_csYiFJhm4UPUGNbR-fEc4IhCE6yJNpNHioZQLHAv8R3yrdT6ghQl8jfWFng_NMlAa4ndz2gytOGiMhj-1j1YDc7W7z9MRJr2Zja4lqhh59LN3Po2q2kvBTHKanZcVpC6qnREAmaMhe5jqSJNi0PqNED5epjUjmjMKZbsXiv0DCnblEi_">
+</div>
+<div class="flex-1">
+<h4 class="font-headline-lg text-[20px] leading-snug mb-1 group-hover:text-primary-container transition-colors text-white">Mai</h4>
+<p class="font-label-sm text-label-sm mb-2 text-white">2D Phụ đề Việt</p>
+<div class="flex items-center gap-4 font-body-md text-[14px] text-white">
+<span class="">10 Th02, 2024</span>
+<span class="w-1 h-1 rounded-full bg-surface-variant"></span>
+<span class="">3HD2K Vincom Đồng Khởi</span>
+</div>
+</div>
+<div class="hidden md:flex flex-col items-end">
+<span class="font-label-md text-label-md text-white">2 Vé</span>
+<span class="text-primary-container font-label-md text-label-md">Đã xem</span>
+</div>
+</div>
+<!-- History Item 2 -->
+<div class="flex items-center gap-4 p-4 rounded-lg bg-surface-container-low border border-transparent hover:border-surface-variant transition-colors group">
+<div class="w-16 h-24 rounded bg-surface-variant overflow-hidden flex-shrink-0">
+<img alt="Movie Poster" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-300" data-alt="A vintage cinematic clapperboard isolated against a pure #121414 black background. High contrast, sharp lighting emphasizing the textures of the board. Serves as a stylish placeholder for a movie poster thumbnail in a dark UI." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAWhBs1yJvcMHJKK3CDbwh36yrNsidcut8eM_a19Xg3k5PPAqJHQQTnMzuhmABo-vcmefjSsQtGofqd3YrTS78e8WhM5CLZG2enan9Yj1GvEXBywSMWCJTxURnRx4K5uGJEik-1ZWdzeolVq8FM8T0YYjRyF57uyMO5sPFGeumSHIsDVcU715PMo6Xr1eDJofXshwbHDYKmfVJpPWONu6H_pYPZ1v99apKcuiLVXtfHB0gItda29GJGH5QldcrVQmAYUnOomOueFPJi">
+</div>
+<div class="flex-1">
+<h4 class="font-headline-lg text-[20px] leading-snug mb-1 group-hover:text-primary-container transition-colors text-white">Oppenheimer</h4>
+<p class="font-label-sm text-label-sm mb-2 text-white">IMAX 2D</p>
+<div class="flex items-center gap-4 font-body-md text-[14px] text-white">
+<span class="">25 Th08, 2023</span>
+<span class="w-1 h-1 rounded-full bg-surface-variant"></span>
+<span class="">3HD2K Landmark 81</span>
+</div>
+</div>
+<div class="hidden md:flex flex-col items-end">
+<span class="font-label-md text-label-md text-white">1 Vé</span>
+<span class="text-primary-container font-label-md text-label-md">Đã xem</span>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile) -->
+<nav class="fixed bottom-0 w-full z-50 md:hidden bg-surface-container-lowest border-t border-surface-variant shadow-lg flex justify-around items-center h-16 px-margin-mobile">
+<a class="flex flex-col items-center justify-center active:bg-surface-variant hover:text-on-surface transition-colors w-16 h-full text-white" href="../../explore/home-page/index.html">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 0;">home</span>
+<span class="font-label-sm text-label-sm-mobile">Trang chủ</span>
+</a>
+<a class="flex flex-col items-center justify-center active:bg-surface-variant hover:text-on-surface transition-colors w-16 h-full text-white" href="../../booking/seat-booking/booking.html">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 0;">smart_toy</span>
+<span class="font-label-sm text-label-sm-mobile">Cine-Match</span>
+</a>
+<a class="flex flex-col items-center justify-center active:bg-surface-variant hover:text-on-surface transition-colors w-16 h-full text-white" href="../booking-history/index.html">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 0;">confirmation_number</span>
+<span class="font-label-sm text-label-sm-mobile">Vé của tôi</span>
+</a>
+<a class="flex flex-col items-center justify-center active:bg-surface-variant hover:text-on-surface transition-colors w-16 h-full text-white" href="../loyalty-points/index.html">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 0;">local_activity</span>
+<span class="font-label-sm text-label-sm-mobile">Ưu đãi</span>
+</a>
+<!-- Active Tab: Hồ sơ -->
+<a class="flex flex-col items-center justify-center text-primary-container active:bg-surface-variant active:scale-110 transition-transform w-16 h-full" href="profile.html">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-label-sm text-label-sm-mobile font-bold">Hồ sơ</span>
+</a>
+</nav>
+<!-- Footer -->
+<footer class="w-full relative bg-surface-container-lowest border-t border-surface-variant mt-section-gap flat pb-20 md:pb-0">
+<div class="flex flex-col md:flex-row justify-between items-center px-margin-mobile md:px-margin-desktop py-12 max-w-[container-max] mx-auto gap-8">
+<div class="flex flex-col items-center md:items-start">
+<span class="font-display-lg text-headline-lg text-primary-container mb-2" style="color: rgb(229, 9, 20);">3HD2K</span>
+<p class="font-body-md text-body-md text-white">© 2024 3HD2K Cinema. All rights reserved.</p>
+</div>
+<nav class="flex flex-wrap justify-center md:justify-end gap-x-8 gap-y-4">
+<a class="font-body-md text-body-md hover:text-on-surface hover:underline transition-colors text-white" href="#">Về chúng tôi</a>
+<a class="font-body-md text-body-md hover:text-on-surface hover:underline transition-colors text-white" href="#">Điều khoản sử dụng</a>
+<a class="font-body-md text-body-md hover:text-on-surface hover:underline transition-colors text-white" href="#">Chính sách bảo mật</a>
+<a class="font-body-md text-body-md hover:text-on-surface hover:underline transition-colors text-white" href="#">Liên hệ</a>
+</nav>
+</div>
+</footer>
+<script>
+        // Simple script to handle TopAppBar background on scroll
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('top-app-bar');
+            if (window.scrollY > 20) {
+                header.classList.replace('from-background', 'bg-background');
+                header.classList.remove('to-transparent', 'bg-gradient-to-b');
+                header.classList.add('border-b', 'border-surface-variant');
+            } else {
+                header.classList.add('from-background', 'to-transparent', 'bg-gradient-to-b');
+                header.classList.remove('bg-background', 'border-b', 'border-surface-variant');
+            }
+        });
 
-    <main class="profile-page">
-        <!-- BREADCRUMB -->
-        <div class="breadcrumb">
-            <a href="../../explore/home-page/index.html">Trang chủ</a>
-            <span class="separator"><i class="fas fa-chevron-right"></i></span>
-            <span class="current" id="breadcrumb-current">Hồ sơ cá nhân</span>
-        </div>
+        // Handle Profile Load and Edit
+        const fullnameEl = document.getElementById('view-fullname');
+        const emailEl = document.getElementById('view-email');
+        const phoneEl = document.getElementById('view-phone');
+        const editText = document.getElementById('edit-text');
+        const editIcon = document.getElementById('edit-icon');
+        let isEditing = false;
 
-        <div class="layout">
-            <aside class="sidebar">
-                <a href="#" class="side-link active">
-                    <span class="side-icon"><a href="../../user/user-profile/profile.html" style="color: inherit;"><a href="profile.html" style="color: inherit;"><i class="fas fa-user"></i></a></a></span>
-                    Thông tin cá nhân
-                </a>
-                <a href="#" class="side-link">
-                    <span class="side-icon"><i class="fas fa-history"></i></span>
-                    Lịch sử đặt vé
-                </a>
-                <a href="../loyalty-points/index.html" class="side-link">
-                    <span class="side-icon"><i class="fas fa-star"></i></span>
-                    3HD2K Rewards
-                </a>
-                <a href="#" class="side-link">
-                    <span class="side-icon"><i class="fas fa-cog"></i></span>
-                    Cài đặt
-                </a>
-            </aside>
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlEmail = urlParams.get('email');
+            
+            // Load email from URL or localStorage
+            if (urlEmail) {
+                localStorage.setItem('userEmail', urlEmail);
+                emailEl.innerText = urlEmail;
+            } else {
+                const savedEmail = localStorage.getItem('userEmail');
+                if (savedEmail) emailEl.innerText = savedEmail;
+            }
 
-            <div class="main-content">
-                <!-- User Info -->
-                <section class="info-card glass-panel">
-                    <div class="avatar-section">
-                        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=3HD2K" alt="User Avatar" class="avatar">
-                        <button class="btn-outline-small" style="margin-top: 10px;"><i class="fas fa-edit"></i> Đổi ảnh đại diện</button>
-                    </div>
-                    <div class="details-section">
-                        <h2>NGUYỄN VĂN A</h2>
-                        <span class="member-badge">Thành viên Vàng</span>
-                        <div class="info-rows">
-                            <div class="info-row">
-                                <i class="fas fa-envelope"></i>
-                                <span>nguyenvana.cinephile@email.com</span>
-                            </div>
-                            <div class="info-row">
-                                <i class="fas fa-phone"></i>
-                                <span>090 123 4567</span>
-                            </div>
-                        </div>
-                        <button class="btn btn-outline" style="margin-top: 20px;"><i class="fas fa-edit"></i> Chỉnh sửa thông tin</button>
-                    </div>
-                </section>
+            // Load name and phone
+            const savedName = localStorage.getItem('userName');
+            const savedPhone = localStorage.getItem('userPhone');
+            if (savedName) fullnameEl.innerText = savedName;
+            if (savedPhone) phoneEl.innerText = savedPhone;
+        });
 
-                <!-- Rewards Preview -->
-                <section class="rewards-preview glass-panel">
-                    <div class="rewards-head">
-                        <h3><i class="fas fa-star" style="color:var(--primary-red); margin-right: 8px;"></i> 3HD2K Rewards</h3>
-                        <span class="pts-large">850 PTS</span>
-                    </div>
-                    <div class="progress-container">
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 85%;"></div>
-                        </div>
-                        <div class="progress-labels">
-                            <span>Vàng</span>
-                            <span>VIP (1000 PTS)</span>
-                        </div>
-                    </div>
-                    <p>Còn <strong>150 ĐIỂM</strong> nữa để thăng hạng VIP. <a href="../loyalty-points/index.html" style="color:var(--primary-red);">Xem quyền lợi</a></p>
-                </section>
+        function toggleEdit() {
+            isEditing = !isEditing;
+            const state = isEditing ? "true" : "false";
+            
+            fullnameEl.contentEditable = state;
+            emailEl.contentEditable = state;
+            phoneEl.contentEditable = state;
 
-                <!-- Upcoming Ticket -->
-                <section class="upcoming-ticket glass-panel">
-                    <div class="section-title"><h3><i class="fas fa-ticket-alt"></i> VÉ SẮP XEM</h3></div>
-                    <div class="ticket-card" style="background-image: linear-gradient(to right, rgba(0,0,0,0.9), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=800&q=80');">
-                        <div class="ticket-info">
-                            <span class="tag">IMAX 2D</span>
-                            <h2>DUNE: PART TWO</h2>
-                            <div class="ticket-meta">
-                                <span><i class="fas fa-calendar"></i> 20:00 - T6, 15 Th03</span>
-                                <span><i class="fas fa-map-marker-alt"></i> 3HD2K Landmark 81</span>
-                                <span><i class="fas fa-chair"></i> Ghế: G12, G13</span>
-                            </div>
-                        </div>
-                        <div class="ticket-action">
-                            <i class="fas fa-qrcode qr-icon"></i>
-                            <a href="../../booking/booking-success/index.html" class="btn btn-primary">XEM MÃ QR</a>
-                        </div>
-                    </div>
-                </section>
-            </div>
-        </div>
-    </main>
+            if (isEditing) {
+                editText.innerText = "Lưu thông tin";
+                editIcon.innerText = "save";
+                fullnameEl.classList.add('border-b', 'border-primary-container', 'outline-none');
+                emailEl.classList.add('border-b', 'border-primary-container', 'outline-none');
+                phoneEl.classList.add('border-b', 'border-primary-container', 'outline-none');
+                fullnameEl.focus();
+            } else {
+                editText.innerText = "Chỉnh sửa";
+                editIcon.innerText = "edit";
+                fullnameEl.classList.remove('border-b', 'border-primary-container', 'outline-none');
+                emailEl.classList.remove('border-b', 'border-primary-container', 'outline-none');
+                phoneEl.classList.remove('border-b', 'border-primary-container', 'outline-none');
+                
+                // Save to localStorage
+                localStorage.setItem('userName', fullnameEl.innerText);
+                localStorage.setItem('userEmail', emailEl.innerText);
+                localStorage.setItem('userPhone', phoneEl.innerText);
+            }
+        }
 
-    <!-- FOOTER (giống trang chủ) -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-brand">
-                <h2 class="logo">3HD2K</h2>
-                <p>Trải nghiệm điện ảnh đỉnh cao, mang Hollywood đến gần bạn hơn.</p>
-                <div class="social-icons">
-                    <i class="fas fa-share-alt"></i>
-                    <i class="fas fa-globe"></i>
-                </div>
-            </div>
-            <div class="footer-links">
-                <div class="link-column">
-                    <h4>KHÁM PHÁ</h4>
-                    <ul>
-                        <li><a href="../../explore/movie-search/index.html">Phim Đang Chiếu</a></li>
-                        <li><a href="../../explore/movie-search/index.html">Phim Sắp Chiếu</a></li>
-                        <li><a href="../../explore/cinema-map/index.html">Rạp Phim</a></li>
-                        <li><a href="../loyalty-points/index.html">Khuyến Mãi</a></li>
-                    </ul>
-                </div>
-                <div class="link-column">
-                    <h4>HỖ TRỢ</h4>
-                    <ul>
-                        <li><a href="#">Help Center</a></li>
-                        <li><a href="#">Terms of Use</a></li>
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">Cookie Preferences</a></li>
-                    </ul>
-                </div>
-                <div class="link-column">
-                    <h4>VỀ CHÚNG TÔI</h4>
-                    <ul>
-                        <li><a href="#">About Us</a></li>
-                        <li><a href="#">Corporate Information</a></li>
-                        <li><a href="#">Tuyển Dụng</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2024 3HD2K Entertainment. All rights reserved.</p>
-            <p><i class="fas fa-globe" style="margin-right: 5px;"></i> Tiếng Việt</p>
-        </div>
-    </footer>
-</body>
-</html>
+        // Handle Avatar Edit
+        const changeAvatarInput = document.getElementById('changeAvatarInput');
+        const profileAvatar = document.getElementById('profileAvatar');
+        
+        // Load saved avatar
+        const savedAvatar = localStorage.getItem('user_avatar');
+        if (savedAvatar) {
+            profileAvatar.src = savedAvatar;
+        }
+
+        if (changeAvatarInput) {
+            changeAvatarInput.addEventListener('change', function() {
+                const file = this.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        profileAvatar.src = e.target.result;
+                        // Cập nhật ảnh mới vào LocalStorage
+                        localStorage.setItem('user_avatar', e.target.result);
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+    </script>
+
+
+
+
+
+
+</body></html>
