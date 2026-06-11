@@ -11,7 +11,8 @@ export const KEYS = {
   SEAT_LOCKS: 'cinema_seat_locks',
   CHECKOUT: 'cinema_checkout',
   LAST_BOOKING: 'cinema_last_booking',
-  PENDING_PAYMENTS: 'cinema_pending_payments'
+  PENDING_PAYMENTS: 'cinema_pending_payments',
+  TRANSACTIONS: 'cinema_transactions'
 };
 
 // LocalStorage helpers
@@ -100,3 +101,29 @@ export function saveUsers(users) { lsSet(KEYS.USERS, users); }
 export function getCurrentUser() { return ssGet(KEYS.CURRENT_USER, null); }
 export function setCurrentUser(user) { ssSet(KEYS.CURRENT_USER, user); }
 export function clearCurrentUser() { ssRemove(KEYS.CURRENT_USER); }
+
+export function getTransactions() { return lsGet(KEYS.TRANSACTIONS, []); }
+export function saveTransactions(transactions) { lsSet(KEYS.TRANSACTIONS, transactions); }
+
+/**
+ * Thêm một giao dịch vào lịch sử.
+ * @param {'booking'|'cancel'|'reschedule'} type
+ * @param {Object} bookingInfo - booking object liên quan
+ * @param {string} [details]
+ */
+export function addTransaction(type, bookingInfo, details = '') {
+  const transactions = getTransactions();
+  transactions.unshift({
+    id: 'tx_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+    type,
+    bookingId: bookingInfo?.id || '',
+    movieTitle: bookingInfo?.movieTitle || '',
+    showtimeText: bookingInfo?.showtimeText || '',
+    room: bookingInfo?.room || '',
+    seats: bookingInfo?.seats || [],
+    total: bookingInfo?.total || 0,
+    details,
+    createdAt: new Date().toISOString()
+  });
+  saveTransactions(transactions);
+}
