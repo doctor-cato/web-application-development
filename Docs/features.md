@@ -17,6 +17,7 @@ Dưới đây là danh sách các tính năng được yêu cầu, được đá
 - [x] **Thanh toán**: Đã hoàn thành (nằm trong `src/booking/checkout/` và cổng giả lập).
 - [x] **Hệ thống tích điểm (Huy)**: Đã hoàn thành (nằm trong `src/user/loyalty-points/`).
 - [x] **Tìm kiếm và lọc nâng cao (Huy)**: Đã hoàn thành (nằm trong `src/explore/movie-search/`).
+- [x] **Giá ghế động (Dynamic Pricing)**: Đã hoàn thành (nằm trong `src/booking/seat-booking/`).
 - [ ] **Lịch sử giao dịch và đặt vé**: Chưa có code triển khai (thư mục `src/user/booking-history/` mới chỉ có file `.gitkeep`).
 - [ ] **Quên mật khẩu & Xác thực OTP**: Chưa có code triển khai (thư mục `src/auth/forgot-password/` mới chỉ có file `.gitkeep`).
 - [x] **Giao diện đặt vé thành công có mã QR**: Đã hoàn thành (giao diện hóa đơn có QR động nằm trong `src/booking/checkout/booking_invoice.html`).

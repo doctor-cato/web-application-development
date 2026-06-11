@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Chon ghe - Dune: Part Two - 3HD2K</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-tertiary": "#313030",
+                      "tertiary": "#c8c6c5",
+                      "secondary-container": "#4a4949",
+                      "on-tertiary-fixed": "#1c1b1b",
+                      "surface-variant": "#343535",
+                      "error": "#ffb4ab",
+                      "tertiary-container": "#737272",
+                      "outline": "#af8782",
+                      "surface-container-high": "#292a2a",
+                      "outline-variant": "#5e3f3b",
+                      "on-primary-fixed": "#410001",
+                      "primary": "#ffb4aa",
+                      "inverse-on-surface": "#2f3131",
+                      "primary-fixed-dim": "#ffb4aa",
+                      "surface-dim": "#121414",
+                      "on-surface-variant": "#e9bcb6",
+                      "on-secondary-fixed": "#1c1b1b",
+                      "error-container": "#93000a",
+                      "surface-container": "#1e2020",
+                      "surface-bright": "#38393a",
+                      "on-error": "#690005",
+                      "on-error-container": "#ffdad6",
+                      "on-tertiary-fixed-variant": "#474746",
+                      "on-background": "#e3e2e2",
+                      "tertiary-fixed-dim": "#c8c6c5",
+                      "on-secondary": "#313030",
+                      "surface-container-low": "#1a1c1c",
+                      "primary-container": "#e50914",
+                      "inverse-surface": "#e3e2e2",
+                      "on-tertiary-container": "#fbf8f7",
+                      "primary-fixed": "#ffdad5",
+                      "inverse-primary": "#c0000c",
+                      "secondary": "#c8c6c5",
+                      "surface": "#121414",
+                      "surface-container-lowest": "#0d0e0f",
+                      "surface-container-highest": "#343535",
+                      "on-secondary-container": "#bab8b7",
+                      "on-surface": "#e3e2e2",
+                      "on-primary": "#690003",
+                      "tertiary-fixed": "#e5e2e1",
+                      "background": "#121414",
+                      "on-secondary-fixed-variant": "#474646",
+                      "on-primary-fixed-variant": "#930007",
+                      "secondary-fixed": "#e5e2e1",
+                      "on-primary-container": "#fff7f6",
+                      "surface-tint": "#ffb4aa",
+                      "secondary-fixed-dim": "#c8c6c5"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "container-max": "1440px",
+                      "margin-mobile": "1rem",
+                      "section-gap": "3rem",
+                      "margin-desktop": "4rem",
+                      "gutter": "1.5rem"
+              },
+              "fontFamily": {
+                      "headline-xl": [
+                              "Times New Roman", "serif"
+                      ],
+                      "headline-lg": [
+                              "Times New Roman", "serif"
+                      ],
+                      "display-lg-mobile": [
+                              "Times New Roman", "serif"
+                      ],
+                      "body-lg": [
+                              "Times New Roman", "serif"
+                      ],
+                      "label-sm": [
+                              "Times New Roman", "serif"
+                      ],
+                      "body-md": [
+                              "Times New Roman", "serif"
+                      ],
+                      "label-md": [
+                              "Times New Roman", "serif"
+                      ],
+                      "display-lg": [
+                              "Times New Roman", "serif"
+                      ]
+              },
+              "fontSize": {
+                      "headline-xl": [
+                              "48px",
+                              {
+                                      "lineHeight": "48px",
+                                      "letterSpacing": "0.01em",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "36px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "display-lg-mobile": [
+                              "48px",
+                              {
+                                      "lineHeight": "48px",
+                                      "letterSpacing": "0.02em",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "display-lg": [
+                              "80px",
+                              {
+                                      "lineHeight": "80px",
+                                      "letterSpacing": "0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+            font-family: "Times New Roman", Times, serif;
+        }
+        
+        /* Seat Animations & States */
+        .seat {
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+        }
+        .seat:hover:not(.seat-sold) {
+            transform: scale(1.15);
+            z-index: 10;
+        }
+        .seat-sold {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+        .seat-selected {
+            background-color: theme('colors.primary-container');
+            border-color: theme('colors.primary-container');
+            box-shadow: 0 0 10px theme('colors.primary-container');
+        }
+        .seat-vip {
+            border-color: #ffd700;
+        }
+        .seat-vip:hover:not(.seat-sold) {
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+        .seat-cinematch {
+            border-color: #9c27b0;
+        }
+        .seat-cinematch:hover:not(.seat-sold) {
+            box-shadow: 0 0 10px rgba(156, 39, 176, 0.5);
+        }
+        
+        /* Screen Glow */
+        .screen-curve {
+            box-shadow: 0 20px 50px -10px rgba(229, 9, 20, 0.15);
+            background: linear-gradient(to bottom, theme('colors.surface-variant') 0%, transparent 100%);
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: theme('colors.background');
+        }
+        ::-webkit-scrollbar-thumb {
+            background: theme('colors.surface-variant');
+            border-radius: theme('borderRadius.full');
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: theme('colors.tertiary-container');
+        }
+
+        /* Material Symbols override to not use Times */
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined' !important;
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col pt-20">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-background/90 backdrop-blur-md bg-gradient-to-b from-background to-transparent flex justify-between items-center px-margin-desktop h-20 w-full flat no shadows">
+<div class="flex items-center gap-8">
+<h1 class="font-display-lg text-display-lg tracking-tighter text-[#e50914]">3HD2K</h1>
+<nav class="hidden md:flex gap-6">
+<a class="hover:text-primary-container transition-colors duration-300 font-label-md text-label-md text-white" href="#">Phim</a>
+<a class="text-on-primary-container font-bold border-b-2 border-primary-container pb-1 font-label-md text-label-md" href="#">Rạp</a>
+<a class="hover:text-primary-container transition-colors duration-300 font-label-md text-label-md text-white" href="src/user/loyalty-points/index.html">Khuyến mãi</a>
+<a class="hover:text-primary-container transition-colors duration-300 font-label-md text-label-md text-white" href="#">Cine-Match</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="hover:scale-105 transition-transform duration-200 text-on-surface"><span class="material-symbols-outlined">notifications</span></button>
+<button class="hover:scale-105 transition-transform duration-200 text-on-surface"><span class="material-symbols-outlined">confirmation_number</span></button>
+<div class="w-10 h-10 rounded-full bg-surface-variant overflow-hidden border border-surface-variant cursor-pointer hover:scale-105 transition-transform duration-200">
+<img alt="User Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB04sQVmTTGeUWi2wBLmYDcUAE0diaIucNXVjhX2pkYCe0TOzN-c8wGu7lOrnc0SGYOsMwipLOA52aHsl48Vy-tfhRcO6JXkJ1cGo_IMFaqTC1okxTuysV4NKzHqiNvyNkU70SB-Ncy2L1917eB3qXenxsNUw1cXLEoAadOivkuY411cT7VGY76Sq33r4Ca47xxO3OPg-StElLJne-hJhJeDNt7eekyRzjovpQPGXXf45xX4z9jtt2_rtOKlheuIp68I3UArTHLUasl"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas - Hide Global Nav Shell intent -->
+<main class="flex-grow flex flex-col lg:flex-row relative z-10 w-full max-w-container-max mx-auto">
+<!-- Booking Area (Left) -->
+<section class="flex-grow flex flex-col pt-8 pb-32 lg:pb-8 px-margin-mobile lg:px-margin-desktop overflow-hidden">
+<!-- Movie Header -->
+<div class="flex flex-col gap-2 mb-8 items-center lg:items-start text-center lg:text-left">
+<h2 class="font-headline-lg text-headline-lg text-on-surface uppercase">Dune: Part Two</h2>
+<p class="font-body-md text-body-md text-white">3HD2K IMAX | 19:30 - Hôm nay | Phòng chiếu 1</p>
+<div class="flex items-center gap-2 mt-2 bg-surface-container-high px-3 py-1 rounded-full border border-surface-variant">
+<div class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></div>
+<span class="font-label-sm text-label-sm text-white">Giữ ghế theo thời gian thực</span>
+</div>
+</div>
+<!-- Screen Area -->
+<div class="w-full max-w-4xl mx-auto mb-16 relative">
+<div class="h-16 w-full screen-curve rounded-t-[50%] border-t-4 border-surface-variant relative flex items-center justify-center">
+<span class="absolute top-4 font-label-md text-label-md uppercase tracking-[0.2em] text-white">Màn hình</span>
+</div>
+</div>
+<!-- Seating Grid -->
+<div class="w-full overflow-x-auto pb-8">
+<div class="min-w-max mx-auto flex flex-col gap-3 items-center">
+<!-- Row A -->
+<div class="flex items-center gap-4">
+<span class="font-label-md text-label-md w-6 text-center text-white">A</span>
+<div class="flex gap-2">
+<div class="w-8 h-8 rounded-t-lg rounded-b-sm border-2 border-surface-variant seat seat-sold bg-surface-variant"></div>
+<div class="w-8 h-8 rounded-t-lg rounded-b-sm border-2 border-surface-variant seat seat-sold bg-surface-variant"></div>
+<div class="w-8 h-8 rounded-t-lg rounded-b-sm border-2 border-surface-variant seat"></div>
+<div class="w-8 h-8 rounded-t-lg rounded-b-sm border-2 border-surface-variant seat"></div>
+<div class="w-8 h-8 rounded-t-lg rounded-b-sm border-2 border-surface-variant seat"></div>
+<div class="w-8 h-8 rounded-t-lg rounded-b-sm border-2 border-surface-variant seat"></div>
+<div class="w-8 h-8 rounded-t-lg rounded-b-sm border-2 border-surface-variant seat"></div>
+<div class="w-8 h-8 rounded-t-lg rounded-b-sm border-2 border-surface-variant seat"></div>
+<div class="w-8 h-8 rounded-t-lg rounded-b-sm border-2 border-surface-variant seat seat-sold bg-surface-variant"></div>
+<div class="w-8 h-8 rounded-t-lg rounded-b-sm border-2 border-surface-variant seat seat-sold bg-surface-variant"></div>
+</div>
+<span class="font-label-md text-label-md w-6 text-center text-white">A</span>
+</div>
+<!-- Row B -->
+<div class="flex items-center gap-4">
+<span class="font-label-md text-label-md w-6 text-center text-white">B</span>
+<div class="flex gap-2">
+<div class="w-8 h-8 rounded-t-lg rounded-b-sm border-2 border-surface-variant seat"></div>
+<div class="w-8 h-8 rounded-t-lg rounded-b-sm border-2 border-surface-variant seat"></div>
+<div class="w-8 h-8 rounded-t-lg rounded-b-sm border-2 border-surface-variant seat"></div>
+<div class="w-8 h-8 rounded-t-lg rounded-b-sm border-2 border-[#ffd700] seat seat-vip"></div>
+<div class="w-8 h-8 rounded-t-lg rounded-b-sm border-2 border-[#ffd700] seat seat-vip"></div>
+<div class="w-8 h-8 rounded-t-lg rounded-b-sm border-2 border-[#ffd700] seat seat-vip seat-sold bg-surface-variant border-surface-variant"></div>
+<div class="w-8 h-8 rounded-t-lg rounded-b-sm border-2 border-[#ffd700] seat seat-vip seat-sold bg-surface-variant border-surface-variant"></div>
+<div class="w-8 h-8 rounded-t-lg rounded-b-sm border-2 border-surface-variant seat"></div>
+<div class="w-8 h-8 rounded-t-lg rounded-b-sm border-2 border-surface-variant seat"></div>
+<div class="w-8 h-8 rounded-t-lg rounded-b-sm border-2 border-surface-variant seat"></div>
+</div>
+<span class="font-label-md text-label-md w-6 text-center text-white">B</span>
+</div>
+<!-- Row C (Cine-Match Row) -->
+<div class="flex items-center gap-4 mt-4">
+<span class="font-label-md text-label-md w-6 text-center text-white">C</span>
+<div class="flex gap-2">
+<div class="w-8 h-8 rounded-t-lg rounded-b-sm border-2 border-[#9c27b0] seat seat-cinematch flex items-center justify-center text-[#9c27b0]"><span class="material-symbols-outlined text-[16px]">favorite</span></div>
+<div class="w-8 h-8 rounded-t-lg rounded-b-sm border-2 border-[#9c27b0] seat seat-cinematch flex items-center justify-center text-[#9c27b0]"><span class="material-symbols-outlined text-[16px]">favorite</span></div>
+<div class="w-8 h-8 rounded-t-lg rounded-b-sm border-2 border-surface-variant seat"></div>
+<div class="w-8 h-8 rounded-t-lg rounded-b-sm border-2 border-surface-variant seat"></div>
+<div class="w-8 h-8 rounded-t-lg rounded-b-sm border-2 border-surface-variant seat"></div>
+<div class="w-8 h-8 rounded-t-lg rounded-b-sm border-2 border-surface-variant seat"></div>
+<div class="w-8 h-8 rounded-t-lg rounded-b-sm border-2 border-surface-variant seat"></div>
+<div class="w-8 h-8 rounded-t-lg rounded-b-sm border-2 border-surface-variant seat"></div>
+<div class="w-8 h-8 rounded-t-lg rounded-b-sm border-2 border-[#9c27b0] seat seat-cinematch flex items-center justify-center text-[#9c27b0]"><span class="material-symbols-outlined text-[16px]">favorite</span></div>
+<div class="w-8 h-8 rounded-t-lg rounded-b-sm border-2 border-[#9c27b0] seat seat-cinematch flex items-center justify-center text-[#9c27b0]"><span class="material-symbols-outlined text-[16px]">favorite</span></div>
+</div>
+<span class="font-label-md text-label-md w-6 text-center text-white">C</span>
+</div>
+<!-- Row D -->
+<div class="flex items-center gap-4 mt-4">
+<span class="font-label-md text-label-md w-6 text-center text-white">D</span>
+<div class="flex gap-2">
+<div class="w-8 h-8 rounded-t-lg rounded-b-sm border-2 border-surface-variant seat"></div>
+<div class="w-8 h-8 rounded-t-lg rounded-b-sm border-2 border-surface-variant seat"></div>
+<div class="w-8 h-8 rounded-t-lg rounded-b-sm border-2 border-surface-variant seat"></div>
+<div class="w-8 h-8 rounded-t-lg rounded-b-sm border-2 border-surface-variant seat"></div>
+<div class="w-8 h-8 rounded-t-lg rounded-b-sm border-2 border-surface-variant seat seat-selected" id="seat-d5"></div>
+<div class="w-8 h-8 rounded-t-lg rounded-b-sm border-2 border-surface-variant seat seat-selected" id="seat-d6"></div>
+<div class="w-8 h-8 rounded-t-lg rounded-b-sm border-2 border-surface-variant seat"></div>
+<div class="w-8 h-8 rounded-t-lg rounded-b-sm border-2 border-surface-variant seat"></div>
+<div class="w-8 h-8 rounded-t-lg rounded-b-sm border-2 border-surface-variant seat"></div>
+<div class="w-8 h-8 rounded-t-lg rounded-b-sm border-2 border-surface-variant seat"></div>
+</div>
+<span class="font-label-md text-label-md w-6 text-center text-white">D</span>
+</div>
+</div>
+</div>
+<!-- Legend -->
+<div class="mt-8 flex flex-wrap justify-center gap-6 max-w-2xl mx-auto bg-surface-container-low p-4 rounded-xl border border-surface-variant">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-t-md rounded-b-sm border-2 border-surface-variant"></div>
+<span class="font-label-sm text-label-sm text-white">Thường</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-t-md rounded-b-sm border-2 border-[#ffd700]"></div>
+<span class="font-label-sm text-label-sm text-white">VIP</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-t-md rounded-b-sm border-2 border-[#9c27b0] flex items-center justify-center text-[#9c27b0]"><span class="material-symbols-outlined text-[12px]">favorite</span></div>
+<span class="font-label-sm text-label-sm text-white">Cine-Match</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-t-md rounded-b-sm bg-surface-variant border-2 border-surface-variant opacity-50"></div>
+<span class="font-label-sm text-label-sm text-white">Đã bán</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-t-md rounded-b-sm bg-primary-container border-2 border-primary-container"></div>
+<span class="font-label-sm text-label-sm text-white">Đang chọn</span>
+</div>
+</div>
+</section>
+<!-- Selection Summary Sidebar (Desktop) / Bottom Bar (Mobile) -->
+<aside class="fixed bottom-0 left-0 w-full bg-surface-container-highest border-t border-surface-variant p-margin-mobile z-40 lg:relative lg:w-96 lg:border-t-0 lg:border-l lg:p-margin-desktop flex flex-col justify-between shadow-[0_-10px_40px_rgba(0,0,0,0.5)] lg:shadow-none">
+<div class="flex flex-col gap-6">
+<div class="hidden lg:block">
+<h3 class="font-headline-lg text-headline-lg text-on-surface mb-2">Tóm tắt</h3>
+<div class="w-full h-[1px] bg-surface-variant mb-6"></div>
+</div>
+<div class="flex justify-between items-start lg:flex-col lg:gap-6">
+<div>
+<p class="font-label-sm text-label-sm uppercase mb-1 text-white">Lựa chọn của bạn</p>
+<div class="flex flex-wrap gap-2">
+<span class="font-label-md text-label-md text-on-surface bg-surface-container-high px-3 py-1 rounded border border-surface-variant">D5</span>
+<span class="font-label-md text-label-md text-on-surface bg-surface-container-high px-3 py-1 rounded border border-surface-variant">D6</span>
+</div>
+</div>
+<div class="text-right lg:text-left">
+<p class="font-label-sm text-label-sm uppercase mb-1 text-white">Tổng tiền</p>
+<p class="font-headline-xl text-headline-xl text-primary-container leading-none">240.000₫</p>
+</div>
+</div>
+</div>
+<button class="w-full bg-primary-container text-on-primary-container font-label-md text-label-md py-4 rounded-lg uppercase tracking-wider hover:bg-inverse-primary transition-colors duration-300 mt-4 lg:mt-8 flex items-center justify-center gap-2" onclick="window.location.href='src/booking/booking-food/index.html'">
+                Tiếp tục
+                <span class="material-symbols-outlined">arrow_forward</span>
+</button><button class="w-full mt-4 text-on-surface-variant hover:text-on-surface text-label-md transition-colors flex items-center justify-center gap-2"><span class="material-symbols-outlined text-[20px]">arrow_back</span> Quay lại</button>
+</aside>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest border-t border-surface-variant mt-section-gap w-full relative flex flex-col md:flex-row justify-between items-center px-margin-desktop py-12 flat z-10">
+<div class="font-display-lg text-headline-lg mb-6 md:mb-0 text-[#e50914]">
+            3HD2K
+        </div>
+<nav class="flex flex-wrap justify-center gap-6 mb-6 md:mb-0">
+<a class="hover:text-on-surface hover:underline font-body-md text-body-md transition-colors text-white" href="#">Về chúng tôi</a>
+<a class="hover:text-on-surface hover:underline font-body-md text-body-md transition-colors text-white" href="#">Điều khoản sử dụng</a>
+<a class="hover:text-on-surface hover:underline font-body-md text-body-md transition-colors text-white" href="#">Chính sách bảo mật</a>
+<a class="hover:text-on-surface hover:underline font-body-md text-body-md transition-colors text-white" href="#">Liên hệ</a>
+</nav>
+<div class="font-body-md text-body-md text-white">
+            © 2024 3HD2K Cinema. All rights reserved.
+        </div>
+</footer>
+<script>
+        // Simple seat selection toggle logic
+        document.querySelectorAll('.seat:not(.seat-sold)').forEach(seat => {
+            seat.addEventListener('click', function() {
+                this.classList.toggle('seat-selected');
+                // In a real app, this would trigger an update to the summary panel
+            });
+        });
+    </script>
+</body></html>

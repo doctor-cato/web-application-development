@@ -38,71 +38,71 @@ const heroMovies = [
 
 const nowShowingMovies = [
     {
-        title: "Battle: Los Angeles (2011)",
-        duration: "116 phút",
+        title: "Biệt Đội Đánh Thuê 4",
+        duration: "123 phút",
         age: "T16",
         tags: ["2D", "Hành Động"],
         formats: ["2D"],
         genre: "Hành Động",
         cinema: "Q1",
-        poster: "images/battle_la.jpg"
+        poster: "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=400&q=80"
     },
     {
-        title: "War Machine (2026)",
-        duration: "120 phút",
+        title: "Ác Quỷ Ma Sơ II",
+        duration: "110 phút",
+        age: "T18",
+        tags: ["2D", "4DX", "Kinh Dị"],
+        formats: ["2D", "4DX"],
+        genre: "Kinh Dị",
+        cinema: "Q7",
+        poster: "https://images.unsplash.com/photo-1505635552518-3448ff116af3?auto=format&fit=crop&w=400&q=80"
+    },
+    {
+        title: "Dune: Phần Hai",
+        duration: "166 phút",
+        age: "T16",
+        tags: ["IMAX", "Viễn Tưởng"],
+        formats: ["2D", "IMAX"],
+        genre: "Viễn Tưởng",
+        cinema: "Q1",
+        poster: "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=400&q=80"
+    },
+    {
+        title: "Kẻ Độc Hành",
+        duration: "105 phút",
         age: "T18",
         tags: ["2D", "Hành Động"],
-        formats: ["2D", "4DX"],
+        formats: ["2D"],
         genre: "Hành Động",
         cinema: "Q7",
-        poster: "images/war_machine.jpg"
-    },
-    {
-        title: "F1: The Movie (2025)",
-        duration: "130 phút",
-        age: "T16",
-        tags: ["IMAX", "Hành Động"],
-        formats: ["2D", "IMAX"],
-        genre: "Hành Động",
-        cinema: "Q1",
-        poster: "images/f1_movie.jpg"
-    },
-    {
-        title: "Iron Man 2",
-        duration: "124 phút",
-        age: "T13",
-        tags: ["2D", "Hành Động"],
-        formats: ["2D", "IMAX"],
-        genre: "Hành Động",
-        cinema: "Q7",
-        poster: "images/iron_man2.jpg"
+        poster: "https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?auto=format&fit=crop&w=400&q=80"
     }
 ];
 
 const comingSoonMovies = [
     {
-        title: "Gran Turismo",
-        duration: "134 phút",
+        title: "Kingdom of the Planet of the Apes",
+        duration: "145 phút",
         age: "T13",
-        genre: "Hành Động, Thể Thao",
-        tags: ["IMAX", "Hành Động"],
-        poster: "images/Gran_Turismo.jpg"
+        genre: "Phiêu Lưu, Hành Động",
+        tags: ["IMAX", "4DX"],
+        poster: "https://images.unsplash.com/photo-1611419010196-18e3e18f8a4c?auto=format&fit=crop&w=400&q=80"
     },
     {
-        title: "World War Z",
-        duration: "116 phút",
+        title: "Furiosa: A Mad Max Saga",
+        duration: "148 phút",
+        age: "T18",
+        genre: "Hành Động, Phiêu Lưu",
+        tags: ["IMAX"],
+        poster: "https://images.unsplash.com/photo-1509347528160-9a9e33742cdb?auto=format&fit=crop&w=400&q=80"
+    },
+    {
+        title: "Deadpool & Wolverine",
+        duration: "128 phút",
         age: "T16",
-        genre: "Hành Động, Kinh Dị",
-        tags: ["2D", "Hành Động"],
-        poster: "images/World_war_Z.jpg"
-    },
-    {
-        title: "Moon Fall",
-        duration: "130 phút",
-        age: "T13",
-        genre: "Hành Động, Viễn Tưởng",
-        tags: ["2D", "Viễn Tưởng"],
-        poster: "images/Moon_Fall.jpg"
+        genre: "Hành Động, Hài",
+        tags: ["2D", "IMAX"],
+        poster: "https://images.unsplash.com/photo-1635805737707-575885ab0820?auto=format&fit=crop&w=400&q=80"
     },
     {
         title: "Your Name - Tên Cậu Là Gì?",
