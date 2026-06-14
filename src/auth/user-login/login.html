@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" href="../../shared/css/style.css">
+    <link rel="stylesheet" href="dang_nhap.css">
 
     <script id="tailwind-config">
         tailwind.config = {
@@ -56,11 +56,11 @@
             <div class="w-full max-w-[420px] bg-surface-container-low p-8 rounded-xl border border-surface-variant shadow-2xl">
                 
                 <div class="flex items-center justify-between border-b border-surface-variant mb-8">
-                    <a href="../../auth/user-login/login.html" class="flex-1 pb-3 text-center font-['Bebas_Neue'] text-[24px] tracking-wide text-white border-b-2 border-primary-container">Đăng Nhập</a>
-                    <a href="../../auth/user-register/register.html" class="flex-1 pb-3 text-center font-['Bebas_Neue'] text-[24px] tracking-wide text-secondary hover:text-white border-b-2 border-transparent transition-colors">Đăng Ký</a>
+                    <a href="login.html" class="flex-1 pb-3 text-center font-['Bebas_Neue'] text-[24px] tracking-wide text-white border-b-2 border-primary-container">Đăng Nhập</a>
+                    <a href="../user-register/register.html" class="flex-1 pb-3 text-center font-['Bebas_Neue'] text-[24px] tracking-wide text-secondary hover:text-white border-b-2 border-transparent transition-colors">Đăng Ký</a>
                 </div>
 
-                <form action="profile.html" method="GET" class="space-y-5">
+                <form action="../../index.html" method="GET" class="space-y-5">
                     <div class="space-y-1.5">
                         <label class="text-sm text-secondary" for="email">Email</label>
                         <div class="relative">
@@ -91,6 +91,34 @@
         <span class="font-['Bebas_Neue'] text-xl tracking-tighter text-primary-container">3HD2K</span>
         <div class="text-secondary mt-2 md:mt-0">© 2026 3HD2K Cinema. All rights reserved.</div>
     </footer>
-    <script type="module" src="login.js"></script>
+
+    <script>
+        const loginForm = document.querySelector('form');
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent default form submission
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            // Lấy danh sách tài khoản đã đăng ký từ localStorage
+            let users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+            
+            // Tìm user có email và mật khẩu khớp
+            const matchedUser = users.find(u => u.email === email && u.password === password);
+            
+            if (matchedUser) {
+                // Đăng nhập thành công
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('userName', matchedUser.fullname);
+                localStorage.setItem('userAvatar', matchedUser.avatar);
+                
+                // Chuyển hướng về trang chủ
+                window.location.href = '../../index.html';
+            } else {
+                // Đăng nhập thất bại
+                alert("Sai email hoặc mật khẩu! Nếu chưa có tài khoản, vui lòng Đăng ký trước.");
+            }
+        });
+    </script>
 </body>
 </html>

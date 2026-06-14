@@ -1,756 +1,171 @@
 <!DOCTYPE html>
-<html lang="vi" class="dark">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3HD2K - Cụm Rạp</title>
-    
+    <link rel="stylesheet" href="../../shared/css/main.css">
+    <link rel="stylesheet" href="cinemas.css">
+    <!-- Load custom fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@600;700;800;900&family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
     <!-- Leaflet.js Map -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    
     <!-- FontAwesome for Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    
-    <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary-container": "#e50914",
-                        "background": "#121414",
-                        "surface-variant": "#343535",
-                        "secondary": "#c8c6c5",
-                        "surface-container-low": "#1a1c1c",
-                        "surface-container-lowest": "#0d0e0f"
-                    }
-                }
-            }
-        }
-    </script>
-
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #121414;
-            color: #f5f5f5;
-        }
-        h1, h2, h3, h4, .logo, .cinema-name {
-            font-family: 'Bebas Neue', sans-serif;
-            letter-spacing: 1px;
-        }
-        
-        /* Custom scrollbar for left panel cinema list */
-        .cinemas-list-panel {
-            scrollbar-width: thin;
-            scrollbar-color: rgba(229, 9, 20, 0.4) transparent;
-        }
-        .cinemas-list-panel::-webkit-scrollbar {
-            width: 4px;
-        }
-        .cinemas-list-panel::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .cinemas-list-panel::-webkit-scrollbar-thumb {
-            background: rgba(229, 9, 20, 0.4);
-            border-radius: 4px;
-        }
-
-        /* Expanded search input styling */
-        .search-pill.active #search-input {
-            width: 200px;
-            opacity: 1;
-        }
-        .search-pill.active #search-text {
-            display: none;
-        }
-
-        /* Navigation link hover indicators */
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%) scaleX(0);
-            width: 60%;
-            height: 2px;
-            background: #e50914;
-            border-radius: 2px;
-            transition: transform 0.3s ease;
-            box-shadow: 0 0 8px rgba(229, 9, 20, 0.4);
-        }
-        .nav-links a:hover::after {
-            transform: translateX(-50%) scaleX(1);
-        }
-        .nav-links a.active::after {
-            transform: translateX(-50%) scaleX(1);
-        }
-
-        /* Cinema details card styling */
-        .cinema-card {
-            padding: 24px 20px;
-            border-left: 3px solid transparent;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-bottom: 4px;
-            border-radius: 0 8px 8px 0;
-            position: relative;
-        }
-        .cinema-card:hover {
-            background: rgba(255, 255, 255, 0.03);
-        }
-        .cinema-card.active {
-            border-left-color: #e50914;
-            background: rgba(229, 9, 20, 0.06);
-        }
-        .cinema-name {
-            font-size: 1.25rem;
-            font-weight: 800;
-            color: #f5f5f5;
-            line-height: 1.2;
-            text-transform: uppercase;
-        }
-        .cinema-card.active .cinema-name {
-            color: #e50914;
-        }
-        .cinema-distance {
-            font-family: 'Inter', sans-serif;
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: #e50914;
-            white-space: nowrap;
-            padding: 3px 10px;
-            border-radius: 20px;
-            background: rgba(229, 9, 20, 0.1);
-            border: 1px solid rgba(229, 9, 20, 0.2);
-        }
-        .cinema-address {
-            font-family: 'Inter', sans-serif;
-            font-size: 0.8125rem;
-            color: #888888;
-            line-height: 1.6;
-            margin-bottom: 14px;
-        }
-        .cinema-screens {
-            font-family: 'Inter', sans-serif;
-            font-size: 0.75rem;
-            color: #888888;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            margin-bottom: 14px;
-        }
-        .cinema-screens i {
-            color: #e50914;
-            font-size: 0.7rem;
-        }
-        .cinema-card-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .cinema-features {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        .cinema-feature-tag {
-            font-family: 'Inter', sans-serif;
-            font-size: 0.6875rem;
-            font-weight: 600;
-            color: #888888;
-            padding: 3px 10px;
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 4px;
-            letter-spacing: 0.5px;
-        }
-        .cinema-card.active .cinema-feature-tag {
-            border-color: rgba(229, 9, 20, 0.3);
-            color: rgba(255, 255, 255, 0.7);
-        }
-        .btn-directions {
-            width: 38px;
-            height: 38px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.08);
-            background: rgba(255, 255, 255, 0.04);
-            color: #888888;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 0.875rem;
-            flex-shrink: 0;
-        }
-        .btn-directions:hover {
-            background: rgba(229, 9, 20, 0.15);
-            border-color: #e50914;
-            color: #e50914;
-        }
-        .cinema-card.active .btn-directions {
-            background: rgba(229, 9, 20, 0.15);
-            border-color: rgba(229, 9, 20, 0.4);
-            color: #e50914;
-        }
-
-        /* ===== RIGHT PANEL — COD TACTICAL MAP ===== */
-        .cinemas-map-panel {
-            position: relative;
-            background: #d8d6cf;
-            overflow: hidden;
-            border-left: 1px solid rgba(229, 9, 20, 0.15);
-            --hud-red-bright: #ff3438;
-        }
-        #leaflet-map {
-            width: 100%;
-            height: 100%;
-            min-height: calc(100vh - 80px);
-            position: relative;
-            isolation: isolate;
-            background: #d8d6cf;
-        }
-        .tactical-base-pane {
-            background: #d8d6cf;
-        }
-        .tactical-base-pane .leaflet-tile {
-            filter: none;
-            opacity: 1;
-        }
-
-        /* HUD Frame corner indicators */
-        .hud-frame {
-            position: absolute;
-            inset: 0;
-            z-index: 1000;
-            pointer-events: none;
-        }
-        .hud-corner {
-            position: absolute;
-            width: 38px;
-            height: 38px;
-        }
-        .hud-tl {
-            top: 8px; left: 8px;
-            border-top: 2px solid rgba(229, 9, 20, 0.7);
-            border-left: 2px solid rgba(229, 9, 20, 0.7);
-        }
-        .hud-tr {
-            top: 8px; right: 8px;
-            border-top: 2px solid rgba(229, 9, 20, 0.7);
-            border-right: 2px solid rgba(229, 9, 20, 0.7);
-        }
-        .hud-bl {
-            bottom: 8px; left: 8px;
-            border-bottom: 2px solid rgba(229, 9, 20, 0.7);
-            border-left: 2px solid rgba(229, 9, 20, 0.7);
-        }
-        .hud-br {
-            bottom: 8px; right: 8px;
-            border-bottom: 2px solid rgba(229, 9, 20, 0.7);
-            border-right: 2px solid rgba(229, 9, 20, 0.7);
-        }
-
-        /* Scanlines tactical overlay */
-        .hud-scanlines {
-            position: absolute;
-            inset: 0;
-            z-index: 999;
-            pointer-events: none;
-            background:
-                repeating-linear-gradient(
-                    0deg,
-                    transparent,
-                    transparent 2px,
-                    rgba(255, 0, 0, 0.014) 2px,
-                    rgba(255, 0, 0, 0.014) 4px
-                ),
-                radial-gradient(circle at center, transparent 42%, rgba(0, 0, 0, 0.24));
-        }
-
-        /* HUD top indicators bar */
-        .hud-top-bar {
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 18px;
-            padding: 14px 18px;
-            z-index: 1001;
-            pointer-events: none;
-        }
-        .map-overlay-brand {
-            font-family: 'Inter', sans-serif;
-            font-size: 0.68rem;
-            font-weight: 700;
-            letter-spacing: 2.5px;
-            color: rgba(255, 52, 56, 0.9);
-            background: linear-gradient(90deg, rgba(9, 8, 8, 0.92), rgba(30, 8, 9, 0.72));
-            padding: 6px 16px;
-            border: 1px solid rgba(229, 9, 20, 0.38);
-            border-left: 2px solid rgba(255, 52, 56, 0.9);
-            border-radius: 2px;
-            text-transform: uppercase;
-            box-shadow: 0 0 18px rgba(229, 9, 20, 0.18), inset 0 0 16px rgba(229, 9, 20, 0.08);
-        }
-        .hud-coordinates {
-            font-family: 'Courier New', monospace;
-            font-size: 0.62rem;
-            font-weight: 600;
-            letter-spacing: 1px;
-            color: rgba(255, 52, 56, 0.72);
-            background: rgba(0, 0, 0, 0.28);
-            border-top: 1px solid rgba(229, 9, 20, 0.24);
-            padding: 4px 0 4px 12px;
-            text-align: right;
-        }
-
-        /* HUD bottom indicators bar */
-        .hud-bottom-bar {
-            position: absolute;
-            bottom: 0; left: 0; right: 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            padding: 16px 20px;
-            z-index: 1001;
-            pointer-events: none;
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.38), transparent);
-        }
-        .hud-bottom-left {
-            display: flex;
-            flex-direction: column;
-            gap: 3px;
-        }
-        .hud-mission {
-            font-family: 'Courier New', monospace;
-            font-size: 0.62rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            color: rgba(255, 255, 255, 0.3);
-            text-transform: uppercase;
-        }
-        .hud-system {
-            font-family: 'Courier New', monospace;
-            font-size: 0.58rem;
-            letter-spacing: 1.5px;
-            color: rgba(255, 255, 255, 0.2);
-            text-transform: uppercase;
-        }
-        .hud-bottom-right {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 6px;
-            padding: 10px 12px 9px;
-            background: rgba(5, 7, 8, 0.72);
-            border: 1px solid rgba(229, 9, 20, 0.22);
-            border-right-color: rgba(229, 9, 20, 0.48);
-            box-shadow: inset 0 0 18px rgba(229, 9, 20, 0.06);
-        }
-        .hud-legend {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 5px;
-        }
-        .hud-legend-title {
-            font-family: 'Courier New', monospace;
-            font-size: 0.58rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            color: rgba(255, 52, 56, 0.7);
-            text-transform: uppercase;
-        }
-        .hud-legend-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-family: 'Inter', sans-serif;
-            font-size: 0.62rem;
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.62);
-            letter-spacing: 0.8px;
-        }
-        .hud-legend-marker {
-            width: 10px;
-            height: 10px;
-            border-radius: 2px;
-            border: 1.5px solid #ff2b2b;
-            position: relative;
-            flex-shrink: 0;
-            transform: rotate(45deg);
-            box-shadow: 0 0 8px rgba(255, 43, 43, 0.65);
-        }
-        .hud-legend-marker::after {
-            content: '';
-            position: absolute;
-            top: 50%; left: 50%;
-            width: 3px; height: 3px;
-            background: #ff2b2b;
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-        }
-        .hud-tracking {
-            font-family: 'Courier New', monospace;
-            font-size: 0.58rem;
-            letter-spacing: 1.5px;
-            color: rgba(255, 255, 255, 0.2);
-            text-transform: uppercase;
-        }
-
-        /* ===== COD TARGET MARKERS ON MAP ===== */
-        .cod-marker-wrap {
-            position: relative;
-            width: 36px;
-            height: 36px;
-            cursor: pointer;
-            filter: drop-shadow(0 0 8px rgba(255, 43, 43, 0.45));
-        }
-        .cod-marker-wrap::after {
-            content: "";
-            position: absolute;
-            top: 50%;
-            left: calc(100% + 1px);
-            width: 18px;
-            height: 1px;
-            background: linear-gradient(90deg, rgba(255, 43, 43, 0.75), rgba(255, 43, 43, 0));
-            transform: translateY(-50%);
-            z-index: 3;
-        }
-        .cod-radar {
-            position: absolute;
-            top: 50%; left: 50%;
-            width: 128px;
-            height: 128px;
-            margin-top: -64px;
-            margin-left: -64px;
-            border-radius: 50%;
-            background: conic-gradient(
-                transparent 260deg,
-                rgba(255, 43, 43, 0.34) 330deg,
-                rgba(255, 43, 43, 0.06) 360deg
-            );
-            animation: cod-scan 3s linear infinite;
-            pointer-events: none;
-            z-index: 0;
-            box-shadow:
-                0 0 0 1px rgba(255, 43, 43, 0.14),
-                inset 0 0 0 34px rgba(255, 43, 43, 0.018),
-                inset 0 0 38px rgba(255, 43, 43, 0.08);
-        }
-        .cod-radar::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 50%;
-            border: 1px solid rgba(255, 43, 43, 0.15);
-            background: repeating-radial-gradient(circle, transparent 0 22px, rgba(255, 43, 43, 0.15) 23px, transparent 25px);
-        }
-        @keyframes cod-scan {
-            from { transform: rotate(0deg); }
-            to   { transform: rotate(360deg); }
-        }
-        .cod-target {
-            position: absolute;
-            top: 50%; left: 50%;
-            width: 20px;
-            height: 20px;
-            transform: translate(-50%, -50%) rotate(45deg);
-            border: 2px solid #ff3438;
-            border-radius: 2px;
-            z-index: 2;
-            box-shadow:
-                0 0 8px rgba(255, 43, 43, 0.75),
-                0 0 20px rgba(255, 43, 43, 0.24);
-            background:
-                radial-gradient(circle, rgba(255, 255, 255, 0.8) 0 2px, rgba(255, 43, 43, 0.32) 3px, rgba(255, 43, 43, 0.12) 62%, transparent 63%),
-                rgba(30, 4, 4, 0.74);
-        }
-        .cod-target::before {
-            content: '';
-            position: absolute;
-            inset: -9px;
-            border-radius: 50%;
-            border: 1px solid rgba(255, 43, 43, 0.24);
-        }
-        .cod-dot {
-            position: absolute;
-            top: 50%; left: 50%;
-            width: 4px;
-            height: 4px;
-            background: #ff2b2b;
-            border-radius: 50%;
-            transform: translate(-50%, -50%) rotate(-45deg);
-            box-shadow: 0 0 4px rgba(255, 43, 43, 0.9);
-        }
-        .cod-pulse {
-            position: absolute;
-            top: 50%; left: 50%;
-            width: 30px;
-            height: 30px;
-            transform: translate(-50%, -50%);
-            border-radius: 50%;
-            border: 1.5px solid rgba(255, 43, 43, 0.7);
-            animation: cod-pulse 1.6s ease-out infinite;
-            pointer-events: none;
-            z-index: 1;
-        }
-        @keyframes cod-pulse {
-            0%   { transform: translate(-50%, -50%) scale(1);   opacity: 0.8; }
-            100% { transform: translate(-50%, -50%) scale(2.4); opacity: 0; }
-        }
-        .cod-marker-wrap.active .cod-target {
-            border-color: #ff4444;
-            box-shadow: 0 0 16px rgba(255, 43, 43, 0.95), 0 0 36px rgba(255, 43, 43, 0.38);
-            background: rgba(255, 43, 43, 0.15);
-        }
-        .cod-marker-wrap.active .cod-dot {
-            width: 5px;
-            height: 5px;
-            box-shadow: 0 0 8px rgba(255, 43, 43, 1);
-        }
-        .cod-label {
-            position: absolute;
-            top: 50%;
-            left: calc(100% + 20px);
-            transform: translateY(-50%);
-            min-width: 126px;
-            background: linear-gradient(90deg, rgba(5, 7, 8, 0.94), rgba(20, 6, 6, 0.86));
-            border: 1px solid rgba(229, 9, 20, 0.38);
-            border-left: 2px solid rgba(255, 52, 56, 0.88);
-            border-radius: 2px;
-            padding: 6px 12px 6px 10px;
-            white-space: nowrap;
-            pointer-events: none;
-            backdrop-filter: blur(4px);
-            box-shadow: 0 0 18px rgba(229, 9, 20, 0.16), inset 0 0 10px rgba(229, 9, 20, 0.06);
-            clip-path: polygon(0 0, calc(100% - 11px) 0, 100% 11px, 100% 100%, 0 100%);
-        }
-        .cod-label-name {
-            display: block;
-            font-family: 'Inter', sans-serif;
-            font-size: 0.68rem;
-            font-weight: 800;
-            color: #fff;
-            letter-spacing: 0.9px;
-            text-transform: uppercase;
-            line-height: 1.3;
-        }
-        .cod-label-dist {
-            display: block;
-            font-family: 'Courier New', monospace;
-            font-size: 0.58rem;
-            font-weight: 600;
-            color: rgba(255, 52, 56, 0.82);
-            margin-top: 2px;
-            letter-spacing: 0.5px;
-        }
-
-        /* ===== LEAFLET OVERRIDES ===== */
-        .leaflet-popup { display: none !important; }
-        .leaflet-control-zoom {
-            border: 1px solid rgba(229, 9, 20, 0.42) !important;
-            border-radius: 3px !important;
-            overflow: hidden;
-            box-shadow: 0 0 18px rgba(229, 9, 20, 0.18) !important;
-        }
-        .leaflet-control-zoom a {
-            background: rgba(5, 7, 8, 0.92) !important;
-            color: rgba(255, 52, 56, 0.9) !important;
-            border-bottom: 1px solid rgba(229, 9, 20, 0.2) !important;
-            font-weight: 700 !important;
-            font-size: 1rem !important;
-        }
-        .leaflet-control-zoom a:hover {
-            background: rgba(229, 9, 20, 0.2) !important;
-            color: #fff !important;
-        }
-        .leaflet-control-attribution {
-            background: rgba(5, 7, 8, 0.7) !important;
-            color: rgba(255, 255, 255, 0.22) !important;
-            font-size: 0.5rem !important;
-        }
-
-        /* ===== LOCATION BUTTON ===== */
-        .btn-my-location {
-            position: absolute;
-            top: 92px;
-            right: 18px;
-            width: 36px;
-            height: 36px;
-            border-radius: 3px;
-            background: rgba(5, 7, 8, 0.92);
-            border: 1px solid rgba(229, 9, 20, 0.42);
-            color: rgba(255, 52, 56, 0.9);
-            font-size: 1rem;
-            cursor: pointer;
-            z-index: 1001;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 18px rgba(229, 9, 20, 0.18);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .btn-my-location:hover {
-            background: rgba(229, 9, 20, 0.2);
-            color: #fff;
-            transform: scale(1.04);
-            box-shadow: 0 0 24px rgba(229, 9, 20, 0.36);
-        }
-    </style>
 </head>
-<body class="bg-background text-white min-h-screen flex flex-col font-['Inter'] antialiased">
-    
-    <!-- HEADER -->
-    <header class="fixed top-0 left-0 w-full px-6 lg:px-14 h-20 flex justify-between items-center z-50 bg-[#080808]/92 backdrop-blur-md border-b border-primary-container/30 shadow-[0_2px_20px_rgba(0,0,0,0.5)]">
-        <div class="flex items-center gap-10 h-full">
-            <a href="../home-page/index.html" class="logo text-primary-container text-4xl font-normal tracking-widest leading-none">3HD2K</a>
-            <nav class="nav-links hidden md:flex items-center gap-1.5 h-full">
-                <a href="../home-page/index.html" class="relative flex items-center h-full text-white/55 hover:text-white px-4 text-base transition-all hover:bg-white/5 rounded-md">Trang chủ</a>
-                <a href="../movie-search/index.html" class="relative flex items-center h-full text-white/55 hover:text-white px-4 text-base transition-all hover:bg-white/5 rounded-md">Phim Đang Chiếu</a>
-                <a href="#" class="active relative flex items-center h-full text-white font-bold px-4 text-base transition-all">Cụm Rạp</a>
-                <a href="#" class="relative flex items-center h-full text-white/55 hover:text-white px-4 text-base transition-all hover:bg-white/5 rounded-md">Khuyến Mãi</a>
-                <a href="../../booking/booking-food/index.html" class="relative flex items-center h-full text-white/55 hover:text-white px-4 text-base transition-all hover:bg-white/5 rounded-md">Đặt vé</a>
+<body>
+    <!-- NAVBAR -->
+    <header class="navbar">
+        <div class="nav-left">
+            <a href="../home-page/index.html" class="logo">3HD2K</a>
+            <nav class="nav-links">
+                <a href="../home-page/index.html">Trang chủ</a>
+                <a href="../movie-search/index.html?tab=now-showing">Phim Đang Chiếu</a>
+                <a href="index.html" class="active">Cụm Rạp</a>
+                <a href="#">Khuyến Mãi</a>
+                <a href="#">Đặt vé</a>
             </nav>
         </div>
-        <div class="nav-actions flex items-center gap-4.5">
-            <div class="search-pill flex items-center gap-2 px-6 py-2.5 rounded-full bg-white/7 border border-white/10 cursor-pointer transition-all duration-300 hover:bg-white/12 hover:border-white/20 hover:shadow-[0_0_12px_rgba(229,9,20,0.15)]" id="search-pill">
-                <i class="fas fa-search text-white/50 hover:text-primary-container transition-colors" id="search-icon"></i>
-                <input type="text" id="search-input" class="bg-transparent border-none text-white text-sm w-0 opacity-0 transition-all duration-400 outline-none p-0 focus:ring-0" placeholder="Tìm kiếm phim..." />
-                <span id="search-text" class="inter-text text-sm text-white/40 font-normal transition-colors">Tìm kiếm</span>
+        <div class="nav-actions">
+            <div class="search-pill" id="search-pill">
+                <i class="fas fa-search" id="search-icon"></i>
+                <input type="text" id="search-input" placeholder="Tìm kiếm phim..." />
+                <span id="search-text">Tìm kiếm</span>
             </div>
-            
-            <button class="hover:text-primary-container text-white/50 hover:scale-115 transition-all p-1.5 text-lg" aria-label="Thông báo">
+            <div class="notif-btn" id="notif-btn">
                 <i class="fas fa-bell"></i>
-            </button>
-            <a href="../../user/loyalty-points/index.html" class="hover:text-primary-container text-white/50 hover:scale-115 transition-all p-1.5 text-lg" aria-label="Tài khoản">
-                <i class="fas fa-user"></i>
+                <!-- Dropdown -->
+                <div class="notif-dropdown" id="notif-dropdown">
+                    <div class="notif-header">
+                        <span class="notif-title">Thông báo</span>
+                    </div>
+                    <div class="notif-empty" style="display: flex; flex-direction: column; align-items: center; padding: 40px 20px; color: rgba(255,255,255,0.5);">
+                        <i class="fas fa-user-lock" style="font-size: 3rem; margin-bottom: 15px; color: rgba(255,255,255,0.2);"></i>
+                        <p style="margin-bottom: 20px; text-align: center;">Vui lòng đăng nhập để xem thông báo</p>
+                        <a href="../../auth/user-login/login.html" class="btn-primary" style="background: var(--primary-red); color: white; padding: 10px 25px; border-radius: 8px; text-decoration: none; font-weight: bold; transition: opacity 0.3s;">Đăng nhập ngay</a>
+                    </div>
+                </div>
+            </div>
+            <a href="../../auth/user-login/login.html" class="user-btn" style="text-decoration: none; color: white;">
+                <div class="avatar-wrapper" style="background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.2);">
+                    <i class="fas fa-user" style="color: rgba(255,255,255,0.6); font-size: 1rem;"></i>
+                </div>
             </a>
         </div>
     </header>
 
-    <main class="cinemas-page pt-20 min-h-screen">
-        <div class="cinemas-layout grid grid-cols-1 lg:grid-cols-[420px_1fr] min-h-[calc(100vh-80px)]">
-            
-            <!-- LEFT PANEL: Cinema List -->
-            <div class="cinemas-list-panel p-6 lg:pl-14 lg:pr-5 overflow-y-auto max-h-[calc(100vh-80px)]">
-                <div class="cinemas-header mb-8 text-left">
-                    <h1 class="text-[32px] font-bold text-white uppercase leading-tight tracking-wider mb-2">Rạp chiếu gần đây</h1>
-                    <p class="text-xs text-secondary leading-normal">Khám phá các phòng chiếu 3HD2K chân thực gần bạn</p>
+    <main class="cinemas-page">
+        <div class="cinemas-layout">
+            <!-- LEFT: Cinema List -->
+            <div class="cinemas-list-panel">
+                <div class="cinemas-header">
+                    <h1>Rạp chiếu gần đây</h1>
+                    <p>Khám phá các phòng chiếu 3HD2K chân thực gần bạn</p>
                 </div>
-                <div id="cinemas-list" class="flex flex-col gap-1">
-                    <!-- Rendered dynamically by JS -->
+                <div id="cinemas-list">
+                    <!-- Rendered by JS -->
                 </div>
             </div>
 
-            <!-- RIGHT PANEL: Tactical Map -->
-            <div class="cinemas-map-panel relative overflow-hidden bg-[#d8d6cf]">
-                
-                <!-- HUD Corner Frame Brackets -->
-                <div class="hud-frame absolute inset-0 z-40 pointer-events-none">
+            <!-- RIGHT: Tactical Map -->
+            <div class="cinemas-map-panel">
+                <!-- HUD Frame -->
+                <div class="hud-frame">
                     <span class="hud-corner hud-tl"></span>
                     <span class="hud-corner hud-tr"></span>
                     <span class="hud-corner hud-bl"></span>
                     <span class="hud-corner hud-br"></span>
                 </div>
 
-                <!-- HUD Scanlines overlay -->
+                <!-- Scanline overlay -->
                 <div class="hud-scanlines"></div>
 
                 <!-- HUD Top Bar -->
                 <div class="hud-top-bar">
-                    <span class="map-overlay-brand"><i class="fas fa-film mr-1.5"></i> CINEMAS 3HD2K</span>
+                    <span class="map-overlay-brand"><i class="fas fa-film" style="margin-right: 6px;"></i> CINEMAS 3HD2K</span>
                     <span class="hud-coordinates" id="hud-coordinates">COORDINATE: 20.9850° N, 105.8542° E</span>
                 </div>
 
-                <!-- Leaflet Map Container -->
-                <div id="leaflet-map" class="z-10"></div>
+                <!-- Leaflet Map -->
+                <div id="leaflet-map"></div>
 
                 <!-- HUD Bottom Bar -->
                 <div class="hud-bottom-bar">
                     <div class="hud-bottom-left">
                         <span class="hud-mission">MISSION: FIND YOUR CINEMA</span>
-                        <span class="hud-system">SYSTEM <span class="text-primary-container">ONLINE</span></span>
+                        <span class="hud-system">SYSTEM <span style="color: var(--primary-red);">ONLINE</span></span>
                     </div>
-                    <div class="hud-bottom-right rounded-sm border border-primary-container/20 p-2.5">
-                        <div class="hud-legend flex flex-col items-end gap-1 mb-1.5">
+                    <div class="hud-bottom-right">
+                        <div class="hud-legend">
                             <span class="hud-legend-title">LEGEND</span>
                             <div class="hud-legend-item">
                                 <span class="hud-legend-marker"></span>
                                 <span>3HD2K CINEMA</span>
                             </div>
                         </div>
-                        <span class="hud-tracking">TRACKING SYSTEM: <span class="text-primary-container">ACTIVE</span></span>
+                        <span class="hud-tracking">TRACKING SYSTEM: <span style="color: var(--primary-red);">ACTIVE</span></span>
                     </div>
                 </div>
 
-                <!-- My Location Button -->
+                <!-- Location button -->
                 <button class="btn-my-location" id="btn-my-location" title="Vị trí của tôi">
                     <i class="fas fa-crosshairs"></i>
                 </button>
             </div>
-
         </div>
     </main>
 
     <!-- FOOTER -->
-    <footer class="border-t border-white/8 px-6 lg:px-14 py-12 bg-[#050505]/50">
-        <div class="footer-content flex flex-col md:flex-row justify-between gap-12 mb-12 flex-wrap">
-            <div class="footer-brand max-w-[320px]">
-                <h2 class="logo text-primary-container text-3xl font-normal tracking-widest mb-5 leading-none">3HD2K</h2>
-                <p class="text-secondary text-sm leading-relaxed mb-6 font-['Inter']">Trải nghiệm điện ảnh đỉnh cao, mang Hollywood đến gần bạn hơn.</p>
-                <div class="social-icons flex gap-5 text-secondary text-lg">
-                    <i class="fas fa-share-alt cursor-pointer hover:text-white transition-colors"></i>
-                    <i class="fas fa-globe cursor-pointer hover:text-white transition-colors"></i>
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h2 class="logo">3HD2K</h2>
+                <p>Trải nghiệm điện ảnh đỉnh cao, mang Hollywood đến gần bạn hơn.</p>
+                <div class="social-icons">
+                    <i class="fas fa-share-alt"></i>
+                    <i class="fas fa-globe"></i>
                 </div>
             </div>
-            <div class="footer-links flex gap-12 md:gap-20 flex-wrap">
+            <div class="footer-links">
                 <div class="link-column">
-                    <h4 class="text-xs font-bold text-white mb-6 uppercase tracking-wider">KHÁM PHÁ</h4>
-                    <ul class="flex flex-col gap-3">
-                        <li><a href="#" class="text-secondary hover:text-white text-sm transition-colors font-['Inter']">Phim Đang Chiếu</a></li>
-                        <li><a href="#" class="text-secondary hover:text-white text-sm transition-colors font-['Inter']">Phim Sắp Chiếu</a></li>
-                        <li><a href="#" class="text-secondary hover:text-white text-sm transition-colors font-['Inter']">Rạp Phim</a></li>
-                        <li><a href="#" class="text-secondary hover:text-white text-sm transition-colors font-['Inter']">Khuyến Mãi</a></li>
+                    <h4>KHÁM PHÁ</h4>
+                    <ul>
+                        <li><a href="../movie-search/index.html?tab=now-showing">Phim Đang Chiếu</a></li>
+                        <li><a href="#">Phim Sắp Chiếu</a></li>
+                        <li><a href="#">Rạp Phim</a></li>
+                        <li><a href="#">Khuyến Mãi</a></li>
                     </ul>
                 </div>
                 <div class="link-column">
-                    <h4 class="text-xs font-bold text-white mb-6 uppercase tracking-wider">HỖ TRỢ</h4>
-                    <ul class="flex flex-col gap-3">
-                        <li><a href="#" class="text-secondary hover:text-white text-sm transition-colors font-['Inter']">Help Center</a></li>
-                        <li><a href="#" class="text-secondary hover:text-white text-sm transition-colors font-['Inter']">Terms of Use</a></li>
-                        <li><a href="#" class="text-secondary hover:text-white text-sm transition-colors font-['Inter']">Privacy Policy</a></li>
-                        <li><a href="#" class="text-secondary hover:text-white text-sm transition-colors font-['Inter']">Cookie Preferences</a></li>
+                    <h4>HỖ TRỢ</h4>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Terms of Use</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Cookie Preferences</a></li>
                     </ul>
                 </div>
                 <div class="link-column">
-                    <h4 class="text-xs font-bold text-white mb-6 uppercase tracking-wider">VỀ CHÚNG TÔI</h4>
-                    <ul class="flex flex-col gap-3">
-                        <li><a href="#" class="text-secondary hover:text-white text-sm transition-colors font-['Inter']">About Us</a></li>
-                        <li><a href="#" class="text-secondary hover:text-white text-sm transition-colors font-['Inter']">Corporate Information</a></li>
-                        <li><a href="#" class="text-secondary hover:text-white text-sm transition-colors font-['Inter']">Tuyển Dụng</a></li>
+                    <h4>VỀ CHÚNG TÔI</h4>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Corporate Information</a></li>
+                        <li><a href="#">Tuyển Dụng</a></li>
                     </ul>
                 </div>
             </div>
         </div>
-        <div class="footer-bottom border-t border-white/8 pt-6 flex flex-col md:flex-row justify-between items-center text-xs text-secondary gap-4">
+        <div class="footer-bottom">
             <p>&copy; 2024 3HD2K Entertainment. All rights reserved.</p>
-            <p class="flex items-center gap-1.5"><i class="fas fa-globe"></i> Tiếng Việt</p>
+            <p><i class="fas fa-globe" style="margin-right: 5px;"></i> Tiếng Việt</p>
         </div>
     </footer>
 
-    <!-- Leaflet.js Scripts -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="../../shared/js/data.js"></script>
     <script src="../../shared/js/main.js"></script>
-    <script src="js/cinemas.js"></script>
+    <script src="cinemas.js"></script>
 </body>
 </html>

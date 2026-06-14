@@ -1,133 +1,488 @@
 <!DOCTYPE html>
-<html class="dark" lang="vi">
+<html lang="vi">
 <head>
-    <meta charset="utf-8">
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>Thông tin cá nhân - 3HD2K Cinema</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="../../shared/css/style.css">
-
-    <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary-container": "#e50914",
-                        "background": "#121414",
-                        "surface-variant": "#343535",
-                        "secondary": "#c8c6c5",
-                        "surface-container-low": "#1a1c1c",
-                        "surface-container-lowest": "#0d0e0f"
-                    }
-                }
-            }
-        }
-    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thông tin cá nhân - 3HD2K</title>
+    <link rel="stylesheet" href="../../../shared/css/main.css">
+    <link rel="stylesheet" href="profile.css">
+    <!-- Load custom fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
-<body class="bg-background antialiased text-white min-h-screen flex flex-col font-['Inter']">
-
-    <header class="w-full z-50 px-8 h-20 flex items-center justify-between border-b border-surface-variant bg-surface-container-low">
-        <a class="font-['Bebas_Neue'] text-[48px] text-primary-container font-bold tracking-tighter" href="../../explore/home-page/index.html">3HD2K</a>
-        <a class="text-sm font-semibold hover:text-primary-container transition" href="../../auth/user-login/login.html">Đăng xuất</a>
+<body>
+    <!-- NAVBAR -->
+    <header class="navbar">
+        <div class="nav-left">
+            <a href="../../explore/home-page/index.html" class="logo">3HD2K</a>
+            <nav class="nav-links">
+                <a href="../../explore/home-page/index.html">Trang chủ</a>
+                <a href="../../explore/movie-search/index.html?tab=now-showing">Phim Đang Chiếu</a>
+                <a href="../../explore/cinema-map/index.html">Cụm Rạp</a>
+                <a href="#">Khuyến Mãi</a>
+                <a href="#">Đặt vé</a>
+            </nav>
+        </div>
+        <div class="nav-actions">
+            <div class="search-pill" id="search-pill">
+                <i class="fas fa-search" id="search-icon"></i>
+                <input type="text" id="search-input" placeholder="Tìm kiếm phim..." />
+                <span id="search-text">Tìm kiếm</span>
+            </div>
+            <div class="notif-btn" id="notif-btn">
+                <i class="fas fa-bell"></i>
+                <!-- Dropdown -->
+                <div class="notif-dropdown" id="notif-dropdown">
+                    <div class="notif-header">
+                        <span class="notif-title">Thông báo</span>
+                    </div>
+                    <div class="notif-empty" style="display: flex; flex-direction: column; align-items: center; padding: 40px 20px; color: rgba(255,255,255,0.5);">
+                        <i class="fas fa-user-lock" style="font-size: 3rem; margin-bottom: 15px; color: rgba(255,255,255,0.2);"></i>
+                        <p style="margin-bottom: 20px; text-align: center;">Vui lòng đăng nhập để xem thông báo</p>
+                        <a href="../../auth/user-login/login.html" class="btn-primary" style="background: var(--primary-red); color: white; padding: 10px 25px; border-radius: 8px; text-decoration: none; font-weight: bold; transition: opacity 0.3s;">Đăng nhập ngay</a>
+                    </div>
+                </div>
+            </div>
+            <a href="../../auth/user-login/login.html" class="user-btn" style="text-decoration: none; color: white;">
+                <div class="avatar-wrapper" style="background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.2);">
+                    <i class="fas fa-user" style="color: rgba(255,255,255,0.6); font-size: 1rem;"></i>
+                </div>
+            </a>
+        </div>
     </header>
 
-    <main class="flex-grow flex items-center justify-center p-6">
-        <div class="w-full max-w-[500px] bg-surface-container-low p-8 rounded-xl border border-surface-variant shadow-2xl space-y-6">
-            
-            <div class="text-center border-b border-surface-variant pb-4 space-y-3">
-                <div class="avatar-container">
-                    <img id="profileAvatar" class="avatar-preview" src="https://api.dicebear.com/7.x/bottts/svg?seed=3HD2K" alt="Avatar">
-                    <label for="changeAvatarInput" class="avatar-upload-btn">
-                        <span class="material-symbols-outlined">edit</span>
-                    </label>
-                    <input type="file" id="changeAvatarInput" accept="image/*" class="hidden">
+    <main class="profile-dashboard">
+        <div class="profile-container">
+            <!-- SIDEBAR -->
+            <aside class="profile-sidebar">
+                <div class="sidebar-user-info">
+                    <div class="sidebar-avatar-wrapper">
+                        <img id="sidebar-avatar" src="../../../shared/images/avatar.jpg" alt="User Avatar" onerror="this.src='https://i.pravatar.cc/150?img=11'">
+                        <div class="avatar-upload-btn" onclick="document.getElementById('avatar-input').click()"><i class="fas fa-camera"></i></div>
+                        <input type="file" id="avatar-input" accept="image/*" style="display: none;">
+                    </div>
+                    <h3 id="sidebar-name">Khách</h3>
+                    <div class="sidebar-vip">
+                        <i class="fas fa-crown"></i> VIP - <span id="sidebar-points">0</span> điểm
+                    </div>
                 </div>
-                <h2 class="font-['Bebas_Neue'] text-3xl tracking-wide mt-2">Thông Tin Tài Khoản</h2>
-            </div>
+                
+                <nav class="sidebar-menu">
+                    <a href="#" class="menu-item active" data-tab="info">
+                        <i class="fas fa-user-circle"></i> Thông tin cá nhân
+                    </a>
+                    <a href="#" class="menu-item" data-tab="history">
+                        <i class="fas fa-ticket-alt"></i> Lịch sử đặt vé
+                    </a>
+                    <a href="#" class="menu-item" data-tab="offers">
+                        <i class="fas fa-gift"></i> Ưu đãi của tôi
+                    </a>
+                    <a href="#" class="menu-item" data-tab="settings">
+                        <i class="fas fa-cog"></i> Cài đặt
+                    </a>
+                    <a href="#" id="sidebar-logout" class="menu-item logout">
+                        <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                    </a>
+                </nav>
+            </aside>
 
-            <div class="space-y-4 text-sm">
-                <div class="flex justify-between items-center py-2 border-b border-background">
-                    <span class="text-secondary font-medium">Họ và tên:</span>
-                    <span id="view-fullname" class="font-semibold text-white">Chưa cập nhật</span>
+            <!-- MAIN CONTENT -->
+            <section class="profile-content">
+                <!-- TAB THÔNG TIN CÁ NHÂN -->
+                <div id="tab-info" class="tab-content active">
+                    <div class="content-header">
+                        <h2>Thông tin cá nhân</h2>
+                        <p>Quản lý thông tin hồ sơ để bảo mật tài khoản</p>
+                    </div>
+
+                    <div class="content-body">
+                        <form id="profile-form" class="profile-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="fullname">Họ và Tên</label>
+                                    <input type="text" id="fullname" placeholder="Nhập họ tên của bạn">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="email">Email</label>
+                                    <input type="email" id="email" readonly class="readonly-input">
+                                    <span class="help-text">Email không thể thay đổi</span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="phone">Số điện thoại</label>
+                                    <input type="tel" id="phone" placeholder="Nhập số điện thoại">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Giới tính</label>
+                                    <div class="radio-group">
+                                        <label class="radio-container">
+                                            <input type="radio" name="gender" value="male" checked>
+                                            <span class="checkmark"></span>
+                                            Nam
+                                        </label>
+                                        <label class="radio-container">
+                                            <input type="radio" name="gender" value="female">
+                                            <span class="checkmark"></span>
+                                            Nữ
+                                        </label>
+                                        <label class="radio-container">
+                                            <input type="radio" name="gender" value="other">
+                                            <span class="checkmark"></span>
+                                            Khác
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="dob">Ngày sinh</label>
+                                    <input type="date" id="dob">
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn-save">Lưu thay đổi</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
 
-                <div class="flex justify-between items-center py-2 border-b border-background">
-                    <span class="text-secondary font-medium">Ngày sinh:</span>
-                    <span id="view-dob" class="font-semibold text-white">Chưa cập nhật</span>
+                <!-- TAB LỊCH SỬ ĐẶT VÉ -->
+                <div id="tab-history" class="tab-content">
+                    <div class="content-header" style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 15px;">
+                        <div>
+                            <h2>Lịch sử đặt vé</h2>
+                            <p>Danh sách các vé bạn đã đặt gần đây</p>
+                        </div>
+                        <div class="history-filters">
+                            <button class="filter-btn active" data-filter="all">Tất cả</button>
+                            <button class="filter-btn" data-filter="upcoming">Sắp chiếu</button>
+                            <button class="filter-btn" data-filter="completed">Đã xem</button>
+                        </div>
+                    </div>
+                    <div class="content-body">
+                        <div class="history-list">
+                            <!-- Ticket 1 -->
+                            <div class="history-card">
+                                <div class="history-img">
+                                    <img src="../../../shared/images/f1_movie.jpg" alt="F1 The Movie" onerror="this.src='https://images.unsplash.com/photo-1440404653325-ab127d49abc1?auto=format&fit=crop&w=400&q=80'">
+                                </div>
+                                <div class="history-info">
+                                    <h3>F1: The Movie</h3>
+                                    <p><i class="fas fa-map-marker-alt"></i> 3HD2K Vincom Đồng Khởi - Rạp 1</p>
+                                    <p><i class="fas fa-clock"></i> 20:00 - 15/06/2026</p>
+                                    <p><i class="fas fa-couch"></i> Ghế: E5, E6</p>
+                                </div>
+                                <div class="history-action">
+                                    <span class="status status-upcoming">Sắp chiếu</span>
+                                    <div class="history-price">250.000đ</div>
+                                    <button class="btn-ticket">Xem mã vé</button>
+                                </div>
+                            </div>
+                            
+                            <!-- Ticket 2 -->
+                            <div class="history-card">
+                                <div class="history-img">
+                                    <img src="../../../shared/images/war_machine.jpg" alt="War Machine" onerror="this.src='https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=400&q=80'">
+                                </div>
+                                <div class="history-info">
+                                    <h3>War Machine</h3>
+                                    <p><i class="fas fa-map-marker-alt"></i> 3HD2K Landmark 81 - Rạp IMAX</p>
+                                    <p><i class="fas fa-clock"></i> 14:30 - 01/06/2026</p>
+                                    <p><i class="fas fa-couch"></i> Ghế: H10, H11, H12</p>
+                                </div>
+                                <div class="history-action">
+                                    <span class="status status-completed">Đã xem</span>
+                                    <div class="history-price">375.000đ</div>
+                                    <button class="btn-ticket btn-outline">Mua lại</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="flex justify-between items-center py-2 border-b border-background">
-                    <span class="text-secondary font-medium">Email liên hệ:</span>
-                    <span id="view-email" class="font-semibold text-white text-right break-all">Chưa cập nhật</span>
+                <!-- TAB ƯU ĐÃI -->
+                <div id="tab-offers" class="tab-content">
+                    <div class="content-header">
+                        <h2>Ưu đãi của tôi</h2>
+                        <p>Các mã giảm giá và thẻ quà tặng bạn đang có</p>
+                    </div>
+                    <div class="content-body" style="text-align: center; padding: 50px 0; color: #888;">
+                        <i class="fas fa-box-open" style="font-size: 3rem; margin-bottom: 20px; color: #444;"></i>
+                        <p>Bạn chưa có ưu đãi nào.</p>
+                    </div>
                 </div>
 
-                <div class="flex justify-between items-center py-2">
-                    <span class="text-secondary font-medium">Số điện thoại:</span>
-                    <span id="view-phone" class="font-semibold text-white">Chưa cập nhật</span>
+                <!-- TAB CÀI ĐẶT -->
+                <div id="tab-settings" class="tab-content">
+                    <div class="content-header">
+                        <h2>Cài đặt</h2>
+                        <p>Tùy chỉnh thông báo và hệ thống</p>
+                    </div>
+                    <div class="content-body" style="text-align: center; padding: 50px 0; color: #888;">
+                        <i class="fas fa-tools" style="font-size: 3rem; margin-bottom: 20px; color: #444;"></i>
+                        <p>Tính năng đang được phát triển.</p>
+                    </div>
                 </div>
-            </div>
 
-            <div class="pt-2">
-                <a href="../../explore/home-page/index.html" class="block w-full text-center bg-surface-variant text-white py-2.5 rounded-lg font-medium hover:bg-gray-600 transition text-xs uppercase tracking-wider">
-                    Quay lại trang chủ
-                </a>
-            </div>
+            </section>
         </div>
     </main>
 
-    <footer class="bg-surface-container-lowest text-white border-t border-surface-variant px-8 py-4 flex flex-col md:flex-row justify-between items-center text-xs">
-        <span class="font-['Bebas_Neue'] text-xl tracking-tighter text-primary-container">3HD2K</span>
-        <div class="text-secondary mt-2 md:mt-0">© 2026 3HD2K Cinema. All rights reserved.</div>
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-content">
+            <div class="brand-info">
+                <h2 class="logo">3HD2K</h2>
+                <p>Trải nghiệm điện ảnh đỉnh cao, mang Hollywood đến gần bạn hơn.</p>
+                <div class="social-icons">
+                    <i class="fas fa-share-alt"></i>
+                    <i class="fas fa-globe"></i>
+                </div>
+            </div>
+            <div class="footer-links">
+                <div class="link-column">
+                    <h4>KHÁM PHÁ</h4>
+                    <ul>
+                        <li><a href="../../explore/movie-search/index.html?tab=now-showing">Phim Đang Chiếu</a></li>
+                        <li><a href="../movies.html?tab=coming-soon">Phim Sắp Chiếu</a></li>
+                        <li><a href="../../explore/cinema-map/index.html">Rạp Phim</a></li>
+                        <li><a href="#">Khuyến Mãi</a></li>
+                    </ul>
+                </div>
+                <div class="link-column">
+                    <h4>HỖ TRỢ</h4>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Terms of Use</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Cookie Preferences</a></li>
+                    </ul>
+                </div>
+                <div class="link-column">
+                    <h4>VỀ CHÚNG TÔI</h4>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Corporate Information</a></li>
+                        <li><a href="#">Tuyển Dụng</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 3HD2K Entertainment. All rights reserved.</p>
+            <p><i class="fas fa-globe" style="margin-right: 5px;"></i> Tiếng Việt</p>
+        </div>
     </footer>
 
+    <!-- SCRIPTS -->
+    <script src="../../../shared/js/data.js"></script>
+    <script src="../../../shared/js/main.js"></script>
     <script>
-        window.addEventListener('DOMContentLoaded', () => {
-            // 1. Phân tích tham số chữ nhận được từ URL của form Đăng ký
-            const urlParams = new URLSearchParams(window.location.search);
-            const fullname = urlParams.get('fullname');
-            const dob = urlParams.get('dob');
-            const email = urlParams.get('email');
-            const phone = urlParams.get('phone');
-
-            if (fullname) document.getElementById('view-fullname').innerText = fullname;
-            if (email) document.getElementById('view-email').innerText = email;
-            if (phone) document.getElementById('view-phone').innerText = phone;
+        document.addEventListener('DOMContentLoaded', () => {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
             
-            if (dob) {
-                // Đổi định dạng từ YYYY-MM-DD sang DD/MM/YYYY
-                const dateParts = dob.split('-');
-                if(dateParts.length === 3) {
-                    document.getElementById('view-dob').innerText = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+            // Nếu chưa đăng nhập, đá về trang đăng nhập
+            if (!isLoggedIn) {
+                window.location.href = '../Dang_Nhap/login.html';
+                return;
+            }
+
+            // Load thông tin từ localStorage
+            const userName = localStorage.getItem('userName') || 'Khách';
+            const userAvatar = localStorage.getItem('userAvatar') || 'https://i.pravatar.cc/150?img=11';
+            
+            // Tìm user hiện tại trong danh sách để lấy thông tin chi tiết
+            let users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+            // Giả sử có lưu curUserEmail khi đăng nhập để tìm chính xác, 
+            // nhưng hiện tại ta có thể tìm theo tên (tạm thời)
+            let currentUser = users.find(u => u.fullname === userName);
+
+            if (!currentUser) {
+                // Tạo mock data nếu không tìm thấy (trường hợp tài khoản tạo ảo)
+                currentUser = {
+                    fullname: userName,
+                    email: "user@example.com",
+                    avatar: userAvatar,
+                    phone: "",
+                    gender: "male",
+                    dob: "",
+                    points: 1250
+                };
+            }
+
+            // Điền dữ liệu vào Sidebar
+            document.getElementById('sidebar-name').textContent = currentUser.fullname;
+            document.getElementById('sidebar-avatar').src = currentUser.avatar;
+            document.getElementById('sidebar-points').textContent = currentUser.points || 1250;
+
+            // Điền dữ liệu vào Form
+            document.getElementById('fullname').value = currentUser.fullname;
+            document.getElementById('email').value = currentUser.email;
+            document.getElementById('phone').value = currentUser.phone || '';
+            document.getElementById('dob').value = currentUser.dob || '';
+
+            if (currentUser.gender) {
+                const genderRadio = document.querySelector(`input[name="gender"][value="${currentUser.gender}"]`);
+                if (genderRadio) genderRadio.checked = true;
+            }
+
+            // Handle Avatar Upload
+            let newAvatarData = currentUser.avatar;
+            document.getElementById('avatar-input').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(evt) {
+                        newAvatarData = evt.target.result;
+                        document.getElementById('sidebar-avatar').src = newAvatarData;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Handle Save Form
+            document.getElementById('profile-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                // Lấy dữ liệu mới
+                const newName = document.getElementById('fullname').value;
+                const newPhone = document.getElementById('phone').value;
+                const newDob = document.getElementById('dob').value;
+                const newGender = document.querySelector('input[name="gender"]:checked').value;
+
+                // Cập nhật object
+                currentUser.fullname = newName;
+                currentUser.phone = newPhone;
+                currentUser.dob = newDob;
+                currentUser.gender = newGender;
+                currentUser.avatar = newAvatarData;
+
+                // Lưu lại vào mảng users
+                const index = users.findIndex(u => u.email === currentUser.email);
+                if (index !== -1) {
+                    users[index] = currentUser;
                 } else {
-                    document.getElementById('view-dob').innerText = dob;
+                    users.push(currentUser);
+                }
+
+                localStorage.setItem('registeredUsers', JSON.stringify(users));
+                
+                // Cập nhật tên hiển thị ở navbar và sidebar
+                localStorage.setItem('userName', newName);
+                localStorage.setItem('userAvatar', newAvatarData);
+                document.getElementById('sidebar-name').textContent = newName;
+                
+                // Update avatar in navbar
+                const navbarAvatar = document.querySelector('.user-btn .user-avatar');
+                if (navbarAvatar) navbarAvatar.src = newAvatarData;
+                
+                const dropdownAvatar = document.querySelector('.user-header-avatar');
+                if (dropdownAvatar) dropdownAvatar.src = newAvatarData;
+                
+                // Cập nhật dropdown ở main.js
+                const userNameEl = document.querySelector('.dropdown-user-info h4');
+                if (userNameEl) userNameEl.textContent = newName;
+
+                alert('Cập nhật thông tin thành công!');
+            });
+
+            // Handle Logout from sidebar
+            document.getElementById('sidebar-logout').addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.removeItem('isLoggedIn');
+                window.location.href = '../../index.html';
+            });
+
+            // Handle Tab Switching
+            const menuItems = document.querySelectorAll('.sidebar-menu .menu-item[data-tab]');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            function switchTab(tabId) {
+                // Update URL hash without scrolling
+                history.replaceState(null, null, '#' + tabId);
+
+                // Remove active class from all menu items
+                menuItems.forEach(i => i.classList.remove('active'));
+                
+                // Hide all tab contents
+                tabContents.forEach(tc => {
+                    tc.classList.remove('active');
+                });
+                
+                // Add active class to corresponding menu item
+                const activeItem = document.querySelector(`.sidebar-menu .menu-item[data-tab="${tabId}"]`);
+                if (activeItem) activeItem.classList.add('active');
+                
+                // Show the corresponding tab
+                const targetTab = document.getElementById('tab-' + tabId);
+                if (targetTab) {
+                    targetTab.classList.add('active');
                 }
             }
 
-            // 2. Kiểm tra bộ nhớ đệm xem có ảnh được đẩy từ bên đăng ký sang không
-            const savedAvatar = localStorage.getItem('user_avatar');
-            if (savedAvatar) {
-                document.getElementById('profileAvatar').src = savedAvatar;
-            }
-        });
+            menuItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    switchTab(this.getAttribute('data-tab'));
+                });
+            });
 
-        // 3. Xử lý cho phép thay đổi ảnh đại diện trực tiếp ngay tại trang Profile
-        document.getElementById('changeAvatarInput').addEventListener('change', function() {
-            const file = this.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('profileAvatar').src = e.target.result;
-                    // Cập nhật đè ảnh mới vào LocalStorage
-                    localStorage.setItem('user_avatar', e.target.result);
+            // Check URL hash on load
+            if (window.location.hash) {
+                const hashTab = window.location.hash.substring(1);
+                const validTabs = ['info', 'history', 'offers', 'settings'];
+                if (validTabs.includes(hashTab)) {
+                    switchTab(hashTab);
                 }
-                reader.readAsDataURL(file);
             }
+
+            // Handle clicking dropdown links when already on profile.html
+            window.addEventListener('hashchange', () => {
+                if (window.location.hash) {
+                    const hashTab = window.location.hash.substring(1);
+                    const validTabs = ['info', 'history', 'offers', 'settings'];
+                    if (validTabs.includes(hashTab)) {
+                        switchTab(hashTab);
+                    }
+                }
+            });
+            // Handle History Filter
+            const filterBtns = document.querySelectorAll('.history-filters .filter-btn');
+            const historyCards = document.querySelectorAll('.history-card');
+
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Update active button
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+
+                    const filterType = this.getAttribute('data-filter');
+
+                    // Filter cards
+                    historyCards.forEach(card => {
+                        const isUpcoming = card.querySelector('.status-upcoming');
+                        const isCompleted = card.querySelector('.status-completed');
+
+                        if (filterType === 'all') {
+                            card.style.display = 'flex';
+                        } else if (filterType === 'upcoming') {
+                            if (isUpcoming) card.style.display = 'flex';
+                            else card.style.display = 'none';
+                        } else if (filterType === 'completed') {
+                            if (isCompleted) card.style.display = 'flex';
+                            else card.style.display = 'none';
+                        }
+                    });
+                });
+            });
         });
     </script>
-    <script type="module" src="profile.js"></script>
 </body>
 </html>

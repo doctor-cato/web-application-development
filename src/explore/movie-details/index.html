@@ -3,351 +3,397 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PHÒNG CHỜ SAU PHIM - 3HD2K LOUNGE</title>
-    <!-- FontAwesome for Icons -->
+    <title>3HD2K - Chi tiết phim</title>
+    <meta name="description" content="Xem thông tin chi tiết, lịch chiếu và đặt vé phim tại 3HD2K Cinemas.">
+    <link rel="stylesheet" href="../../shared/css/main.css">
+    <link rel="stylesheet" href="movie-detail.css">
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <!-- Main Style sheet -->
-    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div class="app-container">
-        <!-- ==========================================
-             LEFT SIDEBAR
-             ========================================== -->
-        <aside class="sidebar">
-            <div class="logo-container">
-                <h1 class="logo-text">
-                    Phòng Chờ
-                    <span>Sau Phim</span>
-                </h1>
-            </div>
 
-            <!-- Verified Member Badge Card -->
-            <div class="verified-card" id="verified-member-card">
-                <div class="verified-card-content">
-                    <div class="verified-icon-box">
-                        <i class="fa-solid fa-user-shield"></i>
-                    </div>
-                    <div class="verified-info">
-                        <span class="verified-title">Thành viên đã xác thực</span>
-                        <span class="verified-subtitle">ID: 3HD2K-449</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Navigation Menu (Only Chat trực tiếp remaining) -->
-            <nav class="sidebar-menu">
-                <div class="menu-item active" data-target="chat-section" id="menu-chat">
-                    <i class="fa-solid fa-comments"></i>
-                    <span>Chat trực tiếp</span>
-                </div>
+    <!-- ── NAVBAR ──────────────────────────────────────────── -->
+    <header class="navbar">
+        <div class="nav-left">
+            <a href="../home-page/index.html" class="logo">3HD2K</a>
+            <nav class="nav-links">
+                <a href="../home-page/index.html">Trang chủ</a>
+                <a href="../movie-search/index.html?tab=now-showing" class="active">Phim Đang Chiếu</a>
+                <a href="../cinema-map/index.html">Cụm Rạp</a>
+                <a href="#">Khuyến Mãi</a>
+                <a href="#">Đặt vé</a>
             </nav>
-
-            <!-- Sidebar Bottom Info -->
-            <div class="sidebar-bottom">
-                <div class="security-protocol">
-                    <i class="fa-solid fa-circle-exclamation"></i>
-                    <span>Giao thức bảo mật</span>
-                </div>
-                <div class="lounge-branding">
-                    <h3 class="lounge-title">3HD2K LOUNGE</h3>
-                    <p class="lounge-desc">Phòng chờ ngay lập tức.</p>
+        </div>
+        <div class="nav-actions">
+            <div class="search-pill" id="search-pill">
+                <i class="fas fa-search" id="search-icon"></i>
+                <input type="text" id="search-input" placeholder="Tìm kiếm phim..." />
+                <span id="search-text">Tìm kiếm</span>
+            </div>
+            <div class="notif-btn" id="notif-btn">
+                <i class="fas fa-bell"></i>
+                <!-- Dropdown -->
+                <div class="notif-dropdown" id="notif-dropdown">
+                    <div class="notif-header">
+                        <span class="notif-title">Thông báo</span>
+                    </div>
+                    <div class="notif-empty" style="display: flex; flex-direction: column; align-items: center; padding: 40px 20px; color: rgba(255,255,255,0.5);">
+                        <i class="fas fa-user-lock" style="font-size: 3rem; margin-bottom: 15px; color: rgba(255,255,255,0.2);"></i>
+                        <p style="margin-bottom: 20px; text-align: center;">Vui lòng đăng nhập để xem thông báo</p>
+                        <a href="../../auth/user-login/login.html" class="btn-primary" style="background: var(--primary-red); color: white; padding: 10px 25px; border-radius: 8px; text-decoration: none; font-weight: bold; transition: opacity 0.3s;">Đăng nhập ngay</a>
+                    </div>
                 </div>
             </div>
-        </aside>
-
-        <!-- ==========================================
-             MAIN CONTENT WRAPPER
-             ========================================== -->
-        <div class="main-wrapper">
-            <!-- Top Utility Bar -->
-            <header class="top-bar">
-                <div class="notification-bell" id="bell-btn">
-                    <i class="fa-regular fa-bell"></i>
-                    <span class="bell-badge" id="bell-badge"></span>
+            <a href="../../auth/user-login/login.html" class="user-btn" style="text-decoration: none; color: white;">
+                <div class="avatar-wrapper" style="background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.2);">
+                    <i class="fas fa-user" style="color: rgba(255,255,255,0.6); font-size: 1rem;"></i>
                 </div>
-                <div class="top-user-pill">
-                    <span class="top-user-label">Người yêu điện ảnh đã xác thực</span>
-                    <i class="fa-regular fa-circle-user top-user-icon"></i>
-                </div>
-            </header>
+            </a>
+        </div>
+    </header>
 
-            <!-- Inner Layout Content Area -->
-            <div class="content-body">
-                <!-- ==========================================
-                     CENTER CHAT BOARD
-                     ========================================== -->
-                <section class="chat-container active" id="chat-section">
-                    <div class="chat-header">
-                        <div class="header-left">
-                            <div class="live-badge-wrapper">
-                                <span class="live-badge">
-                                    <span class="live-dot"></span>TRỰC TIẾP: DUNE: HÀNH TINH CÁT - PHẦN HAI
+    <!-- ── MAIN ────────────────────────────────────────────── -->
+    <main class="movie-detail-page">
+
+        <!-- BREADCRUMB -->
+        <nav class="detail-breadcrumb" id="detail-breadcrumb" aria-label="breadcrumb">
+            <a href="../home-page/index.html"><i class="fas fa-home" style="margin-right:4px;"></i>Trang chủ</a>
+            <span class="sep"><i class="fas fa-chevron-right"></i></span>
+            <a href="movies.html" id="breadcrumb-tab-link">Phim Đang Chiếu</a>
+            <span class="sep"><i class="fas fa-chevron-right"></i></span>
+            <span class="current" id="breadcrumb-movie-name">Đang tải...</span>
+        </nav>
+
+        <!-- COMBINED MOVIE DETAIL HEADER -->
+        <section class="detail-combined" id="detail-hero">
+            <div class="detail-combined-backdrop" id="hero-backdrop"></div>
+            <div class="detail-combined-gradient"></div>
+            <div class="detail-combined-content">
+                <!-- Poster -->
+                <div class="detail-combined-poster" id="hero-poster-wrap">
+                    <img id="hero-poster-img" src="" alt="Movie Poster">
+                </div>
+                <!-- Info panel -->
+                <div class="detail-combined-info">
+                    <div class="detail-hero-badges" id="hero-badges"></div>
+                    <h1 class="detail-hero-title" id="hero-title">Đang tải...</h1>
+                    <p class="detail-hero-title-en" id="hero-title-en"></p>
+                    <div class="detail-hero-meta-row" id="hero-meta-row"></div>
+                    <div class="detail-hero-actions">
+                        <button class="btn-buy-ticket" id="hero-btn-book" onclick="scrollToShowtimes()">
+                            <i class="fas fa-ticket-alt"></i> Mua vé ngay
+                        </button>
+                        <button class="btn-trailer" id="hero-btn-trailer">
+                            <span class="play-icon"><i class="fas fa-play"></i></span>
+                            Xem Trailer
+                        </button>
+                    </div>
+                    <div class="detail-combined-section">
+                        <p class="detail-section-label">Nội dung phim</p>
+                        <div class="detail-synopsis collapsed" id="synopsis-text"></div>
+                        <button class="detail-synopsis-toggle" id="synopsis-toggle">
+                            <i class="fas fa-chevron-down" id="synopsis-icon"></i>
+                            <span id="synopsis-toggle-label">Xem thêm</span>
+                        </button>
+                    </div>
+                    <div class="detail-meta-grid" id="meta-grid"></div>
+                    <div class="detail-combined-cast">
+                        <p class="detail-section-label">Diễn viên</p>
+                        <div class="cast-list" id="cast-list"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONTENT AREA -->
+        <div class="detail-main">
+
+
+
+            <!-- 2. SHOWTIMES -->
+            <section class="detail-showtimes" id="section-showtimes">
+                <h2 class="detail-section-title">Lịch Chiếu</h2>
+
+                <!-- Date tabs -->
+                <div class="showtime-date-tabs" id="date-tabs">
+                    <!-- Rendered by JS -->
+                </div>
+
+                <!-- Filters -->
+                <div class="showtime-filters-row">
+                    <div class="showtime-filter-select">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <select id="filter-city">
+                            <option value="all">Tất cả Tỉnh/Thành</option>
+                            <option value="hanoi" selected>Hà Nội</option>
+                            <option value="hcm">TP. Hồ Chí Minh</option>
+                            <option value="danang">Đà Nẵng</option>
+                        </select>
+                    </div>
+                    <div class="showtime-filter-select">
+                        <i class="fas fa-building"></i>
+                        <select id="filter-cinema-brand">
+                            <option value="all">Tất cả Rạp</option>
+                            <option value="ha-dong">3HD2K Hà Đông</option>
+                            <option value="le-trong-tan">3HD2K Lê Trọng Tấn</option>
+                            <option value="my-dinh">3HD2K Mỹ Đình</option>
+                            <option value="royal-city">3HD2K Royal City</option>
+                            <option value="cau-giay">3HD2K Cầu Giấy</option>
+                            <option value="lang-ha">3HD2K Láng Hạ</option>
+                        </select>
+                    </div>
+                    <div class="showtime-filter-select">
+                        <i class="fas fa-video"></i>
+                        <select id="filter-showtime-format">
+                            <option value="all">Tất cả định dạng</option>
+                            <option value="2D">2D</option>
+                            <option value="3D">3D</option>
+                            <option value="IMAX">IMAX</option>
+                            <option value="4DX">4DX</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Cinema list -->
+                <div class="cinema-showtime-list" id="cinema-showtime-list">
+                    <!-- Rendered by JS -->
+                </div>
+
+                <!-- Legend -->
+                <div class="showtime-legend">
+                    <div class="legend-item"><div class="legend-dot available"></div> Còn vé</div>
+                    <div class="legend-item"><div class="legend-dot almost-full"></div> Sắp hết vé</div>
+                    <div class="legend-item"><div class="legend-dot full"></div> Hết vé / Đã chiếu</div>
+                </div>
+            </section>
+
+            <!-- 3. RATINGS & REVIEWS -->
+            <section class="detail-ratings" id="section-ratings">
+                <h2 class="detail-section-title">Đánh Giá & Bình Luận</h2>
+                <div class="ratings-layout">
+
+                    <!-- Score panel -->
+                    <div class="rating-score-panel">
+                        <div>
+                            <div class="rating-big-num" id="rating-big-num">
+                                <span id="rating-value">--</span><span class="rating-big-denom">/10</span>
+                            </div>
+                        </div>
+                        <div class="rating-stars-large" id="rating-stars-large">
+                            <!-- Rendered by JS -->
+                        </div>
+                        <div class="rating-count-text" id="rating-count-text">-- lượt đánh giá</div>
+
+                        <!-- External scores -->
+                        <div class="rating-source-row">
+                            <div class="rating-source-item">
+                                <span class="source-name">
+                                    <i class="fas fa-star" style="color:#f5c518;font-size:0.7rem;"></i> IMDb
                                 </span>
+                                <span class="source-score" id="imdb-score">--/10</span>
                             </div>
-                            <h2 class="movie-title-large">THẢO LUẬN VỀ ARRAKIS</h2>
-                        </div>
-                        <div class="header-right">
-                            <span class="room-code-label">Mã phòng chiếu</span>
-                            <span class="room-code-value">3HD2K-449</span>
-                        </div>
-                    </div>
-
-                    <!-- Messages Feed -->
-                    <div class="messages-area" id="chat-messages-container">
-                        <!-- Message 1 -->
-                        <div class="chat-bubble-wrapper">
-                            <span class="bubble-meta-top">CineMaster_2077</span>
-                            <div class="chat-bubble">
-                                Thiết kế âm thanh trong cảnh cưỡi sâu cát thực sự siêu thực. Có ai nhận thấy sự cộng hưởng âm trầm cực thấp trong bản mix IMAX không?
-                                <div class="bubble-meta-bottom">20:43</div>
+                            <div class="rating-source-item">
+                                <span class="source-name">
+                                    <i class="fas fa-pepper-hot" style="color:#fa320a;font-size:0.7rem;"></i> Rotten Tomatoes
+                                </span>
+                                <span class="source-score" id="rt-score">--%</span>
                             </div>
                         </div>
 
-                        <!-- Message 2 (PRO Highlight) -->
-                        <div class="chat-bubble-wrapper">
-                            <span class="bubble-meta-top pro-author">3HD2K_PRO <span class="tag-author-badge">Mod</span></span>
-                            <div class="chat-bubble bubble-pro">
-                                Cảm giác thực sự sống động. Cách mà các hàng ghế thực sự rung chuyển theo nhịp đập mãnh liệt là tinh hoa điện ảnh. Buổi chiếu tuyệt vời nhất từ trước đến nay.
-                                <div class="bubble-meta-bottom">20:43</div>
-                            </div>
-                        </div>
-
-                        <!-- Message 3 -->
-                        <div class="chat-bubble-wrapper">
-                            <span class="bubble-meta-top">LENS_FLARE_99</span>
-                            <div class="chat-bubble">
-                                Kỹ thuật quay phim trong các cảnh ở Giedi Prime... vẻ ngoài hồng ngoại đó thật ám ảnh. Một kiệt tác về kể chuyện bằng hình ảnh.
-                                <div class="bubble-meta-bottom">20:45</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Chat Input Field -->
-                    <div class="chat-input-bar">
-                        <div class="chat-input-wrapper">
-                            <input type="text" class="chat-input-field" placeholder="Nhập tin nhắn để thảo luận về phim..." id="chat-input-element">
-                            <button class="send-btn" id="chat-send-btn">
-                                <i class="fa-solid fa-paper-plane"></i>
+                        <!-- Interact -->
+                        <div class="rating-interact-row">
+                            <button class="interact-btn" id="btn-like" onclick="toggleLike()">
+                                <i class="far fa-heart"></i> Thích
+                            </button>
+                            <button class="interact-btn" id="btn-share" onclick="shareMovie()">
+                                <i class="fas fa-share-alt"></i> Chia sẻ
                             </button>
                         </div>
                     </div>
-                </section>
 
-                <!-- ==========================================
-                     RIGHT PANEL (Detailed Movie Info)
-                     ========================================== -->
-                <aside class="right-panel active" id="right-panel-section">
-                    <!-- Movie Details Widget (Expanded & Scrollable) -->
-                    <div class="panel-card glass-panel movie-details-card" id="movie-details-widget">
-                        <!-- Movie Image Header -->
-                        <div class="movie-backdrop-banner" style="background-image: url('images/dune_backdrop.png');" id="movie-poster-banner">
-                            <div class="movie-banner-content">
-                                <span class="age-badge-tag">T16</span>
-                                <h4 class="movie-banner-title">Dune: Hành Tinh Cát - Phần Hai</h4>
-                                <p class="movie-banner-subtitle">Dune: Part Two (2024)</p>
-                            </div>
-                            <button class="play-trailer-overlay-btn" id="btn-play-trailer-inside">
-                                <i class="fa-solid fa-circle-play"></i> Xem Trailer
-                            </button>
-                        </div>
-
-                        <!-- Scrollable Movie Details -->
-                        <div class="movie-body-content scrollable-movie-details">
-                            
-                            <!-- 1. THÔNG TIN CƠ BẢN -->
-                            <div class="detail-section">
-                                <h5 class="section-subtitle"><i class="fa-solid fa-circle-info"></i> Thông tin cơ bản</h5>
-                                <ul class="info-list">
-                                    <li><strong>Thể loại:</strong> Hành động, Khoa học viễn tưởng, Phiêu lưu</li>
-                                    <li><strong>Thời lượng:</strong> 166 phút (2h 46p)</li>
-                                    <li><strong>Quốc gia sản xuất:</strong> Mỹ</li>
-                                    <li><strong>Ngày khởi chiếu:</strong> 01/03/2024</li>
-                                    <li><strong>Giới hạn độ tuổi:</strong> T16 (Khán giả từ 16 tuổi trở lên)</li>
-                                </ul>
-                            </div>
-
-                            <!-- 2. NỘI DUNG PHIM -->
-                            <div class="detail-section">
-                                <h5 class="section-subtitle"><i class="fa-solid fa-book-open"></i> Nội dung phim</h5>
-                                <p class="movie-desc-text">
-                                    Câu chuyện tiếp tục hành trình đầy chông gai của Paul Atreides khi anh hợp lực cùng Chani và tộc người Fremen để trả thù những kẻ đã tàn sát gia tộc mình. Đối mặt với sự lựa chọn định mệnh giữa tình yêu của đời mình và tương lai của vũ trụ, Paul nỗ lực ngăn chặn một tương lai đen tối mà chỉ anh mới có thể thấy trước.
-                                </p>
-                                <div class="theme-tags">
-                                    <span class="theme-tag">Arrakis</span>
-                                    <span class="theme-tag">Hương Dược</span>
-                                    <span class="theme-tag">Đấng Cứu Thế</span>
-                                    <span class="theme-tag">Báo Thù</span>
-                                </div>
-                            </div>
-
-                            <!-- 3. ĐỘI NGŨ SẢN XUẤT -->
-                            <div class="detail-section">
-                                <h5 class="section-subtitle"><i class="fa-solid fa-clapperboard"></i> Đội ngũ sản xuất</h5>
-                                <ul class="info-list">
-                                    <li><strong>Đạo diễn:</strong> Denis Villeneuve</li>
-                                    <li><strong>Biên kịch:</strong> Denis Villeneuve, Jon Spaihts (Dựa trên tiểu thuyết của Frank Herbert)</li>
-                                    <li><strong>Nhà sản xuất:</strong> Mary Parent, Cale Boyter, Patrick McCormick, Tanya Lapointe</li>
-                                    <li><strong>Hãng phát hành:</strong> Warner Bros. Pictures</li>
-                                </ul>
-                            </div>
-
-                            <!-- 4. DIỄN VIÊN -->
-                            <div class="detail-section">
-                                <h5 class="section-subtitle"><i class="fa-solid fa-users"></i> Diễn viên chính</h5>
-                                <div class="cast-grid">
-                                    <div class="cast-item">
-                                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80" alt="Timothée Chalamet" class="cast-avatar">
-                                        <div class="cast-info">
-                                            <span class="cast-name">Timothée Chalamet</span>
-                                            <span class="cast-role">Paul Atreides</span>
-                                        </div>
-                                    </div>
-                                    <div class="cast-item">
-                                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" alt="Zendaya" class="cast-avatar">
-                                        <div class="cast-info">
-                                            <span class="cast-name">Zendaya</span>
-                                            <span class="cast-role">Chani</span>
-                                        </div>
-                                    </div>
-                                    <div class="cast-item">
-                                        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=100&q=80" alt="Rebecca Ferguson" class="cast-avatar">
-                                        <div class="cast-info">
-                                            <span class="cast-name">Rebecca Ferguson</span>
-                                            <span class="cast-role">Lady Jessica</span>
-                                        </div>
-                                    </div>
-                                    <div class="cast-item">
-                                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=100&q=80" alt="Austin Butler" class="cast-avatar">
-                                        <div class="cast-info">
-                                            <span class="cast-name">Austin Butler</span>
-                                            <span class="cast-role">Feyd-Rautha</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- 5. ĐÁNH GIÁ VÀ XẾP HẠNG -->
-                            <div class="detail-section">
-                                <h5 class="section-subtitle"><i class="fa-solid fa-star-half-stroke"></i> Đánh giá & Xếp hạng</h5>
-                                <div class="movie-ratings-row">
-                                    <div class="rating-metric">
-                                        <span class="metric-label">IMDb</span>
-                                        <span class="metric-value"><i class="fa-solid fa-star"></i> 8.6/10</span>
-                                    </div>
-                                    <div class="rating-metric">
-                                        <span class="metric-label">Rotten Tomatoes</span>
-                                        <span class="metric-value"><i class="fa-solid fa-heart"></i> 95%</span>
-                                    </div>
-                                </div>
-                                <p class="review-quote">
-                                    "Siêu phẩm điện ảnh viễn tưởng thế kỷ 21, kỹ xảo hoành tráng cùng âm thanh Dolby Atmos tái tạo thế giới Arrakis sống động đến ngỡ ngàng."
-                                </p>
-                            </div>
-
-                            <!-- 6. TRAILER VÀ HÌNH ẢNH -->
-                            <div class="detail-section">
-                                <h5 class="section-subtitle"><i class="fa-solid fa-images"></i> Hình ảnh & Trích đoạn</h5>
-                                <div class="scene-images-grid">
-                                    <div class="scene-image" style="background-image: url('images/dune_backdrop.png');"></div>
-                                    <div class="scene-image" style="background-image: url('https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=300&q=80');"></div>
-                                </div>
-                            </div>
-
-                            <!-- 7. LỊCH CHIẾU VÀ ĐẶT VÉ -->
-                            <div class="detail-section">
-                                <h5 class="section-subtitle"><i class="fa-solid fa-ticket"></i> Rạp chiếu & Vé xem phim</h5>
-                                <div class="cinema-booking-box">
-                                    <div class="cinema-select-group">
-                                        <label class="select-label">Chọn rạp chiếu:</label>
-                                        <select class="booking-select" id="cinema-select">
-                                            <option value="ha-dong">3HD2K Hà Đông</option>
-                                            <option value="royal-city">3HD2K Royal City</option>
-                                            <option value="cau-giay">3HD2K Cầu Giấy</option>
-                                        </select>
-                                    </div>
-                                    
-                                    <div class="showtimes-group">
-                                        <label class="select-label">Chọn suất chiếu:</label>
-                                        <div class="showtime-chips" id="showtime-chips-container">
-                                            <span class="showtime-chip active">18:30</span>
-                                            <span class="showtime-chip">20:00</span>
-                                            <span class="showtime-chip">21:15</span>
-                                            <span class="showtime-chip">22:30</span>
-                                        </div>
-                                    </div>
-                                    
-                                    <button class="btn-book-ticket" id="btn-submit-booking">
-                                        <i class="fa-solid fa-cart-shopping"></i> Đặt vé ngay
-                                    </button>
-                                </div>
-                            </div>
-
-                            <!-- 8. THÔNG TIN BỔ SUNG -->
-                            <div class="detail-section">
-                                <h5 class="section-subtitle"><i class="fa-solid fa-ellipsis"></i> Thông tin bổ sung</h5>
-                                <ul class="info-list">
-                                    <li><strong>Doanh thu phòng vé:</strong> Hơn 712 triệu USD toàn cầu.</li>
-                                    <li><strong>Giải thưởng:</strong> Đạt nhiều giải thưởng kỹ thuật (Âm thanh, Kỹ xảo, Quay phim).</li>
-                                    <li><strong>Phần phim liên quan:</strong> Dune: Phần Một (2021), Dune: Messiah (đang phát triển).</li>
-                                </ul>
-                            </div>
-
-                            <!-- Spoiler Block -->
-                            <div class="spoiler-disclaimer">
-                                <i class="fa-solid fa-circle-exclamation"></i>
-                                <div class="spoiler-text-container">
-                                    <span class="spoiler-heading">Không tiết lộ nội dung bên ngoài phòng này</span>
-                                    <span class="spoiler-body">Chi tiết thảo luận bị cấm tiết lộ cho đến khi bộ phim kết thúc.</span>
-                                </div>
-                            </div>
-                        </div>
+                    <!-- Reviews -->
+                    <div class="reviews-panel" id="reviews-panel">
+                        <!-- Rendered by JS -->
                     </div>
-                </aside>
-            </div>
-
-            <!-- Absolute Bottom Footer Row -->
-            <footer class="footer-row">
-                <span class="footer-copy">
-                    &copy; 2024 Phòng Chờ Sau Phim bởi 3HD2K. Quyền truy cập xác thực độc quyền.
-                </span>
-                <div class="footer-links">
-                    <a href="#">Chính sách bảo mật</a>
-                    <a href="#">Hướng dẫn cộng đồng</a>
                 </div>
-            </footer>
-        </div>
-    </div>
+            </section>
 
-    <!-- ==========================================
-         TRAILER MODAL
-         ========================================== -->
-    <div class="modal-overlay" id="trailer-modal">
-        <div class="modal-card">
-            <button class="modal-close-btn" id="modal-close-btn">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-            <div class="modal-video-ratio">
-                <iframe id="trailer-video-frame" src="" title="Dune: Part Two Trailer" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <!-- 4. MEDIA GALLERY -->
+            <section class="detail-media" id="section-media">
+                <h2 class="detail-section-title">Trailer & Hình Ảnh</h2>
+
+                <div class="media-tabs">
+                    <button class="media-tab active" id="tab-trailer" onclick="switchMediaTab('trailer')">
+                        <i class="fas fa-play-circle" style="margin-right:6px;"></i> Trailer
+                    </button>
+                    <button class="media-tab" id="tab-gallery" onclick="switchMediaTab('gallery')">
+                        <i class="fas fa-images" style="margin-right:6px;"></i> Hình ảnh
+                    </button>
+                </div>
+
+                <!-- Trailer panel -->
+                <div class="media-panel active" id="panel-trailer">
+                    <div class="trailer-embed-container" id="trailer-embed-container">
+                        <iframe id="detail-trailer-iframe"
+                            src=""
+                            title="Movie Trailer"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                </div>
+
+                <!-- Gallery panel -->
+                <div class="media-panel" id="panel-gallery">
+                    <div class="gallery-grid" id="gallery-grid">
+                        <!-- Rendered by JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. RELATED MOVIES -->
+            <section class="detail-related" id="section-related">
+                <h2 class="detail-section-title">Phim Liên Quan</h2>
+                <div class="related-carousel-wrapper">
+                    <button class="carousel-scroll-btn prev" onclick="scrollRelated(-1)" aria-label="Cuộn trái">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <div class="related-carousel" id="related-carousel">
+                        <!-- Rendered by JS -->
+                    </div>
+                    <button class="carousel-scroll-btn next" onclick="scrollRelated(1)" aria-label="Cuộn phải">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </section>
+
+            <!-- 6. PROMOTIONS -->
+            <section class="detail-promos" id="section-promos">
+                <h2 class="detail-section-title">Khuyến Mãi</h2>
+                <div class="promo-grid">
+                    <div class="promo-card combo">
+                        <div class="promo-icon">🍿</div>
+                        <div class="promo-content">
+                            <h4>Combo Bắp + Nước</h4>
+                            <p>Mua combo 2 bắp + 2 nước chỉ với 99.000đ. Tiết kiệm đến 35% so với mua lẻ.</p>
+                            <span class="promo-tag">TIẾT KIỆM 35%</span>
+                        </div>
+                    </div>
+                    <div class="promo-card bank">
+                        <div class="promo-icon">💳</div>
+                        <div class="promo-content">
+                            <h4>Ưu Đãi Thẻ Ngân Hàng</h4>
+                            <p>Giảm 20% tổng hóa đơn khi thanh toán bằng thẻ Vietcombank, BIDV, Techcombank.</p>
+                            <span class="promo-tag">GIẢM 20%</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div><!-- /.detail-main -->
+    </main>
+
+    <!-- ── FOOTER ───────────────────────────────────────────── -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h2 class="logo">3HD2K</h2>
+                <p>Trải nghiệm điện ảnh đỉnh cao, mang Hollywood đến gần bạn hơn.</p>
+                <div class="social-icons">
+                    <i class="fas fa-share-alt"></i>
+                    <i class="fas fa-globe"></i>
+                </div>
+            </div>
+            <div class="footer-links">
+                <div class="link-column">
+                    <h4>KHÁM PHÁ</h4>
+                    <ul>
+                        <li><a href="../movie-search/index.html?tab=now-showing">Phim Đang Chiếu</a></li>
+                        <li><a href="movies.html?tab=coming-soon">Phim Sắp Chiếu</a></li>
+                        <li><a href="../cinema-map/index.html">Rạp Phim</a></li>
+                        <li><a href="#">Khuyến Mãi</a></li>
+                    </ul>
+                </div>
+                <div class="link-column">
+                    <h4>HỖ TRỢ</h4>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Terms of Use</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Cookie Preferences</a></li>
+                    </ul>
+                </div>
+                <div class="link-column">
+                    <h4>VỀ CHÚNG TÔI</h4>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Corporate Information</a></li>
+                        <li><a href="#">Tuyển Dụng</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 3HD2K Entertainment. All rights reserved.</p>
+            <p><i class="fas fa-globe" style="margin-right:5px;"></i> Tiếng Việt</p>
+        </div>
+    </footer>
+
+    <!-- ── TRAILER MODAL ────────────────────────────────────── -->
+    <div id="trailer-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" id="close-modal">&times;</span>
+            <div class="video-container">
+                <iframe id="trailer-video" src="" title="YouTube video player" frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen></iframe>
             </div>
         </div>
     </div>
 
-    <!-- ==========================================
-         MOBILE BOTTOM TABS NAVIGATION (Only Chat & Chi tiết remaining)
-         ========================================== -->
-    <nav class="mobile-nav-tabs">
-        <div class="mobile-tab-btn active" data-target="chat-section">
-            <i class="fa-solid fa-comments"></i>
-            <span>Chat</span>
+    <!-- ── LIGHTBOX ─────────────────────────────────────────── -->
+    <div class="lightbox-overlay" id="lightbox-overlay" onclick="closeLightboxOnBg(event)">
+        <div class="lightbox-inner">
+            <button class="lightbox-close" onclick="closeLightbox()" aria-label="Đóng">
+                <i class="fas fa-times"></i>
+            </button>
+            <button class="lightbox-nav lightbox-prev" onclick="lightboxNav(-1)" aria-label="Ảnh trước">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <img id="lightbox-img" src="" alt="Gallery image">
+            <button class="lightbox-nav lightbox-next" onclick="lightboxNav(1)" aria-label="Ảnh sau">
+                <i class="fas fa-chevron-right"></i>
+            </button>
         </div>
-        <div class="mobile-tab-btn" data-target="movie-details-widget">
-            <i class="fa-solid fa-film"></i>
-            <span>Chi tiết phim</span>
-        </div>
-    </nav>
+    </div>
 
-    <!-- Core Interactions Script -->
-    <script src="js/script.js"></script>
+    <!-- ── FLOATING SUPPORT ─────────────────────────────────── -->
+    <div class="float-support">
+        <div class="float-support-menu" id="support-menu">
+            <a href="tel:19001234" class="float-support-item">
+                <i class="fas fa-phone"></i> Hotline: 1900 1234
+            </a>
+            <a href="#" class="float-support-item" onclick="showToast('Chat trực tuyến sẽ sớm ra mắt!')">
+                <i class="fas fa-comment-dots"></i> Chat trực tuyến
+            </a>
+        </div>
+        <button class="float-support-toggle" id="support-toggle" aria-label="Hỗ trợ" onclick="toggleSupportMenu()">
+            <i class="fas fa-headset" id="support-icon"></i>
+        </button>
+    </div>
+
+    <!-- ── TOAST ─────────────────────────────────────────────── -->
+    <div class="toast" id="toast"></div>
+
+    <!-- ── SCRIPTS ──────────────────────────────────────────── -->
+    <script src="../../shared/js/data.js"></script>
+    <script src="../../shared/js/main.js"></script>
+    <script src="movie-detail.js"></script>
 </body>
 </html>
+
