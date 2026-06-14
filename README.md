@@ -4,7 +4,7 @@
 
 ## Công nghệ sử dụng
 - **HTML5**
-- **CSS3 / Tailwind CSS (CDN)**
+- **Vanilla CSS3 (Cinematic Noir Theme, Glassmorphism)**
 - **Vanilla JavaScript (ES6 Modules)**
 - CSDL mô phỏng qua **LocalStorage** và **SessionStorage**
 - Đồng bộ Real-time qua **BroadcastChannel API**

@@ -15,7 +15,7 @@ Dự án này được thiết kế nhằm:
 ## Công nghệ Cốt lõi
 
 * **HTML5**: Cấu trúc nội dung đánh dấu.
-* **CSS3 / Tailwind CSS**: Tạo kiểu thông qua các class CSS nguyên bản và Tailwind qua CDN.
+* **Vanilla CSS3**: Tạo kiểu thông qua các class CSS Semantic nguyên bản (Cinematic Noir, Glassmorphism) không sử dụng Tailwind hay thư viện CSS ngoài.
 * **JavaScript (ES6 Modules)**: Logic theo module được tách biệt thành các component, service, và controller của từng trang.
 * **LocalStorage & SessionStorage**: Đóng vai trò là "cơ sở dữ liệu" mô phỏng.
 * **BroadcastChannel API**: Đồng bộ hóa các sự kiện thời gian thực (ví dụ như việc khóa ghế ngồi) trên nhiều tab trình duyệt khác nhau.

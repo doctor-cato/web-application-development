@@ -9,7 +9,7 @@ Tài liệu này định nghĩa các quy tắc cốt lõi để các AI Agent (C
 
 ## 2. Quy tắc Frontend (HTML / CSS / JS)
 - Sử dụng mã nguồn thuần (Vanilla HTML5, CSS3, ES6+ JavaScript).
-- Có thể sử dụng Tailwind CSS thông qua CDN (không cài đặt gói build npm phức tạp).
+- Sử dụng Vanilla CSS với phong cách Cinematic Noir, Glassmorphism. Tuyệt đối không dùng thư viện ngoài hay Tailwind CSS CDN.
 - Sử dụng cấu trúc module JavaScript (`<script type="module">`) để chia nhỏ file logic thay vì viết code gộp trong một file lớn.
 - Sử dụng CSS Custom Properties (Variables) để thiết lập design tokens nhất quán (màu sắc, khoảng cách, font chữ).
 - Tất cả các tương tác UI (DOM manipulation) phải nhẹ nhàng, tối ưu hiệu năng và có hiệu ứng chuyển cảnh mượt mà.

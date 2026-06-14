@@ -10,23 +10,23 @@ Dưới đây là danh sách các tính năng được yêu cầu, được đá
 
 - [x] **Trang đăng nhập + Index**: Đã hoàn thành (nằm trong `src/auth/user-login/` và `src/index.html`).
 - [x] **Trang chủ**: Đã hoàn thành (nằm trong `src/explore/home-page/`).
-- [ ] **Chi tiết phim (mới có 1 phim)**: Chưa có code triển khai (thư mục `src/explore/movie-details/` mới chỉ có file `.gitkeep`).
+- [x] **Chi tiết phim**: Đã hoàn thành (nằm trong `src/explore/movie-details/`, tải dữ liệu động từ `data.js`).
 - [x] **Hồ sơ cá nhân**: Đã hoàn thành (nằm trong `src/user/user-profile/`).
-- [x] **Bắp nước / Bỏng nước (Huy)**: Đã hoàn thành (nằm trong `src/booking/booking-food/`).
+- [x] **Bắp nước / Bỏng nước**: Đã hoàn thành (nằm trong `src/booking/booking-food/`).
 - [x] **Đặt ghế**: Đã hoàn thành (nằm trong `src/booking/seat-booking/`).
 - [x] **Thanh toán**: Đã hoàn thành (nằm trong `src/booking/checkout/` và cổng giả lập).
-- [x] **Hệ thống tích điểm (Huy)**: Đã hoàn thành (nằm trong `src/user/loyalty-points/`).
-- [x] **Tìm kiếm và lọc nâng cao (Huy)**: Đã hoàn thành (nằm trong `src/explore/movie-search/`).
-- [ ] **Lịch sử giao dịch và đặt vé**: Chưa có code triển khai (thư mục `src/user/booking-history/` mới chỉ có file `.gitkeep`).
-- [ ] **Quên mật khẩu & Xác thực OTP**: Chưa có code triển khai (thư mục `src/auth/forgot-password/` mới chỉ có file `.gitkeep`).
-- [x] **Giao diện đặt vé thành công có mã QR**: Đã hoàn thành (giao diện hóa đơn có QR động nằm trong `src/booking/checkout/booking_invoice.html`).
-- [ ] **Hủy vé và thay đổi suất chiếu**: Chưa có code triển khai (thư mục `src/booking/cancel-booking/` mới chỉ có file `.gitkeep`).
-- [x] **Bản đồ và định vị rạp (Khánh)**: Đã hoàn thành (nằm trong `src/explore/cinema-map/` sử dụng bản đồ Leaflet.js).
-- [ ] **Trang ghép đôi Cine-Match**: Chưa hoàn thành (mới có giao diện Landing Page ở `src/engagement/dating/index.html`, chưa được liên kết đầy đủ và chưa tích hợp luồng tìm kiếm/chat từ `cine3.html`).
-- [ ] **Trung tâm thông báo và cài đặt (Khánh)**: Chưa có code triển khai (thư mục `src/user/user-notifications/` mới chỉ có file `.gitkeep`).
-- [ ] **Cinebet minigame (Đô)**: Chưa có code triển khai (thư mục `src/engagement/minigame/` mới chỉ có file `.gitkeep`).
-- [ ] **Đặt và giữ ghế cho nhóm (Khương)**: Chưa có code triển khai (thư mục `src/booking/group-booking/` mới chỉ có file `.gitkeep`).
-- [ ] **Thảo luận đánh giá về phim sau khi xem (Đô)**: Chưa có code triển khai.
+- [x] **Hệ thống tích điểm**: Đã hoàn thành (nằm trong `src/user/loyalty-points/`).
+- [x] **Tìm kiếm và lọc nâng cao**: Đã hoàn thành (nằm trong `src/explore/movie-search/`).
+- [x] **Lịch sử giao dịch và đặt vé**: Đã hoàn thành (nằm trong tab Lịch sử giao dịch của trang Vé & Giao dịch `src/booking/cancel-booking/`).
+- [ ] **Quên mật khẩu & Xác thực OTP**: Chưa có code triển khai.
+- [x] **Giao diện đặt vé thành công**: Đã hoàn thành (giao diện hóa đơn đẹp mắt, hiển thị chi tiết tại `src/booking/checkout/booking_invoice.html`).
+- [x] **Hủy vé và thay đổi suất chiếu**: Đã hoàn thành (nằm trong `src/booking/cancel-booking/`).
+- [x] **Bản đồ và định vị rạp**: Đã hoàn thành.
+- [x] **Trang ghép đôi Cine-Match**: Đã hoàn thành.
+- [x] **Trung tâm thông báo**: Đã hoàn thành (nằm trong `src/user/user-notifications/`).
+- [x] **Cinebet minigame**: Đã hoàn thành.
+- [/] **Đặt và giữ ghế cho nhóm**: Giao diện Mockup.
+- [x] **Thảo luận đánh giá về phim sau khi xem**: Đã hoàn thành.
 - [ ] **Tính năng chia tiền nhóm & Hủy vé trong Profile**: Chưa có code triển khai.
 
 ---
@@ -60,6 +60,6 @@ Dưới đây là danh sách các tính năng được yêu cầu, được đá
 - Khi tiến hành thanh toán, người dùng sẽ được chuyển hướng tới một màn hình Cổng thanh toán mô phỏng (`payment_simulation.html`), sao chép giao diện của MoMo hoặc VNPAY.
 - Thanh toán thành công sẽ kích hoạt một bản cập nhật nguyên tử (atomic update) vào `LocalStorage`: chuyển trạng thái ghế từ `"locked"` sang `"booked"`, đồng thời lưu đơn hàng cuối cùng vào lịch sử đặt vé của người dùng.
 
-## 5. Hóa đơn Mã QR (`booking/checkout/booking_invoice.html`)
+## 5. Hóa đơn (`booking/checkout/booking_invoice.html`)
 - Đọc thông tin chi tiết của giao dịch đặt vé đã được xác nhận.
-- Sử dụng thư viện `qrcode.js` để tạo ra một mã QR vé có thể quét được hoàn toàn ở phía client, dựa trên một chuỗi băm vé duy nhất.
+- Hiển thị chi tiết poster phim, ghế đã đặt, combo bắp nước, và tổng số tiền thanh toán thông qua giao diện Glassmorphism cao cấp.
