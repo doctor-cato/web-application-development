@@ -15,7 +15,11 @@ let countdownTimer = null;
 let simulationTimer = null;
 let currentShowtimeId = null;
 let currentUserId = 'mock_user_123'; // Mock user since we skip Auth
-let movieData = { id: 'm_001', title: 'Spider-Man: Across the Spider-Verse' };
+let movieData = { 
+  id: 'm_001', 
+  title: 'Spider-Man: Across the Spider-Verse',
+  poster: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=2025&auto=format&fit=crop' // Placeholder cinema poster
+};
 
 function init() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -56,9 +60,12 @@ function renderMovieInfo() {
   const titleEl = document.getElementById('movie-title');
   const showtimeEl = document.getElementById('showtime-datetime');
   const roomEl = document.getElementById('showtime-room');
+  const posterEl = document.getElementById('movie-poster');
+  
   if (titleEl) titleEl.innerText = movieData.title;
   if (showtimeEl) showtimeEl.innerText = `19:30 | ${currentShowtimeId}`;
   if (roomEl) roomEl.innerText = 'Phòng 3';
+  if (posterEl) posterEl.src = movieData.poster;
 }
 
 function handleSeatSelect(seatId) {
@@ -179,6 +186,7 @@ function handleContinue() {
   const checkoutData = {
     showtimeId: currentShowtimeId,
     movieTitle: movieData.title,
+    poster: movieData.poster,
     room: 'Phòng 3',
     showtimeText: '19:30',
     selectedSeats: seats,

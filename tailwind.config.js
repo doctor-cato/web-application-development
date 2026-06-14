@@ -4,6 +4,7 @@ module.exports = {
   content: [
     "./src/booking/**/*.html",
     "./src/user/**/*.html",
+    "./src/**/*.js"
   ],
   theme: {
     extend: {
