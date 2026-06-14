@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Vé của tôi – 3HD2Kcinema</title>
+  <link rel="stylesheet" href="../../shared/css/main.css">
+  <link rel="stylesheet" href="cancel-booking.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <nav id="navbar-placeholder"></nav>
+
+  <main class="page-wrapper">
+    <div class="page-header">
+      <h1><i class="fa-solid fa-ticket"></i> Vé & Giao dịch</h1>
+      <p class="subtitle">Quản lý vé, hủy vé, đổi suất và xem lịch sử giao dịch</p>
+    </div>
+
+    <!-- Tab navigation -->
+    <div class="tabs" role="tablist">
+      <button class="tab-btn active" data-tab="tickets" role="tab" aria-selected="true" aria-controls="tabTickets" id="tab-btn-tickets">
+        <i class="fa-solid fa-ticket"></i> Vé của tôi
+      </button>
+      <button class="tab-btn" data-tab="history" role="tab" aria-selected="false" aria-controls="tabHistory" id="tab-btn-history">
+        <i class="fa-solid fa-clock-rotate-left"></i> Lịch sử giao dịch
+      </button>
+    </div>
+
+    <!-- Tab: Vé của tôi -->
+    <div id="tabTickets" class="tab-content active" role="tabpanel" aria-labelledby="tab-btn-tickets">
+      <div id="ticketContainer" class="ticket-list">
+        <div class="empty-message"><i class="fa-regular fa-ticket"></i> Bạn chưa có vé nào.</div>
+      </div>
+    </div>
+
+    <!-- Tab: Lịch sử giao dịch -->
+    <div id="tabHistory" class="tab-content" role="tabpanel" aria-labelledby="tab-btn-history">
+      <div id="historyContainer" class="history-list">
+        <div class="empty-message"><i class="fa-solid fa-clock-rotate-left"></i> Chưa có giao dịch nào.</div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal đổi suất chiếu -->
+  <div id="changeShowtimeModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-box">
+      <h3 id="modalTitle"><i class="fa-solid fa-rotate"></i> Chọn suất chiếu mới</h3>
+      <div id="showtimeOptions" class="showtime-list"></div>
+      <div class="modal-actions">
+        <button class="btn btn-outline" id="cancelChangeBtn">Đóng</button>
+        <button class="btn btn-primary" id="confirmChangeBtn">Xác nhận đổi</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../shared/components/navbar.js" type="module"></script>
+  <script src="cancel-booking.js" type="module"></script>
+</body>
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3HD2K - Cine-Bet Minigame</title>
+    <!-- Load custom fonts: Bebas Neue for Headings, Inter for Body -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container-fluid">
+        <header class="navbar">
+            <div class="nav-left">
+                <a href="index.html" class="logo">3HD2K</a>
+                <nav class="nav-links">
+                    <a href="#">Phim</a>
+                    <a href="#">Rạp phim</a>
+                    <a href="index.html" class="active">Cine-Bet</a>
+                    <a href="#">Ưu đãi</a>
+                </nav>
+            </div>
+            <div class="nav-actions">
+                <div class="notification-icon">
+                    <i class="far fa-bell"></i>
+                </div>
+                <div class="user-avatar-wrapper">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" alt="Avatar" class="avatar-img">
+                </div>
+            </div>
+        </header>
+
+        <section class="hero-banner">
+            <div class="hero-content">
+                <h1 class="hero-title">CINE-BET</h1>
+                <div class="countdown-box">
+                    <span class="countdown-label">BẮT ĐẦU SAU</span>
+                    <span class="countdown-time" id="main-timer">14:54</span>
+                </div>
+            </div>
+            
+            <div class="wallet-bar-container">
+                <div class="wallet-bar">
+                    <div class="wallet-info">
+                        <span class="wallet-icon">
+                            <i class="fas fa-wallet"></i>
+                        </span>
+                        <div class="wallet-text">
+                            <span class="wallet-label">SỐ DƯ CỦA BẠN</span>
+                            <span class="wallet-balance"><strong id="balance-amount">1,250</strong> <span class="points-label">ĐIỂM</span></span>
+                        </div>
+                    </div>
+                    <div class="wallet-actions">
+                        <button class="btn-secondary" id="btn-history">Lịch sử</button>
+                        <button class="btn-primary" id="btn-deposit">+ Nạp điểm</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <main class="main-content-area">
+            <div class="section-header-row">
+                <h2 class="section-title">DỰ ĐOÁN TRỰC TIẾP</h2>
+                <span class="live-indicator"><span class="pulse-dot"></span> ĐANG DIỄN RA</span>
+            </div>
+
+            <div class="pools-grid">
+                <!-- CARD 1 -->
+                <div class="pool-card">
+                    <span class="card-badge hot">Hot</span>
+                    <div class="card-image" style="background-image: url('images/tomato.png')"></div>
+                    <div class="card-content">
+                        <h3>DỰ ĐOÁN ROTTEN TOMATOES</h3>
+                        <p class="card-description">Dự đoán xem điểm số của giới phê bình sẽ cao hơn hay thấp hơn 90% cho phim 'The Neon Night'.</p>
+                        <div class="reward-box">
+                            <span class="reward-label">PHẦN THƯỞNG</span>
+                            <span class="reward-value">Voucher Bỏng ngô Lớn</span>
+                        </div>
+                        <div class="options-row">
+                            <button class="option-btn" data-option="Cao hơn">Cao hơn ↑</button>
+                            <button class="option-btn" data-option="Thấp hơn">Thấp hơn ↓</button>
+                        </div>
+                        <div class="card-footer">
+                            <span class="price-tag">Phí: 50 Điểm</span>
+                            <button class="btn-bet-action">ĐẶT CƯỢC</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD 2 -->
+                <div class="pool-card">
+                    <span class="card-badge standard">Tiêu chuẩn</span>
+                    <div class="card-image" style="background-image: url('images/aftercredit.png')"></div>
+                    <div class="card-content">
+                        <h3>SỐ LƯỢNG AFTER-CREDIT</h3>
+                        <p class="card-description">Sẽ có bao nhiêu cảnh post-credit? Hãy tìm manh mối từ thời lượng phim!</p>
+                        <div class="reward-box">
+                            <span class="reward-label">PHẦN THƯỞNG</span>
+                            <span class="reward-value">Voucher Đồ uống</span>
+                        </div>
+                        <div class="options-row three-cols">
+                            <button class="option-btn" data-option="0">0</button>
+                            <button class="option-btn" data-option="1">1</button>
+                            <button class="option-btn" data-option="2+">2+</button>
+                        </div>
+                        <div class="card-footer">
+                            <span class="price-tag">Phí: 50 Điểm</span>
+                            <button class="btn-bet-action">ĐẶT CƯỢC</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD 3 -->
+                <div class="pool-card">
+                    <span class="card-badge expert">Chuyên gia</span>
+                    <div class="card-image" style="background-image: url('images/secret_scene.png')"></div>
+                    <div class="card-content">
+                        <h3>BÍ MẬT CẢNH MỞ ĐẦU</h3>
+                        <p class="card-description">Dự đoán nhân vật nào xuất hiện trong khung hình đầu tiên của bộ phim. Xem trailer ngay!</p>
+                        <div class="reward-box">
+                            <span class="reward-label">PHẦN THƯỞNG</span>
+                            <span class="reward-value">Voucher Combo</span>
+                        </div>
+                        <div class="select-box-wrapper">
+                            <select id="character-select" class="custom-select">
+                                <option value="" disabled selected>Chọn nhân vật...</option>
+                                <option value="John Wick">John Wick</option>
+                                <option value="Caine">Caine</option>
+                                <option value="Marquis">Marquis</option>
+                                <option value="Winston">Winston</option>
+                            </select>
+                        </div>
+                        <div class="card-footer">
+                            <span class="price-tag">Phí: 75 Điểm</span>
+                            <button class="btn-bet-action">ĐẶT CƯỢC</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <section class="guide-section">
+            <h2 class="guide-title">CÁCH CHƠI CINE-BET</h2>
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-icon-box">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h3>1. DÙNG ĐIỂM</h3>
+                    <p>Sử dụng điểm tích lũy của bạn để tham gia bất kỳ sự kiện dự đoán nào trước khi phim bắt đầu.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-icon-box">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h3>2. DỰ ĐOÁN</h3>
+                    <p>Chốt câu trả lời của bạn trước khi đồng hồ đếm ngược 15 phút về số không. Không được thay đổi sau đó!</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-icon-box">
+                        <i class="fas fa-paper-plane"></i>
+                    </div>
+                    <h3>3. THU NHẬN</h3>
+                    <p>Dự đoán đúng sẽ nhận ngay voucher đồ ăn, nâng cấp dịch vụ và vé xem phim trong tương lai.</p>
+                </div>
+            </div>
+            <button class="btn-guide-start">BẮT ĐẦU NGAY</button>
+        </section>
+
+        <footer class="main-footer">
+            <div class="footer-brand-info">
+                <span class="footer-logo">3HD2K</span>
+                <span class="footer-sublogo">PREMIUM CINEMAS</span>
+            </div>
+            <div class="footer-links">
+                <a href="#">Điều khoản dịch vụ</a>
+                <a href="#">Chính sách bảo mật</a>
+                <a href="#">Liên hệ</a>
+                <a href="#">Đặt vé doanh nghiệp</a>
+                <a href="#">Câu hỏi thường gặp</a>
+            </div>
+            <p class="copyright">© 2024 3HD2K PREMIUM CINEMAS. BẢO LƯU MỌI QUYỀN.</p>
+        </footer>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="toast-message"></div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
