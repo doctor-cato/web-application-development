@@ -1,5 +1,5 @@
-import { getLastBooking } from '../../shared/utils/storage.js';
-import { generateQRCodeString } from '../../shared/utils/paymentService.js';
+import { getLastBooking } from '/shared/utils/storage.js';
+import { generateQRCodeString } from '/shared/utils/paymentService.js';
 
 function renderQr(booking) {
   const canvas = document.getElementById('qr-canvas');

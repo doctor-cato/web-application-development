@@ -1,124 +1,91 @@
 <!DOCTYPE html>
-<html class="dark" lang="vi">
+<html lang="vi">
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Đăng nhập - 3HD2K Cinema</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" href="dang_nhap.css">
-
-    <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary-container": "#e50914",
-                        "background": "#121414",
-                        "surface-variant": "#343535",
-                        "secondary": "#c8c6c5",
-                        "surface-container-low": "#1a1c1c",
-                        "surface-container-lowest": "#0d0e0f"
-                    }
-                }
-            }
-        }
-    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="/shared/css/main.css">
+    <link rel="stylesheet" href="/auth/auth-services/auth.css">
 </head>
-<body class="bg-background antialiased text-white min-h-screen flex flex-col font-['Inter']">
+<body class="auth-page">
+    <div id="navbar-placeholder"></div>
 
-    <header class="absolute top-0 w-full z-50 px-8 h-20 flex items-center">
-        <a class="font-['Bebas_Neue'] text-[48px] text-primary-container font-bold tracking-tighter hover:scale-105 transition-transform duration-200" href="../../explore/home-page/index.html">3HD2K</a>
-    </header>
+    <main class="auth-main">
+        <a href="/explore/home-page/index.html" class="auth-back-btn">
+            <span class="material-symbols-outlined">arrow_back</span>
+            <span>Về trang chủ</span>
+        </a>
 
-    <main class="relative flex-grow flex w-full min-h-screen pt-20 lg:pt-0">
-        
-        <div class="absolute top-24 left-8 z-50">
-            <a href="../../explore/home-page/index.html" class="flex items-center text-secondary hover:text-white transition duration-200 group">
-                <span class="material-symbols-outlined mr-1 group-hover:-translate-x-1 transition-transform">arrow_back</span>
-                <span class="font-medium text-sm">Về trang chủ</span>
-            </a>
-        </div>
-
-        <div class="hidden lg:flex w-1/2 relative flex-col justify-end p-16 overflow-hidden">
-            <div class="absolute inset-0 bg-black">
-                <img class="w-full h-full object-cover opacity-50" src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=2025&auto=format&fit=crop">
+        <!-- Left Hero Section -->
+        <div class="auth-hero">
+            <div class="auth-hero-bg">
+                <img class="auth-hero-img" src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=2025&auto=format&fit=crop" alt="Cinema">
             </div>
-            <h1 class="relative z-10 font-['Bebas_Neue'] text-[64px] font-bold leading-none text-white tracking-wide">
-                Trải Nghiệm Điện Ảnh <br/><span class="text-primary-container">Đỉnh Cao</span>
+            <h1 class="auth-hero-title">
+                Trải Nghiệm Điện Ảnh <br/><span class="auth-hero-highlight">Đỉnh Cao</span>
             </h1>
         </div>
 
-        <div class="w-full lg:w-1/2 flex items-center justify-center p-6 my-auto">
-            <div class="w-full max-w-[420px] bg-surface-container-low p-8 rounded-xl border border-surface-variant shadow-2xl">
-                
-                <div class="flex items-center justify-between border-b border-surface-variant mb-8">
-                    <a href="login.html" class="flex-1 pb-3 text-center font-['Bebas_Neue'] text-[24px] tracking-wide text-white border-b-2 border-primary-container">Đăng Nhập</a>
-                    <a href="../user-register/register.html" class="flex-1 pb-3 text-center font-['Bebas_Neue'] text-[24px] tracking-wide text-secondary hover:text-white border-b-2 border-transparent transition-colors">Đăng Ký</a>
+        <!-- Right Form Section -->
+        <div class="auth-form-wrapper">
+            <div class="auth-form-container">
+                <div class="auth-tabs">
+                    <a href="/auth/user-login/login.html" class="auth-tab active">Đăng Nhập</a>
+                    <a href="/auth/user-register/register.html" class="auth-tab inactive">Đăng Ký</a>
                 </div>
 
-                <form action="../../index.html" method="GET" class="space-y-5">
-                    <div class="space-y-1.5">
-                        <label class="text-sm text-secondary" for="email">Email</label>
-                        <div class="relative">
-                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-secondary text-[20px]">person</span>
-                            <input class="w-full bg-background border border-surface-variant rounded-lg py-3 pl-10 pr-4 outline-none focus:border-primary-container text-white" 
-                                   type="email" id="email" name="email" placeholder="example@email.com" required>
+                <form action="/index.html" method="GET" class="auth-form">
+                    <div class="form-group">
+                        <label class="form-label" for="email">Email</label>
+                        <div class="input-wrapper">
+                            <span class="material-symbols-outlined input-icon">person</span>
+                            <input class="form-input" type="email" id="email" name="email" placeholder="example@email.com" required>
                         </div>
                     </div>
 
-                    <div class="space-y-1.5">
-                        <label class="text-sm text-secondary" for="password">Mật khẩu</label>
-                        <div class="relative">
-                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-secondary text-[20px]">lock</span>
-                            <input class="w-full bg-background border border-surface-variant rounded-lg py-3 pl-10 pr-4 outline-none focus:border-primary-container text-white" 
-                                   type="password" id="password" placeholder="••••••••" required>
+                    <div class="form-group">
+                        <label class="form-label" for="password">Mật khẩu</label>
+                        <div class="input-wrapper">
+                            <span class="material-symbols-outlined input-icon">lock</span>
+                            <input class="form-input" type="password" id="password" placeholder="••••••••" required>
                         </div>
                     </div>
 
-                    <button type="submit" class="w-full bg-primary-container text-white py-3.5 rounded-lg mt-4 font-bold hover:bg-red-700 transition duration-300 uppercase tracking-wider text-sm">
-                        Đăng Nhập
-                    </button>
+                    <button type="submit" class="submit-btn">Đăng Nhập</button>
                 </form>
             </div>
         </div>
     </main>
 
-    <footer class="bg-surface-container-lowest text-white border-t border-surface-variant px-8 py-4 flex flex-col md:flex-row justify-between items-center text-xs">
-        <span class="font-['Bebas_Neue'] text-xl tracking-tighter text-primary-container">3HD2K</span>
-        <div class="text-secondary mt-2 md:mt-0">© 2026 3HD2K Cinema. All rights reserved.</div>
-    </footer>
+    <div id="footer-placeholder"></div>
 
     <script>
         const loginForm = document.querySelector('form');
         loginForm.addEventListener('submit', function(e) {
-            e.preventDefault(); // Prevent default form submission
+            e.preventDefault(); 
             
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             
-            // Lấy danh sách tài khoản đã đăng ký từ localStorage
             let users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
-            
-            // Tìm user có email và mật khẩu khớp
             const matchedUser = users.find(u => u.email === email && u.password === password);
             
             if (matchedUser) {
-                // Đăng nhập thành công
                 localStorage.setItem('isLoggedIn', 'true');
                 localStorage.setItem('userName', matchedUser.fullname);
                 localStorage.setItem('userAvatar', matchedUser.avatar);
-                
-                // Chuyển hướng về trang chủ
                 window.location.href = '../../index.html';
             } else {
-                // Đăng nhập thất bại
                 alert("Sai email hoặc mật khẩu! Nếu chưa có tài khoản, vui lòng Đăng ký trước.");
             }
         });
     </script>
+    <script type="module" src="/shared/components/navbar.js"></script>
+    <script type="module" src="/shared/components/footer.js"></script>
 </body>
 </html>

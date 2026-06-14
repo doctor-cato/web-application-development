@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>3HD2K | Đặt vé nhóm & Giữ chỗ</title>
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../../shared/css/main.css">
-    <link rel="stylesheet" href="group-booking.css">
+    <link rel="stylesheet" href="/shared/css/main.css">
+    <link rel="stylesheet" href="/booking/group-booking/group-booking.css">
 </head>
 <body>
 
@@ -172,7 +172,7 @@
     </section>
 </main>
 
-<script src="../../shared/components/navbar.js" type="module"></script>
+<script src="/shared/components/navbar.js" type="module"></script>
 <script>
     // Đồng hồ đếm ngược giữ ghế
     let timeLeft = 14 * 60 + 59;
@@ -213,5 +213,9 @@
         }, 2000);
     }
 </script>
+    <div id="footer-placeholder"></div>
+    <!-- Nhúng components -->
+    <script type="module" src="/shared/components/navbar.js"></script>
+    <script type="module" src="/shared/components/footer.js"></script>
 </body>
 </html>

@@ -631,7 +631,7 @@ const _normalizePath = (path) => {
     if (!path || path.startsWith('http')) return path;
     const parts = path.split('/');
     const filename = parts[parts.length - 1];
-    return `${_srcPrefix}/shared/images/${filename}`;
+    return `/shared/images/${filename}`;
 };
 
 if (typeof heroMovies !== 'undefined') heroMovies.forEach(m => { m.bg = _normalizePath(m.bg); m.poster = _normalizePath(m.poster); });

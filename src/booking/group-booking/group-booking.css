@@ -46,7 +46,7 @@
     margin-bottom: 1rem;
 }
 .hero-title {
-    font-family: 'Oswald', sans-serif;
+    font-family: 'Bebas Neue', sans-serif;
     font-size: 5rem;
     line-height: 1;
     text-transform: uppercase;
@@ -78,7 +78,7 @@
     margin-bottom: 0.25rem;
 }
 .timer-value {
-    font-family: 'Oswald', sans-serif;
+    font-family: 'Bebas Neue', sans-serif;
     font-size: 3rem;
     color: #ffb4aa;
     animation: pulse 2s infinite;
@@ -113,7 +113,7 @@
     margin-bottom: 2rem;
 }
 .panel-title {
-    font-family: 'Oswald', sans-serif;
+    font-family: 'Bebas Neue', sans-serif;
     font-size: 2rem;
     text-transform: uppercase;
     margin-bottom: 1.5rem;
@@ -295,7 +295,7 @@
     color: white;
 }
 .price-value {
-    font-family: 'Oswald', sans-serif;
+    font-family: 'Bebas Neue', sans-serif;
     font-size: 2rem;
     color: #ffb4aa;
 }

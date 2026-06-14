@@ -3,8 +3,8 @@
  */
 
 import { getSeatMap, lockSeat, unlockSeat, subscribeSeatUpdates } from './bookingService.js';
-import { renderSeatGrid, updateSeat, getSelectedSeats, getSeatType } from '../../shared/components/seatGrid.js';
-import { lsSet, KEYS } from '../../shared/utils/storage.js';
+import { renderSeatGrid, updateSeat, getSelectedSeats, getSeatType } from '/shared/components/seatGrid.js';
+import { lsSet, KEYS } from '/shared/utils/storage.js';
 
 const PRICING = {
   weekday: { regular: 50000, vip: 65000, couple: 100000 },

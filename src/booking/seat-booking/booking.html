@@ -4,28 +4,12 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Chọn Ghế - 3HD2K Cinema</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../../shared/css/style.css">
+    <link rel="stylesheet" href="/shared/css/style.css">
 
-    <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary-container":          "#e50914",
-                        "background":                 "#121414",
-                        "surface-variant":            "#343535",
-                        "secondary":                  "#c8c6c5",
-                        "surface-container-low":      "#1a1c1c",
-                        "surface-container-lowest":   "#0d0e0f"
-                    }
-                }
-            }
-        }
-    </script>
+    
 
     <style>
         /* ── Seat states ────────────────────────────────────── */
@@ -49,28 +33,14 @@
             box-shadow: 0 0 40px 8px rgba(229,9,20,0.12);
         }
     </style>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/shared/css/tailwind-legacy.css">
 </head>
 
 <body class="bg-background antialiased text-white min-h-screen flex flex-col font-['Inter']">
 
-    <!-- ═══════════ HEADER ═══════════ -->
-    <header class="w-full z-50 px-8 h-20 flex items-center justify-between border-b border-surface-variant bg-surface-container-low sticky top-0">
-        <a class="font-['Bebas_Neue'] text-[48px] text-primary-container font-bold tracking-tighter leading-none hover:scale-105 transition-transform" href="../../explore/home-page/index.html">3HD2K</a>
-
-        <div class="flex items-center gap-6">
-            <!-- Countdown -->
-            <div class="flex items-center gap-2 text-sm">
-                <span class="pulse-dot inline-block w-2 h-2 rounded-full bg-primary-container"></span>
-                <span class="text-secondary text-xs uppercase tracking-widest">Ghế giữ còn:</span>
-                <span id="countdown-header" class="countdown font-mono font-bold text-white text-base">14:59</span>
-            </div>
-
-            <a href="javascript:history.back()" class="flex items-center gap-1 text-secondary hover:text-white transition text-sm group">
-                <span class="material-symbols-outlined text-[18px] group-hover:-translate-x-1 transition-transform">arrow_back</span>
-                Quay lại
-            </a>
-        </div>
-    </header>
+    <div id="navbar-placeholder"></div>
 
     <!-- ═══════════ MAIN ═══════════ -->
     <main class="flex-grow w-full max-w-7xl mx-auto px-4 md:px-8 py-8">
@@ -225,14 +195,10 @@
         </div>
     </main>
 
-    <!-- ═══════════ FOOTER ═══════════ -->
-    <footer class="bg-surface-container-lowest border-t border-surface-variant px-8 py-4 flex flex-col md:flex-row justify-between items-center text-xs text-secondary mt-8">
-        <span class="font-['Bebas_Neue'] text-xl tracking-tighter text-primary-container">3HD2K</span>
-        <div class="mt-2 md:mt-0">© 2026 3HD2K Cinema. All rights reserved.</div>
-    </footer>
+    <div id="footer-placeholder"></div>
 
-    <!-- ═══════════ SCRIPTS ═══════════ -->
-    <script type="module" src="booking.js"></script>
-
+    <script type="module" src="/booking/seat-booking/booking.js"></script>
+    <script type="module" src="/shared/components/navbar.js"></script>
+    <script type="module" src="/shared/components/footer.js"></script>
 </body>
 </html>

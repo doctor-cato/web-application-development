@@ -4,7 +4,7 @@
  * Domain: booking/cancel-booking
  */
 
-import { getBookings, saveBookings, lsGet, KEYS, getTransactions, addTransaction } from '../../shared/utils/storage.js';
+import { getBookings, saveBookings, lsGet, KEYS, getTransactions, addTransaction } from '/shared/utils/storage.js';
 
 // ---------- Helpers ----------
 
@@ -74,7 +74,7 @@ function renderTickets() {
     container.innerHTML = `
       <div class="empty-message">
         <i class="fa-regular fa-ticket"></i>
-        Bạn chưa có vé nào. <a href="../../explore/home-page/index.html">Đặt vé ngay!</a>
+        Bạn chưa có vé nào. <a href="/explore/home-page/index.html">Đặt vé ngay!</a>
       </div>`;
     return;
   }

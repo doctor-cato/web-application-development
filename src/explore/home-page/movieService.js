@@ -2,7 +2,7 @@
  * movieService.js — small helper for price formatting
  */
 
-import { lsGet, lsSet } from '../../shared/utils/storage.js';
+import { lsGet, lsSet } from '/shared/utils/storage.js';
 
 export function formatPrice(amount) {
   if (typeof amount !== 'number') amount = Number(amount) || 0;

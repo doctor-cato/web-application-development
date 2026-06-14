@@ -205,6 +205,12 @@
   opacity: 1;
 }
 
+.page-wrapper {
+  margin: 100px auto 40px;
+  max-width: 900px;
+  padding: 0 20px;
+}
+
 .modal-box {
   background: #1a1a1a;
   border: 1px solid var(--glass-border);

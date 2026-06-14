@@ -9,25 +9,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
-  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   
-  <script id="tailwind-config">
-    tailwind.config = {
-      darkMode: "class",
-      theme: {
-        extend: {
-          colors: {
-            "primary-container": "#e50914",
-            "background": "#121414",
-            "surface-variant": "#343535",
-            "secondary": "#c8c6c5",
-            "surface-container-low": "#1a1c1c",
-            "surface-container-lowest": "#0d0e0f"
-          }
-        }
-      }
-    }
-  </script>
+  
+  
 
   <style>
     body {
@@ -494,46 +478,16 @@
     }
   </style>
 
-  <script src="js/app.js" defer></script>
+  <script src="/user/loyalty-points/js/app.js" defer></script>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/shared/css/tailwind-legacy.css">
 </head>
 <body class="bg-background text-white min-h-screen flex flex-col font-['Inter'] antialiased">
   <div class="app min-h-screen flex flex-col">
     
     <!-- TOPBAR -->
-    <header class="fixed top-0 left-0 right-0 h-20 z-50 bg-[#080808]/92 border-b border-primary-container/20 shadow-[inset_0_-1px_0_rgba(255,255,255,0.02)]">
-      <div class="max-w-[1109px] h-full mx-auto px-6 md:px-14 flex items-center justify-between">
-        <a href="../../explore/home-page/index.html" class="brand font-['Bebas_Neue'] text-[37px] text-primary-container font-bold tracking-wider hover:scale-105 transition-transform duration-200" aria-label="3HD2K trang chủ">3HD2K</a>
-        
-        <nav class="nav hidden md:flex items-center gap-7 h-full ml-7" aria-label="Điều hướng chính">
-          <a href="../../explore/home-page/index.html" class="relative flex items-center h-full text-secondary hover:text-white transition-colors duration-150 text-[15px] font-semibold">Trang chủ</a>
-          <a href="../../explore/movie-search/index.html" class="relative flex items-center h-full text-secondary hover:text-white transition-colors duration-150 text-[15px] font-semibold">Phim Đang Chiếu</a>
-          <a href="../../explore/cinema-map/index.html" class="relative flex items-center h-full text-secondary hover:text-white transition-colors duration-150 text-[15px] font-semibold">Cụm Rạp</a>
-          <a href="#" class="relative flex items-center h-full text-secondary hover:text-white transition-colors duration-150 text-[15px] font-semibold">Khuyến Mãi</a>
-          <a href="../../booking/booking-food/index.html" class="relative flex items-center h-full text-secondary hover:text-white transition-colors duration-150 text-[15px] font-semibold">Đặt vé</a>
-        </nav>
-        
-        <div class="actions flex items-center gap-3 ml-auto">
-          <label class="search-wrap flex items-center gap-2.5 w-36 h-11 px-3.5 rounded-full border border-white/5 bg-[#0c0c0c] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.015)]" aria-label="Tìm kiếm">
-            <svg class="search-icon w-[18px] h-[18px] flex-none fill-secondary" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M10 4a6 6 0 1 0 3.74 10.69l4.28 4.28 1.41-1.41-4.28-4.28A6 6 0 0 0 10 4zm0 2a4 4 0 1 1 0 8 4 4 0 0 1 0-8z"></path>
-            </svg>
-            <input class="search w-full border-0 outline-none bg-transparent text-secondary text-sm" type="search" placeholder="Tìm kiếm" />
-          </label>
-          
-          <button class="icon-btn w-7 h-7 inline-flex items-center justify-center p-0 border-0 bg-transparent text-secondary hover:text-white transition-colors duration-150" type="button" aria-label="Thông báo">
-            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M12 3a6 6 0 0 0-6 6v2.5c0 .94-.34 1.83-.96 2.53L3.5 15.2V17h17v-1.8l-1.54-1.17c-.62-.7-.96-1.59-.96-2.53V9a6 6 0 0 0-6-6zm0 19a2.5 2.5 0 0 0 2.45-2H9.55A2.5 2.5 0 0 0 12 22z"></path>
-            </svg>
-          </button>
-          
-          <a href="index.html" class="icon-btn w-7 h-7 inline-flex items-center justify-center p-0 border-0 bg-transparent text-white transition-colors duration-150" aria-label="Tài khoản">
-            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M12 12a4.25 4.25 0 1 0-4.25-4.25A4.26 4.26 0 0 0 12 12zm0 2c-3.2 0-8 1.6-8 4.75V20h16v-1.25C20 15.6 15.2 14 12 14z"></path>
-            </svg>
-          </a>
-        </div>
-      </div>
-    </header>
+    <div id="navbar-placeholder"></div>
 
     <div class="layout flex flex-1 mt-20">
       
@@ -731,18 +685,9 @@
     </div>
 
     <!-- FOOTER -->
-    <footer class="footer md:ml-[220px] padding px-9 py-6 border-t border-white/5 flex items-center justify-between gap-6 flex-wrap">
-      <div class="foot-left flex items-center gap-4">
-        <span class="foot-brand font-['Bebas_Neue'] text-[22px] text-primary-container tracking-wider">3HD2K</span>
-        <span class="foot-copy text-[11px] text-secondary">© 2024 3HD2K Cinema. All rights reserved.</span>
-      </div>
-      <nav class="foot-links flex gap-5 flex-wrap">
-        <a href="#" class="text-[11px] text-secondary hover:text-white transition-colors duration-200">Về chúng tôi</a>
-        <a href="#" class="text-[11px] text-secondary hover:text-white transition-colors duration-200">Điều khoản sử dụng</a>
-        <a href="#" class="text-[11px] text-secondary hover:text-white transition-colors duration-200">Chính sách bảo mật</a>
-        <a href="#" class="text-[11px] text-secondary hover:text-white transition-colors duration-200">Liên hệ</a>
-      </nav>
-    </footer>
+    <div id="footer-placeholder"></div>
   </div>
+  <script type="module" src="/shared/components/navbar.js"></script>
+  <script type="module" src="/shared/components/footer.js"></script>
 </body>
 </html>

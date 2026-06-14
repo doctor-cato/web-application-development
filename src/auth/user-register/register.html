@@ -1,182 +1,142 @@
 <!DOCTYPE html>
-<html class="dark" lang="vi">
+<html lang="vi">
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Đăng ký - 3HD2K Cinema</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" href="dang_nhap.css">
-
-    <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary-container": "#e50914",
-                        "background": "#121414",
-                        "surface-variant": "#343535",
-                        "secondary": "#c8c6c5",
-                        "surface-container-low": "#1a1c1c",
-                        "surface-container-lowest": "#0d0e0f"
-                    }
-                }
-            }
-        }
-    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="/shared/css/main.css">
+    <link rel="stylesheet" href="/auth/auth-services/auth.css">
 </head>
-<body class="bg-background antialiased text-white min-h-screen flex flex-col font-['Inter']">
+<body class="auth-page">
+    <div id="navbar-placeholder"></div>
 
-    <header class="absolute top-0 w-full z-50 px-8 h-20 flex items-center">
-        <a class="font-['Bebas_Neue'] text-[48px] text-primary-container font-bold tracking-tighter" href="../../explore/home-page/index.html">3HD2K</a>
-    </header>
+    <main class="auth-main">
+        <a href="/explore/home-page/index.html" class="auth-back-btn">
+            <span class="material-symbols-outlined">arrow_back</span>
+            <span>Về trang chủ</span>
+        </a>
 
-    <main class="flex-grow flex w-full min-h-screen pt-20 lg:pt-0">
-        <div class="hidden lg:flex w-1/2 relative flex-col justify-end p-16 overflow-hidden">
-            <div class="absolute inset-0 bg-black">
-                <img class="w-full h-full object-cover opacity-50" src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=2025&auto=format&fit=crop">
+        <!-- Left Hero Section -->
+        <div class="auth-hero">
+            <div class="auth-hero-bg">
+                <img class="auth-hero-img" src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=2025&auto=format&fit=crop" alt="Cinema">
             </div>
-            <h1 class="relative z-10 font-['Bebas_Neue'] text-[64px] font-bold leading-none text-white tracking-wide">
-                Trải Nghiệm Điện Ảnh <br/><span class="text-primary-container">Đỉnh Cao</span>
+            <h1 class="auth-hero-title">
+                Trải Nghiệm Điện Ảnh <br/><span class="auth-hero-highlight">Đỉnh Cao</span>
             </h1>
         </div>
 
-        <div class="w-full lg:w-1/2 flex items-center justify-center p-6 my-auto">
-            <div class="w-full max-w-[460px] bg-surface-container-low p-8 rounded-xl border border-surface-variant shadow-2xl">
-                
-                <div class="flex items-center justify-between border-b border-surface-variant mb-6">
-                    <a href="../user-login/login.html" class="flex-1 pb-3 text-center font-['Bebas_Neue'] text-[24px] tracking-wide text-secondary/50 hover:text-white border-b-2 border-transparent transition-colors">Đăng Nhập</a>
-                    <a href="register.html" class="flex-1 pb-3 text-center font-['Bebas_Neue'] text-[24px] tracking-wide text-white border-b-2 border-primary-container">Đăng Ký</a>
+        <!-- Right Form Section -->
+        <div class="auth-form-wrapper">
+            <div class="auth-form-container">
+                <div class="auth-tabs">
+                    <a href="/auth/user-login/login.html" class="auth-tab inactive">Đăng Nhập</a>
+                    <a href="/auth/user-register/register.html" class="auth-tab active">Đăng Ký</a>
                 </div>
 
-                <form action="../../index.html" method="GET" class="space-y-4" id="registerForm">
+                <form action="/auth/user-login/login.html" method="GET" class="auth-form">
                     
-                    <div class="text-center space-y-2">
-                        <label class="text-xs text-secondary font-medium block">Ảnh đại diện</label>
-                        <div class="avatar-container">
-                            <img id="registerAvatarPreview" class="avatar-preview" src="https://api.dicebear.com/7.x/bottts/svg?seed=3HD2K" alt="Avatar">
-                            <label for="avatarInput" class="avatar-upload-btn">
-                                <span class="material-symbols-outlined">add_a_photo</span>
-                            </label>
-                            <input type="file" id="avatarInput" accept="image/*" class="hidden">
+                    <div class="avatar-container">
+                        <img id="avatar-preview" class="avatar-preview" src="https://i.pinimg.com/736x/8f/11/a6/8f11a6a2364c18c50c027ffb43c68b75.jpg" alt="Ảnh đại diện">
+                        <input type="file" id="avatar-input" accept="image/*" style="display: none;">
+                        <div class="avatar-upload-btn" onclick="document.getElementById('avatar-input').click()">
+                            <span class="material-symbols-outlined" style="font-size:16px;">edit</span>
                         </div>
                     </div>
 
-                    <div class="space-y-1">
-                        <label class="text-xs text-secondary font-medium" for="fullname">Họ và tên</label>
-                        <div class="relative">
-                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-secondary text-[18px]">badge</span>
-                            <input class="w-full bg-background border border-surface-variant rounded-lg py-2.5 pl-10 pr-4 outline-none focus:border-primary-container text-sm text-white" 
-                                   type="text" id="fullname" name="fullname" placeholder="Nguyễn Văn A" required>
+                    <div class="form-group">
+                        <label class="form-label" for="fullname">Họ và tên</label>
+                        <div class="input-wrapper">
+                            <span class="material-symbols-outlined input-icon">badge</span>
+                            <input class="form-input" type="text" id="fullname" placeholder="Nguyễn Văn A" required>
                         </div>
                     </div>
 
-                    <div class="space-y-1">
-                        <label class="text-xs text-secondary font-medium" for="dob">Ngày sinh</label>
-                        <div class="relative">
-                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-secondary text-[18px]">calendar_month</span>
-                            <input class="w-full bg-background border border-surface-variant rounded-lg py-2.5 pl-10 pr-4 outline-none focus:border-primary-container text-sm text-white" 
-                                   type="date" id="dob" name="dob" required>
+                    <div class="form-group">
+                        <label class="form-label" for="email">Email</label>
+                        <div class="input-wrapper">
+                            <span class="material-symbols-outlined input-icon">mail</span>
+                            <input class="form-input" type="email" id="email" placeholder="example@email.com" required>
                         </div>
                     </div>
 
-                    <div class="space-y-1">
-                        <label class="text-xs text-secondary font-medium" for="email">Email</label>
-                        <div class="relative">
-                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-secondary text-[18px]">mail</span>
-                            <input class="w-full bg-background border border-surface-variant rounded-lg py-2.5 pl-10 pr-4 outline-none focus:border-primary-container text-sm text-white" 
-                                   type="email" id="email" name="email" placeholder="example@email.com" required>
+                    <div class="form-group">
+                        <label class="form-label" for="phone">Số điện thoại</label>
+                        <div class="input-wrapper">
+                            <span class="material-symbols-outlined input-icon">phone_iphone</span>
+                            <input class="form-input" type="tel" id="phone" placeholder="0901234567" required>
                         </div>
                     </div>
 
-                    <div class="space-y-1">
-                        <label class="text-xs text-secondary font-medium" for="phone">Số điện thoại</label>
-                        <div class="relative">
-                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-secondary text-[18px]">call</span>
-                            <input class="w-full bg-background border border-surface-variant rounded-lg py-2.5 pl-10 pr-4 outline-none focus:border-primary-container text-sm text-white" 
-                                   type="tel" id="phone" name="phone" placeholder="0987654321" required>
+                    <div class="form-group">
+                        <label class="form-label" for="password">Mật khẩu</label>
+                        <div class="input-wrapper">
+                            <span class="material-symbols-outlined input-icon">lock</span>
+                            <input class="form-input" type="password" id="password" placeholder="••••••••" required>
                         </div>
                     </div>
 
-                    <div class="space-y-1">
-                        <label class="text-xs text-secondary font-medium" for="password">Mật khẩu</label>
-                        <div class="relative">
-                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-secondary text-[18px]">lock</span>
-                            <input class="w-full bg-background border border-surface-variant rounded-lg py-2.5 pl-10 pr-4 outline-none focus:border-primary-container text-sm text-white" 
-                                   type="password" id="password" placeholder="••••••••" required>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="w-full bg-primary-container text-white py-3 rounded-lg mt-2 font-bold hover:bg-red-700 transition duration-300 uppercase tracking-wider text-xs">
-                        Tạo Tài Khoản
-                    </button>
+                    <button type="submit" class="submit-btn">Đăng Ký Tài Khoản</button>
                 </form>
             </div>
         </div>
     </main>
 
-    <footer class="bg-surface-container-lowest text-white border-t border-surface-variant px-8 py-4 flex flex-col md:flex-row justify-between items-center text-xs">
-        <span class="font-['Bebas_Neue'] text-xl tracking-tighter text-primary-container">3HD2K</span>
-        <div class="text-secondary mt-2 md:mt-0">© 2026 3HD2K Cinema. All rights reserved.</div>
-    </footer>
+    <div id="footer-placeholder"></div>
 
     <script>
-        const avatarInput = document.getElementById('avatarInput');
-        const preview = document.getElementById('registerAvatarPreview');
+        const avatarInput = document.getElementById('avatar-input');
+        const avatarPreview = document.getElementById('avatar-preview');
 
-        avatarInput.addEventListener('change', function() {
-            const file = this.files[0];
+        avatarInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    preview.src = e.target.result;
-                    // Lưu dữ liệu ảnh mã hóa Base64 vào bộ nhớ đệm LocalStorage
-                    localStorage.setItem('user_avatar', e.target.result);
+                    avatarPreview.src = e.target.result;
                 }
                 reader.readAsDataURL(file);
             }
         });
 
-        // Xóa sạch dấu vết avatar cũ mỗi lần tải lại trang đăng ký
-        window.addEventListener('DOMContentLoaded', () => {
-            localStorage.removeItem('user_avatar');
-        });
-
-        // Xử lý khi submit form
-        const registerForm = document.getElementById('registerForm');
+        const registerForm = document.querySelector('form');
         registerForm.addEventListener('submit', function(e) {
-            e.preventDefault(); // Ngăn form gửi mặc định
-
+            e.preventDefault();
+            
             const fullname = document.getElementById('fullname').value;
             const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
             const password = document.getElementById('password').value;
-            const avatar = localStorage.getItem('user_avatar') || 'https://i.pravatar.cc/150?img=11';
+            const avatar = avatarPreview.src;
 
-            // Lấy danh sách users cũ từ localStorage
+            const user = {
+                fullname,
+                email,
+                phone,
+                password,
+                avatar
+            };
+
             let users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
             
-            // Kiểm tra xem email đã được đăng ký chưa
-            const exists = users.find(u => u.email === email);
-            if (exists) {
-                alert("Email này đã được đăng ký! Vui lòng dùng email khác hoặc Đăng nhập.");
+            if(users.some(u => u.email === email)) {
+                alert("Email này đã được đăng ký!");
                 return;
             }
 
-            // Thêm user mới vào danh sách
-            users.push({ fullname, email, password, avatar });
+            users.push(user);
             localStorage.setItem('registeredUsers', JSON.stringify(users));
-
-            // Tự động đăng nhập luôn sau khi đăng ký
-            localStorage.setItem('isLoggedIn', 'true');
-            localStorage.setItem('userName', fullname);
-            localStorage.setItem('userAvatar', avatar);
-
-            // Chuyển hướng về trang chủ
-            window.location.href = '../../index.html';
+            
+            alert("Đăng ký thành công! Vui lòng đăng nhập.");
+            window.location.href = '../user-login/login.html';
         });
     </script>
+    <script type="module" src="/shared/components/navbar.js"></script>
+    <script type="module" src="/shared/components/footer.js"></script>
 </body>
 </html>

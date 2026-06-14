@@ -4,32 +4,13 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Xác nhận đặt vé - 3HD2K Cinema</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="../../shared/css/style.css">
+    <link rel="stylesheet" href="/shared/css/style.css">
 
-    <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary-container": "#e50914",
-                        "background": "#121414",
-                        "surface-variant": "#343535",
-                        "secondary": "#c8c6c5",
-                        "surface-container-low": "#1a1c1c",
-                        "surface-container-lowest": "#0d0e0f"
-                    },
-                    fontFamily: {
-                        mono: ["'Courier New'", "Courier", "monospace"]
-                    }
-                }
-            }
-        }
-    </script>
+    
 
     <style>
         /* Countdown warning state */
@@ -89,21 +70,14 @@
             opacity: 0.85;
         }
     </style>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/shared/css/tailwind-legacy.css">
 </head>
 
 <body class="bg-background antialiased text-white min-h-screen flex flex-col font-['Inter']">
 
-    <!-- ═══════════════════════════════════════════
-         HEADER
-    ═══════════════════════════════════════════ -->
-    <header class="w-full z-50 px-8 h-20 flex items-center justify-between border-b border-surface-variant bg-surface-container-low sticky top-0">
-        <a class="font-['Bebas_Neue'] text-[48px] text-primary-container font-bold tracking-tighter hover:scale-105 transition-transform duration-200" href="../../explore/home-page/index.html">3HD2K</a>
-
-        <a href="javascript:history.back()" class="flex items-center gap-1 text-secondary hover:text-white transition duration-200 group text-sm font-medium">
-            <span class="material-symbols-outlined text-[20px] group-hover:-translate-x-1 transition-transform">arrow_back</span>
-            Quay lại
-        </a>
-    </header>
+    <div id="navbar-placeholder"></div>
 
     <!-- ═══════════════════════════════════════════
          MAIN CONTENT
@@ -324,7 +298,7 @@
                 </div>
 
                 <!-- PAY BUTTON (active) -->
-                <a id="btn-pay" href="../../booking/checkout/payment_simulation.html"
+                <a id="btn-pay" href="/booking/checkout/payment_simulation.html"
                    class="block w-full text-center bg-primary-container hover:bg-red-700 active:scale-[0.98] transition-all duration-200 text-white py-4 rounded-xl font-['Bebas_Neue'] text-2xl tracking-widest uppercase shadow-lg shadow-primary-container/30">
                     THANH TOÁN NGAY
                 </a>
@@ -344,14 +318,10 @@
         </div><!-- /grid -->
     </main>
 
-    <!-- ═══════════════════════════════════════════
-         FOOTER
-    ═══════════════════════════════════════════ -->
-    <footer class="bg-surface-container-lowest text-white border-t border-surface-variant px-8 py-4 flex flex-col md:flex-row justify-between items-center text-xs mt-8">
-        <span class="font-['Bebas_Neue'] text-xl tracking-tighter text-primary-container">3HD2K</span>
-        <div class="text-secondary mt-2 md:mt-0">© 2026 3HD2K Cinema. All rights reserved.</div>
-    </footer>
+    <div id="footer-placeholder"></div>
 
-    <script type="module" src="checkout.js"></script>
+    <script type="module" src="/booking/checkout/checkout.js"></script>
+    <script type="module" src="/shared/components/navbar.js"></script>
+    <script type="module" src="/shared/components/footer.js"></script>
 </body>
 </html>

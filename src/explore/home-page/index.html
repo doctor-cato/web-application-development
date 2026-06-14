@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3HD2K - Premium Cinematic Experience</title>
-    <link rel="stylesheet" href="../../shared/css/main.css">
-    <link rel="stylesheet" href="home.css">
+    <link rel="stylesheet" href="/shared/css/main.css">
+    <link rel="stylesheet" href="/explore/home-page/home.css">
     <!-- Load custom fonts: Bebas Neue for Headings, Inter for Body -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,44 +14,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-    <header class="navbar">
-        <div class="nav-left">
-            <a href="index.html" class="logo">3HD2K</a>
-            <nav class="nav-links">
-                <a href="#" class="active">Trang chủ</a>
-                <a href="../movie-search/index.html?tab=now-showing">Phim Đang Chiếu</a>
-                <a href="../cinema-map/index.html">Cụm Rạp</a>
-                <a href="#">Khuyến Mãi</a>
-                <a href="#">Đặt vé</a>
-            </nav>
-        </div>
-        <div class="nav-actions">
-            <div class="search-pill" id="search-pill">
-                <i class="fas fa-search" id="search-icon"></i>
-                <input type="text" id="search-input" placeholder="Tìm kiếm phim..." />
-                <span id="search-text">Tìm kiếm</span>
-            </div>
-            <div class="notif-btn" id="notif-btn">
-                <i class="fas fa-bell"></i>
-                <!-- Dropdown -->
-                <div class="notif-dropdown" id="notif-dropdown">
-                    <div class="notif-header">
-                        <span class="notif-title">Thông báo</span>
-                    </div>
-                    <div class="notif-empty" style="display: flex; flex-direction: column; align-items: center; padding: 40px 20px; color: rgba(255,255,255,0.5);">
-                        <i class="fas fa-user-lock" style="font-size: 3rem; margin-bottom: 15px; color: rgba(255,255,255,0.2);"></i>
-                        <p style="margin-bottom: 20px; text-align: center;">Vui lòng đăng nhập để xem thông báo</p>
-                        <a href="../../auth/user-login/login.html" class="btn-primary" style="background: var(--primary-red); color: white; padding: 10px 25px; border-radius: 8px; text-decoration: none; font-weight: bold; transition: opacity 0.3s;">Đăng nhập ngay</a>
-                    </div>
-                </div>
-            </div>
-            <a href="../../auth/user-login/login.html" class="user-btn" style="text-decoration: none; color: white;">
-                <div class="avatar-wrapper" style="background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.2);">
-                    <i class="fas fa-user" style="color: rgba(255,255,255,0.6); font-size: 1rem;"></i>
-                </div>
-            </a>
-        </div>
-    </header>
+    <div id="navbar-placeholder"></div>
 
     <main>
         <!-- HERO SECTION -->
@@ -106,18 +69,18 @@
         <section class="movie-section">
             <div class="section-header">
                 <h2>PHIM ĐANG CHIẾU</h2>
-                <a href="../movie-search/index.html?tab=now-showing" class="see-all">Xem tất cả <i class="fas fa-chevron-right"></i></a>
+                <a href="/explore/movie-search/index.html?tab=now-showing" class="see-all">Xem tất cả <i class="fas fa-chevron-right"></i></a>
             </div>
             <div class="movie-grid" id="now-showing-grid">
                 <div class="movie-card">
-                    <a href="pages/movie-detail.html?id=battle-los-angeles" class="poster" style="background-image: url('../../shared/images/battle_la.jpg')" aria-label="Xem chi tiết Battle Los Angeles">
+                    <a href="/explore/movie-details/index.html?id=battle-los-angeles" class="poster" style="background-image: url('/shared/images/battle_la.jpg')" aria-label="Xem chi tiết Battle Los Angeles">
                         <div class="poster-overlay">
                             <span class="overlay-text">Xem thêm</span>
                             <span class="btn-book">Đặt vé ngay</span>
                         </div>
                     </a>
                     <div class="info">
-                        <h3><a href="pages/movie-detail.html?id=battle-los-angeles">Battle: Los Angeles (2011)</a></h3>
+                        <h3><a href="/explore/movie-details/index.html?id=battle-los-angeles">Battle: Los Angeles (2011)</a></h3>
                         <div class="movie-meta-row">
                             <span class="duration"><i class="far fa-clock"></i> 116 phút</span>
                             <span class="age-badge">T16</span>
@@ -126,14 +89,14 @@
                     </div>
                 </div>
                 <div class="movie-card">
-                    <a href="pages/movie-detail.html?id=war-machine" class="poster" style="background-image: url('../../shared/images/war_machine.jpg')" aria-label="Xem chi tiết War Machine">
+                    <a href="/explore/movie-details/index.html?id=war-machine" class="poster" style="background-image: url('/shared/images/war_machine.jpg')" aria-label="Xem chi tiết War Machine">
                         <div class="poster-overlay">
                             <span class="overlay-text">Xem thêm</span>
                             <span class="btn-book">Đặt vé ngay</span>
                         </div>
                     </a>
                     <div class="info">
-                        <h3><a href="pages/movie-detail.html?id=war-machine">War Machine (2026)</a></h3>
+                        <h3><a href="/explore/movie-details/index.html?id=war-machine">War Machine (2026)</a></h3>
                         <div class="movie-meta-row">
                             <span class="duration"><i class="far fa-clock"></i> 120 phút</span>
                             <span class="age-badge">T18</span>
@@ -142,14 +105,14 @@
                     </div>
                 </div>
                 <div class="movie-card">
-                    <a href="pages/movie-detail.html?id=f1-the-movie" class="poster" style="background-image: url('../../shared/images/f1_movie.jpg')" aria-label="Xem chi tiết F1 The Movie">
+                    <a href="/explore/movie-details/index.html?id=f1-the-movie" class="poster" style="background-image: url('/shared/images/f1_movie.jpg')" aria-label="Xem chi tiết F1 The Movie">
                         <div class="poster-overlay">
                             <span class="overlay-text">Xem thêm</span>
                             <span class="btn-book">Đặt vé ngay</span>
                         </div>
                     </a>
                     <div class="info">
-                        <h3><a href="pages/movie-detail.html?id=f1-the-movie">F1: The Movie (2025)</a></h3>
+                        <h3><a href="/explore/movie-details/index.html?id=f1-the-movie">F1: The Movie (2025)</a></h3>
                         <div class="movie-meta-row">
                             <span class="duration"><i class="far fa-clock"></i> 130 phút</span>
                             <span class="age-badge">T16</span>
@@ -158,14 +121,14 @@
                     </div>
                 </div>
                 <div class="movie-card">
-                    <a href="pages/movie-detail.html?id=iron-man-2" class="poster" style="background-image: url('../../shared/images/iron_man2.jpg')" aria-label="Xem chi tiết Iron Man 2">
+                    <a href="/explore/movie-details/index.html?id=iron-man-2" class="poster" style="background-image: url('/shared/images/iron_man2.jpg')" aria-label="Xem chi tiết Iron Man 2">
                         <div class="poster-overlay">
                             <span class="overlay-text">Xem thêm</span>
                             <span class="btn-book">Đặt vé ngay</span>
                         </div>
                     </a>
                     <div class="info">
-                        <h3><a href="pages/movie-detail.html?id=iron-man-2">Iron Man 2</a></h3>
+                        <h3><a href="/explore/movie-details/index.html?id=iron-man-2">Iron Man 2</a></h3>
                         <div class="movie-meta-row">
                             <span class="duration"><i class="far fa-clock"></i> 124 phút</span>
                             <span class="age-badge">T13</span>
@@ -180,18 +143,18 @@
         <section class="movie-section">
             <div class="section-header">
                 <h2>PHIM SẮP CHIẾU</h2>
-                <a href="pages/movies.html?tab=coming-soon" class="see-all">Xem tất cả <i class="fas fa-chevron-right"></i></a>
+                <a href="/explore/movie-search/index.html?tab=coming-soon" class="see-all">Xem tất cả <i class="fas fa-chevron-right"></i></a>
             </div>
             <div class="movie-grid">
-                <div class="movie-card" onclick="window.location.href='pages/movie-detail.html?id=gran-turismo'" style="cursor:pointer;">
-                    <a href="pages/movie-detail.html?id=gran-turismo" class="poster" style="background-image: url('../../shared/images/Gran_Turismo.jpg')" aria-label="Xem chi tiết Gran Turismo">
+                <div class="movie-card" onclick="window.location.href='/explore/movie-details/index.html?id=gran-turismo'" style="cursor:pointer;">
+                    <a href="/explore/movie-details/index.html?id=gran-turismo" class="poster" style="background-image: url('/shared/images/Gran_Turismo.jpg')" aria-label="Xem chi tiết Gran Turismo">
                         <div class="poster-overlay">
                             <span class="overlay-text">Xem thêm</span>
                             <span class="btn-book">Đặt trước vé</span>
                         </div>
                     </a>
                     <div class="info">
-                        <h3><a href="pages/movie-detail.html?id=gran-turismo">Gran Turismo - Tay Đua Cự Phách</a></h3>
+                        <h3><a href="/explore/movie-details/index.html?id=gran-turismo">Gran Turismo - Tay Đua Cự Phách</a></h3>
                         <div class="movie-meta-row">
                             <span class="duration"><i class="far fa-clock"></i> 134 phút</span>
                             <span class="age-badge">T13</span>
@@ -199,15 +162,15 @@
                         <div class="tags"><span class="tag">IMAX</span><span class="tag">Hành Động</span></div>
                     </div>
                 </div>
-                <div class="movie-card" onclick="window.location.href='pages/movie-detail.html?id=world-war-z'" style="cursor:pointer;">
-                    <a href="pages/movie-detail.html?id=world-war-z" class="poster" style="background-image: url('https://m.media-amazon.com/images/M/MV5BODg3ZTM2YWQtZDE5Ny00NGNiLTkzYjgtYWVlYjNkOTg5NDI1XkEyXkFqcGc@.jpg')" aria-label="Xem chi tiết World War Z">
+                <div class="movie-card" onclick="window.location.href='/explore/movie-details/index.html?id=world-war-z'" style="cursor:pointer;">
+                    <a href="/explore/movie-details/index.html?id=world-war-z" class="poster" style="background-image: url('https://m.media-amazon.com/images/M/MV5BODg3ZTM2YWQtZDE5Ny00NGNiLTkzYjgtYWVlYjNkOTg5NDI1XkEyXkFqcGc@.jpg')" aria-label="Xem chi tiết World War Z">
                         <div class="poster-overlay">
                             <span class="overlay-text">Xem thêm</span>
                             <span class="btn-book">Đặt trước vé</span>
                         </div>
                     </a>
                     <div class="info">
-                        <h3><a href="pages/movie-detail.html?id=world-war-z">World War Z - Thế Chiến Z</a></h3>
+                        <h3><a href="/explore/movie-details/index.html?id=world-war-z">World War Z - Thế Chiến Z</a></h3>
                         <div class="movie-meta-row">
                             <span class="duration"><i class="far fa-clock"></i> 116 phút</span>
                             <span class="age-badge">T16</span>
@@ -215,15 +178,15 @@
                         <div class="tags"><span class="tag">2D</span><span class="tag">Hành Động</span></div>
                     </div>
                 </div>
-                <div class="movie-card" onclick="window.location.href='pages/movie-detail.html?id=moon-fall'" style="cursor:pointer;">
-                    <a href="pages/movie-detail.html?id=moon-fall" class="poster" style="background-image: url('../../shared/images/Moon_Fall.jpg')" aria-label="Xem chi tiết Moon Fall">
+                <div class="movie-card" onclick="window.location.href='/explore/movie-details/index.html?id=moon-fall'" style="cursor:pointer;">
+                    <a href="/explore/movie-details/index.html?id=moon-fall" class="poster" style="background-image: url('/shared/images/Moon_Fall.jpg')" aria-label="Xem chi tiết Moon Fall">
                         <div class="poster-overlay">
                             <span class="overlay-text">Xem thêm</span>
                             <span class="btn-book">Đặt trước vé</span>
                         </div>
                     </a>
                     <div class="info">
-                        <h3><a href="pages/movie-detail.html?id=moon-fall">Moon Fall - Trăng Rơi</a></h3>
+                        <h3><a href="/explore/movie-details/index.html?id=moon-fall">Moon Fall - Trăng Rơi</a></h3>
                         <div class="movie-meta-row">
                             <span class="duration"><i class="far fa-clock"></i> 130 phút</span>
                             <span class="age-badge">T13</span>
@@ -231,15 +194,15 @@
                         <div class="tags"><span class="tag">2D</span><span class="tag">Viễn Tưởng</span></div>
                     </div>
                 </div>
-                <div class="movie-card" onclick="window.location.href='pages/movie-detail.html?id=your-name'" style="cursor:pointer;">
-                    <a href="pages/movie-detail.html?id=your-name" class="poster" style="background-image: url('../../shared/images/Kimi-no-Na-wa.-Visual.jpg')" aria-label="Xem chi tiết Your Name">
+                <div class="movie-card" onclick="window.location.href='/explore/movie-details/index.html?id=your-name'" style="cursor:pointer;">
+                    <a href="/explore/movie-details/index.html?id=your-name" class="poster" style="background-image: url('/shared/images/Kimi-no-Na-wa.-Visual.jpg')" aria-label="Xem chi tiết Your Name">
                         <div class="poster-overlay">
                             <span class="overlay-text">Xem thêm</span>
                             <span class="btn-book">Đặt trước vé</span>
                         </div>
                     </a>
                     <div class="info">
-                        <h3><a href="pages/movie-detail.html?id=your-name">Your Name - Tên Cậu Là Gì?</a></h3>
+                        <h3><a href="/explore/movie-details/index.html?id=your-name">Your Name - Tên Cậu Là Gì?</a></h3>
                         <div class="movie-meta-row">
                             <span class="duration"><i class="far fa-clock"></i> 106 phút</span>
                             <span class="age-badge">T13</span>
@@ -282,53 +245,8 @@
                 <a href="#" class="btn btn-primary">ĐĂNG KÝ THÀNH VIÊN VIP</a>
             </div>
         </section>
+        <!-- FOOTER: Rendered via footer.js -->
     </main>
-
-    <!-- FOOTER -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-brand">
-                <h2 class="logo">3HD2K</h2>
-                <p>Trải nghiệm điện ảnh đỉnh cao, mang Hollywood đến gần bạn hơn.</p>
-                <div class="social-icons">
-                    <i class="fas fa-share-alt"></i>
-                    <i class="fas fa-globe"></i>
-                </div>
-            </div>
-            <div class="footer-links">
-                <div class="link-column">
-                    <h4>KHÁM PHÁ</h4>
-                    <ul>
-                        <li><a href="../movie-search/index.html?tab=now-showing">Phim Đang Chiếu</a></li>
-                        <li><a href="#">Phim Sắp Chiếu</a></li>
-                        <li><a href="#">Rạp Phim</a></li>
-                        <li><a href="#">Khuyến Mãi</a></li>
-                    </ul>
-                </div>
-                <div class="link-column">
-                    <h4>HỖ TRỢ</h4>
-                    <ul>
-                        <li><a href="#">Help Center</a></li>
-                        <li><a href="#">Terms of Use</a></li>
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">Cookie Preferences</a></li>
-                    </ul>
-                </div>
-                <div class="link-column">
-                    <h4>VỀ CHÚNG TÔI</h4>
-                    <ul>
-                        <li><a href="#">About Us</a></li>
-                        <li><a href="#">Corporate Information</a></li>
-                        <li><a href="#">Tuyển Dụng</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2024 3HD2K Entertainment. All rights reserved.</p>
-            <p><i class="fas fa-globe" style="margin-right: 5px;"></i> Tiếng Việt</p>
-        </div>
-    </footer>
 
     <!-- TRAILER MODAL -->
     <div id="trailer-modal" class="modal">
@@ -352,8 +270,12 @@
         </div>
     </div>
 
-    <script src="../../shared/js/data.js"></script>
-    <script src="../../shared/js/main.js"></script>
-    <script src="home.js"></script>
+    <div id="footer-placeholder"></div>
+    <!-- Nhúng components -->
+    <script type="module" src="/shared/components/navbar.js"></script>
+    <script type="module" src="/shared/components/footer.js"></script>
+    <script src="/shared/js/data.js"></script>
+    <script src="/shared/js/main.js"></script>
+    <script src="/explore/home-page/home.js"></script>
 </body>
 </html>

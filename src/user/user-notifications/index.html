@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3HD2K - Quản lý thông báo</title>
-    <link rel="stylesheet" href="../../shared/css/main.css">
-    <link rel="stylesheet" href="notifications.css">
+    <link rel="stylesheet" href="/shared/css/main.css">
+    <link rel="stylesheet" href="/user/user-notifications/notifications.css">
     <!-- Load custom fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,44 +15,7 @@
 </head>
 <body>
     <!-- NAVBAR -->
-    <header class="navbar">
-        <div class="nav-left">
-            <a href="../../explore/home-page/index.html" class="logo">3HD2K</a>
-            <nav class="nav-links">
-                <a href="../../explore/home-page/index.html">Trang chủ</a>
-                <a href="../../explore/movie-search/index.html?tab=now-showing">Phim Đang Chiếu</a>
-                <a href="../../explore/cinema-map/index.html">Cụm Rạp</a>
-                <a href="#">Khuyến Mãi</a>
-                <a href="#">Đặt vé</a>
-            </nav>
-        </div>
-        <div class="nav-actions">
-            <div class="search-pill" id="search-pill">
-                <i class="fas fa-search" id="search-icon"></i>
-                <input type="text" id="search-input" placeholder="Tìm kiếm phim..." />
-                <span id="search-text">Tìm kiếm</span>
-            </div>
-            <div class="notif-btn" id="notif-btn">
-                <i class="fas fa-bell"></i>
-                <!-- Dropdown -->
-                <div class="notif-dropdown" id="notif-dropdown">
-                    <div class="notif-header">
-                        <span class="notif-title">Thông báo</span>
-                    </div>
-                    <div class="notif-empty" style="display: flex; flex-direction: column; align-items: center; padding: 40px 20px; color: rgba(255,255,255,0.5);">
-                        <i class="fas fa-user-lock" style="font-size: 3rem; margin-bottom: 15px; color: rgba(255,255,255,0.2);"></i>
-                        <p style="margin-bottom: 20px; text-align: center;">Vui lòng đăng nhập để xem thông báo</p>
-                        <a href="../../auth/user-login/login.html" class="btn-primary" style="background: var(--primary-red); color: white; padding: 10px 25px; border-radius: 8px; text-decoration: none; font-weight: bold; transition: opacity 0.3s;">Đăng nhập ngay</a>
-                    </div>
-                </div>
-            </div>
-            <a href="../../auth/user-login/login.html" class="user-btn" style="text-decoration: none; color: white;">
-                <div class="avatar-wrapper" style="background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.2);">
-                    <i class="fas fa-user" style="color: rgba(255,255,255,0.6); font-size: 1rem;"></i>
-                </div>
-            </a>
-        </div>
-    </header>
+    <div id="navbar-placeholder"></div>
 
     <main class="notif-page">
         <div class="notif-container">
@@ -161,33 +124,12 @@
     </main>
 
     <!-- FOOTER -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-col">
-                <div class="logo">3HD2K</div>
-                <p>Hệ thống rạp chiếu phim chất lượng cao mang đến trải nghiệm điện ảnh tuyệt vời nhất.</p>
-            </div>
-            <div class="footer-col">
-                <h4>Hỗ trợ</h4>
-                <ul>
-                    <li><a href="#">Hỏi đáp</a></li>
-                    <li><a href="#">Liên hệ</a></li>
-                    <li><a href="#">Điều khoản</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>Theo dõi chúng tôi</h4>
-                <div class="social-links">
-                    <a href="#"><i class="fab fa-facebook"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-youtube"></i></a>
-                </div>
-            </div>
-        </div>
-    </footer>
+    <div id="footer-placeholder"></div>
 
     <!-- Scripts -->
-    <script src="../../shared/js/main.js"></script>
-    <script src="notifications.js"></script>
+    <script src="/shared/js/main.js"></script>
+    <script src="/user/user-notifications/notifications.js"></script>
+    <script type="module" src="/shared/components/navbar.js"></script>
+    <script type="module" src="/shared/components/footer.js"></script>
 </body>
 </html>

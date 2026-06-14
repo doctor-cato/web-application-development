@@ -4,29 +4,13 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Thanh Toán - 3HD2K Cinema</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="../../shared/css/style.css">
+    <link rel="stylesheet" href="/shared/css/style.css">
 
-    <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary-container": "#e50914",
-                        "background": "#121414",
-                        "surface-variant": "#343535",
-                        "secondary": "#c8c6c5",
-                        "surface-container-low": "#1a1c1c",
-                        "surface-container-lowest": "#0d0e0f"
-                    }
-                }
-            }
-        }
-    </script>
+    
 
     <style>
         /* Provider theme overrides */
@@ -62,6 +46,9 @@
             background-color: #fff;
         }
     </style>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/shared/css/tailwind-legacy.css">
 </head>
 
 <!--
@@ -73,26 +60,11 @@
 <body class="momo-theme bg-background antialiased text-white min-h-screen flex flex-col font-['Inter']">
 
     <!-- ─── TOP HEADER BAR ─────────────────────────────────────────── -->
-    <header class="w-full z-50 px-6 h-16 flex items-center justify-between border-b border-surface-variant bg-surface-container-lowest">
-        <!-- Back link -->
-        <a href="../../booking/checkout/checkout.html"
-           class="flex items-center gap-1 text-secondary hover:text-white transition duration-200 group text-sm font-medium">
-            <span class="material-symbols-outlined text-[20px] group-hover:-translate-x-1 transition-transform">arrow_back</span>
-            Quay lại
-        </a>
-
-        <!-- Provider logo — MoMo -->
-        <span class="momo-theme-logo font-['Bebas_Neue'] text-[28px] tracking-widest provider-accent">MoMo</span>
-        <!-- Provider logo — VNPAY (hidden by default; swap display with JS or manually) -->
-        <!-- <span class="vnpay-theme-logo font-['Bebas_Neue'] text-[28px] tracking-widest provider-accent">VNPAY</span> -->
-
-        <!-- Spacer to balance flex layout -->
-        <div class="w-20"></div>
-    </header>
+    <div id="navbar-placeholder"></div>
 
     <!-- ─── MAIN CONTENT ───────────────────────────────────────────── -->
     <main class="flex-grow flex items-center justify-center px-4 py-10">
-        <div class="w-full max-w-md">
+        <div class="w-full max-w-2xl">
 
             <!-- ── Payment card ── -->
             <div class="bg-surface-container-low rounded-2xl border border-surface-variant shadow-2xl overflow-hidden">
@@ -172,14 +144,14 @@
                     <!-- 5. Action buttons -->
                     <div class="space-y-3 pt-1">
                         <!-- Success -->
-                        <a id="btn-success" href="../../booking/checkout/booking_invoice.html"
+                        <a id="btn-success" href="/booking/checkout/booking_invoice.html"
                            class="flex items-center justify-center gap-2 w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3.5 rounded-xl transition duration-200 uppercase tracking-wider text-sm">
                             <span class="material-symbols-outlined text-[20px]">check_circle</span>
                             Thanh Toán Thành Công
                         </a>
 
                         <!-- Cancel -->
-                                                <a id="btn-cancel" href="../../booking/checkout/checkout.html"
+                                                <a id="btn-cancel" href="/booking/checkout/checkout.html"
                            class="flex items-center justify-center gap-2 w-full bg-surface-variant hover:bg-red-900/30 border border-red-500/30 text-secondary hover:text-white font-bold py-3.5 rounded-xl transition duration-200 uppercase tracking-wider text-sm">
                             <span class="material-symbols-outlined text-[20px]">cancel</span>
                             Hủy Giao Dịch
@@ -201,11 +173,10 @@
     </main>
 
     <!-- ─── FOOTER ─────────────────────────────────────────────────── -->
-    <footer class="bg-surface-container-lowest text-white border-t border-surface-variant px-8 py-4 flex flex-col md:flex-row justify-between items-center text-xs">
-        <span class="font-['Bebas_Neue'] text-xl tracking-tighter text-primary-container">3HD2K</span>
-        <div class="text-secondary mt-2 md:mt-0">© 2026 3HD2K Cinema. All rights reserved.</div>
-    </footer>
+    <div id="footer-placeholder"></div>
 
-    <script type="module" src="payment.js"></script>
+    <script type="module" src="/booking/checkout/payment.js"></script>
+    <script type="module" src="/shared/components/navbar.js"></script>
+    <script type="module" src="/shared/components/footer.js"></script>
 </body>
 </html>

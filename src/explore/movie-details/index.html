@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3HD2K - Chi tiết phim</title>
     <meta name="description" content="Xem thông tin chi tiết, lịch chiếu và đặt vé phim tại 3HD2K Cinemas.">
-    <link rel="stylesheet" href="../../shared/css/main.css">
-    <link rel="stylesheet" href="movie-detail.css">
+    <link rel="stylesheet" href="/shared/css/main.css">
+    <link rel="stylesheet" href="/explore/movie-details/movie-detail.css">
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,54 +16,16 @@
 </head>
 <body>
 
-    <!-- ── NAVBAR ──────────────────────────────────────────── -->
-    <header class="navbar">
-        <div class="nav-left">
-            <a href="../home-page/index.html" class="logo">3HD2K</a>
-            <nav class="nav-links">
-                <a href="../home-page/index.html">Trang chủ</a>
-                <a href="../movie-search/index.html?tab=now-showing" class="active">Phim Đang Chiếu</a>
-                <a href="../cinema-map/index.html">Cụm Rạp</a>
-                <a href="#">Khuyến Mãi</a>
-                <a href="#">Đặt vé</a>
-            </nav>
-        </div>
-        <div class="nav-actions">
-            <div class="search-pill" id="search-pill">
-                <i class="fas fa-search" id="search-icon"></i>
-                <input type="text" id="search-input" placeholder="Tìm kiếm phim..." />
-                <span id="search-text">Tìm kiếm</span>
-            </div>
-            <div class="notif-btn" id="notif-btn">
-                <i class="fas fa-bell"></i>
-                <!-- Dropdown -->
-                <div class="notif-dropdown" id="notif-dropdown">
-                    <div class="notif-header">
-                        <span class="notif-title">Thông báo</span>
-                    </div>
-                    <div class="notif-empty" style="display: flex; flex-direction: column; align-items: center; padding: 40px 20px; color: rgba(255,255,255,0.5);">
-                        <i class="fas fa-user-lock" style="font-size: 3rem; margin-bottom: 15px; color: rgba(255,255,255,0.2);"></i>
-                        <p style="margin-bottom: 20px; text-align: center;">Vui lòng đăng nhập để xem thông báo</p>
-                        <a href="../../auth/user-login/login.html" class="btn-primary" style="background: var(--primary-red); color: white; padding: 10px 25px; border-radius: 8px; text-decoration: none; font-weight: bold; transition: opacity 0.3s;">Đăng nhập ngay</a>
-                    </div>
-                </div>
-            </div>
-            <a href="../../auth/user-login/login.html" class="user-btn" style="text-decoration: none; color: white;">
-                <div class="avatar-wrapper" style="background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.2);">
-                    <i class="fas fa-user" style="color: rgba(255,255,255,0.6); font-size: 1rem;"></i>
-                </div>
-            </a>
-        </div>
-    </header>
+    <div id="navbar-placeholder"></div>
 
     <!-- ── MAIN ────────────────────────────────────────────── -->
     <main class="movie-detail-page">
 
         <!-- BREADCRUMB -->
         <nav class="detail-breadcrumb" id="detail-breadcrumb" aria-label="breadcrumb">
-            <a href="../home-page/index.html"><i class="fas fa-home" style="margin-right:4px;"></i>Trang chủ</a>
+            <a href="/explore/home-page/index.html"><i class="fas fa-home" style="margin-right:4px;"></i>Trang chủ</a>
             <span class="sep"><i class="fas fa-chevron-right"></i></span>
-            <a href="movies.html" id="breadcrumb-tab-link">Phim Đang Chiếu</a>
+            <a href="/explore/movie-search/index.html" id="breadcrumb-tab-link">Phim Đang Chiếu</a>
             <span class="sep"><i class="fas fa-chevron-right"></i></span>
             <span class="current" id="breadcrumb-movie-name">Đang tải...</span>
         </nav>
@@ -298,51 +260,7 @@
         </div><!-- /.detail-main -->
     </main>
 
-    <!-- ── FOOTER ───────────────────────────────────────────── -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-brand">
-                <h2 class="logo">3HD2K</h2>
-                <p>Trải nghiệm điện ảnh đỉnh cao, mang Hollywood đến gần bạn hơn.</p>
-                <div class="social-icons">
-                    <i class="fas fa-share-alt"></i>
-                    <i class="fas fa-globe"></i>
-                </div>
-            </div>
-            <div class="footer-links">
-                <div class="link-column">
-                    <h4>KHÁM PHÁ</h4>
-                    <ul>
-                        <li><a href="../movie-search/index.html?tab=now-showing">Phim Đang Chiếu</a></li>
-                        <li><a href="movies.html?tab=coming-soon">Phim Sắp Chiếu</a></li>
-                        <li><a href="../cinema-map/index.html">Rạp Phim</a></li>
-                        <li><a href="#">Khuyến Mãi</a></li>
-                    </ul>
-                </div>
-                <div class="link-column">
-                    <h4>HỖ TRỢ</h4>
-                    <ul>
-                        <li><a href="#">Help Center</a></li>
-                        <li><a href="#">Terms of Use</a></li>
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">Cookie Preferences</a></li>
-                    </ul>
-                </div>
-                <div class="link-column">
-                    <h4>VỀ CHÚNG TÔI</h4>
-                    <ul>
-                        <li><a href="#">About Us</a></li>
-                        <li><a href="#">Corporate Information</a></li>
-                        <li><a href="#">Tuyển Dụng</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2024 3HD2K Entertainment. All rights reserved.</p>
-            <p><i class="fas fa-globe" style="margin-right:5px;"></i> Tiếng Việt</p>
-        </div>
-    </footer>
+    <div id="footer-placeholder"></div>
 
     <!-- ── TRAILER MODAL ────────────────────────────────────── -->
     <div id="trailer-modal" class="modal">
@@ -391,9 +309,11 @@
     <div class="toast" id="toast"></div>
 
     <!-- ── SCRIPTS ──────────────────────────────────────────── -->
-    <script src="../../shared/js/data.js"></script>
-    <script src="../../shared/js/main.js"></script>
-    <script src="movie-detail.js"></script>
+    <script src="/shared/js/data.js"></script>
+    <script src="/shared/js/main.js"></script>
+    <script src="/explore/movie-details/movie-detail.js"></script>
+    <script type="module" src="/shared/components/navbar.js"></script>
+    <script type="module" src="/shared/components/footer.js"></script>
 </body>
 </html>
 

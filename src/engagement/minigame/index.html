@@ -10,29 +10,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <!-- FontAwesome for Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="/shared/css/main.css">
+    <link rel="stylesheet" href="/engagement/minigame/css/style.css">
 </head>
 <body>
     <div class="container-fluid">
-        <header class="navbar">
-            <div class="nav-left">
-                <a href="../../explore/home-page/index.html" class="logo">3HD2K</a>
-                <nav class="nav-links">
-                    <a href="#">Phim</a>
-                    <a href="#">Rạp phim</a>
-                    <a href="index.html" class="active">Cine-Bet</a>
-                    <a href="#">Ưu đãi</a>
-                </nav>
-            </div>
-            <div class="nav-actions">
-                <div class="notification-icon">
-                    <i class="far fa-bell"></i>
-                </div>
-                <div class="user-avatar-wrapper">
-                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" alt="Avatar" class="avatar-img">
-                </div>
-            </div>
-        </header>
+        <div id="navbar-placeholder"></div>
+        <!-- NAVIGATION: Rendered via navbar.js -->
 
         <section class="hero-banner">
             <div class="hero-content">
@@ -72,7 +56,7 @@
                 <!-- CARD 1 -->
                 <div class="pool-card">
                     <span class="card-badge hot">Hot</span>
-                    <div class="card-image" style="background-image: url('images/tomato.png')"></div>
+                    <div class="card-image" style="background-image: url('/engagement/minigame/images/tomato.png')"></div>
                     <div class="card-content">
                         <h3>DỰ ĐOÁN ROTTEN TOMATOES</h3>
                         <p class="card-description">Dự đoán xem điểm số của giới phê bình sẽ cao hơn hay thấp hơn 90% cho phim 'The Neon Night'.</p>
@@ -94,7 +78,7 @@
                 <!-- CARD 2 -->
                 <div class="pool-card">
                     <span class="card-badge standard">Tiêu chuẩn</span>
-                    <div class="card-image" style="background-image: url('images/aftercredit.png')"></div>
+                    <div class="card-image" style="background-image: url('/engagement/minigame/images/aftercredit.png')"></div>
                     <div class="card-content">
                         <h3>SỐ LƯỢNG AFTER-CREDIT</h3>
                         <p class="card-description">Sẽ có bao nhiêu cảnh post-credit? Hãy tìm manh mối từ thời lượng phim!</p>
@@ -117,7 +101,7 @@
                 <!-- CARD 3 -->
                 <div class="pool-card">
                     <span class="card-badge expert">Chuyên gia</span>
-                    <div class="card-image" style="background-image: url('images/secret_scene.png')"></div>
+                    <div class="card-image" style="background-image: url('/engagement/minigame/images/secret_scene.png')"></div>
                     <div class="card-content">
                         <h3>BÍ MẬT CẢNH MỞ ĐẦU</h3>
                         <p class="card-description">Dự đoán nhân vật nào xuất hiện trong khung hình đầu tiên của bộ phim. Xem trailer ngay!</p>
@@ -171,25 +155,15 @@
             <button class="btn-guide-start">BẮT ĐẦU NGAY</button>
         </section>
 
-        <footer class="main-footer">
-            <div class="footer-brand-info">
-                <span class="footer-logo">3HD2K</span>
-                <span class="footer-sublogo">PREMIUM CINEMAS</span>
-            </div>
-            <div class="footer-links">
-                <a href="#">Điều khoản dịch vụ</a>
-                <a href="#">Chính sách bảo mật</a>
-                <a href="#">Liên hệ</a>
-                <a href="#">Đặt vé doanh nghiệp</a>
-                <a href="#">Câu hỏi thường gặp</a>
-            </div>
-            <p class="copyright">© 2024 3HD2K PREMIUM CINEMAS. BẢO LƯU MỌI QUYỀN.</p>
-        </footer>
+        <div id="footer-placeholder"></div>
+        <!-- FOOTER: Rendered via footer.js -->
     </div>
 
     <!-- TOAST NOTIFICATION -->
     <div id="toast" class="toast-message"></div>
 
-    <script src="js/script.js"></script>
+    <script src="/engagement/minigame/js/script.js"></script>
+    <script type="module" src="/shared/components/navbar.js"></script>
+    <script type="module" src="/shared/components/footer.js"></script>
 </body>
 </html>

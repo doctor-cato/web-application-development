@@ -2,7 +2,7 @@
  * bookingService.js — seat locking with BroadcastChannel API
  */
 
-import { lsGet, lsSet, getBookings, saveBookings, KEYS } from '../../shared/utils/storage.js';
+import { lsGet, lsSet, getBookings, saveBookings, KEYS } from '/shared/utils/storage.js';
 
 const LOCK_DURATION_MS = 15 * 60 * 1000; // 15 minutes
 const channel = new BroadcastChannel('seat_sync');

@@ -1,112 +1,61 @@
 <!DOCTYPE html>
-<html lang="vi" class="dark">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3HD2K - Cine-Match</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <title>3HD2K - XCine Match</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary-container": "#e50914",
-                        "background": "#121414",
-                        "surface-variant": "#343535",
-                        "secondary": "#c8c6c5",
-                        "surface-container-low": "#1a1c1c",
-                        "surface-container-lowest": "#0d0e0f"
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        body { font-family: 'Inter', sans-serif; background-color: #121414; color: #fafafa; }
-        h1, h2, h3, h4, .font-display { font-family: 'Bebas Neue', sans-serif; }
-        *:focus-visible { outline: 2px solid #e50914; outline-offset: 2px; }
-        
-        .noise-bg::before { content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 50; opacity: 0.03; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"); }
-        
-        .liquid-glass { background: rgba(24, 24, 27, 0.4); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.05); box-shadow: inset 0 1px 0 rgba(255,255,255,0.1); }
-        .hover-lift { transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
-        .hover-lift:hover { transform: translateY(-4px) scale(1.01); box-shadow: 0 20px 40px -15px rgba(0,0,0,0.5); }
-        
-        /* Tinder swipe stack approximation for CSS */
-        .card-stack-1 { z-index: 30; transform: translateY(0) scale(1); }
-        .card-stack-2 { z-index: 20; transform: translateY(20px) scale(0.95); opacity: 0.8; }
-        .card-stack-3 { z-index: 10; transform: translateY(40px) scale(0.9); opacity: 0.5; }
-    </style>
+    <!-- Main Style sheet -->
+    <link rel="stylesheet" href="/shared/css/main.css">
+    <link rel="stylesheet" href="/engagement/dating/css/style.css">
 </head>
-<body class="antialiased min-h-[100dvh] flex flex-col relative noise-bg overflow-x-hidden">
-    
-    <!-- NAVIGATION -->
-    <header class="fixed top-0 w-full z-40 liquid-glass border-b border-white/5 h-20 flex items-center justify-between px-6 md:px-12">
-        <div class="flex items-center gap-12">
-            <a href="../../explore/home-page/index.html" class="font-display font-black text-3xl tracking-tighter text-white hover:text-primary-container transition-colors" aria-label="3HD2K Home">3HD2K</a>
-            <nav class="hidden md:flex gap-8">
-                <a href="../../explore/home-page/index.html" class="text-sm font-medium text-zinc-400 hover:text-white transition-colors">Trang chủ</a>
-                <a href="../../explore/movie-search/index.html" class="text-sm font-medium text-zinc-400 hover:text-white transition-colors">Phim</a>
-                <a href="../../explore/cinema-map/index.html" class="text-sm font-medium text-zinc-400 hover:text-white transition-colors">Rạp</a>
-                <a href="index.html" class="text-sm font-medium text-white border-b border-primary-container pb-1">Cine-Match</a>
-            </nav>
-        </div>
-        <div class="flex items-center gap-4">
-            <a href="../../user/loyalty-points/index.html" class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center hover:bg-secondary/20 transition-colors" aria-label="User profile">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            </a>
-        </div>
-    </header>
+<body class="dating-body noise-bg">
+    <!-- Navbar Placeholder -->
+    <div id="navbar-placeholder"></div>
 
     <!-- MAIN LANDING HERO -->
-    <main class="flex-grow pt-20 relative flex items-center justify-center min-h-[100dvh]">
-        <!-- Blurred Background -->
-        <div class="absolute inset-0 z-0 overflow-hidden">
-            <div class="absolute -top-1/4 -right-1/4 w-[800px] h-[800px] bg-primary-container/20 rounded-full blur-[120px]"></div>
-            <div class="absolute -bottom-1/4 -left-1/4 w-[600px] h-[600px] bg-purple-900/10 rounded-full blur-[100px]"></div>
+    <main class="dating-main">
+        <!-- Blurred Background Effects -->
+        <div class="blur-bg-container">
+            <div class="blur-circle-1"></div>
+            <div class="blur-circle-2"></div>
         </div>
 
-        <div class="relative z-10 w-full max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-            
-            <!-- Left Text -->
-            <div>
-                <span class="inline-block py-1 px-3 bg-primary-container/10 text-primary-container text-xs font-bold tracking-widest uppercase rounded-full mb-6 border border-primary-container/20">Kết Nối Điện Ảnh</span>
-                <h1 class="text-6xl md:text-8xl font-['Bebas_Neue'] font-bold tracking-tighter leading-[0.9] text-white mb-6">
-                    TÌM <br> TRI KỶ <br> <span class="text-primary-container">XEM PHIM</span>
+        <div class="dating-content-wrapper">
+            <!-- Left Text Area -->
+            <div class="dating-text-area">
+                <span class="dating-tag">Kết Nối Điện Ảnh</span>
+                <h1 class="dating-title font-['Bebas_Neue'] font-bold uppercase">
+                    TÌM <br> TRI KỶ <br> <span class="highlight">XEM PHIM</span>
                 </h1>
-                <p class="text-lg text-zinc-400 leading-relaxed max-w-[40ch] mb-10">
+                <p class="dating-desc">
                     Thuật toán đồng bộ tần số điện ảnh. Kết nối bạn với những người chung gu thưởng thức nghệ thuật thứ 7.
                 </p>
-                <div class="flex items-center gap-4">
-                    <button class="bg-primary-container text-white px-8 py-4 rounded-full text-base font-semibold tracking-wide hover:bg-red-700 transition-colors shadow-[0_0_40px_rgba(229,9,20,0.25)] uppercase font-['Bebas_Neue'] text-lg tracking-wider">
-                        Bắt đầu ghép đôi
-                    </button>
+                <div class="dating-actions">
+                    <button class="dating-btn">Bắt đầu ghép đôi</button>
                 </div>
             </div>
 
             <!-- Right Interactive Card Stack -->
-            <div class="relative h-[600px] flex items-center justify-center">
+            <div class="card-stack-container">
                 <!-- Top Card -->
-                <article class="absolute w-[320px] aspect-[3/4] rounded-3xl bg-surface-container-low border border-surface-variant shadow-2xl overflow-hidden card-stack-1 hover-lift cursor-grab">
-                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80" alt="Hồ sơ Bảo Anh" class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent pointer-events-none"></div>
-                    <div class="absolute bottom-0 left-0 w-full p-6 text-white">
-                        <h2 class="text-3xl font-['Bebas_Neue'] tracking-wide font-bold mb-1">Bảo Anh, 24</h2>
-                        <p class="text-secondary text-sm mb-4">"Nolan là tín ngưỡng, Sci-fi là chân lý."</p>
-                        <div class="flex flex-wrap gap-2 mb-6">
-                            <span class="text-[10px] bg-white/10 border border-white/10 px-2 py-1 rounded-full backdrop-blur">Viễn Tưởng</span>
-                            <span class="text-[10px] bg-white/10 border border-white/10 px-2 py-1 rounded-full backdrop-blur">Hack Não</span>
+                <article class="dating-card card-stack-1">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80" alt="Hồ sơ Bảo Anh" class="card-img">
+                    <div class="card-gradient"></div>
+                    <div class="card-info">
+                        <h2 class="card-name font-['Bebas_Neue'] font-bold tracking-wide">Bảo Anh, 24</h2>
+                        <p class="card-quote">"Nolan là tín ngưỡng, Sci-fi là chân lý."</p>
+                        <div class="card-tags">
+                            <span class="card-tag-pill">Viễn Tưởng</span>
+                            <span class="card-tag-pill">Hack Não</span>
                         </div>
-                        <div class="flex gap-4">
-                            <button class="flex-1 bg-surface-variant hover:bg-zinc-600 text-white py-3 rounded-full flex justify-center items-center transition-colors" aria-label="Bỏ qua">
+                        <div class="card-actions">
+                            <button class="btn-reject" aria-label="Bỏ qua">
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
                             </button>
-                            <button class="flex-1 bg-primary-container hover:bg-red-700 text-white py-3 rounded-full flex justify-center items-center transition-colors shadow-[0_0_20px_rgba(229,9,20,0.5)]" aria-label="Ghép đôi">
+                            <button class="btn-match" aria-label="Ghép đôi">
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
                             </button>
                         </div>
@@ -114,11 +63,17 @@
                 </article>
 
                 <!-- Cards behind -->
-                <div class="absolute w-[320px] aspect-[3/4] rounded-3xl bg-surface-variant border border-surface-variant/30 shadow-2xl overflow-hidden card-stack-2"></div>
-                <div class="absolute w-[320px] aspect-[3/4] rounded-3xl bg-surface-container-lowest border border-surface-variant/20 shadow-2xl overflow-hidden card-stack-3"></div>
+                <div class="dating-card card-stack-2"></div>
+                <div class="dating-card card-stack-3"></div>
             </div>
-
         </div>
     </main>
+    
+    <!-- Footer Placeholder -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Inject Components -->
+    <script type="module" src="/shared/components/navbar.js"></script>
+    <script type="module" src="/shared/components/footer.js"></script>
 </body>
 </html>
