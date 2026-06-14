@@ -1,0 +1,389 @@
+/* ==========================================================================
+   BOOKING STYLES (Vanilla CSS for 3HD2K)
+   - Synchronized with main.css Cinematic Noir theme
+   ========================================================================== */
+
+/* ── LAYOUT ─────────────────────────────────────────────────────────── */
+.booking-page-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    min-height: calc(100vh - 80px - 100px); /* Account for navbar and footer */
+}
+
+.booking-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+    .booking-grid {
+        grid-template-columns: 1fr 2fr;
+    }
+    .booking-grid-checkout {
+        grid-template-columns: 2fr 1fr;
+    }
+}
+
+/* ── PANELS & CARDS ─────────────────────────────────────────────────── */
+.booking-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.booking-card {
+    background: rgba(26, 28, 28, 0.4); /* Glassmorphism effect */
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid var(--glass-border, rgba(255,255,255,0.08));
+    border-radius: 16px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+/* ── HEADINGS ───────────────────────────────────────────────────────── */
+.booking-section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    letter-spacing: 1px;
+    color: var(--text-main);
+    border-bottom: 1px solid var(--glass-border);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+/* ── MOVIE INFO (SIDEBAR) ───────────────────────────────────────────── */
+.movie-info-card {
+    display: flex;
+    gap: 1rem;
+}
+
+.movie-poster-sm {
+    width: 80px;
+    height: 112px;
+    border-radius: 12px;
+    background: var(--surface-variant, #343535);
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.movie-poster-sm img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.movie-details-sm {
+    flex: 1;
+    min-width: 0;
+}
+
+.movie-details-sm h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.25rem;
+    line-height: 1.2;
+    margin-bottom: 0.5rem;
+}
+
+.movie-details-sm p {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 0.25rem;
+}
+
+.movie-details-sm span {
+    color: var(--text-main);
+    font-weight: 600;
+}
+
+/* ── PRICING & LEGEND ───────────────────────────────────────────────── */
+.price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+}
+
+.price-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-muted);
+}
+
+.price-value {
+    color: var(--text-main);
+    font-weight: 600;
+}
+
+.legend-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* ── SEATS ──────────────────────────────────────────────────────────── */
+.seat { cursor: pointer; transition: all 0.15s ease; }
+.seat:hover:not(.seat--locked):not(.seat--booked) { transform: scale(1.12); }
+
+.seat--available  { background: #343535; border: 1px solid #555; }
+.seat--selected   { background: var(--primary-red); border: 1px solid var(--primary-red); }
+.seat--locked     { background: #f59e0b; border: 1px solid #f59e0b; cursor: not-allowed; }
+.seat--booked     { background: #1f2937; border: 1px solid #374151; cursor: not-allowed; opacity: 0.5; }
+.seat--vip        { border-color: #7c3aed; }
+.seat--vip.seat--available  { background: rgba(124,58,237,0.15); }
+.seat--vip.seat--selected   { background: #7c3aed; border-color: #7c3aed; }
+.seat--couple     { border-color: #db2777; }
+.seat--couple.seat--available  { background: rgba(219,39,119,0.12); }
+.seat--couple.seat--selected   { background: #db2777; border-color: #db2777; }
+
+/* Dynamic classes added by seatGrid.js */
+.seat.w-9.h-9 { width: 36px; height: 36px; }
+.seat.rounded-sm { border-radius: 4px; }
+.seat.flex { display: flex; }
+.seat.justify-center { justify-content: center; }
+.seat.items-center { align-items: center; }
+.seat.text-\[9px\] { font-size: 9px; }
+.seat.font-bold { font-weight: bold; }
+.seat.text-white\/30 { color: rgba(255,255,255,0.3); }
+
+/* Screen glow */
+.screen-container {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+.screen-glow {
+    height: 12px;
+    border-radius: 9999px;
+    width: 80%;
+    margin: 0 auto;
+    background: linear-gradient(180deg, rgba(229,9,20,0.18) 0%, transparent 100%);
+    box-shadow: 0 0 40px 8px rgba(229,9,20,0.12);
+}
+.screen-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+}
+
+/* ── SUMMARY ────────────────────────────────────────────────────────── */
+.selected-seats-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    min-height: 32px;
+}
+
+.seat-badge {
+    background: var(--primary-red);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: bold;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+}
+
+.summary-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--glass-border);
+    margin-top: 1rem;
+}
+
+.summary-total-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    color: var(--primary-red);
+    letter-spacing: 1px;
+}
+
+.btn-continue {
+    width: 100%;
+    padding: 0.75rem;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.25rem;
+    letter-spacing: 2px;
+}
+
+/* ── CHECKOUT SPECIFIC ──────────────────────────────────────────────── */
+.checkout-header {
+    margin-bottom: 2rem;
+}
+
+.checkout-header h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.5rem;
+    letter-spacing: 1px;
+}
+
+.checkout-header p {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+}
+
+/* Combo Card */
+.combo-card {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    background: var(--surface-container-low, #1a1c1c);
+    cursor: pointer;
+    transition: all 0.2s;
+    align-items: center;
+}
+
+.combo-card:hover {
+    border-color: var(--primary-red);
+}
+
+.combo-card.selected {
+    border-color: var(--primary-red);
+    background-color: rgba(229, 9, 20, 0.08);
+}
+
+.combo-img {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+}
+
+.combo-info {
+    flex: 1;
+}
+
+.combo-title {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.combo-desc {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.combo-price {
+    font-weight: bold;
+    color: var(--primary-red);
+}
+
+/* Payment Card */
+.payment-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.payment-card:hover {
+    background: rgba(255,255,255,0.02);
+}
+
+.payment-card.selected-momo {
+    border-color: #ae2070;
+    background-color: rgba(174, 32, 112, 0.1);
+}
+
+.payment-card.selected-vnpay {
+    border-color: #005baa;
+    background-color: rgba(0, 91, 170, 0.1);
+}
+
+.payment-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+/* Invoice Specific */
+.invoice-container {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 3rem 1rem;
+}
+
+.invoice-icon {
+    font-size: 4rem;
+    color: #10b981;
+    margin-bottom: 1rem;
+}
+
+.invoice-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.invoice-subtitle {
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+}
+
+.invoice-details {
+    background: var(--surface-container-low, #1a1c1c);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 1.5rem;
+    text-align: left;
+}
+
+.invoice-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+    border-bottom: 1px dashed var(--glass-border);
+}
+
+.invoice-row:last-child {
+    border-bottom: none;
+}
+
+.invoice-label {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+}
+
+.invoice-value {
+    font-weight: 600;
+}
+
+.invoice-qr {
+    background: white;
+    padding: 1rem;
+    border-radius: 12px;
+    display: inline-block;
+    margin-top: 1.5rem;
+}
+
+.invoice-qr img {
+    width: 150px;
+    height: 150px;
+}

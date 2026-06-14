@@ -7,315 +7,158 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
-
-    <link rel="stylesheet" href="/shared/css/style.css">
-
-    
-
-    <style>
-        /* Countdown warning state */
-        .countdown--warning {
-            color: #e50914;
-            animation: pulse-warning 1s ease-in-out infinite;
-        }
-
-        @keyframes pulse-warning {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.55; }
-        }
-
-        /* Pulsing dot */
-        @keyframes pulse-dot {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.5); opacity: 0.5; }
-        }
-        .pulse-dot {
-            animation: pulse-dot 1.2s ease-in-out infinite;
-        }
-
-        /* CSS spinner */
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        .spinner {
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-top-color: #fff;
-            border-radius: 50%;
-            animation: spin 0.7s linear infinite;
-            vertical-align: middle;
-        }
-
-        /* Combo card selected state */
-        .combo-card.selected {
-            border-color: #e50914;
-            background-color: rgba(229, 9, 20, 0.08);
-        }
-        .combo-card:hover {
-            border-color: #e50914;
-        }
-
-        /* Payment card selected state */
-        .payment-card.selected-momo {
-            border-color: #ae2070;
-            background-color: rgba(174, 32, 112, 0.1);
-        }
-        .payment-card.selected-vnpay {
-            border-color: #005baa;
-            background-color: rgba(0, 91, 170, 0.1);
-        }
-        .payment-card:hover {
-            opacity: 0.85;
-        }
-    </style>
-
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="/shared/css/tailwind-legacy.css">
+    
+    <link rel="stylesheet" href="/shared/css/style.css">
+    <link rel="stylesheet" href="/booking/css/booking.css">
 </head>
 
-<body class="bg-background antialiased text-white min-h-screen flex flex-col font-['Inter']">
+<body>
 
     <div id="navbar-placeholder"></div>
 
-    <!-- ═══════════════════════════════════════════
-         MAIN CONTENT
-    ═══════════════════════════════════════════ -->
-    <main class="flex-grow w-full max-w-6xl mx-auto px-4 md:px-8 py-8">
+    <main class="booking-page-container">
 
-        <!-- Page heading -->
-        <div class="mb-8">
-            <h1 class="font-['Bebas_Neue'] text-4xl md:text-5xl tracking-wide text-white">Xác Nhận Đặt Vé</h1>
-            <p class="text-secondary text-sm mt-1">Kiểm tra thông tin và hoàn tất thanh toán của bạn.</p>
+        <div class="checkout-header">
+            <h1>Xác Nhận Đặt Vé</h1>
+            <p>Kiểm tra thông tin và hoàn tất thanh toán của bạn.</p>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+        <div class="booking-grid booking-grid-checkout">
 
-            <!-- ────────────────────────────────────
-                 LEFT COLUMN  (2/5 width on lg)
-            ──────────────────────────────────── -->
-            <div class="lg:col-span-2 flex flex-col gap-6">
+            <!-- ────── LEFT COLUMN ────── -->
+            <div class="booking-panel">
 
                 <!-- ORDER SUMMARY CARD -->
-                <div class="bg-surface-container-low border border-surface-variant rounded-2xl p-6 space-y-5">
-                    <h2 class="font-['Bebas_Neue'] text-2xl tracking-wide text-white border-b border-surface-variant pb-3">
-                        Thông Tin Đơn Vé
-                    </h2>
-
-                    <!-- Movie poster + title row -->
-                    <div class="flex gap-4 items-start">
-                        <div class="w-16 h-24 rounded-xl overflow-hidden flex-shrink-0 bg-surface-variant">
-                                                <img id="order-summary-poster"
-                                src="https://images.unsplash.com/photo-1635805737707-575885ab0820?w=200&auto=format&fit=crop"
-                                                    alt="Poster"
-                                class="w-full h-full object-cover"
-                            >
+                <div class="glass-panel booking-card">
+                    <h2 class="booking-section-title">Thông Tin Đơn Hàng</h2>
+                    
+                    <div class="movie-info-card" style="margin-bottom: 1rem;">
+                        <div class="movie-poster-sm">
+                            <img id="order-summary-poster" src="" alt="Movie Poster">
                         </div>
-                        <div class="flex-1 min-w-0">
-                                                <p id="order-summary-movie" class="font-bold text-white text-sm leading-tight">Spider-Man: Across the Spider-Verse</p>
-                            <div class="mt-2 flex flex-wrap gap-1.5">
-                                                    <span id="order-summary-tags" class="text-[10px] bg-primary-container/20 text-primary-container border border-primary-container/40 rounded px-2 py-0.5 font-semibold uppercase tracking-wider">IMAX</span>
-                                                    <span id="order-summary-genre" class="text-[10px] bg-surface-variant text-secondary rounded px-2 py-0.5">Animation</span>
-                            </div>
+                        <div class="movie-details-sm">
+                            <h1 id="order-summary-movie">Đang tải...</h1>
+                            <div id="order-summary-tags" style="display: flex; gap: 4px; margin-bottom: 8px;"></div>
+                            <p>Thể loại: <span id="order-summary-genre" style="color: var(--text-main); font-weight: 600;">--</span></p>
                         </div>
                     </div>
 
-                    <!-- Info rows -->
-                    <div class="space-y-3 text-sm">
-                        <div class="flex items-start gap-3">
-                            <span class="material-symbols-outlined text-primary-container text-[18px] mt-0.5">calendar_today</span>
-                            <div>
-                                <p class="text-secondary text-xs">Suất chiếu</p>
-                                <p class="text-white font-medium">Thứ Ba, 10/06/2026 — 19:30</p>
+                    <!-- Details table -->
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem; border-top: 1px solid var(--glass-border); padding-top: 1rem;">
+                        <div class="price-row">
+                            <span class="price-label">Suất chiếu</span>
+                            <span id="order-summary-showtime" class="price-value">--</span>
+                        </div>
+                        <div class="price-row">
+                            <span class="price-label">Phòng</span>
+                            <span id="order-summary-room" class="price-value">--</span>
+                        </div>
+                        <div class="price-row" style="align-items: flex-start;">
+                            <span class="price-label">Ghế</span>
+                            <div id="order-summary-seats" style="display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end;">
+                                <span style="color: var(--text-muted); font-size: 0.75rem;">--</span>
                             </div>
                         </div>
-
-                        <div class="flex items-start gap-3">
-                            <span class="material-symbols-outlined text-primary-container text-[18px] mt-0.5">meeting_room</span>
-                            <div>
-                                <p class="text-secondary text-xs">Phòng chiếu</p>
-                                <p class="text-white font-medium">Phòng 3 — IMAX</p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-start gap-3">
-                            <span class="material-symbols-outlined text-primary-container text-[18px] mt-0.5">event_seat</span>
-                            <div>
-                                <p class="text-secondary text-xs mb-1.5">Ghế đã chọn</p>
-                                <div id="order-summary-seats" class="flex flex-wrap gap-2">
-                                    <!-- seats injected here -->
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center gap-3 pt-2 border-t border-surface-variant">
-                            <span class="material-symbols-outlined text-primary-container text-[18px]">payments</span>
-                            <div class="flex items-center justify-between w-full">
-                                <p class="text-secondary text-xs">Tiền ghế</p>
-                                <p id="order-summary-seat-amount" class="text-white font-bold">--</p>
-                            </div>
+                        <div class="price-row">
+                            <span class="price-label">Tiền ghế</span>
+                            <span id="order-summary-seat-amount" class="price-value" data-amount="0">0 đ</span>
                         </div>
                     </div>
+
                 </div>
 
-                <!-- COUNTDOWN TIMER CARD -->
-                <div class="bg-surface-container-low border border-surface-variant rounded-2xl p-6">
-                    <div class="flex flex-col items-center text-center gap-3">
-                        <!-- Timer display -->
-                        <div class="flex items-center gap-3">
-                            <!-- Pulsing live dot -->
-                            <span class="pulse-dot inline-block w-2.5 h-2.5 rounded-full bg-primary-container flex-shrink-0"></span>
-                            <!-- The countdown value — has countdown--warning class for demo (shows red) -->
-                            <span class="countdown countdown--warning font-mono text-6xl font-bold tracking-widest leading-none">
-                                04:59
-                            </span>
-                        </div>
-                        <p class="text-secondary text-xs font-medium uppercase tracking-widest">Thời gian giữ ghế còn lại</p>
-                        <p class="text-secondary/60 text-xs">Hoàn tất thanh toán trước khi ghế được giải phóng.</p>
+                <!-- FOOD & BEVERAGE -->
+                <div class="glass-panel booking-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem; margin-bottom: 1rem;">
+                        <h2 class="booking-section-title" style="border: none; margin: 0; padding: 0;">Bắp Nước (Combo)</h2>
+                        <a href="../booking-food/index.html" style="color: var(--primary-red); font-size: 0.875rem; font-weight: 600;">Chọn thêm</a>
                     </div>
-                </div>
-
-            </div><!-- /LEFT COLUMN -->
-
-            <!-- ────────────────────────────────────
-                 RIGHT COLUMN  (3/5 width on lg)
-            ──────────────────────────────────── -->
-            <div class="lg:col-span-3 flex flex-col gap-6">
-
-                <!-- COMBO SELECTOR -->
-                <div class="bg-surface-container-low border border-surface-variant rounded-2xl p-6 space-y-4">
-                    <h2 class="font-['Bebas_Neue'] text-2xl tracking-wide text-white">Chọn Combo Bắp Nước</h2>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-
-                        <!-- Option 1: Không chọn (selected by default) -->
-                        <label class="combo-card selected cursor-pointer border border-surface-variant rounded-xl p-4 flex flex-col gap-1.5 transition-all duration-200 relative">
-                            <input type="radio" name="combo" value="none" class="hidden" checked>
-                            <!-- Checkmark badge -->
-                            <span class="absolute top-2 right-2 w-5 h-5 rounded-full bg-primary-container flex items-center justify-center">
-                                <span class="material-symbols-outlined text-white text-[14px]" style="font-variation-settings:'FILL' 1">check</span>
-                            </span>
-                            <span class="material-symbols-outlined text-secondary text-[24px]">do_not_disturb</span>
-                            <p class="font-semibold text-white text-sm">Không chọn</p>
-                            <p class="text-primary-container font-bold text-sm">0 đ</p>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                        <label class="combo-card selected">
+                            <input type="radio" name="combo" value="none" checked style="display: none;">
+                            <div style="width: 64px; height: 64px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.05); border-radius: 8px;">
+                                <i class="fas fa-ban" style="color: var(--text-muted); font-size: 1.5rem;"></i>
+                            </div>
+                            <div class="combo-info">
+                                <div class="combo-title">Không kèm combo</div>
+                                <div class="combo-desc">Chỉ mua vé xem phim</div>
+                            </div>
+                            <div class="combo-price">0 đ</div>
                         </label>
 
-                        <!-- Option 2: Single Combo -->
-                        <label class="combo-card cursor-pointer border border-surface-variant rounded-xl p-4 flex flex-col gap-1.5 transition-all duration-200 relative">
-                            <input type="radio" name="combo" value="single" class="hidden">
-                            <span class="material-symbols-outlined text-secondary text-[24px]">local_cafe</span>
-                            <p class="font-semibold text-white text-sm">Single Combo</p>
-                            <p class="text-[11px] text-secondary">1 bắp + 1 nước</p>
-                            <p class="text-primary-container font-bold text-sm">65.000 đ</p>
+                        <label class="combo-card">
+                            <input type="radio" name="combo" value="single" style="display: none;">
+                            <img src="https://www.cgv.vn/media/concession/web/631ade8215967_1662693006.png" alt="Combo" class="combo-img">
+                            <div class="combo-info">
+                                <div class="combo-title">Combo 1 Người</div>
+                                <div class="combo-desc">1 Bắp Lớn + 1 Nước Ngọt Lớn</div>
+                            </div>
+                            <div class="combo-price">65.000 đ</div>
                         </label>
 
-                        <!-- Option 3: Double Combo -->
-                        <label class="combo-card cursor-pointer border border-surface-variant rounded-xl p-4 flex flex-col gap-1.5 transition-all duration-200 relative">
-                            <input type="radio" name="combo" value="double" class="hidden">
-                            <!-- Popular badge -->
-                            <span class="absolute -top-2 left-1/2 -translate-x-1/2 bg-amber-500 text-black text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide whitespace-nowrap">Phổ biến</span>
-                            <span class="material-symbols-outlined text-secondary text-[24px]">fastfood</span>
-                            <p class="font-semibold text-white text-sm">Double Combo</p>
-                            <p class="text-[11px] text-secondary">2 bắp + 2 nước</p>
-                            <p class="text-primary-container font-bold text-sm">95.000 đ</p>
+                        <label class="combo-card">
+                            <input type="radio" name="combo" value="double" style="display: none;">
+                            <img src="https://www.cgv.vn/media/concession/web/631ade969f696_1662693016.png" alt="Combo" class="combo-img">
+                            <div class="combo-info">
+                                <div class="combo-title">Combo 2 Người</div>
+                                <div class="combo-desc">1 Bắp Lớn + 2 Nước Ngọt Lớn</div>
+                            </div>
+                            <div class="combo-price">95.000 đ</div>
                         </label>
-
                     </div>
                 </div>
 
-                <!-- PAYMENT METHOD -->
-                <div class="bg-surface-container-low border border-surface-variant rounded-2xl p-6 space-y-4">
-                    <h2 class="font-['Bebas_Neue'] text-2xl tracking-wide text-white">Phương Thức Thanh Toán</h2>
+            </div>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-
-                        <!-- MoMo (selected by default) -->
-                        <label class="payment-card selected-momo cursor-pointer border border-surface-variant rounded-xl p-4 flex items-center gap-4 transition-all duration-200">
-                            <input type="radio" name="payment" value="momo" class="hidden" checked>
-                            <!-- MoMo logo placeholder -->
-                            <div class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style="background-color: rgba(174,32,112,0.15); border: 1px solid rgba(174,32,112,0.4)">
-                                <span class="font-['Bebas_Neue'] text-lg font-bold leading-none" style="color: #ae2070">MoMo</span>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <p class="font-bold text-white text-sm">MoMo</p>
-                                <p class="text-secondary text-xs">Ví điện tử MoMo</p>
-                                <!-- Selected indicator -->
-                                <div class="mt-1.5 flex items-center gap-1">
-                                    <span class="w-4 h-4 rounded-full flex items-center justify-center" style="background-color: #ae2070">
-                                        <span class="material-symbols-outlined text-white text-[12px]" style="font-variation-settings:'FILL' 1">check</span>
-                                    </span>
-                                    <span class="text-[10px] font-medium" style="color: #ae2070">Đã chọn</span>
-                                </div>
-                            </div>
-                        </label>
-
-                        <!-- VNPAY -->
-                        <label class="payment-card cursor-pointer border border-surface-variant rounded-xl p-4 flex items-center gap-4 transition-all duration-200">
-                            <input type="radio" name="payment" value="vnpay" class="hidden">
-                            <!-- VNPAY logo placeholder -->
-                            <div class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style="background-color: rgba(0,91,170,0.15); border: 1px solid rgba(0,91,170,0.4)">
-                                <span class="font-['Bebas_Neue'] text-sm font-bold leading-none" style="color: #005baa">VNPAY</span>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <p class="font-bold text-white text-sm">VNPAY</p>
-                                <p class="text-secondary text-xs">Cổng thanh toán VNPAY</p>
-                            </div>
-                        </label>
-
+            <!-- ────── RIGHT COLUMN ────── -->
+            <div class="booking-panel">
+                
+                <div class="glass-panel booking-card" style="position: sticky; top: 100px;">
+                    <h2 class="booking-section-title">Thanh Toán</h2>
+                    
+                    <!-- Promo -->
+                    <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                        <input type="text" placeholder="Mã khuyến mãi" style="flex: 1; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); border-radius: 8px; padding: 0.5rem 1rem; color: white; outline: none;">
+                        <button class="btn btn-outline" style="padding: 0.5rem 1rem;">Áp dụng</button>
                     </div>
-                </div>
 
-                <!-- ORDER TOTAL -->
-                <div class="bg-surface-container-low border border-surface-variant rounded-2xl p-6 space-y-3">
-                    <h2 class="font-['Bebas_Neue'] text-2xl tracking-wide text-white border-b border-surface-variant pb-3">
-                        Tổng Đơn Hàng
-                    </h2>
-
-                    <div class="space-y-2 text-sm">
-                        <!-- Line item: seats -->
-                        <div class="flex justify-between items-center">
-                            <span class="text-secondary">Ghế (2):</span>
-                            <span class="text-white font-medium">160.000 đ</span>
-                        </div>
-
-                        <!-- Line item: combo -->
-                        <div class="flex justify-between items-center">
-                            <span class="text-secondary">Combo bắp nước:</span>
-                            <span class="text-white font-medium">0 đ</span>
-                        </div>
-
-                        <!-- Divider -->
-                        <div class="border-t border-surface-variant my-2 pt-2">
-                            <div class="flex justify-between items-center">
-                                <span class="text-white font-semibold text-base">Tổng cộng:</span>
-                                <span id="order-total" data-amount="160000" class="font-['Bebas_Neue'] text-3xl text-primary-container tracking-wider">160.000 đ</span>
-                            </div>
-                        </div>
-
-                        <p class="text-secondary/60 text-[11px]">* Giá đã bao gồm VAT. Vé đã mua không được hoàn trả.</p>
+                    <!-- Payment methods -->
+                    <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem;">
+                        <label class="payment-card selected-momo">
+                            <input type="radio" name="payment" value="momo" checked style="display: none;">
+                            <img src="/shared/assets/images/momo_icon.png" alt="MoMo" class="payment-icon" onerror="this.src='https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png'">
+                            <div style="flex: 1; font-weight: 600;">Ví MoMo</div>
+                            <i class="fas fa-check-circle" style="color: #ae2070;"></i>
+                        </label>
+                        
+                        <label class="payment-card">
+                            <input type="radio" name="payment" value="vnpay" style="display: none;">
+                            <img src="/shared/assets/images/vnpay_icon.png" alt="VNPay" class="payment-icon" onerror="this.src='https://vnpay.vn/s1/statics.vnpay.vn/2023/9/06ncktiwd6dc1694418189687.png'">
+                            <div style="flex: 1; font-weight: 600;">VNPay</div>
+                            <i class="fas fa-check-circle" style="color: #005baa; display: none;"></i>
+                        </label>
                     </div>
+
+                    <!-- Total -->
+                    <div class="summary-total">
+                        <span style="color: var(--text-muted);">Tổng thanh toán:</span>
+                        <span id="order-total" class="summary-total-price" data-amount="0">0 đ</span>
+                    </div>
+
+                    <button id="btn-pay" class="btn btn-primary btn-continue" style="margin-top: 1rem;">
+                        THANH TOÁN NGAY
+                    </button>
+                    
+                    <p style="text-align: center; color: var(--text-muted); font-size: 0.75rem; margin-top: 1rem;">
+                        Giao dịch được mã hóa và bảo mật 256-bit.
+                    </p>
                 </div>
 
-                <!-- PAY BUTTON (active) -->
-                <a id="btn-pay" href="/booking/checkout/payment_simulation.html"
-                   class="block w-full text-center bg-primary-container hover:bg-red-700 active:scale-[0.98] transition-all duration-200 text-white py-4 rounded-xl font-['Bebas_Neue'] text-2xl tracking-widest uppercase shadow-lg shadow-primary-container/30">
-                    THANH TOÁN NGAY
-                </a>
+            </div>
 
-                <!-- PAY BUTTON (loading / disabled variant — for demo) -->
-                <div class="w-full text-center bg-surface-variant opacity-50 cursor-not-allowed text-white py-4 rounded-xl font-['Bebas_Neue'] text-2xl tracking-widest uppercase flex items-center justify-center gap-3 select-none pointer-events-none">
-                    <span class="spinner"></span>
-                    <span>Đang Xử Lý...</span>
-                </div>
-
-                <p class="text-secondary/50 text-xs text-center -mt-2">
-                    Trạng thái trên chỉ là bản demo của nút loading — không thể nhấn.
-                </p>
-
-            </div><!-- /RIGHT COLUMN -->
-
-        </div><!-- /grid -->
+        </div>
     </main>
 
     <div id="footer-placeholder"></div>

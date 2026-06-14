@@ -43,7 +43,7 @@ function renderCheckout() {
     seatsEl.innerHTML = '';
     co.seats.forEach(s => {
       const span = document.createElement('span');
-      span.className = 'bg-primary-container text-white text-xs font-bold px-3 py-1 rounded-full tracking-wider badge-seat';
+      span.className = 'seat-badge';
       span.innerText = s;
       seatsEl.appendChild(span);
     });

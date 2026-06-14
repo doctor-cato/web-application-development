@@ -7,187 +7,113 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/shared/css/style.css">
-
-    
-
-    <style>
-        /* ── Seat states ────────────────────────────────────── */
-        .seat { cursor: pointer; transition: all 0.15s ease; }
-        .seat:hover:not(.seat--locked):not(.seat--booked) { transform: scale(1.12); }
-
-        .seat--available  { background: #343535; border: 1px solid #555; }
-        .seat--selected   { background: #e50914; border: 1px solid #e50914; }
-        .seat--locked     { background: #f59e0b; border: 1px solid #f59e0b; cursor: not-allowed; }
-        .seat--booked     { background: #1f2937; border: 1px solid #374151; cursor: not-allowed; opacity: 0.5; }
-        .seat--vip        { border-color: #7c3aed; }
-        .seat--vip.seat--available  { background: rgba(124,58,237,0.15); }
-        .seat--vip.seat--selected   { background: #7c3aed; border-color: #7c3aed; }
-        .seat--couple     { border-color: #db2777; }
-        .seat--couple.seat--available  { background: rgba(219,39,119,0.12); }
-        .seat--couple.seat--selected   { background: #db2777; border-color: #db2777; }
-
-        /* ── Screen glow ────────────────────────────────────── */
-        .screen-glow {
-            background: linear-gradient(180deg, rgba(229,9,20,0.18) 0%, transparent 100%);
-            box-shadow: 0 0 40px 8px rgba(229,9,20,0.12);
-        }
-    </style>
-
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="/shared/css/tailwind-legacy.css">
+    
+    <link rel="stylesheet" href="/shared/css/style.css">
+    <link rel="stylesheet" href="/booking/css/booking.css">
 </head>
 
-<body class="bg-background antialiased text-white min-h-screen flex flex-col font-['Inter']">
+<body>
 
     <div id="navbar-placeholder"></div>
 
     <!-- ═══════════ MAIN ═══════════ -->
-    <main class="flex-grow w-full max-w-7xl mx-auto px-4 md:px-8 py-8">
-        <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+    <main class="booking-page-container">
+        <div class="booking-grid">
 
             <!-- ────── LEFT: Movie info + Showtime ────── -->
-            <div class="xl:col-span-1 flex flex-col gap-4">
+            <div class="booking-panel">
 
                 <!-- Movie card -->
-                <div id="movie-info-card" class="bg-surface-container-low border border-surface-variant rounded-2xl p-5 flex gap-4">
-                    <!-- Poster placeholder -->
-                    <div class="w-20 h-28 rounded-xl bg-surface-variant flex-shrink-0 overflow-hidden">
-                        <img id="movie-poster" src="" alt="" class="w-full h-full object-cover">
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <h1 id="movie-title" class="font-['Bebas_Neue'] text-xl leading-tight text-white tracking-wide">Đang tải...</h1>
-                        <div id="movie-tags" class="flex flex-wrap gap-1.5 mt-2"></div>
-                        <div class="mt-3 space-y-1.5 text-xs text-secondary">
-                            <p><span class="text-white/60">Suất chiếu:</span> <span id="showtime-datetime" class="text-white font-semibold"></span></p>
-                            <p><span class="text-white/60">Phòng:</span> <span id="showtime-room" class="text-white font-semibold"></span></p>
-                            <p><span class="text-white/60">Định dạng:</span> <span id="showtime-format" class="text-white font-semibold"></span></p>
+                <div id="movie-info-card" class="glass-panel booking-card">
+                    <div class="movie-info-card">
+                        <!-- Poster placeholder -->
+                        <div class="movie-poster-sm">
+                            <img id="movie-poster" src="" alt="">
+                        </div>
+                        <div class="movie-details-sm">
+                            <h1 id="movie-title">Đang tải...</h1>
+                            <div id="movie-tags" style="display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px;"></div>
+                            <div style="margin-top: 12px;">
+                                <p>Suất chiếu: <span id="showtime-datetime"></span></p>
+                                <p>Phòng: <span id="showtime-room"></span></p>
+                                <p>Định dạng: <span id="showtime-format"></span></p>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Price table -->
-                <div class="bg-surface-container-low border border-surface-variant rounded-2xl p-5 space-y-3">
-                    <h2 class="font-['Bebas_Neue'] text-lg tracking-wide text-white">Bảng Giá Vé</h2>
-                    <div class="space-y-2 text-sm">
-                        <div class="flex justify-between items-center">
-                            <div class="flex items-center gap-2">
-                                <span class="w-4 h-4 rounded bg-surface-variant border border-[#555]"></span>
-                                <span class="text-secondary">Ghế thường</span>
+                <div class="glass-panel booking-card">
+                    <h2 class="booking-section-title">Bảng Giá Vé</h2>
+                    <div>
+                        <div class="price-row">
+                            <div class="price-label">
+                                <span style="width: 16px; height: 16px; border-radius: 4px; background: #343535; border: 1px solid #555;"></span>
+                                <span>Ghế thường</span>
                             </div>
-                            <span id="price-normal" class="text-white font-semibold">--</span>
+                            <span id="price-normal" class="price-value">--</span>
                         </div>
-                        <div class="flex justify-between items-center">
-                            <div class="flex items-center gap-2">
-                                <span class="w-4 h-4 rounded border border-[#7c3aed]" style="background:rgba(124,58,237,0.15)"></span>
-                                <span class="text-secondary">Ghế VIP</span>
+                        <div class="price-row">
+                            <div class="price-label">
+                                <span style="width: 16px; height: 16px; border-radius: 4px; background: rgba(124,58,237,0.15); border: 1px solid #7c3aed;"></span>
+                                <span>Ghế VIP</span>
                             </div>
-                            <span id="price-vip" class="text-white font-semibold">--</span>
+                            <span id="price-vip" class="price-value">--</span>
                         </div>
-                        <div class="flex justify-between items-center">
-                            <div class="flex items-center gap-2">
-                                <span class="w-4 h-4 rounded border border-[#db2777]" style="background:rgba(219,39,119,0.12)"></span>
-                                <span class="text-secondary">Ghế đôi</span>
+                        <div class="price-row">
+                            <div class="price-label">
+                                <span style="width: 16px; height: 16px; border-radius: 4px; background: rgba(219,39,119,0.12); border: 1px solid #db2777;"></span>
+                                <span>Ghế đôi</span>
                             </div>
-                            <span id="price-couple" class="text-white font-semibold">--</span>
+                            <span id="price-couple" class="price-value">--</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- Legend -->
-                <div class="bg-surface-container-low border border-surface-variant rounded-2xl p-5 space-y-3">
-                    <h2 class="font-['Bebas_Neue'] text-lg tracking-wide text-white">Chú Thích</h2>
-                    <div class="grid grid-cols-2 gap-2 text-xs text-secondary">
-                        <div class="flex items-center gap-2"><span class="seat seat--available w-5 h-5 rounded-sm flex-shrink-0"></span> Ghế trống</div>
-                        <div class="flex items-center gap-2"><span class="seat seat--selected w-5 h-5 rounded-sm flex-shrink-0"></span> Đang chọn</div>
-                        <div class="flex items-center gap-2"><span class="seat seat--locked w-5 h-5 rounded-sm flex-shrink-0"></span> Đang giữ</div>
-                        <div class="flex items-center gap-2"><span class="seat seat--booked w-5 h-5 rounded-sm flex-shrink-0"></span> Đã đặt</div>
+                <div class="glass-panel booking-card">
+                    <h2 class="booking-section-title">Chú Thích</h2>
+                    <div class="legend-grid">
+                        <div class="legend-item"><span class="seat seat--available" style="width: 20px; height: 20px; border-radius: 4px; cursor: default;"></span> Ghế trống</div>
+                        <div class="legend-item"><span class="seat seat--selected" style="width: 20px; height: 20px; border-radius: 4px; cursor: default;"></span> Đang chọn</div>
+                        <div class="legend-item"><span class="seat seat--locked" style="width: 20px; height: 20px; border-radius: 4px; cursor: default;"></span> Đang giữ</div>
+                        <div class="legend-item"><span class="seat seat--booked" style="width: 20px; height: 20px; border-radius: 4px; cursor: default;"></span> Đã đặt</div>
                     </div>
                 </div>
 
                 <!-- Selected summary (sticky) -->
-                <div id="selection-summary" class="bg-surface-container-low border border-surface-variant rounded-2xl p-5 space-y-3">
-                    <h2 class="font-['Bebas_Neue'] text-lg tracking-wide text-white">Ghế Đã Chọn</h2>
-                    <div id="selected-seats-list" class="flex flex-wrap gap-2 min-h-[32px]">
-                        <p class="text-secondary text-xs italic">Chưa chọn ghế nào.</p>
+                <div id="selection-summary" class="glass-panel booking-card">
+                    <h2 class="booking-section-title">Ghế Đã Chọn</h2>
+                    <div id="selected-seats-list" class="selected-seats-list">
+                        <p style="color: var(--text-muted); font-size: 0.75rem; font-style: italic;">Chưa chọn ghế nào.</p>
                     </div>
-                    <div class="flex justify-between items-center pt-2 border-t border-surface-variant text-sm">
-                        <span class="text-secondary">Tổng tiền:</span>
-                        <span id="total-price" class="font-['Bebas_Neue'] text-2xl text-primary-container tracking-wider">0 đ</span>
+                    <div class="summary-total">
+                        <span style="color: var(--text-muted); font-size: 0.875rem;">Tổng tiền:</span>
+                        <span id="total-price" class="summary-total-price">0 đ</span>
                     </div>
-                    <button id="btn-continue"
-                            disabled
-                            class="w-full bg-primary-container disabled:opacity-40 disabled:cursor-not-allowed hover:bg-red-700 transition text-white py-3 rounded-xl font-['Bebas_Neue'] text-xl tracking-widest uppercase">
-                        Tiếp Tục
+                    <button id="btn-continue" class="btn btn-primary btn-continue" disabled>
+                        TIẾP TỤC
                     </button>
                 </div>
 
             </div>
 
             <!-- ────── RIGHT: Seat grid ────── -->
-            <div class="xl:col-span-2">
-                <div class="bg-surface-container-low border border-surface-variant rounded-2xl p-6">
+            <div class="booking-panel">
+                <div class="glass-panel booking-card" style="align-items: center; padding: 2rem;">
 
                     <!-- Screen -->
-                    <div class="mb-8 text-center">
-                        <div class="screen-glow h-3 rounded-full w-4/5 mx-auto"></div>
-                        <p class="text-secondary text-xs mt-2 uppercase tracking-[0.3em]">Màn hình</p>
+                    <div class="screen-container" style="width: 100%; max-width: 800px;">
+                        <div class="screen-glow"></div>
+                        <p class="screen-label">MÀN HÌNH</p>
                     </div>
 
                     <!-- Seat grid (rendered by seatGrid.js) -->
-                    <div id="seat-grid" class="flex flex-col items-center gap-2">
-                                            <!-- Static seat grid (HTML/CSS only prototype) -->
-                                            <div class="seat-rows space-y-3 w-full max-w-4xl">
-                                                <!-- Row A -->
-                                                <div class="flex items-center gap-3">
-                                                    <div class="w-6 text-sm text-secondary">A</div>
-                                                    <div class="grid grid-cols-10 gap-2 flex-1">
-                                                        <div class="seat seat--available w-9 h-9 rounded-sm"></div>
-                                                        <div class="seat seat--available w-9 h-9 rounded-sm"></div>
-                                                        <div class="seat seat--selected w-9 h-9 rounded-sm"></div>
-                                                        <div class="seat seat--selected w-9 h-9 rounded-sm"></div>
-                                                        <div class="seat seat--available w-9 h-9 rounded-sm"></div>
-                                                        <div class="seat seat--available w-9 h-9 rounded-sm"></div>
-                                                        <div class="seat seat--locked w-9 h-9 rounded-sm"></div>
-                                                        <div class="seat seat--available w-9 h-9 rounded-sm"></div>
-                                                        <div class="seat seat--available w-9 h-9 rounded-sm"></div>
-                                                        <div class="seat seat--available w-9 h-9 rounded-sm"></div>
-                                                    </div>
-                                                </div>
-                                                <!-- Row B -->
-                                                <div class="flex items-center gap-3">
-                                                    <div class="w-6 text-sm text-secondary">B</div>
-                                                    <div class="grid grid-cols-10 gap-2 flex-1">
-                                                        <div class="seat seat--available w-9 h-9 rounded-sm"></div>
-                                                        <div class="seat seat--available w-9 h-9 rounded-sm"></div>
-                                                        <div class="seat seat--available w-9 h-9 rounded-sm"></div>
-                                                        <div class="seat seat--available w-9 h-9 rounded-sm"></div>
-                                                        <div class="seat seat--available w-9 h-9 rounded-sm"></div>
-                                                        <div class="seat seat--locked w-9 h-9 rounded-sm"></div>
-                                                        <div class="seat seat--available w-9 h-9 rounded-sm"></div>
-                                                        <div class="seat seat--available w-9 h-9 rounded-sm"></div>
-                                                        <div class="seat seat--booked w-9 h-9 rounded-sm"></div>
-                                                        <div class="seat seat--available w-9 h-9 rounded-sm"></div>
-                                                    </div>
-                                                </div>
-                                                <!-- Row C (VIP) -->
-                                                <div class="flex items-center gap-3">
-                                                    <div class="w-6 text-sm text-secondary">C</div>
-                                                    <div class="grid grid-cols-10 gap-2 flex-1">
-                                                        <div class="seat seat--vip seat--available w-9 h-9 rounded-sm"></div>
-                                                        <div class="seat seat--vip seat--available w-9 h-9 rounded-sm"></div>
-                                                        <div class="seat seat--vip seat--available w-9 h-9 rounded-sm"></div>
-                                                        <div class="seat seat--vip seat--available w-9 h-9 rounded-sm"></div>
-                                                        <div class="seat seat--vip seat--available w-9 h-9 rounded-sm"></div>
-                                                        <div class="seat seat--vip seat--available w-9 h-9 rounded-sm"></div>
-                                                        <div class="seat seat--vip seat--available w-9 h-9 rounded-sm"></div>
-                                                        <div class="seat seat--vip seat--selected w-9 h-9 rounded-sm"></div>
-                                                        <div class="seat seat--vip seat--available w-9 h-9 rounded-sm"></div>
-                                                        <div class="seat seat--vip seat--available w-9 h-9 rounded-sm"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                    <div id="seat-grid" style="display: flex; flex-direction: column; align-items: center; gap: 8px; width: 100%;">
+                        <!-- Fallback / Loading -->
+                        <p style="color: var(--text-muted);">Đang tải sơ đồ ghế...</p>
+                    </div>
 
                 </div>
             </div>

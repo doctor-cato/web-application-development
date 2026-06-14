@@ -3,180 +3,124 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>Thanh Toán - 3HD2K Cinema</title>
+    <title>Mô phỏng thanh toán - 3HD2K Cinema</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
     <link rel="stylesheet" href="/shared/css/style.css">
-
     
-
     <style>
-        /* Provider theme overrides */
-        .momo-theme .provider-header {
-            background: linear-gradient(135deg, #ae2070, #d4337a);
+        .sim-container {
+            max-width: 400px;
+            margin: 4rem auto;
+            background: white;
+            color: #111;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .momo-theme .provider-accent {
+
+        @keyframes slideUp {
+            from { transform: translateY(40px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .sim-header {
+            background: #ae2070; /* Momo color by default */
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .sim-header.vnpay {
+            background: #005baa;
+        }
+
+        .sim-header h1 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .sim-body {
+            padding: 2rem 1.5rem;
+            text-align: center;
+        }
+
+        .sim-amount {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 1rem 0;
             color: #ae2070;
         }
-        .vnpay-theme .provider-header {
-            background: linear-gradient(135deg, #005baa, #0077cc);
-        }
-        .vnpay-theme .provider-accent {
+        
+        .sim-amount.vnpay {
             color: #005baa;
         }
 
-        /* Countdown warning animation */
-        .countdown-warning {
-            color: #e50914;
-            animation: pulse-anim 1s infinite;
-        }
-        @keyframes pulse-anim {
-            0%, 100% { opacity: 1; }
-            50%       { opacity: 0.5; }
+        .sim-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #ae2070;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1.5rem;
         }
 
-        /* QR grid pattern placeholder */
-        .qr-grid {
-            background-image:
-                linear-gradient(#ccc 1px, transparent 1px),
-                linear-gradient(90deg, #ccc 1px, transparent 1px);
-            background-size: 20px 20px;
-            background-color: #fff;
+        .sim-spinner.vnpay {
+            border-top-color: #005baa;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .sim-btn {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            background: #ae2070;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 2rem;
+            transition: opacity 0.2s;
+        }
+
+        .sim-btn.vnpay {
+            background: #005baa;
+        }
+
+        .sim-btn:hover {
+            opacity: 0.9;
         }
     </style>
-
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="/shared/css/tailwind-legacy.css">
 </head>
 
-<!--
-    THEME SWITCHING:
-    • MoMo  → <body class="momo-theme ...">
-    • VNPAY → <body class="vnpay-theme ...">
-    Change the class below to switch between providers.
--->
-<body class="momo-theme bg-background antialiased text-white min-h-screen flex flex-col font-['Inter']">
+<body style="background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); height: 100vh; display: flex; align-items: center; justify-content: center;">
 
-    <!-- ─── TOP HEADER BAR ─────────────────────────────────────────── -->
-    <div id="navbar-placeholder"></div>
-
-    <!-- ─── MAIN CONTENT ───────────────────────────────────────────── -->
-    <main class="flex-grow flex items-center justify-center px-4 py-10">
-        <div class="w-full max-w-2xl">
-
-            <!-- ── Payment card ── -->
-            <div class="bg-surface-container-low rounded-2xl border border-surface-variant shadow-2xl overflow-hidden">
-
-                <!-- 1. Provider branding header strip -->
-                <div class="provider-header px-6 py-5 flex flex-col items-center text-center">
-                    <span class="font-['Bebas_Neue'] text-[40px] tracking-widest text-white drop-shadow">Ví MoMo</span>
-                    <!-- For VNPAY theme, replace the line above with:
-                    <span class="font-['Bebas_Neue'] text-[40px] tracking-widest text-white drop-shadow">VNPAY</span>
-                    -->
-                    <p class="text-white/80 text-sm mt-0.5">Quét mã QR để thanh toán</p>
-                </div>
-
-                <!-- Card body -->
-                <div class="px-6 py-6 space-y-6">
-
-                    <!-- 2. Transaction info -->
-                    <div class="space-y-3">
-                        <!-- Amount with trust lock icon -->
-                        <div class="flex items-center justify-center gap-2">
-                            <span class="material-symbols-outlined text-[20px] text-secondary">lock</span>
-                            <span class="text-3xl font-bold text-white">225.000 đ</span>
-                        </div>
-
-                        <!-- Transaction IDs -->
-                        <div class="bg-background rounded-xl px-4 py-3 space-y-1.5 text-center border border-surface-variant">
-                            <p class="font-mono text-secondary text-sm tracking-wider">Mã GD: <span class="text-white">A3BX9KM2ZQ7T</span></p>
-                            <p class="text-secondary text-xs">Đặt vé: <span class="text-white font-mono">bk_1781018950</span></p>
-                        </div>
-                    </div>
-
-                    <!-- 3a. QR placeholder (MoMo theme) -->
-                    <div class="momo-qr-section flex flex-col items-center gap-3">
-                        <!-- White QR box with subtle grid pattern -->
-                        <div class="qr-grid w-[200px] h-[200px] rounded-xl flex items-center justify-center shadow-lg relative">
-                            <!-- Corner markers to feel like a real QR -->
-                            <div class="absolute top-3 left-3 w-8 h-8 border-4 border-gray-800 rounded-sm"></div>
-                            <div class="absolute top-3 right-3 w-8 h-8 border-4 border-gray-800 rounded-sm"></div>
-                            <div class="absolute bottom-3 left-3 w-8 h-8 border-4 border-gray-800 rounded-sm"></div>
-                            <span class="font-['Bebas_Neue'] text-gray-600 text-xl tracking-widest z-10">QR Code</span>
-                        </div>
-                        <p class="text-secondary text-xs text-center">Mở app MoMo và quét mã này</p>
-                    </div>
-
-                    <!-- 3b. Bank transfer info (VNPAY theme) — hidden by default -->
-                    <!-- To show: remove "hidden" class and add it to the momo-qr-section above when using vnpay-theme -->
-                    <!--
-                    <div class="vnpay-transfer-section hidden bg-background rounded-xl border border-surface-variant px-5 py-4 space-y-2.5 text-sm">
-                        <h3 class="font-['Bebas_Neue'] text-lg tracking-wide text-white border-b border-surface-variant pb-2 mb-3">
-                            Thông tin chuyển khoản
-                        </h3>
-                        <div class="flex justify-between">
-                            <span class="text-secondary">Ngân hàng</span>
-                            <span class="text-white font-medium">Vietcombank</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-secondary">Số tài khoản</span>
-                            <span class="text-white font-mono">1234567890</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-secondary">Số tiền</span>
-                            <span class="text-white font-bold">225.000 đ</span>
-                        </div>
-                        <div class="flex justify-between gap-4">
-                            <span class="text-secondary shrink-0">Nội dung CK</span>
-                            <span class="text-white font-mono text-right">TT VE A3BX9KM2ZQ7T</span>
-                        </div>
-                    </div>
-                    -->
-
-                    <!-- 4. Countdown timer -->
-                    <div class="flex flex-col items-center gap-1 py-2">
-                        <p class="text-secondary text-xs uppercase tracking-widest">Giao dịch hết hạn sau</p>
-                        <span class="font-mono text-4xl font-bold countdown-warning">04:47</span>
-                    </div>
-
-                    <!-- 5. Action buttons -->
-                    <div class="space-y-3 pt-1">
-                        <!-- Success -->
-                        <a id="btn-success" href="/booking/checkout/booking_invoice.html"
-                           class="flex items-center justify-center gap-2 w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3.5 rounded-xl transition duration-200 uppercase tracking-wider text-sm">
-                            <span class="material-symbols-outlined text-[20px]">check_circle</span>
-                            Thanh Toán Thành Công
-                        </a>
-
-                        <!-- Cancel -->
-                                                <a id="btn-cancel" href="/booking/checkout/checkout.html"
-                           class="flex items-center justify-center gap-2 w-full bg-surface-variant hover:bg-red-900/30 border border-red-500/30 text-secondary hover:text-white font-bold py-3.5 rounded-xl transition duration-200 uppercase tracking-wider text-sm">
-                            <span class="material-symbols-outlined text-[20px]">cancel</span>
-                            Hủy Giao Dịch
-                        </a>
-
-                    </div>
-
-                </div>
-            </div>
-            <!-- /Payment card -->
-
-            <!-- Secured by note -->
-            <div class="flex items-center justify-center gap-1.5 mt-5 text-secondary text-xs">
-                <span class="material-symbols-outlined text-[16px]">shield</span>
-                Kết nối được mã hóa SSL 256-bit
-            </div>
-
+    <div class="sim-container" id="sim-container">
+        <div class="sim-header" id="sim-header">
+            <h1 id="gateway-name">Cổng Thanh Toán</h1>
         </div>
-    </main>
-
-    <!-- ─── FOOTER ─────────────────────────────────────────────────── -->
-    <div id="footer-placeholder"></div>
+        <div class="sim-body">
+            <div class="sim-spinner" id="sim-spinner"></div>
+            <p style="color: #666; font-size: 0.875rem;">Đang xử lý giao dịch cho đơn hàng</p>
+            <div class="sim-amount" id="sim-amount">0 đ</div>
+            <p style="font-weight: 500; font-size: 1.125rem;">3HD2K Cinema</p>
+            
+            <button class="sim-btn" id="sim-btn" disabled>Đang xử lý...</button>
+        </div>
+    </div>
 
     <script type="module" src="/booking/checkout/payment.js"></script>
-    <script type="module" src="/shared/components/navbar.js"></script>
-    <script type="module" src="/shared/components/footer.js"></script>
 </body>
 </html>
