@@ -6,53 +6,53 @@
 
 export function renderNavbar() {
     const navbarHTML = `
-    <header class="navbar" style="position: sticky; top: 0; z-index: 1000; background: var(--bg-elevated); border-bottom: 1px solid var(--glass-border);">
-        <div class="nav-left" style="display: flex; align-items: center; gap: 40px;">
-            <a href="/explore/home-page/index.html" class="logo" style="font-size: 2rem; color: var(--primary-red); font-family: 'Bebas Neue', sans-serif;">3HD2K</a>
-            <nav class="nav-links nav-desktop">
+    <header class="navbar">
+        <div class="nav-left">
+            <a href="/explore/home-page/index.html" class="logo">3HD2K</a>
+            <nav class="nav-links">
                 <a href="/explore/home-page/index.html">Trang chủ</a>
-                <a href="/explore/movie-search/index.html?tab=now-showing">Phim</a>
-                <a href="/explore/cinema-map/index.html">Rạp Phim</a>
+                <a href="/explore/movie-search/index.html?tab=now-showing">Phim Đang Chiếu</a>
+                <a href="/explore/cinema-map/index.html">Cụm Rạp</a>
                 <a href="/wip.html">Khuyến Mãi</a>
                 <a href="/wip.html">Đặt vé</a>
             </nav>
         </div>
-        <div class="nav-actions" style="display: flex; align-items: center; gap: 15px;">
-            <div class="search-pill sm-visible" id="search-pill" style="display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.05); padding: 8px 15px; border-radius: 20px; border: 1px solid var(--glass-border);">
-                <i class="fas fa-search" id="search-icon" style="color: rgba(255,255,255,0.6);"></i>
-                <input type="text" id="search-input" placeholder="Tìm kiếm phim..." style="background: transparent; border: none; color: white; outline: none; width: 150px; display: none;" />
-                <span id="search-text" style="color: rgba(255,255,255,0.8); font-size: 0.9rem;">Tìm kiếm</span>
+        <div class="nav-actions">
+            <div class="search-pill" id="search-pill">
+                <i class="fas fa-search" id="search-icon"></i>
+                <input type="text" id="search-input" placeholder="Tìm kiếm phim..." />
+                <span id="search-text">Tìm kiếm</span>
             </div>
-            <div class="notif-btn sm-visible" id="notif-btn" style="position: relative; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.05); cursor: pointer;">
-                <i class="fas fa-bell" style="color: white;"></i>
+            <div class="notif-btn" id="notif-btn">
+                <i class="fas fa-bell"></i>
                 <!-- Dropdown -->
-                <div class="notif-dropdown" id="notif-dropdown" style="display: none; position: absolute; top: 50px; right: 0; background: var(--bg-elevated); border: 1px solid var(--glass-border); border-radius: 12px; width: 300px; padding: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.8);">
-                    <div class="notif-header" style="border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; margin-bottom: 10px;">
-                        <span class="notif-title" style="font-weight: 600;">Thông báo</span>
+                <div class="notif-dropdown" id="notif-dropdown">
+                    <div class="notif-header">
+                        <span class="notif-title">Thông báo</span>
                     </div>
-                    <div class="notif-empty" style="display: flex; flex-direction: column; align-items: center; padding: 20px; color: rgba(255,255,255,0.5);">
-                        <i class="fas fa-user-lock" style="font-size: 2.5rem; margin-bottom: 15px; color: rgba(255,255,255,0.2);"></i>
-                        <p style="margin-bottom: 15px; text-align: center; font-size: 0.9rem;">Vui lòng đăng nhập để xem thông báo</p>
-                        <a href="/auth/user-login/login.html" class="btn-primary" style="background: var(--primary-red); color: white; padding: 8px 20px; border-radius: 8px; text-decoration: none; font-weight: bold;">Đăng nhập ngay</a>
+                    <div class="notif-empty" style="display: flex; flex-direction: column; align-items: center; padding: 40px 20px; color: rgba(255,255,255,0.5);">
+                        <i class="fas fa-user-lock" style="font-size: 3rem; margin-bottom: 15px; color: rgba(255,255,255,0.2);"></i>
+                        <p style="margin-bottom: 20px; text-align: center;">Vui lòng đăng nhập để xem thông báo</p>
+                        <a href="/auth/user-login/login.html" class="btn-primary" style="background: var(--primary-red); color: white; padding: 10px 25px; border-radius: 8px; text-decoration: none; font-weight: bold; transition: opacity 0.3s;">Đăng nhập ngay</a>
                     </div>
                 </div>
             </div>
             <a href="/auth/user-login/login.html" class="user-btn" style="text-decoration: none; color: white;">
-                <div class="avatar-wrapper" style="width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.2);">
+                <div class="avatar-wrapper" style="background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.2);">
                     <i class="fas fa-user" style="color: rgba(255,255,255,0.6); font-size: 1rem;"></i>
                 </div>
             </a>
             <!-- Hamburger Menu -->
             <div class="hamburger-btn" id="hamburger-btn" style="cursor:pointer; display:flex; align-items:center; justify-content:center; width:40px; height:40px; border-radius:50%; background: rgba(255,255,255,0.05); transition:all 0.3s; position:relative;">
                 <i class="fas fa-bars" style="color:white; font-size:1.2rem; pointer-events:none;"></i>
-                <div class="hamburger-dropdown" id="hamburger-dropdown" style="display:none; position:absolute; top:50px; right:0; background:var(--bg-elevated); border:1px solid var(--glass-border); border-radius:12px; width:260px; padding:10px 0; box-shadow:0 10px 40px rgba(0,0,0,0.8); z-index:9999; text-align:left;">
-                    <div style="padding: 10px 20px; font-family:'Inter', sans-serif; text-transform:uppercase; font-weight:700; color: var(--primary-red); font-size: 0.9rem; letter-spacing:1px; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 5px;" class="mobile-only">Menu Chính</div>
+                <div class="hamburger-dropdown" id="hamburger-dropdown" style="display:none; position:absolute; top:50px; right:0; background:var(--bg-elevated, #1a1a1a); border:1px solid var(--glass-border, rgba(255,255,255,0.08)); border-radius:12px; width:260px; padding:10px 0; box-shadow:0 10px 40px rgba(0,0,0,0.8); z-index:9999; text-align:left;">
+                    <div style="padding: 10px 20px; font-family:'Inter', sans-serif; text-transform:uppercase; font-weight:700; color: var(--primary-red, #e50914); font-size: 0.9rem; letter-spacing:1px; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 5px;" class="mobile-only">Menu Chính</div>
                     <ul style="list-style:none; padding:0; margin:0;" class="mobile-only">
                         <li><a href="/explore/home-page/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;">Trang chủ</a></li>
-                        <li><a href="/explore/movie-search/index.html?tab=now-showing" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;">Phim</a></li>
-                        <li><a href="/explore/cinema-map/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;">Rạp Phim</a></li>
+                        <li><a href="/explore/movie-search/index.html?tab=now-showing" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;">Phim Đang Chiếu</a></li>
+                        <li><a href="/explore/cinema-map/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;">Cụm Rạp</a></li>
                     </ul>
-                    <div style="padding: 10px 20px; font-family:'Inter', sans-serif; text-transform:uppercase; font-weight:700; color: var(--primary-red); font-size: 0.9rem; letter-spacing:1px; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 5px; margin-top: 5px;">Hệ Sinh Thái 3HD2K</div>
+                    <div style="padding: 10px 20px; font-family:'Inter', sans-serif; text-transform:uppercase; font-weight:700; color: var(--primary-red, #e50914); font-size: 0.9rem; letter-spacing:1px; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 5px; margin-top: 5px;">Hệ Sinh Thái 3HD2K</div>
                     <ul style="list-style:none; padding:0; margin:0;">
                         <li><a href="/engagement/dating/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-heart" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Cine Match</a></li>
                         <li><a href="/engagement/minigame/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-gamepad" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Cine Bet</a></li>
@@ -67,38 +67,543 @@ export function renderNavbar() {
         </div>
     </header>
     <style>
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 20px;
-        }
-        .nav-links a {
-            color: rgba(255,255,255,0.7);
-            text-decoration: none;
-            font-size: 1rem;
-            transition: color 0.2s;
-        }
-        .nav-links a:hover, .nav-links a.active {
-            color: white;
-            font-weight: 600;
-        }
-        .nav-desktop { display: none; }
-        .sm-visible { display: none !important; }
-        .mobile-only { display: block; }
-        
-        @media (min-width: 576px) {
-            .sm-visible { display: flex !important; }
-        }
-        @media (min-width: 768px) {
-            .nav-desktop { display: flex; gap: 20px; align-items: center; }
-            .mobile-only { display: none !important; }
-        }
-        
-        /* Dropdown hover behavior for desktop */
-        .notif-btn:hover .notif-dropdown {
-            display: block !important;
-        }
+/* --- NAVBAR --- */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 0 var(--page-padding);
+    height: 80px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+    background: rgba(8, 8, 8, 0.92);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(229, 9, 20, 0.3);
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+}
+
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    height: 100%;
+}
+
+.logo {
+    color: var(--primary-red);
+    font-size: 2.4rem;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: 100%;
+}
+
+.nav-links a {
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    letter-spacing: 0.3px;
+    color: rgba(255, 255, 255, 0.55);
+    position: relative;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    transition: color 0.3s ease, background 0.3s ease;
+    border-radius: 6px;
+}
+
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%) scaleX(0);
+    width: 60%;
+    height: 2px;
+    background: var(--primary-red);
+    border-radius: 2px;
+    transition: transform 0.3s ease;
+    box-shadow: 0 0 8px rgba(229, 9, 20, 0.4);
+}
+
+.nav-links a:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.nav-links a:hover::after {
+    transform: translateX(-50%) scaleX(1);
+}
+
+.nav-links a.active {
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.nav-links a.active::after {
+    transform: translateX(-50%) scaleX(1);
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+/* Pill-shaped search */
+.search-pill {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 24px;
+    border-radius: 50px;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.search-pill:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 12px rgba(229, 9, 20, 0.15);
+}
+
+.search-pill i {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.5);
+    transition: color 0.3s ease;
+}
+
+.search-pill:hover i {
+    color: var(--primary-red);
+}
+
+.search-pill span {
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.4);
+    white-space: nowrap;
+    transition: color 0.3s ease;
+}
+
+.search-pill:hover span {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+/* Hidden input field by default */
+#search-input {
+    background: transparent;
+    border: none;
+    color: white;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    width: 0;
+    opacity: 0;
+    transition: width 0.4s ease, opacity 0.3s ease;
+    outline: none;
+}
+
+/* Active state for search pill */
+.search-pill.active {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 12px rgba(229, 9, 20, 0.15);
+    cursor: text;
+}
+
+.search-pill.active #search-input {
+    width: 200px;
+    opacity: 1;
+}
+
+.search-pill.active #search-text {
+    display: none;
+}
+
+.search-pill.active i {
+    color: var(--primary-red);
+}
+
+.nav-actions > i {
+    font-size: 1.3rem;
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.5);
+    transition: color 0.25s ease, transform 0.25s ease;
+    padding: 6px;
+}
+
+.nav-actions > i:hover {
+    color: var(--primary-red);
+    transform: scale(1.15);
+}
+
+/* Notification Button & Dropdown */
+.notif-btn {
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+}
+
+.notif-btn > i {
+    font-size: 1.3rem;
+    color: rgba(255, 255, 255, 0.5);
+    transition: color 0.25s ease, transform 0.25s ease;
+}
+
+.notif-btn:hover > i, .notif-btn.active > i {
+    color: var(--primary-red);
+    transform: scale(1.15);
+}
+
+.notif-dot {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 8px;
+    height: 8px;
+    background-color: var(--primary-red);
+    border-radius: 50%;
+    border: 2px solid var(--nav-bg);
+    pointer-events: none;
+}
+
+.notif-dropdown {
+    position: absolute;
+    top: calc(100% + 15px);
+    right: -10px; /* Align near the edge but a bit shifted */
+    width: 360px;
+    background: rgba(15, 15, 15, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1000;
+    cursor: default; /* Reset cursor for dropdown content */
+}
+
+/* Caret for dropdown */
+.notif-dropdown::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    right: 20px;
+    width: 12px;
+    height: 12px;
+    background: rgba(15, 15, 15, 0.95);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    transform: rotate(45deg);
+}
+
+.notif-btn.active .notif-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.notif-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.notif-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+.notif-mark-all {
+    background: none;
+    border: none;
+    color: var(--primary-red);
+    font-size: 0.8rem;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.notif-mark-all:hover {
+    color: #ff6b6b;
+    text-decoration: underline;
+}
+
+.notif-list {
+    list-style: none;
+    max-height: 350px;
+    overflow-y: auto;
+    padding: 0;
+    margin: 0;
+}
+
+.notif-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.notif-list::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.notif-list::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+.notif-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.notif-item {
+    display: flex;
+    gap: 12px;
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    transition: background 0.2s;
+    cursor: pointer;
+}
+
+.notif-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.notif-item.unread {
+    background: rgba(229, 9, 20, 0.05);
+}
+
+.notif-item.unread:hover {
+    background: rgba(229, 9, 20, 0.08);
+}
+
+.notif-icon-wrap {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 0.9rem;
+}
+
+.notif-icon-wrap.red {
+    background: rgba(229, 9, 20, 0.15);
+    color: var(--primary-red);
+}
+
+.notif-icon-wrap.yellow {
+    background: rgba(255, 193, 7, 0.15);
+    color: #ffc107;
+}
+
+.notif-icon-wrap.blue {
+    background: rgba(33, 150, 243, 0.15);
+    color: #2196f3;
+}
+
+.notif-body {
+    flex: 1;
+}
+
+.notif-text {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 6px;
+    line-height: 1.4;
+}
+
+.notif-text strong {
+    color: #fff;
+    font-weight: 600;
+}
+
+.notif-time {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.notif-view-all {
+    display: block;
+    text-align: center;
+    padding: 14px;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.85rem;
+    text-decoration: none;
+    transition: all 0.2s;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.notif-view-all:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 0 0 12px 12px;
+}
+
+.notif-view-all i {
+    font-size: 0.75rem;
+    margin-left: 4px;
+}
+
+/* User Avatar & Dropdown */
+.user-btn {
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+}
+
+.avatar-wrapper {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid transparent;
+    transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+.user-avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.user-btn:hover .avatar-wrapper, .user-btn.active .avatar-wrapper {
+    border-color: var(--primary-red);
+    transform: scale(1.1);
+}
+
+.user-dropdown {
+    position: absolute;
+    top: calc(100% + 15px);
+    right: 0;
+    width: 280px;
+    background: rgba(15, 15, 15, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1000;
+    cursor: default;
+}
+
+/* Caret for user dropdown */
+.user-dropdown::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    right: 14px;
+    width: 12px;
+    height: 12px;
+    background: rgba(15, 15, 15, 0.95);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    transform: rotate(45deg);
+}
+
+.user-btn.active .user-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.user-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.user-header-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--primary-red);
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 4px;
+}
+
+.user-points {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-family: 'Inter', sans-serif;
+}
+
+.user-menu-list {
+    list-style: none;
+    padding: 10px 0;
+    margin: 0;
+}
+
+.user-menu-list li a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: all 0.2s;
+}
+
+.user-menu-list li a i {
+    width: 20px;
+    text-align: center;
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.4);
+    transition: color 0.2s;
+}
+
+.user-menu-list li a:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+}
+
+.user-menu-list li a:hover i {
+    color: #fff;
+}
+
+.mobile-only { display: block; }
+@media (min-width: 768px) {
+    .mobile-only { display: none !important; }
+}
     </style>
     `;
 
@@ -136,12 +641,6 @@ export function renderNavbar() {
             
             hamburgerDropdown.addEventListener('click', (e) => {
                 e.stopPropagation();
-            });
-
-            document.addEventListener('click', (e) => {
-                if (!hamburgerBtn.contains(e.target)) {
-                    hamburgerDropdown.style.display = 'none';
-                }
             });
         }
 
@@ -331,6 +830,12 @@ export function renderNavbar() {
             const currentUserBtn = document.getElementById('user-btn');
             if (currentUserBtn && currentUserBtn.classList.contains('active') && !currentUserBtn.contains(e.target)) {
                 currentUserBtn.classList.remove('active');
+            }
+            // Đóng hamburger
+            const currentHamburgerBtn = document.getElementById('hamburger-btn');
+            const currentHamburgerDropdown = document.getElementById('hamburger-dropdown');
+            if (currentHamburgerBtn && currentHamburgerDropdown && !currentHamburgerBtn.contains(e.target)) {
+                currentHamburgerDropdown.style.display = 'none';
             }
         });
 

@@ -1,0 +1,673 @@
+/* ===== CINEMAS PAGE STYLES ===== */
+
+/* --- PAGE LAYOUT --- */
+.cinemas-page {
+    padding-top: 100px;
+    min-height: 100vh;
+}
+
+.cinemas-layout {
+    display: grid;
+    grid-template-columns: 420px 1fr;
+    min-height: calc(100vh - 100px);
+}
+
+/* --- LEFT PANEL (Cinema List) --- */
+.cinemas-list-panel {
+    padding: 40px var(--page-padding) 40px 0;
+    padding-left: var(--page-padding);
+    overflow-y: auto;
+    max-height: calc(100vh - 100px);
+    scrollbar-width: thin;
+    scrollbar-color: rgba(229, 9, 20, 0.4) transparent;
+}
+
+.cinemas-list-panel::-webkit-scrollbar {
+    width: 4px;
+}
+
+.cinemas-list-panel::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.cinemas-list-panel::-webkit-scrollbar-thumb {
+    background: rgba(229, 9, 20, 0.4);
+    border-radius: 4px;
+}
+
+.cinemas-header {
+    margin-bottom: 30px;
+}
+
+.cinemas-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    line-height: 1.3;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.cinemas-header p {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+}
+
+/* --- CINEMA CARD --- */
+.cinema-card {
+    padding: 24px 20px;
+    border-left: 3px solid transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 4px;
+    border-radius: 0 8px 8px 0;
+    position: relative;
+}
+
+.cinema-card:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.cinema-card.active {
+    border-left-color: var(--primary-red);
+    background: rgba(229, 9, 20, 0.06);
+}
+
+.cinema-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+}
+
+.cinema-name {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: var(--text-main);
+    line-height: 1.2;
+    text-transform: uppercase;
+}
+
+.cinema-card.active .cinema-name {
+    color: var(--primary-red);
+}
+
+.cinema-distance {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--primary-red);
+    white-space: nowrap;
+    padding: 3px 10px;
+    border-radius: 20px;
+    background: rgba(229, 9, 20, 0.1);
+    border: 1px solid rgba(229, 9, 20, 0.2);
+}
+
+.cinema-address {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 14px;
+}
+
+.cinema-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cinema-features {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.cinema-feature-tag {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    padding: 3px 10px;
+    border: 1px solid var(--glass-border);
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+}
+
+.cinema-card.active .cinema-feature-tag {
+    border-color: rgba(229, 9, 20, 0.3);
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.btn-directions {
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    border: 1px solid var(--glass-border);
+    background: var(--glass-bg);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.875rem;
+    flex-shrink: 0;
+}
+
+.btn-directions:hover {
+    background: rgba(229, 9, 20, 0.15);
+    border-color: var(--primary-red);
+    color: var(--primary-red);
+}
+
+.cinema-card.active .btn-directions {
+    background: rgba(229, 9, 20, 0.15);
+    border-color: rgba(229, 9, 20, 0.4);
+    color: var(--primary-red);
+}
+
+/* --- CINEMA DETAILS (Screens info) --- */
+.cinema-screens {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 14px;
+}
+
+.cinema-screens i {
+    color: var(--primary-red);
+    font-size: 0.7rem;
+}
+
+/* ===== RIGHT PANEL — COD TACTICAL MAP ===== */
+.cinemas-map-panel {
+    position: relative;
+    background: #d8d6cf;
+    overflow: hidden;
+    border-left: 1px solid rgba(229, 9, 20, 0.15);
+    --hud-red-bright: #ff3438;
+}
+
+/* Leaflet tactical map base */
+#leaflet-map {
+    width: 100%;
+    height: 100%;
+    min-height: calc(100vh - 100px);
+    position: relative;
+    isolation: isolate;
+    background: #d8d6cf;
+}
+
+/* Tactical grid and red map wash */
+#leaflet-map::before,
+#leaflet-map::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+#leaflet-map::before {
+    display: none;
+}
+
+#leaflet-map::after {
+    display: none;
+}
+
+/* Map tone controls for street clarity */
+.leaflet-tile-pane {
+    filter: none;
+}
+
+.tactical-base-pane {
+    background: #d8d6cf;
+}
+
+.tactical-base-pane .leaflet-tile {
+    filter: none;
+    opacity: 1;
+}
+
+.tactical-labels-pane .leaflet-tile {
+    filter: none;
+    opacity: 1;
+}
+
+/* ===== HUD FRAME (Corner Brackets) ===== */
+.hud-frame {
+    position: absolute;
+    inset: 0;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+.hud-corner {
+    position: absolute;
+    width: 38px;
+    height: 38px;
+}
+
+.hud-tl {
+    top: 8px; left: 8px;
+    border-top: 2px solid rgba(229, 9, 20, 0.7);
+    border-left: 2px solid rgba(229, 9, 20, 0.7);
+}
+.hud-tr {
+    top: 8px; right: 8px;
+    border-top: 2px solid rgba(229, 9, 20, 0.7);
+    border-right: 2px solid rgba(229, 9, 20, 0.7);
+}
+.hud-bl {
+    bottom: 8px; left: 8px;
+    border-bottom: 2px solid rgba(229, 9, 20, 0.7);
+    border-left: 2px solid rgba(229, 9, 20, 0.7);
+}
+.hud-br {
+    bottom: 8px; right: 8px;
+    border-bottom: 2px solid rgba(229, 9, 20, 0.7);
+    border-right: 2px solid rgba(229, 9, 20, 0.7);
+}
+
+/* ===== SCANLINES ===== */
+.hud-scanlines {
+    position: absolute;
+    inset: 0;
+    z-index: 999;
+    pointer-events: none;
+    background:
+        repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 2px,
+            rgba(255, 0, 0, 0.014) 2px,
+            rgba(255, 0, 0, 0.014) 4px
+        ),
+        radial-gradient(circle at center, transparent 42%, rgba(0, 0, 0, 0.24));
+}
+
+/* ===== HUD TOP BAR ===== */
+.hud-top-bar {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 18px;
+    padding: 14px 18px;
+    z-index: 1001;
+    pointer-events: none;
+}
+
+.map-overlay-brand {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    color: rgba(255, 52, 56, 0.9);
+    background: linear-gradient(90deg, rgba(9, 8, 8, 0.92), rgba(30, 8, 9, 0.72));
+    padding: 6px 16px;
+    border: 1px solid rgba(229, 9, 20, 0.38);
+    border-left: 2px solid rgba(255, 52, 56, 0.9);
+    border-radius: 2px;
+    text-transform: uppercase;
+    box-shadow: 0 0 18px rgba(229, 9, 20, 0.18), inset 0 0 16px rgba(229, 9, 20, 0.08);
+}
+
+.hud-coordinates {
+    font-family: 'Courier New', monospace;
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: rgba(255, 52, 56, 0.72);
+    background: rgba(0, 0, 0, 0.28);
+    border-top: 1px solid rgba(229, 9, 20, 0.24);
+    padding: 4px 0 4px 12px;
+    text-align: right;
+}
+
+/* ===== HUD BOTTOM BAR ===== */
+.hud-bottom-bar {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 16px 20px;
+    z-index: 1001;
+    pointer-events: none;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.38), transparent);
+}
+
+.hud-bottom-left {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.hud-mission {
+    font-family: 'Courier New', monospace;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: rgba(255, 255, 255, 0.3);
+    text-transform: uppercase;
+}
+
+.hud-system {
+    font-family: 'Courier New', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 1.5px;
+    color: rgba(255, 255, 255, 0.2);
+    text-transform: uppercase;
+}
+
+.hud-bottom-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+    padding: 10px 12px 9px;
+    background: rgba(5, 7, 8, 0.72);
+    border: 1px solid rgba(229, 9, 20, 0.22);
+    border-right-color: rgba(229, 9, 20, 0.48);
+    box-shadow: inset 0 0 18px rgba(229, 9, 20, 0.06);
+}
+
+.hud-legend {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 5px;
+}
+
+.hud-legend-title {
+    font-family: 'Courier New', monospace;
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: rgba(255, 52, 56, 0.7);
+    text-transform: uppercase;
+}
+
+.hud-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.62rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.62);
+    letter-spacing: 0.8px;
+}
+
+/* Legend marker = small target circle */
+.hud-legend-marker {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    border: 1.5px solid #ff2b2b;
+    position: relative;
+    flex-shrink: 0;
+    transform: rotate(45deg);
+    box-shadow: 0 0 8px rgba(255, 43, 43, 0.65);
+}
+
+.hud-legend-marker::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 3px; height: 3px;
+    background: #ff2b2b;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.hud-tracking {
+    font-family: 'Courier New', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 1.5px;
+    color: rgba(255, 255, 255, 0.2);
+    text-transform: uppercase;
+}
+
+/* ===== COD TARGET MARKER ===== */
+.cod-marker-wrap {
+    position: relative;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    filter: drop-shadow(0 0 8px rgba(255, 43, 43, 0.45));
+}
+
+.cod-marker-wrap::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: calc(100% + 1px);
+    width: 18px;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(255, 43, 43, 0.75), rgba(255, 43, 43, 0));
+    transform: translateY(-50%);
+    z-index: 3;
+}
+
+/* === RADAR SCAN (active only) === */
+.cod-radar {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 128px;
+    height: 128px;
+    margin-top: -64px;
+    margin-left: -64px;
+    border-radius: 50%;
+    background: conic-gradient(
+        transparent 260deg,
+        rgba(255, 43, 43, 0.34) 330deg,
+        rgba(255, 43, 43, 0.06) 360deg
+    );
+    animation: cod-scan 3s linear infinite;
+    pointer-events: none;
+    z-index: 0;
+    box-shadow:
+        0 0 0 1px rgba(255, 43, 43, 0.14),
+        inset 0 0 0 34px rgba(255, 43, 43, 0.018),
+        inset 0 0 38px rgba(255, 43, 43, 0.08);
+}
+
+.cod-radar::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 43, 43, 0.15);
+    background: repeating-radial-gradient(circle, transparent 0 22px, rgba(255, 43, 43, 0.15) 23px, transparent 25px);
+}
+
+@keyframes cod-scan {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
+/* === TARGET CIRCLE === */
+.cod-target {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 20px;
+    height: 20px;
+    transform: translate(-50%, -50%) rotate(45deg);
+    border: 2px solid #ff3438;
+    border-radius: 2px;
+    z-index: 2;
+    box-shadow:
+        0 0 8px rgba(255, 43, 43, 0.75),
+        0 0 20px rgba(255, 43, 43, 0.24);
+    background:
+        radial-gradient(circle, rgba(255, 255, 255, 0.8) 0 2px, rgba(255, 43, 43, 0.32) 3px, rgba(255, 43, 43, 0.12) 62%, transparent 63%),
+        rgba(30, 4, 4, 0.74);
+}
+
+/* 4 tick marks around the circle */
+.cod-target::before {
+    content: '';
+    position: absolute;
+    inset: -9px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 43, 43, 0.24);
+}
+
+/* Center dot */
+.cod-dot {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 4px;
+    height: 4px;
+    background: #ff2b2b;
+    border-radius: 50%;
+    transform: translate(-50%, -50%) rotate(-45deg);
+    box-shadow: 0 0 4px rgba(255, 43, 43, 0.9);
+}
+
+/* === PULSE RING (active only) === */
+.cod-pulse {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 30px;
+    height: 30px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    border: 1.5px solid rgba(255, 43, 43, 0.7);
+    animation: cod-pulse 1.6s ease-out infinite;
+    pointer-events: none;
+    z-index: 1;
+}
+
+@keyframes cod-pulse {
+    0%   { transform: translate(-50%, -50%) scale(1);   opacity: 0.8; }
+    100% { transform: translate(-50%, -50%) scale(2.4); opacity: 0; }
+}
+
+/* Active marker — brighter */
+.cod-marker-wrap.active .cod-target {
+    border-color: #ff4444;
+    box-shadow: 0 0 16px rgba(255, 43, 43, 0.95), 0 0 36px rgba(255, 43, 43, 0.38);
+    background: rgba(255, 43, 43, 0.15);
+}
+
+.cod-marker-wrap.active .cod-dot {
+    width: 5px;
+    height: 5px;
+    box-shadow: 0 0 8px rgba(255, 43, 43, 1);
+}
+
+/* === LABEL === */
+.cod-label {
+    position: absolute;
+    top: 50%;
+    left: calc(100% + 20px);
+    transform: translateY(-50%);
+    min-width: 126px;
+    background: linear-gradient(90deg, rgba(5, 7, 8, 0.94), rgba(20, 6, 6, 0.86));
+    border: 1px solid rgba(229, 9, 20, 0.38);
+    border-left: 2px solid rgba(255, 52, 56, 0.88);
+    border-radius: 2px;
+    padding: 6px 12px 6px 10px;
+    white-space: nowrap;
+    pointer-events: none;
+    backdrop-filter: blur(4px);
+    box-shadow: 0 0 18px rgba(229, 9, 20, 0.16), inset 0 0 10px rgba(229, 9, 20, 0.06);
+    clip-path: polygon(0 0, calc(100% - 11px) 0, 100% 11px, 100% 100%, 0 100%);
+}
+
+.cod-label-name {
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: 0.9px;
+    text-transform: uppercase;
+    line-height: 1.3;
+}
+
+.cod-label-dist {
+    display: block;
+    font-family: 'Courier New', monospace;
+    font-size: 0.58rem;
+    font-weight: 600;
+    color: rgba(255, 52, 56, 0.82);
+    margin-top: 2px;
+    letter-spacing: 0.5px;
+}
+
+/* ===== LEAFLET OVERRIDES ===== */
+.leaflet-popup { display: none !important; }
+
+.leaflet-control-zoom {
+    border: 1px solid rgba(229, 9, 20, 0.42) !important;
+    border-radius: 3px !important;
+    overflow: hidden;
+    box-shadow: 0 0 18px rgba(229, 9, 20, 0.18) !important;
+}
+
+.leaflet-control-zoom a {
+    background: rgba(5, 7, 8, 0.92) !important;
+    color: rgba(255, 52, 56, 0.9) !important;
+    border-bottom: 1px solid rgba(229, 9, 20, 0.2) !important;
+    font-weight: 700 !important;
+    font-size: 1rem !important;
+}
+
+.leaflet-control-zoom a:hover {
+    background: rgba(229, 9, 20, 0.2) !important;
+    color: #fff !important;
+}
+
+.leaflet-control-attribution {
+    background: rgba(5, 7, 8, 0.7) !important;
+    color: rgba(255, 255, 255, 0.22) !important;
+    font-size: 0.5rem !important;
+}
+
+/* ===== LOCATION BUTTON ===== */
+.btn-my-location {
+    position: absolute;
+    top: 92px;
+    right: 18px;
+    width: 36px;
+    height: 36px;
+    border-radius: 3px;
+    background: rgba(5, 7, 8, 0.92);
+    border: 1px solid rgba(229, 9, 20, 0.42);
+    color: rgba(255, 52, 56, 0.9);
+    font-size: 1rem;
+    cursor: pointer;
+    z-index: 1001;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 18px rgba(229, 9, 20, 0.18);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-my-location:hover {
+    background: rgba(229, 9, 20, 0.2);
+    color: #fff;
+    transform: scale(1.04);
+    box-shadow: 0 0 24px rgba(229, 9, 20, 0.36);
+}
+
+/* --- FOOTER ADJUSTMENT --- */
+.cinemas-page + footer {
+    margin-top: 0;
+}
