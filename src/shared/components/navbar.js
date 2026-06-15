@@ -119,6 +119,7 @@ export function renderNavbar() {
     padding: 0 16px;
     transition: color 0.3s ease, background 0.3s ease;
     border-radius: 6px;
+    white-space: nowrap;
 }
 
 .nav-links a::after {
@@ -159,6 +160,10 @@ export function renderNavbar() {
     gap: 18px;
 }
 
+.nav-actions > * {
+    flex-shrink: 0;
+}
+
 /* Pill-shaped search */
 .search-pill {
     display: flex;
@@ -193,7 +198,11 @@ export function renderNavbar() {
     font-size: 1rem;
     color: rgba(255, 255, 255, 0.4);
     white-space: nowrap;
-    transition: color 0.3s ease;
+    transition: max-width 0.4s ease, opacity 0.3s ease, color 0.3s ease, margin-left 0.4s ease;
+    max-width: 100px;
+    opacity: 1;
+    overflow: hidden;
+    margin-left: 0;
 }
 
 .search-pill:hover span {
@@ -222,12 +231,14 @@ export function renderNavbar() {
 }
 
 .search-pill.active #search-input {
-    width: 200px;
+    width: 140px;
     opacity: 1;
 }
 
 .search-pill.active #search-text {
-    display: none;
+    max-width: 0;
+    opacity: 0;
+    margin-left: -8px;
 }
 
 .search-pill.active i {
@@ -739,7 +750,12 @@ export function renderNavbar() {
                         </div>
                     </div>
                 `;
-                navActions.insertAdjacentHTML('beforeend', loggedInHtml);
+                const currentHamburgerBtn = document.getElementById('hamburger-btn');
+                if (currentHamburgerBtn) {
+                    currentHamburgerBtn.insertAdjacentHTML('beforebegin', loggedInHtml);
+                } else {
+                    navActions.insertAdjacentHTML('beforeend', loggedInHtml);
+                }
 
                 const logoutBtn = document.getElementById('logout-action');
                 if (logoutBtn) {
@@ -763,7 +779,6 @@ export function renderNavbar() {
             searchPill.addEventListener('click', () => {
                 searchPill.classList.add('active');
                 if (searchInput) {
-                    searchInput.style.display = 'block';
                     searchInput.focus();
                 }
             });
@@ -818,7 +833,6 @@ export function renderNavbar() {
                 searchPill.classList.remove('active');
                 if (searchInput) {
                     searchInput.value = '';
-                    searchInput.style.display = 'none';
                 }
             }
             // Đóng notification
