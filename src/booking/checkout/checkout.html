@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html class="dark" lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Xác nhận đặt vé - 3HD2K Cinema</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="/shared/css/main.css">
+    <link rel="stylesheet" href="/shared/css/style.css">
+    <link rel="stylesheet" href="/shared/css/tailwind-legacy.css">
+    <link rel="stylesheet" href="/booking/css/booking.css">
+</head>
+
+<body>
+
+    <div id="navbar-placeholder"></div>
+
+    <main class="booking-page-container">
+
+        <div class="checkout-header">
+            <h1>Xác Nhận Đặt Vé</h1>
+            <p>Kiểm tra thông tin và hoàn tất thanh toán của bạn.</p>
+        </div>
+
+        <div class="booking-grid booking-grid-checkout">
+
+            <!-- ────── LEFT COLUMN ────── -->
+            <div class="booking-panel">
+
+                <!-- ORDER SUMMARY CARD -->
+                <div class="glass-panel booking-card">
+                    <h2 class="booking-section-title">Thông Tin Đơn Hàng</h2>
+                    
+                    <div class="movie-info-card" style="margin-bottom: 1rem;">
+                        <div class="movie-poster-sm">
+                            <img id="order-summary-poster" src="" alt="Movie Poster">
+                        </div>
+                        <div class="movie-details-sm">
+                            <h1 id="order-summary-movie">Đang tải...</h1>
+                            <div id="order-summary-tags" style="display: flex; gap: 4px; margin-bottom: 8px;"></div>
+                            <p>Thể loại: <span id="order-summary-genre" style="color: var(--text-main); font-weight: 600;">--</span></p>
+                        </div>
+                    </div>
+
+                    <!-- Details table -->
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem; border-top: 1px solid var(--glass-border); padding-top: 1rem;">
+                        <div class="price-row">
+                            <span class="price-label">Suất chiếu</span>
+                            <span id="order-summary-showtime" class="price-value">--</span>
+                        </div>
+                        <div class="price-row">
+                            <span class="price-label">Phòng</span>
+                            <span id="order-summary-room" class="price-value">--</span>
+                        </div>
+                        <div class="price-row" style="align-items: flex-start;">
+                            <span class="price-label">Ghế</span>
+                            <div id="order-summary-seats" style="display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end;">
+                                <span style="color: var(--text-muted); font-size: 0.75rem;">--</span>
+                            </div>
+                        </div>
+                        <div class="price-row">
+                            <span class="price-label">Tiền ghế</span>
+                            <span id="order-summary-seat-amount" class="price-value" data-amount="0">0 đ</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- FOOD & BEVERAGE -->
+                <div class="glass-panel booking-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem; margin-bottom: 1rem;">
+                        <h2 class="booking-section-title" style="border: none; margin: 0; padding: 0;">Bắp Nước (Combo)</h2>
+                        <a href="../booking-food/index.html" style="color: var(--primary-red); font-size: 0.875rem; font-weight: 600;">Chọn thêm</a>
+                    </div>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                        <label class="combo-card selected">
+                            <input type="radio" name="combo" value="none" checked style="display: none;">
+                            <div style="width: 64px; height: 64px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.05); border-radius: 8px;">
+                                <i class="fas fa-ban" style="color: var(--text-muted); font-size: 1.5rem;"></i>
+                            </div>
+                            <div class="combo-info">
+                                <div class="combo-title">Không kèm combo</div>
+                                <div class="combo-desc">Chỉ mua vé xem phim</div>
+                            </div>
+                            <div class="combo-price">0 đ</div>
+                        </label>
+
+                        <label class="combo-card">
+                            <input type="radio" name="combo" value="single" style="display: none;">
+                            <img src="https://www.cgv.vn/media/concession/web/631ade8215967_1662693006.png" alt="Combo" class="combo-img">
+                            <div class="combo-info">
+                                <div class="combo-title">Combo 1 Người</div>
+                                <div class="combo-desc">1 Bắp Lớn + 1 Nước Ngọt Lớn</div>
+                            </div>
+                            <div class="combo-price">65.000 đ</div>
+                        </label>
+
+                        <label class="combo-card">
+                            <input type="radio" name="combo" value="double" style="display: none;">
+                            <img src="https://www.cgv.vn/media/concession/web/631ade969f696_1662693016.png" alt="Combo" class="combo-img">
+                            <div class="combo-info">
+                                <div class="combo-title">Combo 2 Người</div>
+                                <div class="combo-desc">1 Bắp Lớn + 2 Nước Ngọt Lớn</div>
+                            </div>
+                            <div class="combo-price">95.000 đ</div>
+                        </label>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ────── RIGHT COLUMN ────── -->
+            <div class="booking-panel">
+                
+                <div class="glass-panel booking-card" style="position: sticky; top: 100px;">
+                    <h2 class="booking-section-title">Thanh Toán</h2>
+                    
+                    <!-- Promo -->
+                    <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                        <input type="text" placeholder="Mã khuyến mãi" style="flex: 1; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); border-radius: 8px; padding: 0.5rem 1rem; color: white; outline: none;">
+                        <button class="btn btn-outline" style="padding: 0.5rem 1rem;">Áp dụng</button>
+                    </div>
+
+                    <!-- Payment methods -->
+                    <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem;">
+                        <label class="payment-card selected-momo">
+                            <input type="radio" name="payment" value="momo" checked style="display: none;">
+                            <img src="/shared/assets/images/momo_icon.png" alt="MoMo" class="payment-icon" onerror="this.src='https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png'">
+                            <div style="flex: 1; font-weight: 600;">Ví MoMo</div>
+                            <i class="fas fa-check-circle" style="color: #ae2070;"></i>
+                        </label>
+                        
+                        <label class="payment-card">
+                            <input type="radio" name="payment" value="vnpay" style="display: none;">
+                            <img src="/shared/assets/images/vnpay_icon.png" alt="VNPay" class="payment-icon" onerror="this.src='https://vnpay.vn/s1/statics.vnpay.vn/2023/9/06ncktiwd6dc1694418189687.png'">
+                            <div style="flex: 1; font-weight: 600;">VNPay</div>
+                            <i class="fas fa-check-circle" style="color: #005baa; display: none;"></i>
+                        </label>
+                    </div>
+
+                    <!-- Total -->
+                    <div class="summary-total">
+                        <span style="color: var(--text-muted);">Tổng thanh toán:</span>
+                        <span id="order-total" class="summary-total-price" data-amount="0">0 đ</span>
+                    </div>
+
+                    <button id="btn-pay" class="btn btn-primary btn-continue" style="margin-top: 1rem;">
+                        THANH TOÁN NGAY
+                    </button>
+                    
+                    <p style="text-align: center; color: var(--text-muted); font-size: 0.75rem; margin-top: 1rem;">
+                        Giao dịch được mã hóa và bảo mật 256-bit.
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script type="module" src="/booking/checkout/checkout.js"></script>
+    <script type="module" src="/shared/components/navbar.js"></script>
+    <script type="module" src="/shared/components/footer.js"></script>
+</body>
+</html>

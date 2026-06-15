@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html class="dark" lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Hóa đơn - 3HD2K Cinema</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="/shared/css/main.css">
+    <link rel="stylesheet" href="/shared/css/style.css">
+    <link rel="stylesheet" href="/shared/css/tailwind-legacy.css">
+    <link rel="stylesheet" href="/booking/css/booking.css">
+</head>
+
+<body>
+
+    <div id="navbar-placeholder"></div>
+
+    <main class="booking-page-container" style="justify-content: center;">
+        <div class="invoice-container">
+            
+            <i class="fas fa-check-circle invoice-icon"></i>
+            <h1 class="invoice-title text-white">THANH TOÁN THÀNH CÔNG</h1>
+            <p class="invoice-subtitle">Mã đặt vé của bạn đã được gửi qua email/zalo.</p>
+
+            <div class="invoice-details">
+                <div class="movie-info-card" style="margin-bottom: 1.5rem;">
+                    <div class="movie-poster-sm">
+                        <img id="invoice-poster" src="" alt="Movie">
+                    </div>
+                    <div class="movie-details-sm" style="display: flex; flex-direction: column; justify-content: center;">
+                        <h1 id="invoice-movie" style="font-size: 1.5rem; margin-bottom: 0;">Đang tải...</h1>
+                    </div>
+                </div>
+
+                <div class="invoice-row">
+                    <span class="invoice-label">Mã giao dịch</span>
+                    <span id="invoice-id" class="invoice-value" style="color: var(--primary-red); font-family: monospace; letter-spacing: 1px;">--</span>
+                </div>
+                <div class="invoice-row">
+                    <span class="invoice-label">Suất chiếu</span>
+                    <span id="invoice-showtime" class="invoice-value">--</span>
+                </div>
+                <div class="invoice-row">
+                    <span class="invoice-label">Phòng</span>
+                    <span id="invoice-room" class="invoice-value">--</span>
+                </div>
+                <div class="invoice-row">
+                    <span class="invoice-label">Ghế</span>
+                    <span id="invoice-seats" class="invoice-value">--</span>
+                </div>
+                <div class="invoice-row">
+                    <span class="invoice-label">Combo</span>
+                    <span id="invoice-combo" class="invoice-value">--</span>
+                </div>
+                <div class="invoice-row" style="margin-top: 0.5rem; border-top: 2px solid var(--glass-border); padding-top: 1rem;">
+                    <span class="invoice-label" style="font-size: 1rem; color: var(--text-main);">TỔNG CỘNG</span>
+                    <span id="invoice-total" class="invoice-value" style="font-size: 1.5rem; color: var(--primary-red); font-family: 'Bebas Neue', sans-serif; letter-spacing: 1px;">--</span>
+                </div>
+            </div>
+
+            <div class="invoice-qr">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=3HD2K_TICKET_MOCK" alt="QR Code">
+            </div>
+            
+            <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 1rem; margin-bottom: 2rem;">
+                Vui lòng đưa mã QR này cho nhân viên soát vé khi vào rạp.
+            </p>
+
+            <a href="/explore/home-page/index.html" class="btn btn-outline" style="min-width: 200px;">
+                VỀ TRANG CHỦ
+            </a>
+
+        </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script type="module" src="/booking/checkout/invoice.js"></script>
+    <script type="module" src="/shared/components/navbar.js"></script>
+    <script type="module" src="/shared/components/footer.js"></script>
+</body>
+</html>

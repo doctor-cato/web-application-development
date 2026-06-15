@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3HD2K - Quản lý thông báo</title>
+    <link rel="stylesheet" href="/shared/css/main.css">
+    <link rel="stylesheet" href="/user/user-notifications/notifications.css">
+    <!-- Load custom fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@600;700;800;900&family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- NAVBAR -->
+    <div id="navbar-placeholder"></div>
+
+    <main class="notif-page">
+        <div class="notif-container">
+            <div class="notif-page-header">
+                <h1 class="notif-page-title">Quản lý thông báo</h1>
+                <div class="notif-page-actions">
+                    <button id="notif-page-mark-all"><i class="fas fa-check-double"></i> Đánh dấu tất cả đã đọc</button>
+                </div>
+            </div>
+
+            <div class="notif-layout">
+                <!-- Sidebar -->
+                <aside class="notif-sidebar">
+                    <button class="notif-filter-btn active" data-filter="all">
+                        <span><i class="fas fa-inbox"></i> Tất cả</span>
+                    </button>
+                    <button class="notif-filter-btn" data-filter="unread">
+                        <span><i class="fas fa-envelope"></i> Chưa đọc</span>
+                        <span class="badge">2</span>
+                    </button>
+                    <button class="notif-filter-btn" data-filter="booking">
+                        <span><i class="fas fa-ticket-alt"></i> Vé đã đặt</span>
+                    </button>
+                    <button class="notif-filter-btn" data-filter="promo">
+                        <span><i class="fas fa-tag"></i> Khuyến mãi</span>
+                    </button>
+                    <button class="notif-filter-btn" data-filter="movie">
+                        <span><i class="fas fa-film"></i> Tin tức phim</span>
+                    </button>
+                </aside>
+
+                <!-- Main Feed -->
+                <div class="notif-feed">
+                    <div class="notif-empty" id="notif-empty">
+                        <i class="far fa-bell-slash"></i>
+                        <p>Không có thông báo nào ở đây.</p>
+                    </div>
+
+                    <div class="notif-card unread" data-category="booking">
+                        <div class="notif-card-icon red"><i class="fas fa-ticket-alt"></i></div>
+                        <div class="notif-card-content">
+                            <p class="notif-card-text"><strong>Đặt vé thành công!</strong> Bạn đã đặt thành công 2 vé phim "F1: The Movie" suất chiếu 20:00 ngày 15/06/2026 tại 3HD2K Quận 1. Vui lòng kiểm tra email để nhận mã vé QR.</p>
+                            <div class="notif-card-meta">
+                                <span class="notif-card-time"><i class="far fa-clock"></i> 2 phút trước</span>
+                            </div>
+                        </div>
+                        <div class="notif-card-actions">
+                            <button class="notif-btn-delete" title="Xóa thông báo"><i class="fas fa-trash-alt"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="notif-card unread" data-category="movie">
+                        <div class="notif-card-icon yellow"><i class="fas fa-star"></i></div>
+                        <div class="notif-card-content">
+                            <p class="notif-card-text"><strong>Phim mới ra mắt!</strong> Siêu phẩm hành động "War Machine" (2026) hiện đã chính thức khởi chiếu tại các cụm rạp 3HD2K. Đặt vé ngay để nhận combo quà tặng độc quyền.</p>
+                            <div class="notif-card-meta">
+                                <span class="notif-card-time"><i class="far fa-clock"></i> 1 giờ trước</span>
+                            </div>
+                        </div>
+                        <div class="notif-card-actions">
+                            <button class="notif-btn-delete" title="Xóa thông báo"><i class="fas fa-trash-alt"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="notif-card" data-category="promo">
+                        <div class="notif-card-icon blue"><i class="fas fa-tag"></i></div>
+                        <div class="notif-card-content">
+                            <p class="notif-card-text"><strong>Khuyến mãi Thứ Tư Vui Vẻ:</strong> Mua 2 vé tặng 1 phần bắp nước lớn áp dụng cho mọi suất chiếu vào thứ 4 hàng tuần. Chỉ dành cho thành viên VIP.</p>
+                            <div class="notif-card-meta">
+                                <span class="notif-card-time"><i class="far fa-calendar-alt"></i> Hôm qua, 14:30</span>
+                            </div>
+                        </div>
+                        <div class="notif-card-actions">
+                            <button class="notif-btn-delete" title="Xóa thông báo"><i class="fas fa-trash-alt"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="notif-card" data-category="movie">
+                        <div class="notif-card-icon green"><i class="fas fa-film"></i></div>
+                        <div class="notif-card-content">
+                            <p class="notif-card-text"><strong>Nhắc nhở tự động:</strong> Bộ phim bạn quan tâm "Gran Turismo" sắp chính thức ra rạp vào ngày 20/06. Vé sẽ được mở bán sớm từ ngày 18/06.</p>
+                            <div class="notif-card-meta">
+                                <span class="notif-card-time"><i class="far fa-calendar-alt"></i> 12/06/2026</span>
+                            </div>
+                        </div>
+                        <div class="notif-card-actions">
+                            <button class="notif-btn-delete" title="Xóa thông báo"><i class="fas fa-trash-alt"></i></button>
+                        </div>
+                    </div>
+                    
+                    <div class="notif-card" data-category="booking">
+                        <div class="notif-card-icon red"><i class="fas fa-ticket-alt"></i></div>
+                        <div class="notif-card-content">
+                            <p class="notif-card-text"><strong>Đã hoàn thành suất chiếu:</strong> Cảm ơn bạn đã xem "Your Name" tại 3HD2K Quận 3. Hãy để lại đánh giá của bạn để nhận thêm điểm thưởng nhé!</p>
+                            <div class="notif-card-meta">
+                                <span class="notif-card-time"><i class="far fa-calendar-alt"></i> 10/06/2026</span>
+                            </div>
+                        </div>
+                        <div class="notif-card-actions">
+                            <button class="notif-btn-delete" title="Xóa thông báo"><i class="fas fa-trash-alt"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Scripts -->
+    <script src="/shared/js/main.js"></script>
+    <script src="/user/user-notifications/notifications.js"></script>
+    <script type="module" src="/shared/components/navbar.js"></script>
+    <script type="module" src="/shared/components/footer.js"></script>
+</body>
+</html>

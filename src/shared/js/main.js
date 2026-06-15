@@ -11,7 +11,18 @@ if (isLoggedIn) {
         if (oldUserBtn) oldUserBtn.remove();
 
         const userName = localStorage.getItem('userName') || 'Sigma Sicula';
-        const defaultAvatar = '/shared/images/avatar.jpg';
+        function getSrcPrefix() {
+            const pathname = window.location.pathname;
+            if (pathname.includes('/user-profile/') || pathname.includes('/user-notifications/') || pathname.includes('/user-login/') || pathname.includes('/user-register/')) {
+                return '../../..';
+            }
+            if (pathname.includes('/home-page/') || pathname.includes('/movie-search/') || pathname.includes('/movie-details/') || pathname.includes('/cinema-map/') || pathname.includes('/aftercredit-lounge/')) {
+                return '../..';
+            }
+            return '.';
+        }
+        const srcPrefix = getSrcPrefix();
+        const defaultAvatar = `${srcPrefix}/shared/images/avatar.jpg`;
         const userAvatar = localStorage.getItem('userAvatar') || 'https://i.pravatar.cc/150?img=11';
 
         const loggedInHtml = `
@@ -54,7 +65,7 @@ if (isLoggedIn) {
                             </div>
                         </li>
                     </ul>
-                    <a href="/src/user/notifications/index.html" class="notif-view-all">Xem tất cả thông báo <i class="fas fa-chevron-right"></i></a>
+                    <a href="${srcPrefix}/user/user-notifications/index.html" class="notif-view-all">Xem tất cả thông báo <i class="fas fa-chevron-right"></i></a>
                 </div>
             </div>
             <div class="user-btn" id="user-btn">
@@ -71,10 +82,10 @@ if (isLoggedIn) {
                         </div>
                     </div>
                     <ul class="user-menu-list">
-                        <li><a href="/src/user/user-profile/index.html#info"><i class="fas fa-user-circle"></i> Thông tin cá nhân</a></li>
-                        <li><a href="/src/user/user-profile/index.html#history"><i class="fas fa-ticket-alt"></i> Lịch sử đặt vé</a></li>
-                        <li><a href="/src/user/user-profile/index.html#offers"><i class="fas fa-gift"></i> Ưu đãi của tôi</a></li>
-                        <li><a href="/src/user/user-profile/index.html#settings"><i class="fas fa-cog"></i> Cài đặt</a></li>
+                        <li><a href="${srcPrefix}/user/user-profile/profile.html#info"><i class="fas fa-user-circle"></i> Thông tin cá nhân</a></li>
+                        <li><a href="${srcPrefix}/user/user-profile/profile.html#history"><i class="fas fa-ticket-alt"></i> Lịch sử đặt vé</a></li>
+                        <li><a href="${srcPrefix}/user/user-profile/profile.html#offers"><i class="fas fa-gift"></i> Ưu đãi của tôi</a></li>
+                        <li><a href="${srcPrefix}/user/user-profile/profile.html#settings"><i class="fas fa-cog"></i> Cài đặt</a></li>
                     </ul>
                     <div class="user-menu-footer">
                         <a href="#" class="logout-btn" id="logout-action"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
@@ -92,7 +103,6 @@ if (isLoggedIn) {
                     e.preventDefault();
                     localStorage.removeItem('isLoggedIn');
                     localStorage.removeItem('userName');
-                    localStorage.removeItem('userEmail');
                     localStorage.removeItem('userAvatar');
                     window.location.reload();
                 });
@@ -160,9 +170,6 @@ if (userBtn) {
 if (userDropdown) {
     userDropdown.addEventListener('click', (e) => {
         e.stopPropagation(); 
-        if (e.target.closest('a')) {
-            if (userBtn) userBtn.classList.remove('active');
-        }
     });
 }
 
