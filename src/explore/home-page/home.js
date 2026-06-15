@@ -13,13 +13,16 @@ const btnClose = document.getElementById('close-modal');
 const iframe = document.getElementById('trailer-video');
 const trailerFallback = document.getElementById('trailer-fallback');
 const trailerYtLink = document.getElementById('trailer-yt-link');
+const btnBookNow = document.getElementById('btn-book-now');
 
 // Set trailer mặc định cho phim đầu tiên khi trang load
 if (heroMovies[0] && heroMovies[0].trailer) {
     iframe.src = heroMovies[0].trailer + '?enablejsapi=1';
     if (trailerYtLink && heroMovies[0].trailerWatch) {
         trailerYtLink.href = heroMovies[0].trailerWatch;
-    }
+}
+if (btnBookNow && heroMovies[0] && heroMovies[0].id) {
+    btnBookNow.href = `/explore/movie-details/index.html?id=${heroMovies[0].id}`;
 }
 
 function changeHeroSlide() {
@@ -48,6 +51,9 @@ function changeHeroSlide() {
         }
         if (trailerYtLink && movie.trailerWatch) {
             trailerYtLink.href = movie.trailerWatch;
+        }
+        if (btnBookNow && movie.id) {
+            btnBookNow.href = `/explore/movie-details/index.html?id=${movie.id}`;
         }
 
         // Fade in

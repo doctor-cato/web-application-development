@@ -1,0 +1,451 @@
+<!DOCTYPE html><html class="dark" lang="vi"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>3HD2K - Phim, series không giới hạn</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed-variant": "#474746",
+                        "on-tertiary-fixed": "#1c1b1b",
+                        "inverse-primary": "#c0000c",
+                        "on-background": "#e3e2e2",
+                        "secondary": "#c8c6c5",
+                        "on-secondary": "#313030",
+                        "outline-variant": "#5e3f3b",
+                        "on-primary": "#690003",
+                        "inverse-surface": "#e3e2e2",
+                        "tertiary-container": "#737272",
+                        "surface-container-low": "#1a1c1c",
+                        "on-secondary-fixed": "#1c1b1b",
+                        "primary-fixed-dim": "#ffb4aa",
+                        "surface-tint": "#ffb4aa",
+                        "error": "#ffb4ab",
+                        "surface-bright": "#38393a",
+                        "background": "#121414",
+                        "inverse-on-surface": "#2f3131",
+                        "primary-fixed": "#ffdad5",
+                        "surface-variant": "#343535",
+                        "primary-container": "#e50914",
+                        "on-tertiary-container": "#fbf8f7",
+                        "on-primary-fixed": "#410001",
+                        "surface-container-lowest": "#0d0e0f",
+                        "primary": "#ffb4aa",
+                        "on-surface-variant": "#e9bcb6",
+                        "tertiary": "#c8c6c5",
+                        "surface": "#121414",
+                        "on-secondary-container": "#bab8b7",
+                        "outline": "#af8782",
+                        "surface-dim": "#121414",
+                        "on-error-container": "#ffdad6",
+                        "tertiary-fixed": "#e5e2e1",
+                        "on-primary-container": "#fff7f6",
+                        "surface-container": "#1e2020",
+                        "surface-container-high": "#292a2a",
+                        "on-secondary-fixed-variant": "#474646",
+                        "on-tertiary": "#313030",
+                        "on-primary-fixed-variant": "#930007",
+                        "tertiary-fixed-dim": "#c8c6c5",
+                        "surface-container-highest": "#343535",
+                        "error-container": "#93000a",
+                        "secondary-fixed-dim": "#c8c6c5",
+                        "secondary-container": "#4a4949",
+                        "secondary-fixed": "#e5e2e1",
+                        "on-surface": "#e3e2e2",
+                        "on-error": "#690005"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "container-max": "1440px",
+                        "margin-desktop": "4rem",
+                        "margin-mobile": "1rem",
+                        "gutter": "1.5rem",
+                        "section-gap": "3rem"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "display-lg": ["Bebas Neue"],
+                        "headline-xl": ["Bebas Neue"],
+                        "headline-lg": ["Bebas Neue"],
+                        "body-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "display-lg-mobile": ["Bebas Neue"],
+                        "label-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "display-lg": ["80px", { "lineHeight": "80px", "letterSpacing": "0.02em", "fontWeight": "400" }],
+                        "headline-xl": ["48px", { "lineHeight": "48px", "letterSpacing": "0.01em", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "36px", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "display-lg-mobile": ["48px", { "lineHeight": "48px", "letterSpacing": "0.02em", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .hero-gradient {
+            background: linear-gradient(to top, #141414 0%, transparent 60%);
+        }
+        .nav-scrolled {
+            background-color: #141414;
+            transition: background-color 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md antialiased overflow-x-hidden min-h-screen flex flex-col text-white">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 px-margin-desktop py-4 flex justify-between items-center transition-colors duration-300 bg-transparent dark:bg-transparent" id="main-nav">
+<div class="flex items-center gap-12">
+<a class="flex-shrink-0" href="#">
+<img alt="3HD2K Logo" class="h-[60px] w-auto object-contain" src="data:image/png;base64,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">
+</a>
+<nav class="hidden md:flex gap-8">
+<a class="text-on-surface dark:text-on-surface font-bold border-b-2 border-primary pb-1 text-label-md font-label-md uppercase" href="#">Movies</a>
+<a class="dark:text-on-surface-variant hover:text-on-surface transition-colors duration-300 text-label-md font-label-md uppercase text-white" href="#">Cinemas</a>
+<a class="dark:text-on-surface-variant hover:text-on-surface transition-colors duration-300 text-label-md font-label-md uppercase text-white" href="#">Offers</a>
+<a class="dark:text-on-surface-variant hover:text-on-surface transition-colors duration-300 text-label-md font-label-md uppercase text-white" href="#">Cine-Match</a>
+</nav>
+</div>
+<div class="flex items-center gap-6">
+<button class="text-on-surface hover:text-primary transition-colors">
+<span class="material-symbols-outlined">search</span>
+</button>
+<button class="text-on-surface hover:text-primary transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<a class="bg-primary-container text-on-primary-container px-6 py-2 rounded font-label-md text-label-md uppercase hover:bg-red-600 transition-colors" href="#">Sign In</a>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-grow">
+<!-- Hero Section -->
+<section class="relative w-full h-[80vh] md:h-[90vh] flex items-center bg-surface-container-lowest" data-alt="A massive, cinematic hero banner showcasing an epic action blockbuster. Deep dark atmospheric tones dominate, with explosive primary red accents slicing through shadows. High contrast lighting highlights dramatic character silhouettes against a fiery, chaotic background. The composition is dynamic, designed to leave ample dark space at the bottom for typography. The mood is intense, thrilling, and premium, characteristic of a high-budget film poster." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBOep761HwOz0Noe8CkWLLzsNr6iYVuLZ_AN36MDtv9cjXepUOzk1XGRomm0gUVVSTNxRv2ZdTAFVa0FOglWOw2l6f6pp3dxFquyyKhKaF51kRiRex3SwY5FAlxu182JyhkKgqexSbMSw511LmzpwtRuHzVRecqfg9tY2ZnlVVoN6p47oDQjEOrNpxdUjTYa7eK0IZqyl7_MznpR7wSOmQkuiS5DKi6QnOvN4xzLCr6QhExLajsUFNMVCzuAT_adAbclnaAPfKUEPrk'); background-size: cover; background-position: center;">
+<div class="absolute inset-0 bg-black/40"></div>
+<div class="absolute inset-0 hero-gradient"></div>
+<div class="relative z-10 w-full max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop pt-32">
+<div class="max-w-2xl">
+<span class="inline-block px-2 py-1 mb-4 border border-outline text-on-surface text-xs font-bold rounded">C18</span>
+<h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface mb-4 tracking-tighter">BỘ TỨ BÁO THÙ</h1>
+<div class="flex items-center gap-4 mb-6 text-sm text-white">
+<span class="">2024</span>
+<span class="">•</span>
+<span class="">Hành Động, Viễn Tưởng</span>
+<span class="">•</span>
+<span class="">2h 15m</span>
+</div>
+<p class="text-body-lg font-body-lg mb-8 line-clamp-3 text-white" style="color: #ffffff;">
+                        Một nhóm anh hùng bất đắc dĩ phải hợp tác để ngăn chặn một thảm họa đe dọa toàn cầu. Những pha hành động nghẹt thở, kỹ xảo mãn nhãn và một cốt truyện đầy bất ngờ đang chờ đợi.
+                    </p>
+<div class="flex flex-wrap gap-4">
+<button class="bg-primary-container text-on-primary-container px-8 py-3 rounded font-label-md text-label-md uppercase hover:bg-red-600 transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">confirmation_number</span>
+                            Book Now
+                        </button>
+<button class="border border-on-surface text-on-surface bg-black/30 hover:bg-surface-variant px-8 py-3 rounded font-label-md text-label-md uppercase transition-colors flex items-center gap-2 backdrop-blur-sm">
+<span class="material-symbols-outlined">play_arrow</span>
+                            Watch Trailer
+                        </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Advanced Filter -->
+<section class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop -mt-8 relative z-20 mb-section-gap">
+<div class="bg-surface-container-high/90 backdrop-blur-md p-4 rounded-xl shadow-2xl flex flex-wrap md:flex-nowrap gap-4 items-center justify-between border border-surface-variant">
+<div class="flex flex-1 gap-4 items-center">
+<div class="relative flex-1">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-white">category</span>
+<select class="w-full bg-surface-container text-on-surface border-b border-surface-variant rounded-t px-10 py-3 focus:border-primary focus:ring-0 appearance-none">
+<option>Tất cả Thể loại</option>
+<option>Hành động</option>
+<option>Hài kịch</option>
+</select>
+</div>
+<div class="relative flex-1">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-white">4k</span>
+<select class="w-full bg-surface-container text-on-surface border-b border-surface-variant rounded-t px-10 py-3 focus:border-primary focus:ring-0 appearance-none">
+<option>Định dạng</option>
+<option>2D</option>
+<option>IMAX</option>
+</select>
+</div>
+<div class="relative flex-1">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-white">location_on</span>
+<select class="w-full bg-surface-container text-on-surface border-b border-surface-variant rounded-t px-10 py-3 focus:border-primary focus:ring-0 appearance-none">
+<option>Cụm rạp</option>
+<option>Hà Nội</option>
+<option>TP.HCM</option>
+</select>
+</div>
+</div>
+<button class="bg-surface-variant text-on-surface hover:text-primary p-3 rounded-full transition-colors flex-shrink-0">
+<span class="material-symbols-outlined">tune</span>
+</button>
+</div>
+</section>
+<!-- Now Showing -->
+<section class="mb-section-gap">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop mb-6 flex justify-between items-end">
+<h2 class="font-headline-xl text-headline-xl text-on-surface tracking-tight">PHIM ĐANG CHIẾU</h2>
+<a class="hover:text-primary font-label-md text-label-md flex items-center gap-1 transition-colors text-white" href="#">
+                    Xem tất cả <span class="material-symbols-outlined text-sm">arrow_forward_ios</span>
+</a>
+</div>
+<div class="relative">
+<div class="flex overflow-x-auto no-scrollbar gap-gutter px-margin-mobile md:px-margin-desktop pb-8 snap-x">
+<!-- Movie Card 1 -->
+<div class="flex-none w-[200px] md:w-[240px] group cursor-pointer snap-start">
+<div class="relative aspect-[2/3] rounded-lg overflow-hidden mb-3 shadow-lg transform transition-transform duration-300 group-hover:scale-105 group-hover:shadow-2xl">
+<img alt="Movie Poster" class="w-full h-full object-cover" data-alt="A striking cinematic movie poster featuring a dark, moody sci-fi landscape. Neon lights cut through heavy fog, illuminating a solitary figure in the foreground. The color palette relies heavily on deep blacks and vivid cyan and magenta accents, creating a futuristic, dystopian aesthetic. The composition is vertical, perfectly framed for a standard poster ratio. The lighting is dramatic, emphasizing high contrast and sleek, modern visuals." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCCJGfOmyWdkHtGkfB6_x_66JOwKd-5vJ5cupbocCKjrFI23L7g2hfJvloegbNF3Jag6-BlOOFUFqvsOswIQX7zy1G4CAyTzAYaosMp2fYB9QrShsyUjgSg2fd_dD8lD_mzyxPPeNPYfS1aUfXRl4hUm-ngiK5klgfOGOOmtRK46SQHqq5Uec5xHk12GfPE-ade3EB4OuDpvspztOlIkMEP07JYhneVJ1Qc5c3r4tbQORUlb7Xu0KHojwqjWxt0k9Hheu_vOfxlTNzG">
+<div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center gap-4 backdrop-blur-sm">
+<button class="bg-primary-container text-on-primary-container rounded-full p-3 hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+<button class="text-on-surface border border-on-surface px-4 py-1 rounded font-label-sm text-label-sm hover:bg-surface-variant transition-colors text-white">Chi tiết</button>
+</div>
+</div>
+<h3 class="font-body-md text-body-md font-semibold text-on-surface truncate group-hover:text-primary transition-colors text-white">Đất Rừng Phương Nam</h3>
+<div class="flex gap-2 mt-1"><span class="text-[10px] font-bold bg-surface-variant text-on-surface px-1.5 py-0.5 rounded">2D</span><span class="text-[10px] font-bold bg-surface-variant text-on-surface px-1.5 py-0.5 rounded">IMAX</span></div>
+</div>
+<!-- Movie Card 2 -->
+<div class="flex-none w-[200px] md:w-[240px] group cursor-pointer snap-start">
+<div class="relative aspect-[2/3] rounded-lg overflow-hidden mb-3 shadow-lg transform transition-transform duration-300 group-hover:scale-105 group-hover:shadow-2xl">
+<img alt="Movie Poster" class="w-full h-full object-cover" data-alt="An intense, high-contrast action movie poster. A sports car drifts violently through a rain-slicked city street at night, headlights flaring dramatically into the camera lens. The scene is dominated by deep blacks, cool urban blues, and sharp sparks of orange and red from the tires. The visual style is gritty, fast-paced, and cinematic. The vertical framing captures the motion and energy perfectly." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD5GzS2leTzC2LrwcLhiqfbMou2382ffGgVjSxcLOGVboePrqDI5edXlAuJNPgw3UQer6ZuA0fqUjtSKsjbR12_itQacqBYS-l1n2UmWPwSTfOkbAAEsYfDCJxEA3Ny0SkIsf1WF-tUqVs_8Lh6Ul9bJxERdh0xmuhxhbbMWksyDgD0dhIv69BDGRFPhuhUDq979pkMzLSOxnSlyl_xk2zQcAv3iFkB2D3c5c7ZPMtBdYAFxee8n48hJBzirgb_Y0JHtOkYsxgwMZ74">
+<div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center gap-4 backdrop-blur-sm">
+<button class="bg-primary-container text-on-primary-container rounded-full p-3 hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+<button class="text-on-surface border border-on-surface px-4 py-1 rounded font-label-sm text-label-sm hover:bg-surface-variant transition-colors text-white">Chi tiết</button>
+</div>
+</div>
+<h3 class="font-body-md text-body-md font-semibold text-on-surface truncate group-hover:text-primary transition-colors text-white">Biệt Đội Đánh Thuê 4</h3>
+<div class="flex gap-2 mt-1"><span class="text-[10px] font-bold bg-surface-variant text-on-surface px-1.5 py-0.5 rounded">2D</span></div>
+</div>
+<!-- Movie Card 3 -->
+<div class="flex-none w-[200px] md:w-[240px] group cursor-pointer snap-start">
+<div class="relative aspect-[2/3] rounded-lg overflow-hidden mb-3 shadow-lg transform transition-transform duration-300 group-hover:scale-105 group-hover:shadow-2xl">
+<img alt="Movie Poster" class="w-full h-full object-cover" data-alt="A hauntingly beautiful horror/thriller movie poster. A silhouette stands at the edge of a dark, misty forest, illuminated only by a pale, oversized moon. The aesthetic relies on extremely dark, desaturated tones, with only subtle hints of cold blue and stark white. The mood is eerie, suspenseful, and atmospheric, leaning heavily into a premium dark-mode visual style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7Dj07bmjYTvVuSJy9t6mQbwQRS3LL6WX2d4V01uk99rJdMv3tQR0hmHVMSABIvWYq8Ldu2aD0gSpK5f5stYKvNRN4dtoUK4bHx6SJ6hy44cINDaOZG1oK-dt5buvll4xNT-LLHT7kbOhiEIqZTSqUd2ml3VTRS8xXzlMVHfDWpwtbBf_4zgaCyuhdI2xOz7ervxeL_PrmAWWaH8hEg1hJd6ANcwyMbNvZ1ITK8cSSugxwon7c4m6lPKUqh0wfefuyTpW9j_2qPdMn">
+<div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center gap-4 backdrop-blur-sm">
+<button class="bg-primary-container text-on-primary-container rounded-full p-3 hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+<button class="text-on-surface border border-on-surface px-4 py-1 rounded font-label-sm text-label-sm hover:bg-surface-variant transition-colors text-white">Chi tiết</button>
+</div>
+</div>
+<h3 class="font-body-md text-body-md font-semibold text-on-surface truncate group-hover:text-primary transition-colors text-white">Ác Quỷ Ma Sơ II</h3>
+<div class="flex gap-2 mt-1"><span class="text-[10px] font-bold bg-surface-variant text-on-surface px-1.5 py-0.5 rounded">2D</span><span class="text-[10px] font-bold bg-surface-variant text-on-surface px-1.5 py-0.5 rounded">4DX</span></div>
+</div>
+</div>
+</div>
+</section><section class="mb-section-gap">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop mb-6 flex justify-between items-end">
+<h2 class="font-headline-xl text-headline-xl text-on-surface tracking-tight uppercase">Phim Sắp Chiếu</h2>
+<a class="hover:text-primary font-label-md text-label-md flex items-center gap-1 transition-colors text-white" href="#">
+                    Xem tất cả <span class="material-symbols-outlined text-sm">arrow_forward_ios</span>
+</a>
+</div>
+<div class="relative">
+<div class="flex overflow-x-auto no-scrollbar gap-gutter px-margin-mobile md:px-margin-desktop pb-8 snap-x">
+<!-- Movie Card 1 -->
+<div class="flex-none w-[200px] md:w-[240px] group cursor-pointer snap-start">
+<div class="relative aspect-[2/3] rounded-lg overflow-hidden mb-3 shadow-lg transform transition-transform duration-300 group-hover:scale-105 group-hover:shadow-2xl bg-surface-container">
+<div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center gap-4 backdrop-blur-sm">
+<button class="text-on-surface border border-on-surface px-4 py-1 rounded font-label-sm text-label-sm hover:bg-surface-variant transition-colors text-white">Chi tiết</button>
+</div>
+</div>
+<h3 class="font-body-md text-body-md font-semibold text-on-surface truncate group-hover:text-primary transition-colors text-white">Kingdom of the Planet of the Apes</h3>
+<div class="flex gap-2 mt-1">
+<span class="text-[10px] font-bold bg-surface-variant text-on-surface px-1.5 py-0.5 rounded">IMAX</span>
+<span class="text-[10px] font-bold bg-surface-variant text-on-surface px-1.5 py-0.5 rounded">4DX</span>
+</div>
+</div>
+<!-- Movie Card 2 -->
+<div class="flex-none w-[200px] md:w-[240px] group cursor-pointer snap-start">
+<div class="relative aspect-[2/3] rounded-lg overflow-hidden mb-3 shadow-lg transform transition-transform duration-300 group-hover:scale-105 group-hover:shadow-2xl bg-surface-container">
+<div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center gap-4 backdrop-blur-sm">
+<button class="text-on-surface border border-on-surface px-4 py-1 rounded font-label-sm text-label-sm hover:bg-surface-variant transition-colors text-white">Chi tiết</button>
+</div>
+</div>
+<h3 class="font-body-md text-body-md font-semibold text-on-surface truncate group-hover:text-primary transition-colors text-white">Furiosa: A Mad Max Saga</h3>
+<div class="flex gap-2 mt-1">
+<span class="text-[10px] font-bold bg-surface-variant text-on-surface px-1.5 py-0.5 rounded">IMAX</span>
+</div>
+</div>
+<!-- Movie Card 3 -->
+<div class="flex-none w-[200px] md:w-[240px] group cursor-pointer snap-start">
+<div class="relative aspect-[2/3] rounded-lg overflow-hidden mb-3 shadow-lg transform transition-transform duration-300 group-hover:scale-105 group-hover:shadow-2xl bg-surface-container">
+<div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center gap-4 backdrop-blur-sm">
+<button class="text-on-surface border border-on-surface px-4 py-1 rounded font-label-sm text-label-sm hover:bg-surface-variant transition-colors text-white">Chi tiết</button>
+</div>
+</div>
+<h3 class="font-body-md text-body-md font-semibold text-on-surface truncate group-hover:text-primary transition-colors text-white">Deadpool &amp; Wolverine</h3>
+<div class="flex gap-2 mt-1">
+<span class="text-[10px] font-bold bg-surface-variant text-on-surface px-1.5 py-0.5 rounded">2D</span>
+<span class="text-[10px] font-bold bg-surface-variant text-on-surface px-1.5 py-0.5 rounded">IMAX</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Bento Grid: Special Features -->
+<section class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop mb-section-gap">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 h-auto md:h-[400px]">
+<!-- Cine-Match Feature -->
+<div class="md:col-span-2 relative rounded-2xl overflow-hidden group bg-surface-container shadow-lg flex items-end">
+<img alt="Cine Match" class="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:opacity-40 transition-opacity duration-500" data-alt="A warm, engaging social scene set in a softly lit cinematic lounge. Two silhouetted figures are sharing popcorn and looking at a glowing phone screen, suggesting connection over movies. The lighting is intimate, with deep shadows contrasted by warm amber and subtle red ambient light. The aesthetic is premium, modern, and inviting, perfectly suited for a 'social dating for movie lovers' feature card." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfeazTa_Zf2GxSHqEmJwqlTHzrqF8g1HGxY_kKgV5gjNChcbjakf_TdbgVND6bGVKuiJ231mFx7t3AtgrYIFoZIImqHC0hZIAOkNeHr8TESRBZ5WifVySR5T8HzXgp7n7TYpx5RTu2036eWrDJZbyV75JCqfCM4XxADf3cxwt2ZuahaRJH_0Bg6OF3w1B0xiPv25VWG3g_CjxrroUkkeMjVq3NbjGj_2z0k_dbklQLXdfktAGBZtVIgOz_Yq3mPMedzUkUoRKJLPaL">
+<div class="absolute inset-0 bg-gradient-to-t from-[#141414] via-[#141414]/80 to-transparent"></div>
+<div class="relative z-10 p-8 w-full">
+<div class="flex items-center gap-3 mb-2">
+<span class="material-symbols-outlined text-primary text-3xl">favorite</span>
+<h3 class="font-headline-lg text-headline-lg text-on-surface font-bold">Cine-Match</h3>
+</div>
+<p class="font-body-lg text-body-lg mb-6 max-w-md text-white" style="color: #ffffff;">Find your cinema soulmate. Join the Social Zone to connect with fans of the same genres and plan your next movie date.</p>
+<button class="bg-transparent border border-primary text-primary hover:bg-primary hover:text-on-primary px-6 py-2 rounded-full font-label-md text-label-md transition-colors">Khám phá ngay</button>
+</div>
+</div>
+<!-- After-Credit Lounge -->
+<div class="relative rounded-2xl overflow-hidden group bg-surface-container shadow-lg flex items-end">
+<div class="absolute inset-0 bg-gradient-to-br from-surface-container-high to-surface-container-lowest"></div>
+<div class="relative z-10 p-8 w-full flex flex-col items-start h-full justify-between">
+<span class="material-symbols-outlined text-outline-variant text-4xl mb-4">forum</span>
+<div>
+<h3 class="font-headline-lg text-headline-lg text-on-surface font-bold mb-2">After-Credit Lounge</h3>
+<p class="text-body-md mb-6 text-white">Thảo luận về những cú twist, giả thuyết và easter eggs sau khi xem phim.</p>
+<a class="text-primary hover:text-white font-label-md text-label-md flex items-center gap-1 transition-colors group-hover:translate-x-2 duration-300" href="#">
+                                Tham gia <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Loyalty Banner -->
+<section class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop mb-section-gap">
+<div class="bg-gradient-to-r from-surface-container-high to-background border border-surface-variant rounded-2xl p-8 flex flex-col md:flex-row items-center justify-between relative overflow-hidden shadow-xl">
+<!-- Abstract Pattern -->
+<div class="absolute top-0 right-0 w-64 h-64 bg-primary-container/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+<div class="relative z-10 mb-6 md:mb-0">
+<h2 class="font-headline-xl text-headline-xl text-on-surface mb-2 font-bold flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-4xl" style="font-variation-settings: 'FILL' 1;">stars</span>
+                        3HD2K Rewards
+                    </h2>
+<p class="text-body-lg text-white">Tích điểm đổi vé, nhận bắp nước miễn phí và nhiều đặc quyền VIP.</p>
+</div>
+<div class="relative z-10 flex flex-col items-center md:items-end gap-3">
+<div class="text-right">
+<span class="text-sm text-white">Điểm của bạn</span>
+<div class="text-on-surface font-display-lg-mobile text-3xl font-bold">0 <span class="text-primary text-xl">pts</span></div>
+</div>
+<button class="bg-primary-container text-on-primary-container px-6 py-2 rounded font-label-md text-label-md uppercase hover:bg-red-600 transition-colors">Đăng ký thành viên</button>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-background dark:bg-background border-t border-surface-variant mt-auto">
+<div class="max-w-container-max mx-auto px-margin-desktop py-section-gap grid grid-cols-2 md:grid-cols-4 gap-gutter">
+<!-- Brand Column -->
+<div class="col-span-2 md:col-span-1">
+<h2 class="text-headline-lg font-headline-lg text-primary dark:text-primary mb-4" style="color: rgb(229, 9, 20);">3HD2K</h2>
+<p class="text-body-md font-body-md mb-6 text-white">Trải nghiệm điện ảnh đỉnh cao, mang Hollywood đến gần bạn hơn.</p>
+<div class="flex gap-4">
+<!-- Social Icons placeholders using Material Symbols -->
+<a class="hover:text-primary transition-all duration-200 text-white" href="#"><span class="material-symbols-outlined text-white">share</span></a>
+<a class="hover:text-primary transition-all duration-200 text-white" href="#"><span class="material-symbols-outlined text-white">public</span></a>
+</div>
+</div>
+<!-- Links Column 1 -->
+<div>
+<h4 class="font-label-md text-label-md text-on-surface mb-4 uppercase tracking-wider text-white">Khám phá</h4>
+<ul class="flex flex-col gap-3">
+<li class=""><a class="text-body-md font-body-md hover:underline decoration-primary transition-all duration-200 text-white" href="#">Phim Đang Chiếu</a></li>
+<li class=""><a class="text-body-md font-body-md hover:underline decoration-primary transition-all duration-200 text-white" href="#">Phim Sắp Chiếu</a></li>
+<li class=""><a class="text-body-md font-body-md hover:underline decoration-primary transition-all duration-200 text-white" href="#">Rạp Phim</a></li>
+<li class=""><a class="text-body-md font-body-md hover:underline decoration-primary transition-all duration-200 text-white" href="#">Khuyến Mãi</a></li>
+</ul>
+</div>
+<!-- Links Column 2 -->
+<div>
+<h4 class="font-label-md text-label-md text-on-surface mb-4 uppercase tracking-wider text-white">Hỗ Trợ</h4>
+<ul class="flex flex-col gap-3">
+<li class=""><a class="text-body-md font-body-md hover:underline decoration-primary transition-all duration-200 text-white" href="#">Help Center</a></li>
+<li class=""><a class="text-body-md font-body-md hover:underline decoration-primary transition-all duration-200 text-white" href="#">Terms of Use</a></li>
+<li class=""><a class="text-body-md font-body-md hover:underline decoration-primary transition-all duration-200 text-white" href="#">Privacy Policy</a></li>
+<li class=""><a class="text-body-md font-body-md hover:underline decoration-primary transition-all duration-200 text-white" href="#">Cookie Preferences</a></li>
+</ul>
+</div>
+<!-- Links Column 3 -->
+<div>
+<h4 class="font-label-md text-label-md text-on-surface mb-4 uppercase tracking-wider text-white">Về Chúng Tôi</h4>
+<ul class="flex flex-col gap-3">
+<li class=""><a class="text-body-md font-body-md hover:underline decoration-primary transition-all duration-200 text-white" href="#">About Us</a></li>
+<li class=""><a class="text-body-md font-body-md hover:underline decoration-primary transition-all duration-200 text-white" href="#">Corporate Information</a></li>
+<li class=""><a class="text-body-md font-body-md hover:underline decoration-primary transition-all duration-200 text-white" href="#">Tuyển Dụng</a></li>
+</ul>
+</div>
+</div>
+<div class="max-w-container-max mx-auto px-margin-desktop py-6 border-t border-surface-variant/50 flex flex-col md:flex-row justify-between items-center gap-4 text-label-sm font-label-sm text-white">
+<p class="text-white">© 2024 3HD2K Entertainment. All rights reserved.</p>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm text-white">language</span>
+<span class="text-white">Tiếng Việt</span>
+</div>
+</div>
+</footer>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16 bg-surface/95 backdrop-blur-md md:hidden border-t border-surface-variant shadow-lg bg-surface-container-lowest dark:bg-surface-container-lowest pb-safe">
+<a class="flex flex-col items-center justify-center text-primary font-bold w-full h-full active:bg-surface-container-high transition-colors hover:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="text-label-sm font-label-sm text-white">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center w-full h-full active:bg-surface-container-high transition-colors hover:scale-90 duration-150 text-white" href="#">
+<span class="material-symbols-outlined mb-1">movie</span>
+<span class="text-label-sm font-label-sm text-white">Movies</span>
+</a>
+<a class="flex flex-col items-center justify-center w-full h-full active:bg-surface-container-high transition-colors hover:scale-90 duration-150 text-white" href="#">
+<span class="material-symbols-outlined mb-1">theater_comedy</span>
+<span class="text-label-sm font-label-sm text-white">Cinemas</span>
+</a>
+<a class="flex flex-col items-center justify-center w-full h-full active:bg-surface-container-high transition-colors hover:scale-90 duration-150 text-white" href="#">
+<span class="material-symbols-outlined mb-1">person</span>
+<span class="text-label-sm font-label-sm text-white">Profile</span>
+</a>
+</nav>
+<script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('main-nav');
+            if (window.scrollY > 50) {
+                nav.classList.add('nav-scrolled');
+                nav.classList.remove('bg-transparent');
+            } else {
+                nav.classList.remove('nav-scrolled');
+                nav.classList.add('bg-transparent');
+            }
+        });
+    </script>
+
+
+</body></html>

@@ -13,7 +13,7 @@ const heroMovies = [
         age: "T13",
         trailer: "https://www.youtube.com/embed/k4xGqY5IDBE",
         trailerWatch: "https://www.youtube.com/watch?v=k4xGqY5IDBE",
-        bg: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhnSURswrgKGgY2hE8cwABvIHXJk9Y0naYN1cN4w6Tf0aJ9kEsgSgGrGtBaxhyphenhyphenqRQ4GcTJaHELDx2G0rlx6mrulOu2f_tSKEoJo4IVXFjwBFC8RYrT-V9mFRxLPw_W8qFCcjOz-lmYdl9wr/s1600/742320.jpg"
+        bg: "images/Kimi-no-Na-wa.-Visual.jpg"
     },
     {
         id: "ready-player-one",
@@ -242,7 +242,7 @@ const comingSoonMovies = [
         genre: "Hành Động, Kinh Dị",
         tags: ["2D", "Hành Động"],
         formats: ["2D"],
-        poster: "https://m.media-amazon.com/images/M/MV5BODg3ZTM2YWQtZDE5Ny00NGNiLTkzYjgtYWVlYjNkOTg5NDI1XkEyXkFqcGc@.jpg",
+        poster: "images/World_war_Z.jpg",
         backdrop: "https://images.unsplash.com/photo-1512358958502-3f4af0dda77d?auto=format&fit=crop&w=1920&q=80",
         synopsis: "Gerry Lane, cựu điều tra viên Liên Hợp Quốc, phải lên đường vòng quanh thế giới để tìm cách chống lại đại dịch zombie đang bùng phát với tốc độ kinh hoàng, đe dọa xóa sổ toàn bộ nhân loại.",
         director: "Marc Forster",

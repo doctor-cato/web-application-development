@@ -139,49 +139,71 @@
 }
 
 /* ── SEATS ──────────────────────────────────────────────────────────── */
-.seat { cursor: pointer; transition: all 0.15s ease; }
-.seat:hover:not(.seat--locked):not(.seat--booked) { transform: scale(1.12); }
+.seat { 
+    cursor: pointer; 
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); 
+    border-top-left-radius: 12px !important;
+    border-top-right-radius: 12px !important;
+    border-bottom-left-radius: 4px !important;
+    border-bottom-right-radius: 4px !important;
+    box-shadow: inset 0 -5px 0 rgba(0,0,0,0.3), 0 4px 6px rgba(0,0,0,0.3);
+    color: rgba(255,255,255,0.5) !important;
+}
+.seat:hover:not(.seat--locked):not(.seat--booked) { 
+    transform: translateY(-4px) scale(1.05); 
+    box-shadow: inset 0 -3px 0 rgba(0,0,0,0.1), 0 8px 12px rgba(229,9,20,0.3);
+    color: white !important;
+}
 
-.seat--available  { background: #343535; border: 1px solid #555; }
-.seat--selected   { background: var(--primary-red); border: 1px solid var(--primary-red); }
-.seat--locked     { background: #f59e0b; border: 1px solid #f59e0b; cursor: not-allowed; }
-.seat--booked     { background: #1f2937; border: 1px solid #374151; cursor: not-allowed; opacity: 0.5; }
+.seat--available  { background: linear-gradient(145deg, #444, #2a2a2a); border: 1px solid #555; }
+.seat--selected   { 
+    background: linear-gradient(145deg, #ff4d4d, var(--primary-red)); 
+    border: 1px solid #ff4d4d; 
+    box-shadow: inset 0 -5px 0 rgba(0,0,0,0.2), 0 0 15px rgba(229,9,20,0.5);
+    color: white !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+.seat--locked     { background: linear-gradient(145deg, #fbbf24, #d97706); border: 1px solid #f59e0b; cursor: not-allowed; }
+.seat--booked     { background: #1f2937; border: 1px solid #374151; cursor: not-allowed; opacity: 0.4; }
 .seat--vip        { border-color: #7c3aed; }
-.seat--vip.seat--available  { background: rgba(124,58,237,0.15); }
-.seat--vip.seat--selected   { background: #7c3aed; border-color: #7c3aed; }
-.seat--couple     { border-color: #db2777; }
-.seat--couple.seat--available  { background: rgba(219,39,119,0.12); }
-.seat--couple.seat--selected   { background: #db2777; border-color: #db2777; }
+.seat--vip.seat--available  { background: linear-gradient(145deg, #8b5cf6, #6d28d9); color: rgba(255,255,255,0.8) !important;}
+.seat--vip.seat--selected   { background: linear-gradient(145deg, #a78bfa, #7c3aed); border-color: #8b5cf6; box-shadow: inset 0 -5px 0 rgba(0,0,0,0.2), 0 0 15px rgba(124,58,237,0.5);}
+.seat--couple     { border-color: #db2777; width: 88px !important;}
+.seat--couple.seat--available  { background: linear-gradient(145deg, #f472b6, #db2777); color: rgba(255,255,255,0.8) !important;}
+.seat--couple.seat--selected   { background: linear-gradient(145deg, #f9a8d4, #db2777); border-color: #f472b6; box-shadow: inset 0 -5px 0 rgba(0,0,0,0.2), 0 0 15px rgba(219,39,119,0.5);}
 
 /* Dynamic classes added by seatGrid.js */
 .seat.w-9.h-9 { width: 36px; height: 36px; }
-.seat.rounded-sm { border-radius: 4px; }
+.seat.rounded-sm { /* overridden by !important above */ }
 .seat.flex { display: flex; }
 .seat.justify-center { justify-content: center; }
 .seat.items-center { align-items: center; }
-.seat.text-\[9px\] { font-size: 9px; }
+.seat.text-\[9px\] { font-size: 10px; }
 .seat.font-bold { font-weight: bold; }
-.seat.text-white\/30 { color: rgba(255,255,255,0.3); }
 
 /* Screen glow */
 .screen-container {
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: 3.5rem;
+    perspective: 800px;
 }
 .screen-glow {
-    height: 12px;
-    border-radius: 9999px;
-    width: 80%;
+    height: 30px;
+    width: 100%;
     margin: 0 auto;
-    background: linear-gradient(180deg, rgba(229,9,20,0.18) 0%, transparent 100%);
-    box-shadow: 0 0 40px 8px rgba(229,9,20,0.12);
+    background: linear-gradient(to bottom, rgba(229,9,20,0.6), transparent);
+    border-top: 4px solid var(--primary-red);
+    border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+    box-shadow: 0 -15px 40px 15px rgba(229,9,20,0.35);
+    transform: rotateX(25deg);
 }
 .screen-label {
-    font-size: 0.75rem;
+    font-size: 0.85rem;
     color: var(--text-muted);
-    margin-top: 0.5rem;
+    margin-top: 0.75rem;
     text-transform: uppercase;
-    letter-spacing: 0.3em;
+    letter-spacing: 0.4em;
+    font-weight: 600;
 }
 
 /* ── SUMMARY ────────────────────────────────────────────────────────── */

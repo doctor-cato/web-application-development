@@ -60,21 +60,34 @@ function init() {
   const provider = params.get('provider') || 'momo';
   const txId = params.get('txId');
 
-  // apply theme
-  const logoEl = document.querySelector('.momo-theme-logo');
-  if (logoEl) logoEl.textContent = provider.toUpperCase();
-
-  const successBtn = document.querySelector('a[href="booking_invoice.html"]');
-  const cancelBtn = document.querySelector('a[href="checkout.html"]');
-  
-  if (successBtn) {
-    // replace anchor behavior with our handleSuccess
-    successBtn.href = '#';
-    successBtn.addEventListener('click', (e) => { e.preventDefault(); handleSuccess(txId); });
+  const gatewayName = document.getElementById('gateway-name');
+  if (gatewayName) {
+    gatewayName.innerText = provider.toUpperCase() === 'VNPAY' ? 'Cổng Thanh Toán VNPAY' : 'Cổng Thanh Toán MOMO';
   }
-  if (cancelBtn) {
-    cancelBtn.href = '#';
-    cancelBtn.addEventListener('click', (e) => { e.preventDefault(); handleCancel(txId); });
+  
+  if (provider === 'vnpay') {
+    document.getElementById('sim-header')?.classList.add('vnpay');
+    document.getElementById('sim-amount')?.classList.add('vnpay');
+    document.getElementById('sim-spinner')?.classList.add('vnpay');
+    document.getElementById('sim-btn')?.classList.add('vnpay');
+  }
+
+  const checkoutData = getCheckout() || {};
+  const amountEl = document.getElementById('sim-amount');
+  if (amountEl) {
+    amountEl.innerText = (checkoutData.seatTotal || 0).toLocaleString('vi-VN') + ' đ';
+  }
+
+  const simBtn = document.getElementById('sim-btn');
+  if (simBtn) {
+    simBtn.disabled = false;
+    simBtn.innerText = 'Xác nhận thanh toán';
+    simBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      simBtn.disabled = true;
+      simBtn.innerText = 'Đang xử lý...';
+      handleSuccess(txId);
+    });
   }
 
   startCountdown(PAYMENT_TIMEOUT, () => {

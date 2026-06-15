@@ -1,4 +1,8 @@
 {
+  "scripts": {
+    "dev": "tailwindcss -i ./input.css -o ./src/shared/css/tailwind-legacy.css --watch",
+    "build": "tailwindcss -i ./input.css -o ./src/shared/css/tailwind-legacy.css --minify"
+  },
   "devDependencies": {
     "@tailwindcss/cli": "^4.3.1",
     "@tailwindcss/container-queries": "^0.1.1",

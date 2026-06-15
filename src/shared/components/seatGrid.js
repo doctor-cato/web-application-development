@@ -14,16 +14,8 @@ export function renderSeatGrid(container, seatMap, callbacks) {
   
   container.innerHTML = '';
   
-  const screen = document.createElement('div');
-  screen.className = 'mb-8 text-center';
-  screen.innerHTML = `
-      <div class="screen-glow h-3 rounded-full w-4/5 mx-auto"></div>
-      <p class="text-secondary text-xs mt-2 uppercase tracking-[0.3em]">Màn hình</p>
-  `;
-  container.appendChild(screen);
-
   const gridContainer = document.createElement('div');
-  gridContainer.className = 'seat-rows space-y-3 w-full max-w-4xl flex flex-col items-center';
+  gridContainer.className = 'seat-rows space-y-4 w-full max-w-4xl flex flex-col items-center';
 
   const rows = ['A','B','C','D','E','F','G','H','I','J'];
   
@@ -33,7 +25,7 @@ export function renderSeatGrid(container, seatMap, callbacks) {
     
     // Row label start
     const labelStart = document.createElement('div');
-    labelStart.className = 'w-6 text-sm text-secondary text-right';
+    labelStart.className = 'w-6 text-sm text-secondary text-right font-bold';
     labelStart.innerText = row;
     rowEl.appendChild(labelStart);
 
@@ -41,19 +33,29 @@ export function renderSeatGrid(container, seatMap, callbacks) {
     const seatsContainer = document.createElement('div');
     seatsContainer.className = 'flex gap-2 flex-wrap justify-center';
 
-    for (let i = 1; i <= 12; i++) {
-      const seatId = `${row}${i}`;
+    const isCoupleRow = row === 'J';
+    const numSeats = isCoupleRow ? 6 : 12;
+
+    for (let i = 1; i <= numSeats; i++) {
+      const seatId = isCoupleRow ? `J${i}` : `${row}${i}`;
       const seatInfo = seatMap[seatId] || null;
       const seatEl = _createSeatEl(seatId, seatInfo);
       _seatElements[seatId] = seatEl;
       seatsContainer.appendChild(seatEl);
+
+      // Add aisle
+      if ((isCoupleRow && i === 3) || (!isCoupleRow && i === 6)) {
+         const aisle = document.createElement('div');
+         aisle.className = 'w-8';
+         seatsContainer.appendChild(aisle);
+      }
     }
 
     rowEl.appendChild(seatsContainer);
 
     // Row label end
     const labelEnd = document.createElement('div');
-    labelEnd.className = 'w-6 text-sm text-secondary text-left';
+    labelEnd.className = 'w-6 text-sm text-secondary text-left font-bold';
     labelEnd.innerText = row;
     rowEl.appendChild(labelEnd);
 
