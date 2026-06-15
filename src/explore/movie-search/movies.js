@@ -58,7 +58,7 @@ function renderMoviesGrid(movies) {
 
     moviesToShow.forEach(movie => {
         const badgeClass = getAgeBadgeClass(movie.age);
-        const detailUrl = movie.id ? `../movie-details/index.html?id=${movie.id}` : '#';
+        const detailUrl = movie.id ? `/src/explore/movie-details/index.html?id=${movie.id}` : '#';
         const tagsHtml = movie.tags ? movie.tags.map(tag => `<span class="tag">${tag}</span>`).join('') : '';
         const cardHtml = `
             <div class="movie-card" onclick="window.location.href='${detailUrl}'" style="cursor:pointer;">
@@ -178,7 +178,7 @@ function switchTab(tab) {
     if (sortSelect) sortSelect.value = 'newest';
 
     // Update URL without reload
-    const newUrl = `movies.html?tab=${tab}`;
+    const newUrl = `/src/explore/movie-search/index.html?tab=${tab}`;
     window.history.replaceState(null, '', newUrl);
 
     applyMoviesFilters();

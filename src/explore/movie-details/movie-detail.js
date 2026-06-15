@@ -130,7 +130,7 @@ function renderHero(movie) {
     const tabLink = document.getElementById('breadcrumb-tab-link');
     if (tabLink) {
         tabLink.textContent = inNowShowing ? 'Phim Đang Chiếu' : 'Phim Sắp Chiếu';
-        tabLink.href = inNowShowing ? '/explore/movie-search/index.html?tab=now-showing' : '/explore/movie-search/index.html?tab=coming-soon';
+        tabLink.href = inNowShowing ? '/src/explore/movie-search/index.html?tab=now-showing' : '/src/explore/movie-search/index.html?tab=coming-soon';
     }
 }
 
@@ -301,9 +301,6 @@ function renderCinemaShowtimes() {
 function handleBooking(event, cinemaName, format, time) {
     event.preventDefault();
     showToast(`🎬 Đang chuyển đến trang đặt vé: ${cinemaName} — ${format} lúc ${time}`);
-    setTimeout(() => {
-        window.location.href = `/booking/seat-booking/booking.html`;
-    }, 1500);
 }
 
 // ── RENDER RATINGS ───────────────────────────────────────────
@@ -424,7 +421,7 @@ function renderRelatedMovies(movie) {
     carousel.innerHTML = related.map(m => {
         const ageClass = getAgeBadgeClass(m.age);
         return `
-            <a href="/explore/movie-details/index.html?id=${m.id}" class="related-movie-card">
+            <a href="/src/explore/movie-details/index.html?id=${m.id}" class="related-movie-card">
                 <div class="related-poster">
                     <img src="${m.poster}" alt="${m.title}" loading="lazy">
                     <span class="related-age-badge ${ageClass}">${m.age}</span>
@@ -548,7 +545,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <i class="fas fa-film" style="font-size:4rem;opacity:0.3;margin-bottom:24px;"></i>
                 <h2>Không tìm thấy phim</h2>
                 <p style="margin:12px 0 28px;">Bộ phim bạn tìm kiếm không tồn tại hoặc đã bị gỡ.</p>
-                <a href="/explore/movie-search/index.html" class="btn btn-primary">← Quay lại danh sách phim</a>
+                <a href="/src/explore/movie-search/index.html" class="btn btn-primary">← Quay lại danh sách phim</a>
             </div>
         `;
         return;

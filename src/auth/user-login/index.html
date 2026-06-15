@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Đăng nhập - 3HD2K Cinema</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <!-- Vanilla CSS -->
+    <link rel="stylesheet" href="/src/auth/user-login/login.css?v=4">
+</head>
+<body>
+
+    <header class="auth-header">
+        <a class="auth-logo" href="/src/explore/home-page/index.html">3HD2K</a>
+    </header>
+
+    <main class="auth-main">
+        <!-- Left Side: Banner (Hidden on Mobile) -->
+        <div class="auth-banner">
+            <div class="auth-banner-bg">
+                <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=2025&auto=format&fit=crop" alt="Cinema Background">
+            </div>
+            <a href="/src/explore/home-page/index.html" class="back-home-link">
+                <span class="material-symbols-outlined">arrow_back</span>
+                Về trang chủ
+            </a>
+            <h1 class="auth-banner-title">
+                Trải Nghiệm Điện Ảnh <br><span>Đỉnh Cao</span>
+            </h1>
+        </div>
+
+        <!-- Right Side: Form Container -->
+        <div class="auth-content">
+            <div class="auth-box">
+                <!-- Tabs -->
+                <div class="auth-tabs">
+                    <a href="/src/auth/user-login/index.html" class="auth-tab active">Đăng Nhập</a>
+                    <a href="/src/auth/user-register/index.html" class="auth-tab">Đăng Ký</a>
+                </div>
+
+                <!-- Error Banner (Global) -->
+                <div id="form-error-banner" class="form-error-banner"></div>
+
+                <!-- Form -->
+                <form id="loginForm" class="auth-form" action="/src/explore/home-page/index.html" method="GET">
+                    <!-- Email -->
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <div class="input-wrapper">
+                            <span class="material-symbols-outlined">person</span>
+                            <input class="auth-input" type="email" id="email" name="email" placeholder="example@email.com" required>
+                        </div>
+                        <div id="email-error" class="inline-error">Email không hợp lệ.</div>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="form-group">
+                        <label for="password">Mật khẩu</label>
+                        <div class="input-wrapper">
+                            <span class="material-symbols-outlined">lock</span>
+                            <input class="auth-input has-toggle" type="password" id="password" placeholder="••••••••" required>
+                            <span class="material-symbols-outlined password-toggle" id="togglePassword" style="pointer-events: auto; z-index: 10;">visibility_off</span>
+                        </div>
+                        <div id="password-error" class="inline-error">Mật khẩu phải có ít nhất 6 ký tự.</div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn-submit">
+                        Đăng Nhập
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer class="auth-footer">
+        <span class="footer-logo">3HD2K</span>
+        <div class="footer-copy">© 2026 3HD2K Cinema. All rights reserved.</div>
+    </footer>
+
+    <script>
+        // Password Visibility Toggle
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+
+        togglePassword.addEventListener('click', function () {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.textContent = type === 'password' ? 'visibility_off' : 'visibility';
+        });
+
+        // Form Submission Logic
+        const loginForm = document.getElementById('loginForm');
+        const errorBanner = document.getElementById('form-error-banner');
+        
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent default form submission
+            
+            errorBanner.classList.remove('show');
+            
+            const email = document.getElementById('email').value.trim();
+            const password = passwordInput.value;
+            
+            // Lấy danh sách tài khoản đã đăng ký từ localStorage
+            let users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+            
+            // Tìm user có email và mật khẩu khớp
+            const matchedUser = users.find(u => u.email === email && u.password === password);
+            
+            if (matchedUser) {
+                // Đăng nhập thành công
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('userName', matchedUser.fullname);
+                localStorage.setItem('userEmail', matchedUser.email);
+                localStorage.setItem('userAvatar', matchedUser.avatar);
+                
+                // Chuyển hướng về trang chủ
+                window.location.href = '/src/explore/home-page/index.html';
+            } else {
+                // Đăng nhập thất bại (Hiển thị banner lỗi thay vì alert)
+                errorBanner.textContent = "Sai email hoặc mật khẩu! Nếu chưa có tài khoản, vui lòng Đăng ký trước.";
+                errorBanner.classList.add('show');
+                
+                // Thêm viền đỏ báo lỗi (Hiệu ứng)
+                document.getElementById('email').classList.add('error');
+                document.getElementById('password').classList.add('error');
+                
+                // Gỡ viền đỏ khi người dùng gõ lại
+                document.getElementById('email').addEventListener('input', function() {
+                    this.classList.remove('error');
+                    errorBanner.classList.remove('show');
+                }, { once: true });
+                document.getElementById('password').addEventListener('input', function() {
+                    this.classList.remove('error');
+                    errorBanner.classList.remove('show');
+                }, { once: true });
+            }
+        });
+    </script>
+</body>
+</html>

@@ -19,33 +19,6 @@
     padding: 0;
 }
 
-button, input, select, textarea {
-    font-family: inherit;
-    font-size: inherit;
-    color: inherit;
-}
-
-/* Fallback for Tailwind font classes */
-.font-\[\'Inter\'\] { font-family: 'Inter', sans-serif !important; }
-.font-\[\'Bebas_Neue\'\] { font-family: 'Bebas Neue', sans-serif !important; }
-.font-bold { font-weight: 700 !important; }
-.font-semibold { font-weight: 600 !important; }
-.font-medium { font-weight: 500 !important; }
-.font-extrabold { font-weight: 800 !important; }
-.text-xs { font-size: 0.75rem !important; }
-.text-sm { font-size: 0.875rem !important; }
-.text-base { font-size: 1rem !important; }
-.text-lg { font-size: 1.125rem !important; }
-.text-xl { font-size: 1.25rem !important; }
-.text-2xl { font-size: 1.5rem !important; }
-.text-\[64px\] { font-size: 64px !important; }
-.text-\[24px\] { font-size: 24px !important; }
-.text-\[26px\] { font-size: 26px !important; }
-.tracking-wide { letter-spacing: 0.025em !important; }
-.tracking-wider { letter-spacing: 0.05em !important; }
-.leading-none { line-height: 1 !important; }
-.uppercase { text-transform: uppercase !important; }
-
 body {
     /* Using Inter for a clean, modern UI feel */
     font-family: 'Inter', sans-serif;

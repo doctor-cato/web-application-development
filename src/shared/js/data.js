@@ -13,7 +13,7 @@ const heroMovies = [
         age: "T13",
         trailer: "https://www.youtube.com/embed/k4xGqY5IDBE",
         trailerWatch: "https://www.youtube.com/watch?v=k4xGqY5IDBE",
-        bg: "images/Kimi-no-Na-wa.-Visual.jpg"
+        bg: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhnSURswrgKGgY2hE8cwABvIHXJk9Y0naYN1cN4w6Tf0aJ9kEsgSgGrGtBaxhyphenhyphenqRQ4GcTJaHELDx2G0rlx6mrulOu2f_tSKEoJo4IVXFjwBFC8RYrT-V9mFRxLPw_W8qFCcjOz-lmYdl9wr/s1600/742320.jpg"
     },
     {
         id: "ready-player-one",
@@ -105,7 +105,7 @@ const nowShowingMovies = [
         genre: "Hành Động, Phiêu Lưu",
         cinema: "Q7",
         poster: "images/war_machine.jpg",
-        backdrop: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=1920&q=80",
+        backdrop: "https://static.wikia.nocookie.net/robotics/images/9/93/The_Machine_%28War_Machine_2026%29.webp/revision/latest?cb=20260405000634",
         synopsis: "Trong một thế giới tương lai nơi robot chiến đấu thống trị chiến trường, một cựu chiến binh phải đối mặt với kẻ thù nguy hiểm nhất của mình — chính cỗ máy chiến tranh anh ta từng tin tưởng. Cuộc hành trình đầy hiểm nguy đưa anh xuyên qua những vùng xung đột tàn khốc để tìm lại nhân tính đã bị chiến tranh cướp mất.",
         director: "David Ayer",
         cast: [
@@ -139,7 +139,7 @@ const nowShowingMovies = [
         genre: "Hành Động, Thể Thao",
         cinema: "Q1",
         poster: "images/f1_movie.jpg",
-        backdrop: "https://images.unsplash.com/photo-1541889413457-4aec9b418977?auto=format&fit=crop&w=1920&q=80",
+        backdrop: "https://www.f1themovie.com/images/share.jpg",
         synopsis: "Dựa trên câu chuyện có thật về đội đua APXGP, một tay đua huyền thoại đã về hưu trở lại đường đua F1 để hướng dẫn một tài năng trẻ đầy tiềm năng. Hai thế hệ tay đua cùng nhau đối mặt với những áp lực khắc nghiệt nhất của môn thể thao vua tốc độ.",
         director: "Joseph Kosinski",
         cast: [
@@ -173,7 +173,7 @@ const nowShowingMovies = [
         genre: "Hành Động, Khoa Học Viễn Tưởng",
         cinema: "Q7",
         poster: "images/iron_man2.jpg",
-        backdrop: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1920&q=80",
+        backdrop: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsctNLtFojtCkZzlqWDF2MrPaFh3ths_qT4w&s",
         synopsis: "Tony Stark đang đối mặt với hai mối đe dọa lớn: chính phủ muốn tịch thu bộ giáp Iron Man và một kẻ thù bí ẩn đến từ Nga mang mối hận thù sâu sắc. Trong khi đó, bộ giáp dần phá hủy cơ thể anh từ bên trong.",
         director: "Jon Favreau",
         cast: [
@@ -242,8 +242,8 @@ const comingSoonMovies = [
         genre: "Hành Động, Kinh Dị",
         tags: ["2D", "Hành Động"],
         formats: ["2D"],
-        poster: "images/World_war_Z.jpg",
-        backdrop: "https://images.unsplash.com/photo-1512358958502-3f4af0dda77d?auto=format&fit=crop&w=1920&q=80",
+        poster: "https://m.media-amazon.com/images/M/MV5BODg3ZTM2YWQtZDE5Ny00NGNiLTkzYjgtYWVlYjNkOTg5NDI1XkEyXkFqcGc@.jpg",
+        backdrop: "https://www.dneg.com/_next/image?url=https%3A%2F%2Fimages.ctfassets.net%2F3sjsytt3tkv5%2F4WVPfAXZejqcLCDeRxphuJ%2Fed8e2c89c611d9f77547484c89a36858%2Fworld-war-z-game.jpeg&w=3840&q=75",
         synopsis: "Gerry Lane, cựu điều tra viên Liên Hợp Quốc, phải lên đường vòng quanh thế giới để tìm cách chống lại đại dịch zombie đang bùng phát với tốc độ kinh hoàng, đe dọa xóa sổ toàn bộ nhân loại.",
         director: "Marc Forster",
         cast: [
@@ -309,7 +309,7 @@ const comingSoonMovies = [
         tags: ["2D", "Anime"],
         formats: ["2D"],
         poster: "images/Kimi-no-Na-wa.-Visual.jpg",
-        backdrop: "https://images.unsplash.com/photo-1580655653885-65763b2597d1?auto=format&fit=crop&w=1920&q=80",
+        backdrop: "https://cdn.sforum.vn/sforum/wp-content/uploads/2022/05/1-16.jpg",
         synopsis: "Mitsuha, một cô gái sống ở vùng quê hẻo lánh, và Taki, một cậu trai ở Tokyo náo nhiệt, bỗng nhiên hoán đổi cơ thể cho nhau khi ngủ. Khi họ tìm cách liên lạc và gặp nhau, họ khám phá ra một bí mật về thời gian vượt ngoài sức tưởng tượng.",
         director: "Makoto Shinkai",
         cast: [
@@ -441,7 +441,7 @@ const comingSoonMovies = [
         tags: ["2D", "IMAX"],
         formats: ["2D", "IMAX"],
         poster: "https://m.media-amazon.com/images/M/MV5BMjI5NTM5MDA2N15BMl5BanBnXkFtZTcwNjkwMzQxNw@@.jpg",
-        backdrop: "https://images.unsplash.com/photo-1509233725247-49e657c54213?auto=format&fit=crop&w=1920&q=80",
+        backdrop: "https://m.media-amazon.com/images/M/MV5BOTc0MDM5OTQ3MF5BMl5BanBnXkFtZTcwNzgwMzQxNw@@._V1_.jpg",
         synopsis: "Cuộc chiến trên biển khơi nổ ra khi hạm đội hải quân quốc tế chạm trán với một hạm đội tàu vũ trụ của người ngoài hành tinh. Với sức mạnh vượt trội, kẻ xâm lăng muốn hủy diệt Trái Đất nhưng ý chí của con người không dễ bị khuất phục.",
         director: "Peter Berg",
         cast: [
@@ -614,24 +614,13 @@ const mockReviews = [
     }
 ];
 
-// Normalize image paths based on current URL depth
-function getSrcPrefix() {
-    const pathname = window.location.pathname;
-    if (pathname.includes('/user-profile/') || pathname.includes('/user-notifications/') || pathname.includes('/user-login/') || pathname.includes('/user-register/')) {
-        return '../../..';
-    }
-    if (pathname.includes('/home-page/') || pathname.includes('/movie-search/') || pathname.includes('/movie-details/') || pathname.includes('/cinema-map/') || pathname.includes('/aftercredit-lounge/')) {
-        return '../..';
-    }
-    return '.';
-}
-const _srcPrefix = getSrcPrefix();
+// Normalize image paths
+const _ASSET_PREFIX = '/src/shared/';
 
 const _normalizePath = (path) => {
-    if (!path || path.startsWith('http')) return path;
-    const parts = path.split('/');
-    const filename = parts[parts.length - 1];
-    return `/shared/images/${filename}`;
+    if (!path || path.startsWith('http') || path.startsWith('/shared/')) return path;
+    if (path.startsWith('images/')) return _ASSET_PREFIX + path;
+    return path;
 };
 
 if (typeof heroMovies !== 'undefined') heroMovies.forEach(m => { m.bg = _normalizePath(m.bg); m.poster = _normalizePath(m.poster); });
