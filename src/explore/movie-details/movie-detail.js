@@ -302,7 +302,7 @@ function handleBooking(event, cinemaName, format, time) {
     event.preventDefault();
     showToast(`🎬 Đang chuyển đến trang đặt vé: ${cinemaName} — ${format} lúc ${time}`);
     setTimeout(() => {
-        window.location.href = `/booking/seat-booking/booking.html`;
+        window.location.href = `/booking/seat-booking/booking.html?id=${currentMovie.id}&showtimeId=${time}`;
     }, 1500);
 }
 

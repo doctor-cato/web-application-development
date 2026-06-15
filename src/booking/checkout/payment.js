@@ -75,7 +75,7 @@ function init() {
   const checkoutData = getCheckout() || {};
   const amountEl = document.getElementById('sim-amount');
   if (amountEl) {
-    amountEl.innerText = (checkoutData.seatTotal || 0).toLocaleString('vi-VN') + ' đ';
+    amountEl.innerText = (checkoutData.total || 0).toLocaleString('vi-VN') + ' đ';
   }
 
   const simBtn = document.getElementById('sim-btn');

@@ -4,7 +4,7 @@
 
 import { getSeatMap, lockSeat, unlockSeat, subscribeSeatUpdates } from './bookingService.js';
 import { renderSeatGrid, updateSeat, getSelectedSeats, getSeatType } from '/shared/components/seatGrid.js';
-import { lsSet, KEYS } from '/shared/utils/storage.js';
+import { saveCheckout } from '/shared/utils/storage.js';
 
 const PRICING = {
   weekday: { regular: 50000, vip: 65000, couple: 100000 },
@@ -23,7 +23,24 @@ let movieData = {
 
 function init() {
   const urlParams = new URLSearchParams(window.location.search);
+  const movieId = urlParams.get('id');
   currentShowtimeId = urlParams.get('showtimeId') || 'st_200';
+
+  if (movieId) {
+    const allMovies = [
+      ...(typeof heroMovies !== 'undefined' ? heroMovies : []),
+      ...(typeof nowShowingMovies !== 'undefined' ? nowShowingMovies : []),
+      ...(typeof comingSoonMovies !== 'undefined' ? comingSoonMovies : [])
+    ];
+    const foundMovie = allMovies.find(m => m.id === movieId);
+    if (foundMovie) {
+      movieData = {
+        id: foundMovie.id,
+        title: foundMovie.title,
+        poster: foundMovie.poster || foundMovie.bg
+      };
+    }
+  }
 
   renderMovieInfo();
   
@@ -190,12 +207,14 @@ function handleContinue() {
     room: 'Phòng 3',
     showtimeText: '19:30',
     selectedSeats: seats,
+    seats: seats, // for checkout.js
     seatTotal: calculateTotal(),
     seatAmount: calculateTotal(), // for checkout.js
+    total: calculateTotal(), // for checkout.js
     expiresAt: Date.now() + 5 * 60 * 1000 // 5 mins
   };
   
-  lsSet(KEYS.PENDING_CHECKOUT, checkoutData);
+  saveCheckout(checkoutData);
   window.location.href = '../checkout/checkout.html';
 }
 

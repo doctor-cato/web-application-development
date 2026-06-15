@@ -24,8 +24,8 @@ function renderBookingInfo(booking) {
 
   const combo = document.getElementById('invoice-combo');
   if (combo) {
-    if (booking.comboId === 'single') combo.textContent = 'Combo 1 Người';
-    else if (booking.comboId === 'double') combo.textContent = 'Combo 2 Người';
+    if (booking.combo === 'single') combo.textContent = 'Combo 1 Người';
+    else if (booking.combo === 'double') combo.textContent = 'Combo 2 Người';
     else combo.textContent = 'Không';
   }
 

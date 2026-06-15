@@ -65,16 +65,34 @@ function renderCheckout() {
   }
 }
 
+function updateTotal() {
+  const seatsAmountEl = document.getElementById('order-summary-seat-amount');
+  const seatsAmount = parseDataAmount(seatsAmountEl);
+  const combo = getSelectedCombo();
+  const total = seatsAmount + combo.price;
+
+  const totalEl = document.getElementById('order-total');
+  if (totalEl) {
+    totalEl.setAttribute('data-amount', total);
+    totalEl.innerText = formatPrice(total);
+  }
+}
+
 function init() {
   // Attach handlers
   const payBtn = document.getElementById('btn-pay');
   if (payBtn) payBtn.addEventListener('click', handlePayClick);
 
-  // combo radio behavior: update UI selected classes
+  // combo radio behavior: update UI selected classes and total
   document.querySelectorAll('label.combo-card').forEach(l => {
     l.addEventListener('click', () => {
       document.querySelectorAll('label.combo-card').forEach(x => x.classList.remove('selected'));
       l.classList.add('selected');
+      const radio = l.querySelector('input[name="combo"]');
+      if (radio) {
+        radio.checked = true;
+      }
+      updateTotal();
     });
   });
 
@@ -82,8 +100,11 @@ function init() {
     l.addEventListener('click', () => {
       document.querySelectorAll('label.payment-card').forEach(x => x.classList.remove('selected-momo','selected-vnpay'));
       const inp = l.querySelector('input[name="payment"]');
-      if (inp && inp.value === 'momo') l.classList.add('selected-momo');
-      if (inp && inp.value === 'vnpay') l.classList.add('selected-vnpay');
+      if (inp) {
+        inp.checked = true;
+        if (inp.value === 'momo') l.classList.add('selected-momo');
+        if (inp.value === 'vnpay') l.classList.add('selected-vnpay');
+      }
     });
   });
 
@@ -103,8 +124,8 @@ function getSelectedPayment() {
 function handlePayClick(e) {
   e.preventDefault();
   // read order total (base seats amount) from DOM data attribute
-  const totalEl = document.getElementById('order-total');
-  const seatsAmount = parseDataAmount(totalEl);
+  const seatAmountEl = document.getElementById('order-summary-seat-amount');
+  const seatsAmount = parseDataAmount(seatAmountEl);
   const combo = getSelectedCombo();
   const total = seatsAmount + combo.price;
 
@@ -113,7 +134,7 @@ function handlePayClick(e) {
     movieTitle: document.querySelector('#order-summary-movie')?.innerText || 'Unknown',
     showtimeText: document.querySelector('#order-summary-showtime')?.innerText || '',
     room: document.querySelector('#order-summary-room')?.innerText || '',
-    seats: Array.from(document.querySelectorAll('#order-summary-seats .badge-seat')).map(s => s.innerText) || [],
+    seats: Array.from(document.querySelectorAll('#order-summary-seats .seat-badge')).map(s => s.innerText) || [],
     combo: combo.id,
     total,
     provider: getSelectedPayment()
@@ -122,7 +143,10 @@ function handlePayClick(e) {
   // save checkout into session in case needed later
   saveCheckout(checkoutData);
 
-  const { txId, provider } = createTransaction(checkoutData);
+  const transaction = createTransaction(total, getSelectedPayment());
+  const txId = transaction.transactionId;
+  const provider = transaction.method;
+  
   // redirect to payment simulator page
   window.location.href = `payment_simulation.html?provider=${encodeURIComponent(provider)}&txId=${encodeURIComponent(txId)}`;
 }
