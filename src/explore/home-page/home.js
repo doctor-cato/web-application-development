@@ -20,6 +20,7 @@ if (heroMovies[0] && heroMovies[0].trailer) {
     iframe.src = heroMovies[0].trailer + '?enablejsapi=1';
     if (trailerYtLink && heroMovies[0].trailerWatch) {
         trailerYtLink.href = heroMovies[0].trailerWatch;
+    }
 }
 if (btnBookNow && heroMovies[0] && heroMovies[0].id) {
     btnBookNow.href = `/explore/movie-details/index.html?id=${heroMovies[0].id}`;
