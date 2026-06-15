@@ -42,7 +42,7 @@
                 <form action="/auth/user-login/login.html" method="GET" class="auth-form">
                     
                     <div class="avatar-container">
-                        <img id="avatar-preview" class="avatar-preview" src="https://i.pinimg.com/736x/8f/11/a6/8f11a6a2364c18c50c027ffb43c68b75.jpg" alt="Ảnh đại diện">
+                        <img id="avatar-preview" class="avatar-preview" src="/shared/images/avatar.jpg" alt="Ảnh đại diện">
                         <input type="file" id="avatar-input" accept="image/*" style="display: none;">
                         <div class="avatar-upload-btn" onclick="document.getElementById('avatar-input').click()">
                             <span class="material-symbols-outlined" style="font-size:16px;">edit</span>
@@ -97,8 +97,34 @@
             const file = e.target.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
-                    avatarPreview.src = e.target.result;
+                reader.onload = function(evt) {
+                    const img = new Image();
+                    img.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        const MAX_WIDTH = 150;
+                        const MAX_HEIGHT = 150;
+                        let width = img.width;
+                        let height = img.height;
+
+                        if (width > height) {
+                            if (width > MAX_WIDTH) {
+                                height *= MAX_WIDTH / width;
+                                width = MAX_WIDTH;
+                            }
+                        } else {
+                            if (height > MAX_HEIGHT) {
+                                width *= MAX_HEIGHT / height;
+                                height = MAX_HEIGHT;
+                            }
+                        }
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        
+                        avatarPreview.src = canvas.toDataURL('image/jpeg', 0.7);
+                    };
+                    img.src = evt.target.result;
                 }
                 reader.readAsDataURL(file);
             }

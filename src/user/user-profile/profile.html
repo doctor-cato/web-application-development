@@ -23,7 +23,7 @@
             <aside class="profile-sidebar">
                 <div class="sidebar-user-info">
                     <div class="sidebar-avatar-wrapper">
-                        <img id="sidebar-avatar" src="/shared/images/avatar.jpg" alt="User Avatar" onerror="this.src='https://i.pravatar.cc/150?img=11'">
+                        <img id="sidebar-avatar" src="/shared/images/avatar.jpg" alt="User Avatar" onerror="this.onerror=null; this.src='/shared/images/avatar.jpg';">
                         <div class="avatar-upload-btn" onclick="document.getElementById('avatar-input').click()"><i class="fas fa-camera"></i></div>
                         <input type="file" id="avatar-input" accept="image/*" style="display: none;">
                     </div>
@@ -212,31 +212,35 @@
             
             // Nếu chưa đăng nhập, đá về trang đăng nhập
             if (!isLoggedIn) {
-                window.location.href = '../Dang_Nhap/login.html';
+                window.location.href = '/auth/user-login/login.html';
                 return;
             }
 
             // Load thông tin từ localStorage
+            const userEmail = localStorage.getItem('userEmail');
             const userName = localStorage.getItem('userName') || 'Khách';
-            const userAvatar = localStorage.getItem('userAvatar') || 'https://i.pravatar.cc/150?img=11';
+            const userAvatar = localStorage.getItem('userAvatar') || '/shared/images/avatar.jpg';
             
             // Tìm user hiện tại trong danh sách để lấy thông tin chi tiết
             let users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
-            // Giả sử có lưu curUserEmail khi đăng nhập để tìm chính xác, 
-            // nhưng hiện tại ta có thể tìm theo tên (tạm thời)
-            let currentUser = users.find(u => u.fullname === userName);
+            let currentUser = users.find(u => u.email === userEmail) || users.find(u => u.fullname === userName);
 
             if (!currentUser) {
                 // Tạo mock data nếu không tìm thấy (trường hợp tài khoản tạo ảo)
                 currentUser = {
                     fullname: userName,
-                    email: "user@example.com",
+                    email: userEmail || "user@example.com",
                     avatar: userAvatar,
                     phone: "",
                     gender: "male",
                     dob: "",
                     points: 1250
                 };
+            }
+
+            // Đồng bộ ngay userAvatar trong localStorage nếu có sự lệch với currentUser.avatar
+            if (currentUser.avatar && localStorage.getItem('userAvatar') !== currentUser.avatar) {
+                localStorage.setItem('userAvatar', currentUser.avatar);
             }
 
             // Điền dữ liệu vào Sidebar
@@ -255,15 +259,50 @@
                 if (genderRadio) genderRadio.checked = true;
             }
 
-            // Handle Avatar Upload
+            // Handle Avatar Upload with instant synchronization & size optimization
             let newAvatarData = currentUser.avatar;
             document.getElementById('avatar-input').addEventListener('change', function(e) {
                 const file = e.target.files[0];
                 if (file) {
                     const reader = new FileReader();
                     reader.onload = function(evt) {
-                        newAvatarData = evt.target.result;
-                        document.getElementById('sidebar-avatar').src = newAvatarData;
+                        const img = new Image();
+                        img.onload = function() {
+                            const canvas = document.createElement('canvas');
+                            const MAX_WIDTH = 150;
+                            const MAX_HEIGHT = 150;
+                            let width = img.width;
+                            let height = img.height;
+
+                            if (width > height) {
+                                if (width > MAX_WIDTH) {
+                                    height *= MAX_WIDTH / width;
+                                    width = MAX_WIDTH;
+                                }
+                            } else {
+                                if (height > MAX_HEIGHT) {
+                                    width *= MAX_HEIGHT / height;
+                                    height = MAX_HEIGHT;
+                                }
+                            }
+                            canvas.width = width;
+                            canvas.height = height;
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(img, 0, 0, width, height);
+                            
+                            newAvatarData = canvas.toDataURL('image/jpeg', 0.7);
+                            
+                            // Update sidebar avatar
+                            document.getElementById('sidebar-avatar').src = newAvatarData;
+                            
+                            // Update navbar avatar and dropdown avatar immediately
+                            const navbarAvatar = document.querySelector('.user-btn .user-avatar');
+                            if (navbarAvatar) navbarAvatar.src = newAvatarData;
+                            
+                            const dropdownAvatar = document.querySelector('.user-header-avatar');
+                            if (dropdownAvatar) dropdownAvatar.src = newAvatarData;
+                        };
+                        img.src = evt.target.result;
                     };
                     reader.readAsDataURL(file);
                 }
@@ -319,6 +358,9 @@
             document.getElementById('sidebar-logout').addEventListener('click', (e) => {
                 e.preventDefault();
                 localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('userName');
+                localStorage.removeItem('userAvatar');
+                localStorage.removeItem('userEmail');
                 window.location.href = '../../index.html';
             });
 
