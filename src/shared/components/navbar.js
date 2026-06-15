@@ -141,17 +141,14 @@ export function renderNavbar() {
     background: rgba(255, 255, 255, 0.05);
 }
 
-.nav-links a:hover::after {
-    transform: translateX(-50%) scaleX(1);
-}
-
 .nav-links a.active {
     color: #ffffff;
     font-weight: bold;
 }
 
+.nav-links a:hover::after,
 .nav-links a.active::after {
-    transform: translateX(-50%) scaleX(1);
+    transform: translateX(-50%) scaleX(1) !important;
 }
 
 .nav-actions {
@@ -630,10 +627,25 @@ export function renderNavbar() {
 
     // Active link highlight
     setTimeout(() => {
-        const currentPath = window.location.pathname;
+        let currentPath = window.location.pathname;
+        // Normalize current path
+        if (currentPath.endsWith('/index.html')) {
+            currentPath = currentPath.replace('/index.html', '/');
+        }
+
         const links = document.querySelectorAll('.nav-links a');
         links.forEach(link => {
-            if (currentPath.includes(link.getAttribute('href').replace('../../', ''))) {
+            const href = link.getAttribute('href');
+            if (!href || href === '#') return;
+            
+            // Strip query parameters
+            let hrefPath = href.split('?')[0].replace('../../', '').replace('../', '');
+            // Normalize href path
+            if (hrefPath.endsWith('/index.html')) {
+                hrefPath = hrefPath.replace('/index.html', '/');
+            }
+            
+            if (hrefPath && currentPath.includes(hrefPath)) {
                 link.classList.add('active');
             } else {
                 link.classList.remove('active');

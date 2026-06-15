@@ -21,14 +21,28 @@
         <div class="breadcrumb">
             <a href="/explore/home-page/index.html">Trang chủ</a>
             <span class="separator"><i class="fas fa-chevron-right"></i></span>
-            <span class="current" id="breadcrumb-current">Phim Sắp Chiếu</span>
+            <span class="current" id="breadcrumb-current">Phim Đang Chiếu</span>
         </div>
 
         <!-- TABS -->
         <div class="page-tabs">
             <button class="tab" id="tab-now-showing" data-tab="now-showing">Phim Đang Chiếu</button>
-            <button class="tab active" id="tab-coming-soon" data-tab="coming-soon">Phim Sắp Chiếu</button>
+            <button class="tab" id="tab-coming-soon" data-tab="coming-soon">Phim Sắp Chiếu</button>
         </div>
+        <script>
+            // Chạy đồng bộ ngay lập tức để đặt đúng vị trí gạch đỏ trước khi trình duyệt vẽ giao diện
+            (function() {
+                const params = new URLSearchParams(window.location.search);
+                const tab = params.get('tab') || 'now-showing';
+                const activeBtn = document.getElementById('tab-' + tab);
+                if(activeBtn) activeBtn.classList.add('active');
+                
+                const breadcrumbCurrent = document.getElementById('breadcrumb-current');
+                if(breadcrumbCurrent) {
+                    breadcrumbCurrent.textContent = tab === 'coming-soon' ? 'Phim Sắp Chiếu' : 'Phim Đang Chiếu';
+                }
+            })();
+        </script>
 
         <!-- FILTER BAR -->
         <div class="movies-filters">
