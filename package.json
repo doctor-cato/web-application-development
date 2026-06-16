@@ -1,12 +1,14 @@
 {
   "scripts": {
-    "dev": "tailwindcss -i ./input.css -o ./src/shared/css/tailwind-legacy.css --watch",
-    "build": "tailwindcss -i ./input.css -o ./src/shared/css/tailwind-legacy.css --minify"
+    "dev": "serve src -l 3000",
+    "build": "tailwindcss -i ./input.css -o ./src/shared/css/tailwind-legacy.css --minify",
+    "tailwind:watch": "tailwindcss -i ./input.css -o ./src/shared/css/tailwind-legacy.css --watch"
   },
   "devDependencies": {
     "@tailwindcss/cli": "^4.3.1",
     "@tailwindcss/container-queries": "^0.1.1",
     "@tailwindcss/forms": "^0.5.11",
+    "serve": "^14.2.4",
     "tailwindcss": "^4.3.1"
   }
 }

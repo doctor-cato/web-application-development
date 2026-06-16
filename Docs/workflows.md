@@ -1,34 +1,96 @@
-# Quy trình Phát triển & Git
+# Quy trình Phát triển & Git — 3HD2Kcinema
 
 ## Quy tắc Code
 
 Khi làm việc với codebase này:
-1. **Không bao giờ** import các module Node bên ngoài hoặc sử dụng các gói bundler trừ khi hoàn toàn bắt buộc. Luôn phải bám sát theo chuẩn Vanilla ES6 `<script type="module">`.
-2. **Không bao giờ** viết các logic thao tác với DOM bên trong các thư mục dịch vụ (ví dụ: `auth-services/`).
-3. **Không bao giờ** viết các lệnh `setItem`/`getItem` của `LocalStorage` trực tiếp bên trong các trang. Mọi thứ phải luôn đi qua file `storage.js`.
+
+1. **Không bao giờ** import module Node.js bên ngoài hay dùng bundler — tuân thủ Vanilla ES6 `<script type="module">`.
+2. **Không bao giờ** viết DOM manipulation trong thư mục service (`auth-services/`, `bookingService.js`, v.v.).
+3. **Không bao giờ** gọi `localStorage.setItem()`/`getItem()` trực tiếp trong controller hay HTML — luôn đi qua `shared/utils/storage.js`.
+4. **Nhánh `main`**: Tuyệt đối không import Tailwind CSS CDN hoặc thư viện CSS bên ngoài. Chỉ dùng Vanilla CSS.
+5. **Nhánh `dev`**: Cho phép Tailwind CSS.
+
+---
+
+## Chạy Local
+
+```bash
+# Cài dependencies (1 lần)
+npm install
+
+# Khởi chạy dev server (giống Live Server)
+npm run dev
+# → http://localhost:3000
+
+# (Optional) Build Tailwind CSS cho nhánh dev
+npm run tailwind:watch
+```
 
 ---
 
 ## Luồng Git (Git Flow)
 
-Dự án dựa trên một chiến lược phân nhánh cô lập và gọn gàng:
+```
+main ──────────────────────────────── (stable, production-ready)
+  └── develop ──────────────────────── (integration branch)
+        └── feature/payment-gateway    (feature branches)
+        └── feature/forgot-password
+        └── fix/seat-lock-timeout
+```
 
-* **`main`**: Nhánh ổn định. Code tại nhánh này bắt buộc phải chạy mượt mà thông qua một máy chủ HTTP tĩnh.
-* **`develop`**: Nhánh để hội nhập (integration branch).
-* **`feature/*`**: Tạo các nhánh tính năng (feature branches) tách ra từ `develop` (Ví dụ: `feature/payment-gateway`).
+- **`main`**: Code ổn định, chạy mượt qua HTTP server tĩnh.
+- **`develop`**: Branch hội nhập. Cho phép Tailwind CSS.
+- **`feature/*`**: Tạo từ `develop`, merge vào `develop` sau khi done.
 
-### Commits
-Sử dụng các tiền tố commit theo chuẩn ngữ nghĩa (semantic):
-* `feat:` dành cho UI/logic mới.
-* `fix:` dành cho việc sửa lỗi (bug fixes).
-* `docs:` dành cho các thay đổi về file markdown tài liệu.
-* `refactor:` dành cho các thay đổi tái cấu trúc (ví dụ: di chuyển các file ra khỏi `assets/`).
+### Commit Convention
+
+| Prefix | Dùng khi |
+|---|---|
+| `feat:` | Thêm tính năng mới (UI + logic) |
+| `fix:` | Sửa bug |
+| `refactor:` | Tái cấu trúc code không thay đổi behavior |
+| `docs:` | Chỉ chỉnh file markdown tài liệu |
+| `chore:` | Config, deps, tooling (package.json, .gitignore...) |
+| `style:` | Chỉ chỉnh CSS/UI, không đổi logic |
 
 ---
 
 ## Quy trình làm việc cùng AI (Cursor / Copilot / Antigravity)
 
-Khi sử dụng các agent AI trên repository này:
-1. **Giới hạn Ngữ cảnh (Context Limit)**: Chỉ hướng AI đến việc đọc các tệp markdown trong thư mục `Docs/`. Tuyệt đối ngăn cấm AI đọc hoặc ghi các tệp `.docx`.
-2. **Không Thiết kế quá mức (No Over-Engineering)**: Nếu một AI cố gắng tạo ra các component React (`.jsx`) hoặc các route Express, hãy lập tức dừng quá trình khởi tạo đó lại. Nhắc nhở AI đọc file `Docs/architecture.md` để tuân thủ nghiêm ngặt các ràng buộc chỉ sử dụng Vanilla HTML/CSS/JS.
-3. **Sửa đổi gọn gàng (Clean Diffs)**: Hãy chỉ thị cho AI cập nhật code theo dạng module (từng phần nhỏ) thay vì bắt AI viết lại toàn bộ một tệp HTML dài 500 dòng từ đầu.
+1. **Đọc docs trước**: Chỉ hướng AI đến các file `.md` trong `Docs/`. Không đọc `.docx`.
+2. **Không Over-Engineering**: Nếu AI đề xuất tạo component React (`.jsx`), route Express, hay config webpack — dừng ngay và nhắc AI đọc `Docs/architecture.md`.
+3. **Sửa từng module nhỏ**: Yêu cầu AI cập nhật theo từng phần, không rewrite toàn bộ file HTML 500 dòng từ đầu.
+4. **Đồng bộ docs**: Sau mỗi thay đổi tính năng, cập nhật `Docs/features.md` và `README.md`.
+
+---
+
+## Các File Tạm / Script Tooling
+
+Trong codebase có một số file tooling Python không phải source code:
+
+| File | Mô tả |
+|---|---|
+| `src/booking/checkout/fix_checkout.py` | Script fix path import (đã dùng xong) |
+| `src/booking/checkout/fix_paths.py` | Script fix path import (đã dùng xong) |
+| `src/shared/components/fix_navbar.py` | Script fix navbar injection |
+| `src/engagement/minigame/append_cards.py` | Script append card HTML |
+| `src/engagement/minigame/update_filter.py` | Script cập nhật filter |
+| `src/engagement/minigame/update_layout.py` | Script cập nhật layout |
+| `update_navbar.py` | Script batch update navbar toàn site |
+| `remove-tailwind-cdn.js` | Script xóa Tailwind CDN khỏi các HTML file |
+
+> Các file `.py` này là one-off scripts, không phải source code chức năng. Có thể xóa sau khi không cần.
+
+---
+
+## Trạng thái Kỹ thuật Nợ (Technical Debt)
+
+| Vấn đề | Mức độ | File |
+|---|---|---|
+| `authService.js` là skeleton (chỉ TODO) | 🔴 Cao | `src/auth/auth-services/authService.js` |
+| `navbar.js` quá lớn (1368 dòng, 49KB) | 🟡 Trung bình | `src/shared/components/navbar.js` |
+| `profile.html` inline quá nhiều (53KB) | 🟡 Trung bình | `src/user/user-profile/profile.html` |
+| `aftercredit-lounge/index.html` là monolith (35KB) | 🟡 Trung bình | `src/engagement/aftercredit-lounge/index.html` |
+| `tailwind-legacy.css` trong nhánh `main` | 🟡 Trung bình | `src/shared/css/tailwind-legacy.css` |
+| `group-booking/` không có JS | 🟢 Thấp | `src/booking/group-booking/` |
+| `booking-history/` trống (chức năng nằm ở cancel-booking) | 🟢 Thấp | `src/user/booking-history/` |

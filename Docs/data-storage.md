@@ -1,107 +1,174 @@
-# Mô phỏng Lưu trữ Dữ liệu
+# Mô phỏng Lưu trữ Dữ liệu — 3HD2Kcinema
 
-Vì 3HD2Kcinema không sử dụng cơ sở dữ liệu bên ngoài (như SQL Server, MongoDB), nên toàn bộ trạng thái của ứng dụng được bảo lưu cục bộ ngay trong trình duyệt của người dùng.
+Vì 3HD2Kcinema không có backend, toàn bộ trạng thái ứng dụng được lưu trong trình duyệt qua 2 cơ chế:
 
-Chúng tôi sử dụng hai cơ chế:
-1. **`LocalStorage`**: Dữ liệu vĩnh viễn (Người dùng, Danh mục Phim, Trạng thái Ghế).
-2. **`SessionStorage`**: Dữ liệu tạm thời (Phiên đăng nhập hiện tại, Giỏ hàng đang kích hoạt).
+1. **`LocalStorage`** — Dữ liệu vĩnh viễn (tồn tại sau khi đóng/mở lại tab).
+2. **`SessionStorage`** — Dữ liệu phiên (tự xóa khi đóng tab).
 
-Tất cả các tương tác với dữ liệu đều được tập trung xử lý trong `shared/utils/storage.js` để đảm bảo tính toàn vẹn của JSON và tính nhất quán của lược đồ (schema).
+Tất cả thao tác dữ liệu đi qua file `shared/utils/storage.js` — **không được** gọi `localStorage`/`sessionStorage` trực tiếp trong controller hay view.
 
 ---
 
-## Lược đồ LocalStorage
+## API của storage.js
 
-`LocalStorage` đóng vai trò như một cơ sở dữ liệu toàn cục của chúng ta chứa một số "bộ sưu tập" (tương ứng với các khóa - keys).
+```js
+// LocalStorage
+lsGet(key, defaultValue)   // đọc + parse JSON
+lsSet(key, value)          // stringify + ghi
+lsRemove(key)              // xóa key
 
-### 1. `users_db` (Mảng Đối tượng)
-Lưu trữ thông tin các tài khoản đã đăng ký.
+// SessionStorage
+ssGet(key, defaultValue)
+ssSet(key, value)
+ssRemove(key)
+
+// Domain helpers
+getBookings() / saveBookings(bookings)
+getCheckout() / saveCheckout(data)       // SessionStorage
+getLastBooking() / saveLastBooking(b)
+getUsers() / saveUsers(users)
+getCurrentUser() / setCurrentUser(u)     // SessionStorage
+clearCurrentUser()
+getPendingPayments() / savePendingPayments(map)
+```
+
+---
+
+## Storage Keys thực tế
+
+```js
+KEYS = {
+  USERS:            'cinema_users',           // LocalStorage
+  CURRENT_USER:     'cinema_current_user',    // SessionStorage
+  MOVIES:           'cinema_movies',          // LocalStorage
+  BOOKINGS:         'cinema_bookings',        // LocalStorage
+  SEAT_LOCKS:       'cinema_seat_locks',      // LocalStorage
+  CHECKOUT:         'cinema_checkout',        // SessionStorage
+  LAST_BOOKING:     'cinema_last_booking',    // LocalStorage
+  PENDING_PAYMENTS: 'cinema_pending_payments' // LocalStorage
+}
+```
+
+> **Lưu ý:** Key thực tế trong code là `cinema_*`, **không phải** `users_db`, `movies_db` như docs cũ ghi.
+
+---
+
+## Schema LocalStorage
+
+### `cinema_users` (Array)
 ```json
 [
   {
     "userId": "usr_1717891200",
     "name": "Nguyen Van A",
     "email": "a@example.com",
-    "password": "hashed_password_simulation",
+    "password": "base64_encoded_password",
     "role": "user"
   }
 ]
 ```
 
-### 2. `movies_db` (Mảng Đối tượng)
-Danh mục các bộ phim hiện có.
+### `cinema_movies` (Array — tùy chọn)
+Nếu có sẽ override `data.js`. Nếu không có, dữ liệu lấy từ `shared/js/data.js` (hardcoded).
 ```json
 [
   {
-    "movieId": "mov_001",
-    "title": "Spider-Man: Across the Spider-Verse",
-    "poster": "https://images...",
-    "genres": ["Animation", "Action"],
-    "duration": 140
+    "id": "your-name",
+    "title": "YOUR NAME - TÊN CẬU LÀ GÌ?",
+    "showtimes": [
+      { "id": "st_200", "date": "2026-06-20", "time": "19:30", "room": "Phòng 3" }
+    ]
   }
 ]
 ```
 
-### 3. `showtimes_db` (Mảng Đối tượng)
-Ánh xạ các suất chiếu phim tới các ngày và khung giờ cụ thể.
+### `cinema_bookings` (Array)
 ```json
 [
   {
+    "id": "bk_m5k2abc1XY",
+    "movieTitle": "YOUR NAME",
     "showtimeId": "st_200",
-    "movieId": "mov_001",
-    "date": "2026-06-10",
-    "time": "19:30",
-    "room": "Room 3"
+    "showtimeText": "19:30",
+    "room": "Phòng 3",
+    "seats": ["A1", "A2"],
+    "combo": "double",
+    "total": 255000,
+    "userId": "usr_1717891200",
+    "transactionId": "TXN_20260616_482931",
+    "paymentMethod": "momo",
+    "createdAt": "2026-06-16T12:30:00.000Z"
   }
 ]
 ```
 
-### 4. `seat_status_db` (Từ điển Đối tượng)
-Theo dõi tình trạng sẵn sàng, đã khóa, và đã đặt chỗ trong thời gian thực của các ghế ngồi ứng với từng suất chiếu.
+### `cinema_seat_locks` (Object — Dictionary theo showtimeId)
 ```json
 {
   "st_200": {
-    "A1": { "status": "available" },
-    "A2": { 
-      "status": "locked", 
-      "lockedBy": "usr_1717891200", 
-      "lockExpiresAt": 1717891500 
+    "A1": {
+      "seatId": "A1",
+      "userId": "usr_1717891200",
+      "expiresAt": 1718540400000
     },
-    "B4": { 
-      "status": "booked", 
-      "bookedBy": "usr_1717891200", 
-      "bookingId": "bk_8829" 
+    "B4": {
+      "seatId": "B4",
+      "userId": "other_user_0.91234",
+      "expiresAt": 1718540200000
     }
   }
 }
 ```
 
+> Ghế đã thanh toán sẽ bị **xóa khỏi** `cinema_seat_locks` (không còn tồn tại trong map). Trạng thái "booked" chỉ được xác định qua `cinema_bookings`.
+
+### `cinema_last_booking` (Object)
+Lưu booking gần nhất để hiển thị ở trang hóa đơn.
+
+### `cinema_pending_payments` (Object)
+Map `transactionId → paymentData`, dùng cho flow xác nhận thanh toán.
+
 ---
 
-## Lược đồ SessionStorage
+## Schema SessionStorage
 
-`SessionStorage` đóng vai trò như một môi trường phiên làm việc chủ động của chúng ta. Nó sẽ tự động xóa sạch khi tab hoặc trình duyệt bị đóng hoàn toàn.
-
-### 1. `active_session`
-Lưu trữ JWT/Mock Token của người dùng đang đăng nhập ở thời điểm hiện tại.
+### `cinema_current_user`
 ```json
 {
-  "token": "mock_jwt_abc123",
   "userId": "usr_1717891200",
+  "name": "Nguyen Van A",
+  "email": "a@example.com",
   "role": "user"
 }
 ```
 
-### 2. `pending_checkout`
-Lưu trữ giỏ hàng hiện tại khi chuyển hướng từ trang đặt vé sang trang thanh toán và hóa đơn.
+### `cinema_checkout`
 ```json
 {
   "showtimeId": "st_200",
+  "movieTitle": "YOUR NAME - TÊN CẬU LÀ GÌ?",
+  "poster": "https://...",
+  "room": "Phòng 3",
+  "showtimeText": "19:30",
+  "seats": ["A1", "A2"],
   "selectedSeats": ["A1", "A2"],
-  "seatTotal": 160000,
-  "combo": "DOUBLE",
-  "comboTotal": 95000,
-  "grandTotal": 255000,
-  "expiresAt": 1717891500
+  "seatAmount": 100000,
+  "seatTotal": 100000,
+  "total": 100000,
+  "expiresAt": 1718540700000
 }
 ```
+
+> `seats` và `selectedSeats` tồn tại song song — `seats` dùng cho `checkout.js`, `selectedSeats` là alias tương thích.
+
+---
+
+## Mock Data (data.js)
+
+File `shared/js/data.js` (35.8KB) chứa toàn bộ dữ liệu hardcoded:
+- `heroMovies[]` — 5 phim cho Hero Slider
+- `nowShowingMovies[]` — Phim đang chiếu
+- `comingSoonMovies[]` — Phim sắp chiếu
+- Dữ liệu rạp/cụm rạp cho cinema map
+
+Dữ liệu này được load bằng `<script src="...">` (non-module) nên expose ra global scope, các trang khác access trực tiếp qua `window.heroMovies`, `window.nowShowingMovies`, etc.

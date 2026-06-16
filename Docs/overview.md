@@ -1,54 +1,107 @@
-# Tổng quan Dự án
+# Tổng quan Dự án — 3HD2Kcinema
 
 ## Giới thiệu
 
-**3HD2Kcinema** là một ứng dụng web tĩnh, không sử dụng server (server-free client-side) mô phỏng hệ thống đặt vé xem phim. Dự án tập trung vào việc mô phỏng một trải nghiệm người dùng chuẩn điện ảnh theo thời gian thực (real-time) hoàn toàn bên trong trình duyệt.
+**3HD2Kcinema** là một ứng dụng web tĩnh, không sử dụng server (client-side only) mô phỏng hệ thống đặt vé xem phim. Dự án tập trung vào việc mô phỏng một trải nghiệm người dùng chuẩn điện ảnh theo thời gian thực hoàn toàn bên trong trình duyệt.
 
-Dự án này được thiết kế nhằm:
-* Trình diễn cách phát triển web Vanilla theo hướng module sử dụng HTML, CSS, và JS mà không cần các framework nặng nề (Không dùng React, Vue, hay Angular).
-* Giới thiệu khả năng đồng bộ hóa thời gian thực nguyên bản của trình duyệt bằng cách sử dụng **BroadcastChannel API**.
-* Vận dụng bộ nhớ cục bộ của trình duyệt (`LocalStorage`, `SessionStorage`) để duy trì và lưu trữ dữ liệu.
-* Đảm bảo tính dễ dàng khi chạy cục bộ mà không cần phải cài đặt bất kỳ bộ SDK backend nào (Node, ASP.NET, SQL Server).
+Mục tiêu dự án:
+- Trình diễn cách phát triển web Vanilla theo hướng module (HTML + CSS + JS thuần), không dùng React, Vue hay Angular.
+- Giới thiệu khả năng đồng bộ thời gian thực nguyên bản của trình duyệt qua **BroadcastChannel API**.
+- Vận dụng `LocalStorage` và `SessionStorage` để mô phỏng cơ sở dữ liệu phía client.
+- Chạy được ngay trên local không cần cài backend SDK (Node, ASP.NET, SQL Server...).
 
 ---
 
 ## Công nghệ Cốt lõi
 
-* **HTML5**: Cấu trúc nội dung đánh dấu.
-* **Vanilla CSS3**: Tạo kiểu thông qua các class CSS Semantic nguyên bản (Cinematic Noir, Glassmorphism) không sử dụng Tailwind hay thư viện CSS ngoài.
-* **JavaScript (ES6 Modules)**: Logic theo module được tách biệt thành các component, service, và controller của từng trang.
-* **LocalStorage & SessionStorage**: Đóng vai trò là "cơ sở dữ liệu" mô phỏng.
-* **BroadcastChannel API**: Đồng bộ hóa các sự kiện thời gian thực (ví dụ như việc khóa ghế ngồi) trên nhiều tab trình duyệt khác nhau.
+| Công nghệ | Vai trò |
+|---|---|
+| **HTML5** | Cấu trúc nội dung, semantic markup |
+| **Vanilla CSS3** | Cinematic Noir theme, Glassmorphism, CSS Custom Properties (không dùng Tailwind trên `main`) |
+| **JavaScript ES6 Modules** | Logic theo module: controller, service, component tách biệt |
+| **LocalStorage** | Giả lập database lâu dài: users, bookings, seat locks, movies |
+| **SessionStorage** | Dữ liệu phiên: user đang đăng nhập, giỏ hàng checkout tạm thời |
+| **BroadcastChannel API** | Đồng bộ sự kiện real-time (khóa ghế) giữa nhiều tab trình duyệt |
 
 ---
 
 ## Cách chạy Ứng dụng
 
-Do ứng dụng hoàn toàn là HTML/CSS/JS tĩnh kết hợp với ES6 Modules, bạn **bắt buộc phải chạy ứng dụng thông qua một máy chủ HTTP tĩnh cục bộ** (do chính sách CORS của trình duyệt đối với các liên kết `file://`).
+Do ứng dụng dùng ES6 Modules, **bắt buộc phải chạy qua HTTP server** (trình duyệt chặn `file://` với modules).
 
-### Khởi chạy Nhanh (với Python)
-1. Mở terminal tại thư mục gốc của dự án `src`.
-2. Chạy lệnh `python -m http.server 8000`.
-3. Mở trình duyệt và điều hướng tới địa chỉ `http://localhost:8000/index.html`.
+### Cách 1 — npm run dev (Khuyến nghị — tương đương Live Server)
 
-### Khởi chạy Nhanh (với VSCode)
-1. Mở dự án trong VSCode.
-2. Cài đặt extension **Live Server**.
-3. Click chuột phải vào file `src/index.html` và chọn **"Open with Live Server"**.
+```bash
+npm install
+npm run dev
+```
+Mở trình duyệt tại: `http://localhost:3000`
+
+> Server `serve` tự động phục vụ thư mục `src/` với hot-reload tương tự Live Server của VSCode.
+
+### Cách 2 — Python HTTP Server
+
+```bash
+cd src/
+python -m http.server 8000
+```
+Mở trình duyệt tại: `http://localhost:8000/index.html`
+
+### Cách 3 — VSCode Live Server
+
+Cài extension **Live Server**, click phải vào `src/index.html` → **Open with Live Server**.
 
 ---
 
 ## Cấu trúc Thư mục
 
 ```text
-/
-├── Docs/                    # Tài liệu dự án
-├── src/                     # Thư mục chứa mã nguồn (Source code)
-│   ├── auth/                # Domain: Xác thực (đăng nhập, đăng ký)
-│   ├── booking/             # Domain: Đặt vé và thanh toán
-│   ├── user/                # Domain: Thông tin & Hồ sơ người dùng
-│   ├── explore/             # Domain: Khám phá phim và trang chủ
-│   ├── engagement/          # Domain: Các tính năng tương tác ngoài lề
-│   ├── shared/              # Thư mục dùng chung (components, css, utils)
-│   └── index.html           # Trang chủ (Redirect)
+/ (repo root)
+├── Docs/                      # Tài liệu dự án
+├── package.json               # npm scripts (dev: serve, build: tailwind)
+└── src/                       # Mã nguồn
+    ├── index.html             # Redirect → explore/home-page/index.html
+    ├── auth/                  # Domain: Xác thực
+    │   ├── user-login/        # Trang đăng nhập
+    │   ├── user-register/     # Trang đăng ký
+    │   ├── forgot-password/   # Chưa triển khai
+    │   └── auth-services/     # authService.js, auth.css
+    ├── booking/               # Domain: Đặt vé
+    │   ├── seat-booking/      # Chọn ghế + BroadcastChannel
+    │   ├── booking-food/      # Combo Bắp Nước
+    │   ├── checkout/          # Thanh toán + Cổng giả lập + Hóa đơn QR
+    │   ├── cancel-booking/    # Hủy vé, đổi suất, lịch sử giao dịch
+    │   └── group-booking/     # Mockup UI (chưa có JS)
+    ├── user/                  # Domain: Người dùng
+    │   ├── user-profile/      # Hồ sơ cá nhân
+    │   ├── loyalty-points/    # Tích điểm & hạng thành viên (Member/Silver/Gold/Platinum)
+    │   ├── user-notifications/# Trung tâm thông báo
+    │   └── booking-history/   # Thư mục dự phòng (chức năng nằm ở cancel-booking)
+    ├── explore/               # Domain: Khám phá
+    │   ├── home-page/         # Trang chủ: Hero slider, Now Showing, Coming Soon
+    │   ├── movie-details/     # Chi tiết phim: trailer, suất chiếu, đặt vé
+    │   ├── movie-search/      # Tìm kiếm & lọc phim nâng cao
+    │   └── cinema-map/        # Bản đồ cụm rạp
+    ├── engagement/            # Domain: Tương tác ngoài lề
+    │   ├── aftercredit-lounge/# Thảo luận & đánh giá phim sau khi xem
+    │   └── minigame/          # Cinebet minigame
+    └── shared/                # Dùng chung toàn dự án
+        ├── css/               # main.css (design system), style.css
+        ├── js/                # data.js (toàn bộ mock data phim/rạp)
+        ├── components/        # navbar.js, footer.js, movieCard.js, seatGrid.js, toast.js
+        └── utils/             # storage.js (wrapper LocalStorage/SessionStorage), paymentService.js
+```
+
+---
+
+## Luồng Điều Hướng Chính
+
+```
+index.html → explore/home-page/index.html
+           → explore/movie-details/index.html?id={movieId}
+           → booking/seat-booking/booking.html?id={movieId}&showtimeId={id}
+           → booking/booking-food/index.html
+           → booking/checkout/checkout.html
+           → booking/checkout/payment_simulation.html
+           → booking/checkout/booking_invoice.html
 ```

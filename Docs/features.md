@@ -1,65 +1,127 @@
-# Tính năng & Luồng Ứng dụng
+# Tính năng & Luồng Ứng dụng — 3HD2Kcinema
 
-Tài liệu này chi tiết các tính năng tương tác cốt lõi của hệ thống mô phỏng 3HD2Kcinema.
+Tài liệu chi tiết các tính năng và luồng nghiệp vụ của hệ thống mô phỏng.
 
-## Bảng Theo Dõi Tiến Độ Tính Năng
+## Bảng Theo Dõi Tiến Độ
 
-Dưới đây là danh sách các tính năng được yêu cầu, được đánh dấu theo trạng thái thực tế trong mã nguồn hiện tại (`[x]` là đã có code triển khai hoạt động, `[ ]` là chưa có hoặc mới chỉ có file giữ chỗ `.gitkeep`):
+> `✅` = Có code hoạt động | `🔄` = Mockup UI chưa có JS | `❌` = Chưa triển khai (chỉ có `.gitkeep`)
 
-### I. Danh sách Tính năng & Trạng thái
-
-- [x] **Trang đăng nhập + Index**: Đã hoàn thành (nằm trong `src/auth/user-login/` và `src/index.html`).
-- [x] **Trang chủ**: Đã hoàn thành (nằm trong `src/explore/home-page/`).
-- [x] **Chi tiết phim**: Đã hoàn thành (nằm trong `src/explore/movie-details/`, tải dữ liệu động từ `data.js`).
-- [x] **Hồ sơ cá nhân**: Đã hoàn thành (nằm trong `src/user/user-profile/`).
-- [x] **Bắp nước / Bỏng nước**: Đã hoàn thành (nằm trong `src/booking/booking-food/`).
-- [x] **Đặt ghế**: Đã hoàn thành (nằm trong `src/booking/seat-booking/`).
-- [x] **Thanh toán**: Đã hoàn thành (nằm trong `src/booking/checkout/` và cổng giả lập).
-- [x] **Hệ thống tích điểm**: Đã hoàn thành (nằm trong `src/user/loyalty-points/`).
-- [x] **Tìm kiếm và lọc nâng cao**: Đã hoàn thành (nằm trong `src/explore/movie-search/`).
-- [x] **Lịch sử giao dịch và đặt vé**: Đã hoàn thành (nằm trong tab Lịch sử giao dịch của trang Vé & Giao dịch `src/booking/cancel-booking/`).
-- [ ] **Quên mật khẩu & Xác thực OTP**: Chưa có code triển khai.
-- [x] **Giao diện đặt vé thành công**: Đã hoàn thành (giao diện hóa đơn đẹp mắt, hiển thị chi tiết tại `src/booking/checkout/booking_invoice.html`).
-- [x] **Hủy vé và thay đổi suất chiếu**: Đã hoàn thành (nằm trong `src/booking/cancel-booking/`).
-- [x] **Bản đồ và định vị rạp**: Đã hoàn thành.
-- [x] **Trang ghép đôi Cine-Match**: Đã hoàn thành.
-- [x] **Trung tâm thông báo**: Đã hoàn thành (nằm trong `src/user/user-notifications/`).
-- [x] **Cinebet minigame**: Đã hoàn thành.
-- [/] **Đặt và giữ ghế cho nhóm**: Giao diện Mockup.
-- [x] **Thảo luận đánh giá về phim sau khi xem**: Đã hoàn thành.
-- [ ] **Tính năng chia tiền nhóm & Hủy vé trong Profile**: Chưa có code triển khai.
+| # | Tính năng | Trạng thái | Vị trí code |
+|---|---|---|---|
+| 1 | Trang đăng nhập | ✅ | `src/auth/user-login/login.html` |
+| 2 | Trang đăng ký | ✅ | `src/auth/user-register/register.html` |
+| 3 | Quên mật khẩu & OTP | ❌ | `src/auth/forgot-password/` (chỉ `.gitkeep`) |
+| 4 | Trang chủ (Hero + Now Showing + Coming Soon) | ✅ | `src/explore/home-page/` |
+| 5 | Chi tiết phim (Trailer modal, Suất chiếu, Đặt vé) | ✅ | `src/explore/movie-details/` |
+| 6 | Tìm kiếm & lọc phim nâng cao | ✅ | `src/explore/movie-search/` |
+| 7 | Bản đồ & định vị cụm rạp | ✅ | `src/explore/cinema-map/` |
+| 8 | Đặt ghế thời gian thực (BroadcastChannel) | ✅ | `src/booking/seat-booking/` |
+| 9 | Chọn combo Bắp Nước | ✅ | `src/booking/booking-food/` |
+| 10 | Thanh toán & Cổng giả lập (MoMo/VNPAY style) | ✅ | `src/booking/checkout/` |
+| 11 | Hóa đơn điện tử + QR Code | ✅ | `src/booking/checkout/booking_invoice.html` |
+| 12 | Hủy vé & Đổi suất chiếu | ✅ | `src/booking/cancel-booking/` |
+| 13 | Lịch sử giao dịch | ✅ | `src/booking/cancel-booking/` (tab lịch sử) |
+| 14 | Đặt & giữ ghế theo nhóm | 🔄 | `src/booking/group-booking/` (UI mockup, không có JS) |
+| 15 | Hồ sơ cá nhân | ✅ | `src/user/user-profile/` |
+| 16 | Hệ thống tích điểm & hạng thành viên | ✅ | `src/user/loyalty-points/` |
+| 17 | Trung tâm thông báo | ✅ | `src/user/user-notifications/` |
+| 18 | Chia tiền nhóm trong Profile | ❌ | Chưa triển khai |
+| 19 | After-Credit Lounge (thảo luận & đánh giá phim) | ✅ | `src/engagement/aftercredit-lounge/` |
+| 20 | Cinebet Minigame | ✅ | `src/engagement/minigame/` |
 
 ---
 
-## 1. Duyệt Danh mục (`explore/home-page/index.html`)
-- Hiển thị danh sách phim được tải động từ `movieService.js`.
-- Tích hợp tính năng lọc theo thể loại.
-- Hiển thị các poster phim và lịch chiếu.
+## 1. Trang chủ (`explore/home-page/`)
 
-## 2. Xác thực (`auth/user-login/login.html` & `auth/user-register/register.html`)
-- Xác minh tính hợp lệ của dữ liệu đầu vào người dùng một cách sạch sẽ.
-- Mô phỏng quá trình mã hóa mật khẩu (password hashing) và tạo token.
-- Lưu trữ phiên đăng nhập trong `SessionStorage`.
-- Component `navbar.js` sẽ tự động phản ứng với trạng thái `active_session`, thay thế nút "Đăng nhập" bằng menu thả xuống của Hồ sơ Người dùng.
+- **Hero Slider**: Tự động chuyển slide mỗi 5 giây, có fade transition. Dữ liệu từ `heroMovies[]` trong `data.js`.
+- **Trailer Modal**: Nhúng YouTube iframe, phát hiện lỗi embed (Error 100/150/153) qua `postMessage` và hiển thị fallback.
+- **Now Showing / Coming Soon**: Render danh sách phim động từ `data.js`.
+- **Quick Book trên Navbar**: Dropdown chọn phim → rạp → ngày → giờ, render trong `navbar.js`.
 
-## 3. Khóa Ghế Thời gian thực (`booking/seat-booking/booking.html`)
-Đây là tính năng quan trọng nhất của bản mô phỏng. Nó bắt chước các vấn đề về tương tranh (concurrency) của một nền tảng đặt vé rạp chiếu phim có lưu lượng truy cập cao.
+---
 
-### Cơ chế Khóa (Locking Mechanism):
-- Khi một ghế được click chọn, nó sẽ chuyển sang trạng thái **"Đã khóa" (Locked)**.
-- Một đồng hồ đếm ngược 5 phút sẽ bắt đầu. Nếu thời gian kết thúc trước khi quá trình thanh toán hoàn tất, ghế sẽ bị tự động mở khóa.
-- `BroadcastChannel` gửi sự kiện khóa đến tất cả các tab khác, ngăn chặn việc đặt trùng vé.
-- Nếu người dùng đóng tab giữa chừng lúc đang đặt vé, trình xử lý sự kiện `beforeunload` sẽ dọn dẹp các ghế đã khóa khỏi `LocalStorage` và phát đi sự kiện mở khóa.
+## 2. Xác thực (`auth/`)
 
-### Mô phỏng Bot (Bot Simulation):
-- Để thể hiện trực quan khả năng của giao diện thời gian thực, `booking.js` chứa một vòng lặp bot mô phỏng (`setInterval`) tự động khóa và mở khóa ngẫu nhiên các ghế trống sau mỗi vài giây.
+- Đăng nhập: Xác thực credentials với `cinema_users` trong LocalStorage.
+- Đăng ký: Tạo tài khoản mới, lưu vào `cinema_users`.
+- Phiên đăng nhập: Lưu `cinema_current_user` vào SessionStorage (tự xóa khi đóng tab).
+- Mật khẩu: Encode Base64 — chỉ dùng cho demo, **không an toàn cho production**.
+- `authService.js`: Hiện là skeleton (chỉ có TODO comments) — logic auth nằm trực tiếp trong các file HTML.
 
-## 4. Thanh toán & Mô phỏng Thanh toán (`booking/checkout/checkout.html` & `payment_simulation.html`)
-- Trang checkout sẽ đọc dữ liệu `pending_checkout` từ `SessionStorage`.
-- Người dùng có thể mua thêm Bắp Nước (Concessions).
-- Khi tiến hành thanh toán, người dùng sẽ được chuyển hướng tới một màn hình Cổng thanh toán mô phỏng (`payment_simulation.html`), sao chép giao diện của MoMo hoặc VNPAY.
-- Thanh toán thành công sẽ kích hoạt một bản cập nhật nguyên tử (atomic update) vào `LocalStorage`: chuyển trạng thái ghế từ `"locked"` sang `"booked"`, đồng thời lưu đơn hàng cuối cùng vào lịch sử đặt vé của người dùng.
+> ⚠️ **authService.js chưa có implementation** — đây là khoảng trống cần bổ sung.
 
-## 5. Hóa đơn (`booking/checkout/booking_invoice.html`)
-- Đọc thông tin chi tiết của giao dịch đặt vé đã được xác nhận.
-- Hiển thị chi tiết poster phim, ghế đã đặt, combo bắp nước, và tổng số tiền thanh toán thông qua giao diện Glassmorphism cao cấp.
+---
+
+## 3. Đặt ghế Thời gian thực (`booking/seat-booking/`)
+
+Tính năng cốt lõi của bản mô phỏng, bắt chước concurrency của một nền tảng thực.
+
+### Cơ chế Khóa Ghế
+1. User click chọn ghế → `lockSeat(showtimeId, seatId, userId)`.
+2. Ghi trạng thái vào `cinema_seat_locks` (LocalStorage).
+3. Phát sự kiện `{ type: 'seat_locked', ... }` qua BroadcastChannel `seat_sync`.
+4. Tất cả tab khác nhận sự kiện, cập nhật UI ngay lập tức.
+5. Countdown **15 phút** bắt đầu. Hết thời gian → tự unlock + reload.
+
+### Bot Simulation
+- `setInterval` chạy mỗi **10 giây**, random lock ghế trống trong các hàng A–G.
+- Giả lập người dùng khác đang đặt vé cùng lúc.
+
+### Giá vé
+| Loại ghế | Ngày thường | Cuối tuần |
+|---|---|---|
+| Regular | 50,000đ | 65,000đ |
+| VIP | 65,000đ | 80,000đ |
+| Couple | 100,000đ | 150,000đ |
+
+---
+
+## 4. Luồng Thanh toán (`booking/checkout/`)
+
+1. `seat-booking/booking.js` lưu `pending_checkout` vào SessionStorage (`cinema_checkout`).
+2. `checkout.html` đọc data từ `getCheckout()`, hiển thị order summary.
+3. User chọn thêm combo Bắp Nước (none / single 65,000đ / double 95,000đ).
+4. Chọn phương thức thanh toán → redirect `payment_simulation.html`.
+5. Thanh toán giả lập 3 giây → gọi `confirmBooking()`:
+   - Tạo booking record, push vào `cinema_bookings`.
+   - Xóa seat locks, phát `seat_booked` event qua BroadcastChannel.
+6. Redirect `booking_invoice.html` — hiển thị hóa đơn + QR string.
+
+### QR Code Format
+```
+3HD2K-TICKET|ID:{bookingId}|MOVIE:{title}|SHOW:{showtime}|SEATS:{A1,B2}|TOTAL:{amount}
+```
+
+---
+
+## 5. Lịch sử & Hủy vé (`booking/cancel-booking/`)
+
+- Đọc tất cả bookings từ `cinema_bookings` (LocalStorage).
+- Hiển thị 2 tab: **Vé của tôi** và **Lịch sử giao dịch**.
+- Hủy vé: xóa booking khỏi mảng, hoàn điểm loyalty.
+- Đổi suất chiếu: cập nhật `showtimeId` và thông tin mới trong booking.
+
+---
+
+## 6. Hệ thống Tích điểm (`user/loyalty-points/`)
+
+4 hạng thành viên:
+
+| Hạng | Điểm | Đặc quyền |
+|---|---|---|
+| THÀNH VIÊN | 0–199 | Tích điểm 1x |
+| BẠC | 200–499 | Tích 1.5x, giảm 5% combo |
+| VÀNG | 500–999 | Tích 2x cuối tuần, ưu tiên ghế đôi, giảm 10% combo |
+| BẠCH KIM | 1000+ | Tích 3x, miễn phí upgrade, preview độc quyền |
+
+---
+
+## 7. After-Credit Lounge (`engagement/aftercredit-lounge/`)
+
+Trang thảo luận và đánh giá phim sau khi xem. Toàn bộ là 1 file HTML inline (35.7KB), không tách JS riêng.
+
+---
+
+## 8. Cinebet Minigame (`engagement/minigame/`)
+
+Mini-game giải trí tích hợp vào ứng dụng. Toàn bộ là 1 file HTML inline (14.2KB).

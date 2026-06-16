@@ -1,63 +1,88 @@
-# 3HD2Kcinema - Trình mô phỏng Đặt vé Vanilla JS
+# 3HD2Kcinema — Mô phỏng Đặt Vé Rạp Chiếu Phim (Vanilla JS)
 
-Đây là một ứng dụng web mô phỏng hệ thống đặt vé rạp chiếu phim, tập trung vào trải nghiệm UI Cinematic và đồng bộ trạng thái ghế thời gian thực (Real-time Seat Booking Simulation). Dự án này thuần Frontend và hoàn toàn không có Backend server.
+Ứng dụng web tĩnh mô phỏng toàn bộ luồng đặt vé rạp chiếu phim, từ xem phim, chọn ghế thời gian thực, thanh toán đến hóa đơn QR. Thuần Frontend — không có Backend server.
 
 ## Công nghệ sử dụng
-- **HTML5**
-- **Vanilla CSS3 (Cinematic Noir Theme, Glassmorphism)**
-- **Vanilla JavaScript (ES6 Modules)**
-- CSDL mô phỏng qua **LocalStorage** và **SessionStorage**
-- Đồng bộ Real-time qua **BroadcastChannel API**
 
-## Cách chạy ứng dụng (Local)
-Vì dự án dùng Javascript Modules (`<script type="module">`), bạn cần một HTTP server tĩnh để tránh lỗi CORS.
-1. Khởi chạy HTTP server tĩnh trong thư mục `src/`:
-   ```bash
-   cd src/
-   python -m http.server 8000
-   ```
-2. Truy cập: `http://localhost:8000/index.html` (Trình duyệt sẽ tự động điều hướng vào trang chủ `explore/home-page/index.html`).
+| Công nghệ | Mô tả |
+|---|---|
+| **HTML5** | Cấu trúc trang, semantic markup |
+| **Vanilla CSS3** | Cinematic Noir theme, Glassmorphism, CSS Custom Properties |
+| **JavaScript ES6 Modules** | `<script type="module">`, không dùng framework |
+| **LocalStorage** | Giả lập database: users, bookings, seat locks |
+| **SessionStorage** | Phiên đăng nhập (`cinema_current_user`), giỏ hàng (`cinema_checkout`) |
+| **BroadcastChannel API** | Đồng bộ ghế thời gian thực giữa nhiều tab |
 
-Hoặc sử dụng extension **Live Server** trong VSCode, click chuột phải vào `src/index.html` -> Open with Live Server.
+## Cách chạy (Local)
 
-## Cấu trúc thư mục (Kiến trúc theo Lĩnh vực / Domain-Based Architecture)
-Dự án được tổ chức theo từng phân hệ (Domain/Feature) giống như các project hiện đại (Next.js, Angular, Domain-Driven Design), mặc dù code hoàn toàn là Vanilla JS.
+> **Bắt buộc** phải chạy qua HTTP server (do chính sách CORS với `file://` và ES6 Modules).
+
+### Cách 1 — `npm run dev` (Khuyến nghị)
+
+```bash
+npm install
+npm run dev
+# Mở trình duyệt: http://localhost:3000
+```
+
+### Cách 2 — Python HTTP Server
+
+```bash
+cd src/
+python -m http.server 8000
+# Mở trình duyệt: http://localhost:8000/index.html
+```
+
+### Cách 3 — VSCode Live Server
+
+Click phải vào `src/index.html` → **Open with Live Server**
+
+## Cấu trúc thư mục
 
 ```text
 / (repo root)
-├─ Docs/                     # Toàn bộ tài liệu kiến trúc & ASCII Diagram
-└─ src/                      # Source code chính
-   ├─ index.html             # Chuyển hướng (Redirect)
-   ├─ auth/                  # Domain: Xác thực (login, register, forgot-password)
-   ├─ booking/               # Domain: Đặt vé (chọn ghế, thanh toán, hóa đơn)
-   ├─ user/                  # Domain: Người dùng (hồ sơ, lịch sử, khách hàng thân thiết)
-   ├─ explore/               # Domain: Khám phá (trang chủ, phim, bản đồ rạp)
-   ├─ engagement/            # Domain: Tương tác (hẹn hò, minigame)
-   └─ shared/                # Dùng chung (Shared Services, Components, CSS)
+├── Docs/                      # Tài liệu kiến trúc & nghiệp vụ
+├── src/                       # Source code chính
+│   ├── index.html             # Redirect → explore/home-page/
+│   ├── auth/                  # Domain: Xác thực (login, register)
+│   ├── booking/               # Domain: Đặt vé (seat, food, checkout, cancel)
+│   ├── user/                  # Domain: Người dùng (profile, loyalty, notifications)
+│   ├── explore/               # Domain: Khám phá (home, movie-details, search, cinema-map)
+│   ├── engagement/            # Domain: Tương tác (aftercredit-lounge, minigame)
+│   └── shared/                # Dùng chung (navbar, footer, storage, data, CSS)
+└── package.json               # npm scripts: dev (serve), build (tailwind)
 ```
-
-## Tài liệu
-Hãy đọc thư mục `Docs/` để hiểu sâu hơn về kiến trúc phân tầng, cách lưu trữ dữ liệu, lộ trình phát triển (Roadmap), và cách thức hoạt động của cơ chế giả lập Real-time.
 
 ## Bảng Theo Dõi Tiến Độ Tính Năng
 
-- [x] **Trang đăng nhập + Index**: Đã hoàn thành (nằm trong `src/auth/user-login/` và `src/index.html`).
-- [x] **Trang chủ**: Đã hoàn thành (nằm trong `src/explore/home-page/`).
-- [x] **Chi tiết phim**: Đã hoàn thành (nằm trong `src/explore/movie-details/`, tải dữ liệu động từ `data.js`).
-- [x] **Hồ sơ cá nhân**: Đã hoàn thành (nằm trong `src/user/user-profile/`).
-- [x] **Bắp nước / Bỏng nước**: Đã hoàn thành (nằm trong `src/booking/booking-food/`).
-- [x] **Đặt ghế**: Đã hoàn thành (nằm trong `src/booking/seat-booking/`).
-- [x] **Thanh toán**: Đã hoàn thành (nằm trong `src/booking/checkout/` và cổng giả lập).
-- [x] **Hệ thống tích điểm**: Đã hoàn thành (nằm trong `src/user/loyalty-points/`).
-- [x] **Tìm kiếm và lọc nâng cao**: Đã hoàn thành (nằm trong `src/explore/movie-search/`).
-- [x] **Lịch sử giao dịch và đặt vé**: Đã hoàn thành (nằm trong tab Lịch sử giao dịch của trang Vé & Giao dịch `src/booking/cancel-booking/`).
-- [ ] **Quên mật khẩu & Xác thực OTP**: Chưa có code triển khai.
-- [x] **Giao diện đặt vé thành công có mã QR**: Đã hoàn thành.
-- [x] **Hủy vé và thay đổi suất chiếu**: Đã hoàn thành (nằm trong `src/booking/cancel-booking/`).
-- [x] **Bản đồ và định vị rạp**: Đã hoàn thành.
-- [x] **Trang ghép đôi Cine-Match**: Đã hoàn thành (giao diện Landing Page tại `src/engagement/dating/`).
-- [x] **Trung tâm thông báo**: Đã hoàn thành (nằm trong `src/user/user-notifications/`).
-- [x] **Cinebet minigame**: Đã hoàn thành (phần giả lập minigame tại `src/engagement/minigame/`).
-- [/] **Đặt và giữ ghế cho nhóm**: Giao diện Mockup (nằm trong `src/booking/group-booking/`).
-- [x] **Thảo luận đánh giá về phim sau khi xem**: Đã hoàn thành (phần giả lập After-Credit Lounge tại `src/engagement/aftercredit-lounge/`).
-- [ ] **Tính năng chia tiền nhóm & Hủy vé trong Profile**: Chưa có code triển khai.
+| Trạng thái | Tính năng | Vị trí |
+|---|---|---|
+| ✅ Hoàn thành | Trang đăng nhập | `src/auth/user-login/login.html` |
+| ✅ Hoàn thành | Trang đăng ký | `src/auth/user-register/register.html` |
+| ✅ Hoàn thành | Trang chủ (Hero + Now Showing + Coming Soon) | `src/explore/home-page/` |
+| ✅ Hoàn thành | Chi tiết phim (Trailer, Suất chiếu, Đặt vé) | `src/explore/movie-details/` |
+| ✅ Hoàn thành | Tìm kiếm & lọc phim nâng cao | `src/explore/movie-search/` |
+| ✅ Hoàn thành | Bản đồ & định vị cụm rạp | `src/explore/cinema-map/` |
+| ✅ Hoàn thành | Đặt ghế thời gian thực (BroadcastChannel) | `src/booking/seat-booking/` |
+| ✅ Hoàn thành | Chọn combo Bắp Nước | `src/booking/booking-food/` |
+| ✅ Hoàn thành | Thanh toán & Cổng thanh toán giả lập | `src/booking/checkout/` |
+| ✅ Hoàn thành | Hóa đơn điện tử (QR Code) | `src/booking/checkout/booking_invoice.html` |
+| ✅ Hoàn thành | Hủy vé & Đổi suất chiếu + Lịch sử | `src/booking/cancel-booking/` |
+| ✅ Hoàn thành | Hồ sơ cá nhân | `src/user/user-profile/` |
+| ✅ Hoàn thành | Hệ thống tích điểm & hạng thành viên | `src/user/loyalty-points/` |
+| ✅ Hoàn thành | Trung tâm thông báo | `src/user/user-notifications/` |
+| ✅ Hoàn thành | After-Credit Lounge (thảo luận phim) | `src/engagement/aftercredit-lounge/` |
+| ✅ Hoàn thành | Cinebet Minigame | `src/engagement/minigame/` |
+| 🔄 Mockup UI | Đặt & giữ ghế theo nhóm (không có JS) | `src/booking/group-booking/` |
+| ❌ Chưa triển khai | Quên mật khẩu & Xác thực OTP | `src/auth/forgot-password/` |
+| ❌ Chưa triển khai | Chia tiền nhóm trong Profile | — |
+
+## Tài liệu
+
+Xem thư mục [`Docs/`](./Docs/) để hiểu sâu hơn về kiến trúc, storage schema và quy trình phát triển:
+
+- [`Docs/overview.md`](./Docs/overview.md) — Tổng quan dự án
+- [`Docs/architecture.md`](./Docs/architecture.md) — Kiến trúc Feature-Based
+- [`Docs/features.md`](./Docs/features.md) — Tính năng & luồng nghiệp vụ
+- [`Docs/data-storage.md`](./Docs/data-storage.md) — Schema LocalStorage & SessionStorage
+- [`Docs/workflows.md`](./Docs/workflows.md) — Git flow & quy tắc code
