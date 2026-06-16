@@ -82,6 +82,11 @@
     </footer>
 
     <script>
+        // Redirect if already logged in
+        if (localStorage.getItem('isLoggedIn') === 'true') {
+            window.location.href = '/explore/home-page/index.html';
+        }
+
         // Password Visibility Toggle
         const togglePassword = document.getElementById('togglePassword');
         const passwordInput = document.getElementById('password');

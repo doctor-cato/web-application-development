@@ -134,6 +134,11 @@
     </footer>
 
     <script>
+        // Redirect if already logged in
+        if (localStorage.getItem('isLoggedIn') === 'true') {
+            window.location.href = '/explore/home-page/index.html';
+        }
+
         // Avatar Upload Preview
         const avatarInput = document.getElementById('avatarInput');
         const preview = document.getElementById('registerAvatarPreview');
