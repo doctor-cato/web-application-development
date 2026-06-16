@@ -1,4 +1,4 @@
-/* 3HD2K Stylesheet
+﻿/* 3HD2K Stylesheet
   Theme: Cinematic Noir, High Contrast, Glassmorphism
 */
 
@@ -144,7 +144,7 @@ a:hover {
     top: 0;
     left: 0;
     width: 100%;
-    padding: 0 3%;
+    padding: 0 var(--page-padding);
     height: 80px;
     display: flex;
     justify-content: space-between;
