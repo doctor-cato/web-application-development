@@ -29,8 +29,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 const filter = btn.getAttribute('data-filter');
                 poolCards.forEach(card => {
-                    const cardMovie = card.getAttribute('data-movie');
-                    if (filter === 'all' || cardMovie === filter) {
+                    const cardGenre = card.getAttribute('data-genre');
+                    if (filter === 'all' || cardGenre === filter) {
                         card.style.display = 'flex';
                     } else {
                         card.style.display = 'none';
