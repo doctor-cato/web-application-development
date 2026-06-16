@@ -88,4 +88,14 @@ document.addEventListener('DOMContentLoaded', () => {
             emptyState.style.display = 'block';
         }
     }
+
+    // Auto-select tab from URL query parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const tabParam = urlParams.get('tab');
+    if (tabParam) {
+        const targetBtn = document.querySelector(`.notif-filter-btn[data-filter="${tabParam}"]`);
+        if (targetBtn) {
+            targetBtn.click();
+        }
+    }
 });
