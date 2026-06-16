@@ -354,14 +354,11 @@
     border-radius: 12px;
 }
 
-.cinematch {
-    background: linear-gradient(to right, rgba(12,12,12,0.9) 20%, transparent),
-                url('images/cinematch_bg.png') center/cover;
-}
+
 
 .aftercredit {
     background: linear-gradient(to right, rgba(12,12,12,0.9) 20%, transparent),
-                url('images/cinematch_bg.png') center/cover;
+                url('images/aftercredit_bg.png') center/cover;
 }
 
 .feature-content {
@@ -378,9 +375,7 @@
     gap: 10px;
 }
 
-.cinematch .feature-title {
-    color: var(--primary-red);
-}
+
 
 .feature-content p {
     margin-bottom: 20px;
