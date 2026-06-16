@@ -39,7 +39,7 @@ export function renderNavbar() {
             </div>
             <a href="/auth/user-login/login.html" class="user-btn" style="text-decoration: none; color: white;">
                 <div class="avatar-wrapper" style="background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.2);">
-                    <i class="fas fa-user" style="color: rgba(255,255,255,0.6); font-size: 1rem;"></i>
+                    <img src="/shared/images/avatar.jpg" alt="Guest Avatar" class="user-avatar" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
                 </div>
             </a>
             <!-- Hamburger Menu -->
