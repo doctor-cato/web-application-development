@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="utf-8">
@@ -83,6 +83,7 @@
                                 <span class="material-symbols-outlined">call</span>
                                 <input class="auth-input" type="tel" id="phone" name="phone" placeholder="0987654321" required>
                             </div>
+                            <div id="phone-error" class="inline-error">SĐT không hợp lệ (10 số).</div>
                         </div>
                     </div>
 
@@ -177,16 +178,19 @@
         const emailError = document.getElementById('email-error');
         const pwdError = document.getElementById('pwd-error');
         const confirmPwdError = document.getElementById('confirm-pwd-error');
+        const phoneError = document.getElementById('phone-error');
         const errorBanner = document.getElementById('form-error-banner');
 
         // Helper function to hide errors on input
-        [emailInput, pwdInput, confirmPwdInput].forEach(input => {
+        const phoneInput = document.getElementById('phone');
+        [emailInput, pwdInput, confirmPwdInput, phoneInput].forEach(input => {
             input.addEventListener('input', function() {
                 this.classList.remove('error');
                 errorBanner.classList.remove('show');
                 const errElement = document.getElementById(this.id + '-error') || 
                                    (this.id === 'password' ? pwdError : confirmPwdError);
                 if(errElement) errElement.classList.remove('show');
+                if(this.id === 'phone' && phoneError) phoneError.classList.remove('show');
             });
         });
 
@@ -197,9 +201,11 @@
             emailInput.classList.remove('error');
             pwdInput.classList.remove('error');
             confirmPwdInput.classList.remove('error');
+            phoneInput.classList.remove('error');
             emailError.classList.remove('show');
             pwdError.classList.remove('show');
             confirmPwdError.classList.remove('show');
+            phoneError.classList.remove('show');
             errorBanner.classList.remove('show');
 
             const fullname = document.getElementById('fullname').value.trim();
@@ -211,6 +217,15 @@
             const avatar = localStorage.getItem('user_avatar') || '/shared/images/avatar.jpg';
 
             let isValid = true;
+
+            // Validation: Phone format
+            const phoneRegex = /^(0|\+84)[3|5|7|8|9][0-9]{8}$/;
+            if (!phoneRegex.test(phone)) {
+                phoneInput.classList.add('error');
+                phoneError.textContent = "SĐT không hợp lệ (VD: 0987654321).";
+                phoneError.classList.add('show');
+                isValid = false;
+            }
 
             // Validation: Password length
             if (password.length < 6) {
@@ -229,7 +244,13 @@
             }
 
             // Lấy danh sách users cũ
-            let users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+            let users = [];
+            try {
+                users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+                if (!Array.isArray(users)) users = [];
+            } catch (err) {
+                users = [];
+            }
             
             // Validation: Email Exists
             const exists = users.find(u => u.email === email);

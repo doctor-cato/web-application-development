@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="utf-8">
@@ -105,7 +105,13 @@
             const password = passwordInput.value;
             
             // Lấy danh sách tài khoản đã đăng ký từ localStorage
-            let users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+            let users = [];
+            try {
+                users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+                if (!Array.isArray(users)) users = [];
+            } catch (err) {
+                users = [];
+            }
             
             // Tìm user có email và mật khẩu khớp
             const matchedUser = users.find(u => u.email === email && u.password === password);
