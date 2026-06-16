@@ -52,9 +52,16 @@
                 <span class="live-indicator"><span class="pulse-dot"></span> ĐANG DIỄN RA</span>
             </div>
 
+            <div class="filter-bar">
+                <button class="filter-btn active" data-filter="all">Tất cả phim</button>
+                <button class="filter-btn" data-filter="neon-night">The Neon Night</button>
+                <button class="filter-btn" data-filter="cyber-core">Cyber Core</button>
+                <button class="filter-btn" data-filter="laugh-riot">Laugh Riot</button>
+            </div>
+
             <div class="pools-grid">
                 <!-- CARD 1 -->
-                <div class="pool-card">
+                <div class="pool-card" data-movie="neon-night">
                     <span class="card-badge hot" style="background-color: #f5c518; color: #000;">IMDb</span>
                     <div class="card-image" style="background-image: url('/engagement/minigame/images/imdb_bg.png')"></div>
                     <div class="card-content">
@@ -76,7 +83,7 @@
                 </div>
 
                 <!-- CARD 2 -->
-                <div class="pool-card">
+                <div class="pool-card" data-movie="neon-night">
                     <span class="card-badge standard" style="background-color: #22c55e; color: #fff;">Doanh Thu</span>
                     <div class="card-image" style="background-image: url('/engagement/minigame/images/box_office_bg.png')"></div>
                     <div class="card-content">
@@ -98,7 +105,7 @@
                 </div>
 
                 <!-- CARD 3 -->
-                <div class="pool-card">
+                <div class="pool-card" data-movie="neon-night">
                     <span class="card-badge expert" style="background-color: #ef4444; color: #fff;">Cà Chua Tươi</span>
                     <div class="card-image" style="background-image: url('/engagement/minigame/images/rotten_tomatoes_bg.png')"></div>
                     <div class="card-content">
@@ -114,6 +121,50 @@
                         </div>
                         <div class="card-footer">
                             <span class="price-tag">Phí: 75 Điểm</span>
+                            <button class="btn-bet-action">DỰ ĐOÁN</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD 4 -->
+                <div class="pool-card" data-movie="cyber-core">
+                    <span class="card-badge expert" style="background-color: #f5c518; color: #000;">IMDb</span>
+                    <div class="card-image" style="background-image: url('../../engagement/minigame/images/imdb_bg.png')"></div>
+                    <div class="card-content">
+                        <h3>IMDB: CYBER CORE</h3>
+                        <p class="card-description">Đánh giá về kỹ xảo của Cyber Core đang cực kỳ khả quan, điểm IMDb có vượt 8.5?</p>
+                        <div class="reward-box">
+                            <span class="reward-label">PHẦN THƯỞNG</span>
+                            <span class="reward-value">Voucher Đồ uống</span>
+                        </div>
+                        <div class="options-row">
+                            <button class="option-btn" data-option="Trên 8.5">Trên 8.5 ↑</button>
+                            <button class="option-btn" data-option="Dưới 8.5">Dưới 8.5 ↓</button>
+                        </div>
+                        <div class="card-footer">
+                            <span class="price-tag">Phí: 50 Điểm</span>
+                            <button class="btn-bet-action">DỰ ĐOÁN</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD 5 -->
+                <div class="pool-card" data-movie="laugh-riot">
+                    <span class="card-badge standard" style="background-color: #22c55e; color: #fff;">Doanh Thu</span>
+                    <div class="card-image" style="background-image: url('../../engagement/minigame/images/box_office_bg.png')"></div>
+                    <div class="card-content">
+                        <h3>DOANH THU: LAUGH RIOT</h3>
+                        <p class="card-description">Bộ phim hài này có lập kỷ lục doanh thu phòng vé dịp cuối tuần không?</p>
+                        <div class="reward-box">
+                            <span class="reward-label">PHẦN THƯỞNG</span>
+                            <span class="reward-value">Voucher Combo</span>
+                        </div>
+                        <div class="options-row">
+                            <button class="option-btn" data-option="Kỷ lục">Kỷ lục</button>
+                            <button class="option-btn" data-option="Bình thường">Bình thường</button>
+                        </div>
+                        <div class="card-footer">
+                            <span class="price-tag">Phí: 40 Điểm</span>
                             <button class="btn-bet-action">DỰ ĐOÁN</button>
                         </div>
                     </div>
