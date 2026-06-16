@@ -1,4 +1,4 @@
-/**
+﻿/**
  * navbar.js
  * ─────────────────────────────────────────────────────────────
  * Component render thanh Navbar dùng chung cho toàn dự án.
@@ -804,6 +804,10 @@ export function renderNavbar() {
             notifBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 notifBtn.classList.toggle('active');
+                notifBtn.classList.add('ringing');
+                setTimeout(() => {
+                    notifBtn.classList.remove('ringing');
+                }, 600);
                 const userBtn = document.getElementById('user-btn');
                 if (userBtn && userBtn.classList.contains('active')) {
                     userBtn.classList.remove('active');

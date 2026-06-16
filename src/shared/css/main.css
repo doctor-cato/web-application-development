@@ -1,4 +1,4 @@
-/* 3HD2K Stylesheet
+﻿/* 3HD2K Stylesheet
   Theme: Cinematic Noir, High Contrast, Glassmorphism
 */
 
@@ -858,4 +858,24 @@ footer {
     .points { text-align: center; }
     .footer-content { flex-direction: column; }
     .footer-links { gap: 40px; }
+}
+
+
+@keyframes ringBell {
+    0% { transform: rotate(0); }
+    10% { transform: rotate(20deg); }
+    20% { transform: rotate(-15deg); }
+    30% { transform: rotate(15deg); }
+    40% { transform: rotate(-10deg); }
+    50% { transform: rotate(10deg); }
+    60% { transform: rotate(-5deg); }
+    70% { transform: rotate(5deg); }
+    80% { transform: rotate(-2deg); }
+    90% { transform: rotate(2deg); }
+    100% { transform: rotate(0); }
+}
+
+.notif-btn.ringing > i {
+    animation: ringBell 0.6s ease-in-out;
+    color: var(--primary-red);
 }
