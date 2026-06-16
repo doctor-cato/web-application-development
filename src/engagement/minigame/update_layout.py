@@ -1,53 +1,10 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3HD2K - Cine Predict</title>
-    <!-- Load custom fonts: Bebas Neue for Headings, Inter for Body -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <!-- FontAwesome for Icons -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/shared/css/main.css">
-    <link rel="stylesheet" href="/engagement/minigame/css/style.css">
-</head>
-<body>
-    <div class="container-fluid">
-        <div id="navbar-placeholder"></div>
-        <!-- NAVIGATION: Rendered via navbar.js -->
+import re
 
-        <section class="hero-banner">
-            <div class="hero-content">
-                <h1 class="hero-title">CINE PREDICT</h1>
-                <div class="countdown-box">
-                    <span class="countdown-label">BẮT ĐẦU SAU</span>
-                    <span class="countdown-time" id="main-timer">14:54</span>
-                </div>
-            </div>
-            
-            <div class="wallet-bar-container">
-                <div class="wallet-bar">
-                    <div class="wallet-info">
-                        <span class="wallet-icon">
-                            <i class="fas fa-wallet"></i>
-                        </span>
-                        <div class="wallet-text">
-                            <span class="wallet-label">SỐ DƯ CỦA BẠN</span>
-                            <span class="wallet-balance"><strong id="balance-amount">1,250</strong> <span class="points-label">ĐIỂM</span></span>
-                        </div>
-                    </div>
-                    <div class="wallet-actions">
-                        <button class="btn-secondary" id="btn-history">Lịch sử</button>
-                        <button class="btn-primary" id="btn-deposit">+ Nạp điểm</button>
-                    </div>
-                </div>
-            </div>
-        </section>
+html_path = r'c:\Users\PC KHANH\web-application-development\src\engagement\minigame\index.html'
+with open(html_path, 'r', encoding='utf-8') as f:
+    html = f.read()
 
-        <main class="main-content-area">
-                        <div class="section-header-row">
+new_content = '''            <div class="section-header-row">
                 <h2 class="section-title">SỰ KIỆN ĐANG DIỄN RA</h2>
                 <span class="live-indicator"><span class="pulse-dot"></span> MỞ DỰ ĐOÁN</span>
             </div>
@@ -172,45 +129,15 @@
                     </div>
                 </div>
             </div>
-        </main>
+        </main>'''
 
-        <section class="guide-section">
-            <h2 class="guide-title">CÁCH CHƠI CINE PREDICT</h2>
-            <div class="steps-grid">
-                <div class="step-card">
-                    <div class="step-icon-box">
-                        <i class="fas fa-graduation-cap"></i>
-                    </div>
-                    <h3>1. DÙNG ĐIỂM</h3>
-                    <p>Sử dụng điểm tích lũy của bạn để tham gia bất kỳ sự kiện dự đoán nào trước khi phim bắt đầu.</p>
-                </div>
-                <div class="step-card">
-                    <div class="step-icon-box">
-                        <i class="fas fa-lightbulb"></i>
-                    </div>
-                    <h3>2. DỰ ĐOÁN</h3>
-                    <p>Chốt câu trả lời của bạn trước khi đồng hồ đếm ngược 15 phút về số không. Không được thay đổi sau đó!</p>
-                </div>
-                <div class="step-card">
-                    <div class="step-icon-box">
-                        <i class="fas fa-paper-plane"></i>
-                    </div>
-                    <h3>3. THU NHẬN</h3>
-                    <p>Dự đoán đúng sẽ nhận ngay voucher đồ ăn, nâng cấp dịch vụ và vé xem phim trong tương lai.</p>
-                </div>
-            </div>
-            <button class="btn-guide-start">BẮT ĐẦU NGAY</button>
-        </section>
+start_marker = '<div class="section-header-row">'
+end_marker = '</main>'
 
-        <div id="footer-placeholder"></div>
-        <!-- FOOTER: Rendered via footer.js -->
-    </div>
+start_idx = html.find(start_marker)
+end_idx = html.find(end_marker) + len(end_marker)
 
-    <!-- TOAST NOTIFICATION -->
-    <div id="toast" class="toast-message"></div>
+html = html[:start_idx] + new_content + html[end_idx:]
 
-    <script src="/engagement/minigame/js/script.js"></script>
-    <script type="module" src="/shared/components/navbar.js"></script>
-    <script type="module" src="/shared/components/footer.js"></script>
-</body>
-</html>
+with open(html_path, 'w', encoding='utf-8') as f:
+    f.write(html)

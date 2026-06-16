@@ -837,3 +837,33 @@ body {
         gap: 32px;
     }
 }
+
+/* ENDED EVENTS STYLES */
+.ended-card {
+    opacity: 0.7;
+    filter: grayscale(80%);
+    cursor: default;
+}
+.ended-card:hover {
+    transform: none;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+.option-btn.disabled {
+    pointer-events: none;
+    background: rgba(255, 255, 255, 0.05);
+    color: #6b7280;
+    border-color: rgba(255, 255, 255, 0.1);
+}
+.option-btn.winner {
+    background: rgba(34, 197, 94, 0.2) !important;
+    color: #22c55e !important;
+    border-color: #22c55e !important;
+    box-shadow: 0 0 15px rgba(34, 197, 94, 0.3);
+    font-weight: 700;
+}
+.btn-bet-action.disabled {
+    pointer-events: none;
+    background: #374151;
+    color: #9ca3af;
+}

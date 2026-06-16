@@ -19,27 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // Filter Logic
-    const filterBtns = document.querySelectorAll('.filter-btn');
-    if (filterBtns.length > 0) {
-        filterBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                filterBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                
-                const filter = btn.getAttribute('data-filter');
-                poolCards.forEach(card => {
-                    const cardGenre = card.getAttribute('data-genre');
-                    if (filter === 'all' || cardGenre === filter) {
-                        card.style.display = 'flex';
-                    } else {
-                        card.style.display = 'none';
-                    }
-                });
-            });
-        });
-    }
-
     // Card Selection and Betting Logic
     poolCards.forEach(card => {
         const optionButtons = card.querySelectorAll('.option-btn');
