@@ -1250,6 +1250,17 @@ export function renderNavbar() {
             });
         }
 
+        if (searchInput) {
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    const q = e.target.value.trim();
+                    if (q) {
+                        window.location.href = `${srcPrefix}/explore/movie-search/index.html?q=${encodeURIComponent(q)}`;
+                    }
+                }
+            });
+        }
+
         // --- NOTIFICATION DROPDOWN LOGIC ---
         const notifBtn = document.getElementById('notif-btn');
         const notifDropdown = document.getElementById('notif-dropdown');

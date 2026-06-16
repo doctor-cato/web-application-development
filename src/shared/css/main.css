@@ -1,4 +1,4 @@
-﻿/* 3HD2K Stylesheet
+/* 3HD2K Stylesheet
   Theme: Cinematic Noir, High Contrast, Glassmorphism
 */
 
@@ -266,7 +266,11 @@ a:hover {
     font-size: 1rem;
     color: rgba(255, 255, 255, 0.4);
     white-space: nowrap;
-    transition: color 0.3s ease;
+    transition: max-width 0.4s ease, opacity 0.3s ease, color 0.3s ease, margin-left 0.4s ease;
+    max-width: 100px;
+    opacity: 1;
+    overflow: hidden;
+    margin-left: 0;
 }
 
 .search-pill:hover span {
@@ -300,7 +304,9 @@ a:hover {
 }
 
 .search-pill.active #search-text {
-    display: none;
+    max-width: 0;
+    opacity: 0;
+    margin-left: -8px;
 }
 
 .search-pill.active i {
