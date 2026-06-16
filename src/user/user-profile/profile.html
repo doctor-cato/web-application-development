@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -176,9 +176,47 @@
                         <h2>Ưu đãi của tôi</h2>
                         <p>Các mã giảm giá và thẻ quà tặng bạn đang có</p>
                     </div>
-                    <div class="content-body" style="text-align: center; padding: 50px 0; color: #888;">
-                        <i class="fas fa-box-open" style="font-size: 3rem; margin-bottom: 20px; color: #444;"></i>
-                        <p>Bạn chưa có ưu đãi nào.</p>
+                    <div class="content-body">
+                        <div class="offers-grid">
+                            <!-- Offer 1 -->
+                            <div class="offer-card discount">
+                                <div class="offer-icon">
+                                    <i class="fas fa-tags"></i>
+                                </div>
+                                <div class="offer-details">
+                                    <h3>Giảm 50.000đ</h3>
+                                    <p>Áp dụng cho hóa đơn từ 200.000đ khi đặt vé qua web.</p>
+                                    <span class="offer-date"><i class="far fa-clock"></i> HSD: 30/06/2026</span>
+                                </div>
+                                <button class="btn-use-offer">Dùng ngay</button>
+                            </div>
+                            
+                            <!-- Offer 2 -->
+                            <div class="offer-card gift">
+                                <div class="offer-icon">
+                                    <i class="fas fa-gift"></i>
+                                </div>
+                                <div class="offer-details">
+                                    <h3>Tặng 1 Bắp Rang Bơ (L)</h3>
+                                    <p>Áp dụng khi mua kèm 2 vé xem phim bất kỳ.</p>
+                                    <span class="offer-date"><i class="far fa-clock"></i> HSD: 15/07/2026</span>
+                                </div>
+                                <button class="btn-use-offer">Dùng ngay</button>
+                            </div>
+                            
+                            <!-- Offer 3 -->
+                            <div class="offer-card special">
+                                <div class="offer-icon">
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <div class="offer-details">
+                                    <h3>Đồng giá 45K</h3>
+                                    <p>Áp dụng cho mọi suất chiếu Thứ 3 Vui Vẻ hàng tuần.</p>
+                                    <span class="offer-date"><i class="fas fa-infinity"></i> Không thời hạn</span>
+                                </div>
+                                <button class="btn-use-offer">Dùng ngay</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -186,17 +224,234 @@
                 <div id="tab-settings" class="tab-content">
                     <div class="content-header">
                         <h2>Cài đặt</h2>
-                        <p>Tùy chỉnh thông báo và hệ thống</p>
+                        <p>Quản lý tùy chọn cá nhân và bảo mật tài khoản</p>
                     </div>
-                    <div class="content-body" style="text-align: center; padding: 50px 0; color: #888;">
-                        <i class="fas fa-tools" style="font-size: 3rem; margin-bottom: 20px; color: #444;"></i>
-                        <p>Tính năng đang được phát triển.</p>
+                    <div class="content-body settings-body">
+                        
+                        <!-- 1. THÔNG BÁO -->
+                        <div class="settings-section">
+                            <h3 class="settings-title accordion-header">
+                                <span><i class="fas fa-bell"></i> Quản lý Thông báo</span>
+                                <i class="fas fa-chevron-down accordion-icon"></i>
+                            </h3>
+                            <div class="settings-list">
+                                <div class="settings-item">
+                                    <div class="settings-info">
+                                        <h4>Email xác nhận đặt vé</h4>
+                                        <p>Nhận email biên lai ngay sau khi thanh toán thành công.</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" checked>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                                <div class="settings-item">
+                                    <div class="settings-info">
+                                        <h4>Nhắc nhở giờ chiếu</h4>
+                                        <p>Nhận thông báo trước giờ chiếu 2 tiếng để không lỡ phim.</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" checked>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                                <div class="settings-item">
+                                    <div class="settings-info">
+                                        <h4>Tin tức & Khuyến mãi</h4>
+                                        <p>Nhận thông tin về các chương trình ưu đãi và bom tấn mới.</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox">
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2. BẢO MẬT & ĐĂNG NHẬP -->
+                        <div class="settings-section">
+                            <h3 class="settings-title accordion-header">
+                                <span><i class="fas fa-shield-alt"></i> Bảo mật & Đăng nhập</span>
+                                <i class="fas fa-chevron-down accordion-icon"></i>
+                            </h3>
+                            <div class="settings-list">
+                                <div class="settings-item">
+                                    <div class="settings-info">
+                                        <h4>Mật khẩu</h4>
+                                        <p id="pwd-last-updated">Cập nhật lần cuối: 3 tháng trước</p>
+                                    </div>
+                                    <button class="btn-outline-small" id="btn-change-pwd">Đổi mật khẩu</button>
+                                </div>
+                                <div class="settings-item col-item">
+                                    <div class="settings-info w-100">
+                                        <h4>Thiết bị đang đăng nhập</h4>
+                                    </div>
+                                    <div class="device-list">
+                                        <div class="device-item current">
+                                            <div class="device-icon"><i class="fas fa-desktop"></i></div>
+                                            <div class="device-info">
+                                                <p class="device-name">Windows - Chrome</p>
+                                                <p class="device-loc">TP.HCM, Việt Nam (Thiết bị hiện tại)</p>
+                                            </div>
+                                        </div>
+                                        <div class="device-item">
+                                            <div class="device-icon"><i class="fas fa-mobile-alt"></i></div>
+                                            <div class="device-info">
+                                                <p class="device-name">iPhone 14 Pro - Safari</p>
+                                                <p class="device-loc">Hoạt động 2 ngày trước</p>
+                                            </div>
+                                            <button class="btn-text-danger btn-logout-device">Đăng xuất</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. PHƯƠNG THỨC THANH TOÁN -->
+                        <div class="settings-section">
+                            <h3 class="settings-title accordion-header">
+                                <span><i class="fas fa-credit-card"></i> Phương thức Thanh toán</span>
+                                <i class="fas fa-chevron-down accordion-icon"></i>
+                            </h3>
+                            <div class="settings-list">
+                                <div class="settings-item">
+                                    <div class="settings-info payment-info">
+                                        <div class="payment-icon bg-light"><i class="fab fa-cc-visa" style="color: #1a1f71;"></i></div>
+                                        <div>
+                                            <h4>Visa kết thúc bằng 4242</h4>
+                                            <p>Hết hạn: 12/28</p>
+                                        </div>
+                                    </div>
+                                    <button class="btn-text-danger btn-remove-payment">Xóa</button>
+                                </div>
+                                <div class="settings-item">
+                                    <div class="settings-info payment-info">
+                                        <div class="payment-icon"><img src="https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png" alt="MoMo"></div>
+                                        <div>
+                                            <h4>Ví điện tử MoMo</h4>
+                                            <p>Đã liên kết</p>
+                                        </div>
+                                    </div>
+                                    <button class="btn-text-danger btn-remove-payment">Hủy liên kết</button>
+                                </div>
+                                <div class="settings-item border-0 pt-2 pb-0">
+                                    <button class="btn-add-payment"><i class="fas fa-plus"></i> Thêm phương thức thanh toán</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 4. NGÔN NGỮ -->
+                        <div class="settings-section">
+                            <h3 class="settings-title accordion-header">
+                                <span><i class="fas fa-globe"></i> Tùy chọn Ngôn ngữ</span>
+                                <i class="fas fa-chevron-down accordion-icon"></i>
+                            </h3>
+                            <div class="settings-list">
+                                <div class="settings-item border-0">
+                                    <div class="settings-info">
+                                        <h4>Ngôn ngữ hiển thị</h4>
+                                        <p>Chọn ngôn ngữ ưu tiên cho giao diện trang web</p>
+                                    </div>
+                                    <select class="form-select-small">
+                                        <option value="vi" selected>Tiếng Việt</option>
+                                        <option value="en">English</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 
             </section>
         </div>
     </main>
+
+    <!-- MODAL ĐỔI MẬT KHẨU -->
+    <div id="pwd-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Đổi mật khẩu</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="pwd-form">
+                    <div class="form-group">
+                        <label>Mật khẩu hiện tại</label>
+                        <input type="password" id="current-pwd" required placeholder="Nhập mật khẩu hiện tại (mặc định: 123456)">
+                    </div>
+                    <div class="form-group">
+                        <label>Mật khẩu mới</label>
+                        <input type="password" id="new-pwd" required placeholder="Nhập mật khẩu mới (tối thiểu 6 ký tự)">
+                    </div>
+                    <div class="form-group">
+                        <label>Xác nhận mật khẩu mới</label>
+                        <input type="password" id="confirm-pwd" required placeholder="Nhập lại mật khẩu mới">
+                    </div>
+                    <div id="pwd-error" class="error-text"></div>
+                    <div id="pwd-success" class="success-text"></div>
+                    <button type="submit" class="btn-save" style="width: 100%; margin-top: 15px;">Lưu mật khẩu</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL XÁC NHẬN ĐĂNG XUẤT THIẾT BỊ -->
+    <div id="logout-device-modal" class="modal-overlay">
+        <div class="modal-content" style="width: 400px; text-align: center; padding: 30px;">
+            <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #ffc107; margin-bottom: 20px;"></i>
+            <h3 style="color: white; margin-bottom: 15px; font-size: 1.4rem;">Đăng xuất thiết bị</h3>
+            <p style="color: #ccc; margin-bottom: 25px; line-height: 1.5;">Bạn có chắc chắn muốn đăng xuất tài khoản khỏi <br><b id="logout-device-name" style="color: white; font-size: 1.1rem;">thiết bị này</b>?</p>
+            <div style="display: flex; gap: 15px;">
+                <button id="btn-cancel-logout" class="btn-outline-small" style="flex: 1; padding: 12px;">Hủy</button>
+                <button id="btn-confirm-logout" class="btn-save" style="flex: 1; background: var(--primary-red);">Đăng xuất</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL XÁC NHẬN XÓA THANH TOÁN -->
+    <div id="remove-payment-modal" class="modal-overlay">
+        <div class="modal-content" style="width: 400px; text-align: center; padding: 30px;">
+            <i class="fas fa-trash-alt" style="font-size: 3rem; color: var(--primary-red); margin-bottom: 20px;"></i>
+            <h3 style="color: white; margin-bottom: 15px; font-size: 1.4rem;">Xóa phương thức</h3>
+            <p style="color: #ccc; margin-bottom: 25px; line-height: 1.5;">Bạn có chắc chắn muốn xóa phương thức thanh toán <br><b id="remove-payment-name" style="color: white; font-size: 1.1rem;">này</b>?</p>
+            <div style="display: flex; gap: 15px;">
+                <button id="btn-cancel-payment" class="btn-outline-small" style="flex: 1; padding: 12px;">Hủy</button>
+                <button id="btn-confirm-payment" class="btn-save" style="flex: 1; background: var(--primary-red);">Xóa</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL THÊM THANH TOÁN -->
+    <div id="add-payment-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Thêm thanh toán</h3>
+                <span class="close-modal" id="close-add-payment">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="add-payment-form">
+                    <div class="form-group">
+                        <label>Loại phương thức</label>
+                        <select id="new-payment-type" class="form-select-small" style="width: 100%; padding: 12px; font-size: 1rem; border-radius: 8px;">
+                            <option value="visa">Thẻ tín dụng (Visa/Mastercard)</option>
+                            <option value="momo">Ví điện tử MoMo</option>
+                            <option value="zalopay">Ví ZaloPay</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Số thẻ / Số điện thoại</label>
+                        <input type="text" id="new-payment-number" required placeholder="Nhập số thẻ hoặc SĐT ví">
+                    </div>
+                    <div class="form-group">
+                        <label>Tên chủ thẻ / Chủ tài khoản</label>
+                        <input type="text" id="new-payment-name" required placeholder="Nhập tên không dấu">
+                    </div>
+                    <button type="submit" class="btn-save" style="width: 100%; margin-top: 15px;">Xác nhận thêm</button>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <!-- FOOTER -->
     <div id="footer-placeholder"></div>
@@ -447,6 +702,302 @@
                 });
             });
         });
+
+            // Handle Settings Accordion
+            const accordions = document.querySelectorAll('.accordion-header');
+            accordions.forEach(acc => {
+                acc.addEventListener('click', function() {
+                    const section = this.parentElement;
+                    const list = section.querySelector('.settings-list');
+                    const icon = this.querySelector('.accordion-icon');
+                    
+                    // Toggle active class
+                    section.classList.toggle('expanded');
+                    
+                    if (section.classList.contains('expanded')) {
+                        list.style.maxHeight = list.scrollHeight + "px";
+                        icon.style.transform = "rotate(180deg)";
+                    } else {
+                        list.style.maxHeight = "0px";
+                        icon.style.transform = "rotate(0deg)";
+                    }
+                });
+            });
+
+            // Initialize accordion states (first one open, rest closed)
+            document.querySelectorAll('.settings-section').forEach((section, index) => {
+                const list = section.querySelector('.settings-list');
+                const icon = section.querySelector('.accordion-icon');
+                if (index === 0) {
+                    section.classList.add('expanded');
+                    list.style.maxHeight = list.scrollHeight + "px";
+                    icon.style.transform = "rotate(180deg)";
+                } else {
+                    list.style.maxHeight = "0px";
+                    icon.style.transform = "rotate(0deg)";
+                }
+            });
+
+            // Handle Password Change Modal
+            const pwdModal = document.getElementById('pwd-modal');
+            const btnChangePwd = document.getElementById('btn-change-pwd');
+            const closePwdModal = document.querySelector('.close-modal');
+            const pwdForm = document.getElementById('pwd-form');
+            const pwdError = document.getElementById('pwd-error');
+            const pwdSuccess = document.getElementById('pwd-success');
+
+            btnChangePwd.addEventListener('click', () => {
+                pwdModal.style.display = 'flex';
+                pwdForm.reset();
+                pwdError.style.display = 'none';
+                pwdSuccess.style.display = 'none';
+            });
+
+            closePwdModal.addEventListener('click', () => {
+                pwdModal.style.display = 'none';
+            });
+
+            window.addEventListener('click', (e) => {
+                if (e.target == pwdModal) {
+                    pwdModal.style.display = 'none';
+                }
+            });
+
+            pwdForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                pwdError.style.display = 'none';
+                pwdSuccess.style.display = 'none';
+
+                const currentPwd = document.getElementById('current-pwd').value;
+                const newPwd = document.getElementById('new-pwd').value;
+                const confirmPwd = document.getElementById('confirm-pwd').value;
+
+                const savedPwd = currentUser.password;
+
+                if (currentPwd !== savedPwd) {
+                    pwdError.textContent = "Mật khẩu hiện tại không chính xác.";
+                    pwdError.style.display = 'block';
+                    return;
+                }
+
+                if (newPwd !== confirmPwd) {
+                    pwdError.textContent = "Mật khẩu xác nhận không khớp.";
+                    pwdError.style.display = 'block';
+                    return;
+                }
+
+                if (newPwd.length < 6) {
+                    pwdError.textContent = "Mật khẩu mới phải có ít nhất 6 ký tự.";
+                    pwdError.style.display = 'block';
+                    return;
+                }
+
+                // Save new password
+                currentUser.password = newPwd;
+                const index = users.findIndex(u => u.email === currentUser.email);
+                if (index !== -1) {
+                    users[index] = currentUser;
+                } else {
+                    users.push(currentUser);
+                }
+                localStorage.setItem('registeredUsers', JSON.stringify(users));
+
+                pwdSuccess.textContent = "Đổi mật khẩu thành công!";
+                pwdSuccess.style.display = 'block';
+                pwdError.style.display = 'none';
+
+                // Update 'last updated' text
+                document.getElementById('pwd-last-updated').textContent = "Cập nhật lần cuối: Vừa xong";
+
+                setTimeout(() => {
+                    pwdModal.style.display = 'none';
+                }, 1500);
+            });
+
+            // Handle Device Logout Modal
+            const logoutModal = document.getElementById('logout-device-modal');
+            const btnCancelLogout = document.getElementById('btn-cancel-logout');
+            const btnConfirmLogout = document.getElementById('btn-confirm-logout');
+            const logoutDeviceNameText = document.getElementById('logout-device-name');
+            const logoutButtons = document.querySelectorAll('.btn-logout-device');
+            let deviceItemToRemove = null;
+
+            logoutButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    deviceItemToRemove = this.closest('.device-item');
+                    const deviceName = deviceItemToRemove.querySelector('.device-name').textContent;
+                    logoutDeviceNameText.textContent = deviceName;
+                    logoutModal.style.display = 'flex';
+                });
+            });
+
+            btnCancelLogout.addEventListener('click', () => {
+                logoutModal.style.display = 'none';
+                deviceItemToRemove = null;
+            });
+
+            btnConfirmLogout.addEventListener('click', () => {
+                if (deviceItemToRemove) {
+                    // Animate out
+                    deviceItemToRemove.style.transition = "all 0.3s ease-out";
+                    deviceItemToRemove.style.opacity = "0";
+                    deviceItemToRemove.style.transform = "translateX(30px)";
+                    
+                    setTimeout(() => {
+                        deviceItemToRemove.remove();
+                        logoutModal.style.display = 'none';
+                        deviceItemToRemove = null;
+                    }, 300);
+                }
+            });
+
+            window.addEventListener('click', (e) => {
+                if (e.target == logoutModal) {
+                    logoutModal.style.display = 'none';
+                    deviceItemToRemove = null;
+                }
+            });
+
+            // Handle Payment Removal Modal
+            const paymentModal = document.getElementById('remove-payment-modal');
+            const btnCancelPayment = document.getElementById('btn-cancel-payment');
+            const btnConfirmPayment = document.getElementById('btn-confirm-payment');
+            const paymentNameText = document.getElementById('remove-payment-name');
+            const paymentButtons = document.querySelectorAll('.btn-remove-payment');
+            let paymentItemToRemove = null;
+
+            paymentButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    paymentItemToRemove = this.closest('.settings-item');
+                    const paymentName = paymentItemToRemove.querySelector('h4').textContent;
+                    paymentNameText.textContent = paymentName;
+                    paymentModal.style.display = 'flex';
+                });
+            });
+
+            btnCancelPayment.addEventListener('click', () => {
+                paymentModal.style.display = 'none';
+                paymentItemToRemove = null;
+            });
+
+            btnConfirmPayment.addEventListener('click', () => {
+                if (paymentItemToRemove) {
+                    paymentItemToRemove.style.transition = "all 0.3s ease-out";
+                    paymentItemToRemove.style.opacity = "0";
+                    paymentItemToRemove.style.transform = "translateX(30px)";
+                    
+                    setTimeout(() => {
+                        paymentItemToRemove.remove();
+                        paymentModal.style.display = 'none';
+                        paymentItemToRemove = null;
+                    }, 300);
+                }
+            });
+
+            window.addEventListener('click', (e) => {
+                if (e.target == paymentModal) {
+                    paymentModal.style.display = 'none';
+                    paymentItemToRemove = null;
+                }
+            });
+
+            // Handle Add Payment Modal
+            const addPaymentModal = document.getElementById('add-payment-modal');
+            const btnAddPayment = document.querySelector('.btn-add-payment');
+            const closeAddPayment = document.getElementById('close-add-payment');
+            const addPaymentForm = document.getElementById('add-payment-form');
+
+            btnAddPayment.addEventListener('click', () => {
+                addPaymentModal.style.display = 'flex';
+                addPaymentForm.reset();
+            });
+
+            closeAddPayment.addEventListener('click', () => {
+                addPaymentModal.style.display = 'none';
+            });
+
+            window.addEventListener('click', (e) => {
+                if (e.target == addPaymentModal) {
+                    addPaymentModal.style.display = 'none';
+                }
+            });
+
+            addPaymentForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const type = document.getElementById('new-payment-type').value;
+                const number = document.getElementById('new-payment-number').value;
+                
+                // Determine icon and name based on type
+                let iconHtml = '';
+                let title = '';
+                let desc = '';
+                let btnAction = 'Xóa';
+
+                if (type === 'visa') {
+                    const last4 = number.length > 4 ? number.slice(-4) : number;
+                    iconHtml = '<div class="payment-icon bg-light"><i class="fab fa-cc-visa" style="color: #1a1f71; font-size: 2rem;"></i></div>';
+                    title = `Visa kết thúc bằng ${last4}`;
+                    desc = 'Hết hạn: 12/29';
+                } else if (type === 'momo') {
+                    iconHtml = '<div class="payment-icon"><img src="https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png" alt="MoMo"></div>';
+                    title = `Ví điện tử MoMo (${number})`;
+                    desc = 'Đã liên kết mới';
+                    btnAction = 'Hủy liên kết';
+                } else if (type === 'zalopay') {
+                    iconHtml = '<div class="payment-icon bg-light"><img src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-ZaloPay-Square.png" alt="ZaloPay" style="border-radius: 4px;"></div>';
+                    title = `Ví ZaloPay (${number})`;
+                    desc = 'Đã liên kết mới';
+                    btnAction = 'Hủy liên kết';
+                }
+
+                // Create new item
+                const newItem = document.createElement('div');
+                newItem.className = 'settings-item';
+                newItem.innerHTML = `
+                    <div class="settings-info payment-info">
+                        ${iconHtml}
+                        <div>
+                            <h4>${title}</h4>
+                            <p>${desc}</p>
+                        </div>
+                    </div>
+                    <button class="btn-text-danger btn-remove-payment">${btnAction}</button>
+                `;
+
+                // Add event listener to the new remove button
+                const newRemoveBtn = newItem.querySelector('.btn-remove-payment');
+                newRemoveBtn.addEventListener('click', function() {
+                    paymentItemToRemove = this.closest('.settings-item');
+                    const paymentName = paymentItemToRemove.querySelector('h4').textContent;
+                    paymentNameText.textContent = paymentName;
+                    paymentModal.style.display = 'flex';
+                });
+
+                // Insert before the "Add Payment" button container
+                const addPaymentContainer = btnAddPayment.closest('.settings-item');
+                addPaymentContainer.parentNode.insertBefore(newItem, addPaymentContainer);
+
+                // Animation for the new item
+                newItem.style.opacity = '0';
+                newItem.style.transform = 'translateY(-10px)';
+                newItem.style.transition = 'all 0.4s ease';
+                setTimeout(() => {
+                    newItem.style.opacity = '1';
+                    newItem.style.transform = 'translateY(0)';
+                }, 10);
+
+                // Re-adjust accordion height dynamically
+                const section = addPaymentContainer.closest('.settings-section');
+                if (section.classList.contains('expanded')) {
+                    const list = section.querySelector('.settings-list');
+                    list.style.maxHeight = list.scrollHeight + "px";
+                }
+
+                addPaymentModal.style.display = 'none';
+            });
+        });
+    
     </script>
 </body>
 </html>
