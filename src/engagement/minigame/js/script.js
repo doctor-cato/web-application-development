@@ -21,7 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Card Selection and Betting Logic
     poolCards.forEach(card => {
         const optionButtons = card.querySelectorAll('.option-btn');
-        const selectBox = card.querySelector('.custom-select');
         const betActionBtn = card.querySelector('.btn-bet-action');
         let selectedValue = null;
 
@@ -32,12 +31,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 selectedValue = btn.getAttribute('data-option');
             });
         });
-
-        if (selectBox) {
-            selectBox.addEventListener('change', () => {
-                selectedValue = selectBox.value;
-            });
-        }
 
         if (betActionBtn) {
             betActionBtn.addEventListener('click', () => {
@@ -50,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 if (currentBalance < cost) {
-                    showToast('Số dư tài khoản điểm không đủ để thực hiện lượt cược này!');
+                    showToast('Số dư tài khoản điểm không đủ để thực hiện lượt dự đoán này!');
                     return;
                 }
 
@@ -58,7 +51,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 animateBalance(currentBalance);
 
                 // Reset selections
-                if (selectBox) selectBox.value = "";
                 optionButtons.forEach(b => b.classList.remove('selected'));
                 selectedValue = null;
 
@@ -127,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const historyBtn = document.getElementById('btn-history');
     if (historyBtn) {
         historyBtn.addEventListener('click', () => {
-            showToast('Lịch sử: Chưa ghi nhận lượt đặt cược gần đây.');
+            showToast('Lịch sử: Chưa ghi nhận lượt dự đoán gần đây.');
         });
     }
 });

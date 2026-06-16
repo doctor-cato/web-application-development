@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3HD2K - Cine-Bet Minigame</title>
+    <title>3HD2K - Cine Predict</title>
     <!-- Load custom fonts: Bebas Neue for Headings, Inter for Body -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,7 +20,7 @@
 
         <section class="hero-banner">
             <div class="hero-content">
-                <h1 class="hero-title">CINE-BET</h1>
+                <h1 class="hero-title">CINE PREDICT</h1>
                 <div class="countdown-box">
                     <span class="countdown-label">BẮT ĐẦU SAU</span>
                     <span class="countdown-time" id="main-timer">14:54</span>
@@ -55,72 +55,66 @@
             <div class="pools-grid">
                 <!-- CARD 1 -->
                 <div class="pool-card">
-                    <span class="card-badge hot">Hot</span>
-                    <div class="card-image" style="background-image: url('/engagement/minigame/images/tomato.png')"></div>
+                    <span class="card-badge hot" style="background-color: #f5c518; color: #000;">IMDb</span>
+                    <div class="card-image" style="background-image: url('/engagement/minigame/images/imdb_bg.png')"></div>
                     <div class="card-content">
-                        <h3>DỰ ĐOÁN ROTTEN TOMATOES</h3>
-                        <p class="card-description">Dự đoán xem điểm số của giới phê bình sẽ cao hơn hay thấp hơn 90% cho phim 'The Neon Night'.</p>
+                        <h3>ĐIỂM SỐ IMDB</h3>
+                        <p class="card-description">Dự đoán điểm số IMDb của bom tấn 'The Neon Night' sau tuần công chiếu đầu tiên.</p>
                         <div class="reward-box">
                             <span class="reward-label">PHẦN THƯỞNG</span>
                             <span class="reward-value">Voucher Bỏng ngô Lớn</span>
                         </div>
                         <div class="options-row">
-                            <button class="option-btn" data-option="Cao hơn">Cao hơn ↑</button>
-                            <button class="option-btn" data-option="Thấp hơn">Thấp hơn ↓</button>
+                            <button class="option-btn" data-option="Cao hơn 8.0">Trên 8.0 ↑</button>
+                            <button class="option-btn" data-option="Thấp hơn 8.0">Dưới 8.0 ↓</button>
                         </div>
                         <div class="card-footer">
                             <span class="price-tag">Phí: 50 Điểm</span>
-                            <button class="btn-bet-action">ĐẶT CƯỢC</button>
+                            <button class="btn-bet-action">DỰ ĐOÁN</button>
                         </div>
                     </div>
                 </div>
 
                 <!-- CARD 2 -->
                 <div class="pool-card">
-                    <span class="card-badge standard">Tiêu chuẩn</span>
-                    <div class="card-image" style="background-image: url('/engagement/minigame/images/aftercredit.png')"></div>
+                    <span class="card-badge standard" style="background-color: #22c55e; color: #fff;">Doanh Thu</span>
+                    <div class="card-image" style="background-image: url('/engagement/minigame/images/box_office_bg.png')"></div>
                     <div class="card-content">
-                        <h3>SỐ LƯỢNG AFTER-CREDIT</h3>
-                        <p class="card-description">Sẽ có bao nhiêu cảnh post-credit? Hãy tìm manh mối từ thời lượng phim!</p>
+                        <h3>DOANH THU MỞ MÀN</h3>
+                        <p class="card-description">Phim có vượt mốc 50 triệu USD doanh thu phòng vé toàn cầu trong tuần đầu ra mắt không?</p>
                         <div class="reward-box">
                             <span class="reward-label">PHẦN THƯỞNG</span>
                             <span class="reward-value">Voucher Đồ uống</span>
                         </div>
-                        <div class="options-row three-cols">
-                            <button class="option-btn" data-option="0">0</button>
-                            <button class="option-btn" data-option="1">1</button>
-                            <button class="option-btn" data-option="2+">2+</button>
+                        <div class="options-row">
+                            <button class="option-btn" data-option="Trên 50M">Trên 50 Triệu</button>
+                            <button class="option-btn" data-option="Dưới 50M">Dưới 50 Triệu</button>
                         </div>
                         <div class="card-footer">
                             <span class="price-tag">Phí: 50 Điểm</span>
-                            <button class="btn-bet-action">ĐẶT CƯỢC</button>
+                            <button class="btn-bet-action">DỰ ĐOÁN</button>
                         </div>
                     </div>
                 </div>
 
                 <!-- CARD 3 -->
                 <div class="pool-card">
-                    <span class="card-badge expert">Chuyên gia</span>
-                    <div class="card-image" style="background-image: url('/engagement/minigame/images/secret_scene.png')"></div>
+                    <span class="card-badge expert" style="background-color: #ef4444; color: #fff;">Cà Chua Tươi</span>
+                    <div class="card-image" style="background-image: url('/engagement/minigame/images/rotten_tomatoes_bg.png')"></div>
                     <div class="card-content">
-                        <h3>BÍ MẬT CẢNH MỞ ĐẦU</h3>
-                        <p class="card-description">Dự đoán nhân vật nào xuất hiện trong khung hình đầu tiên của bộ phim. Xem trailer ngay!</p>
+                        <h3>ĐIỂM ROTTEN TOMATOES</h3>
+                        <p class="card-description">Dự đoán tỷ lệ đánh giá tích cực của giới phê bình (Tomatometer) có đạt chứng nhận Cà Chua Tươi?</p>
                         <div class="reward-box">
                             <span class="reward-label">PHẦN THƯỞNG</span>
                             <span class="reward-value">Voucher Combo</span>
                         </div>
-                        <div class="select-box-wrapper">
-                            <select id="character-select" class="custom-select">
-                                <option value="" disabled selected>Chọn nhân vật...</option>
-                                <option value="John Wick">John Wick</option>
-                                <option value="Caine">Caine</option>
-                                <option value="Marquis">Marquis</option>
-                                <option value="Winston">Winston</option>
-                            </select>
+                        <div class="options-row">
+                            <button class="option-btn" data-option="Trên 85%">Trên 85%</button>
+                            <button class="option-btn" data-option="Dưới 85%">Dưới 85%</button>
                         </div>
                         <div class="card-footer">
                             <span class="price-tag">Phí: 75 Điểm</span>
-                            <button class="btn-bet-action">ĐẶT CƯỢC</button>
+                            <button class="btn-bet-action">DỰ ĐOÁN</button>
                         </div>
                     </div>
                 </div>
@@ -128,7 +122,7 @@
         </main>
 
         <section class="guide-section">
-            <h2 class="guide-title">CÁCH CHƠI CINE-BET</h2>
+            <h2 class="guide-title">CÁCH CHƠI CINE PREDICT</h2>
             <div class="steps-grid">
                 <div class="step-card">
                     <div class="step-icon-box">
