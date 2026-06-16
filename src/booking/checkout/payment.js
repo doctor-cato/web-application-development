@@ -25,7 +25,7 @@ async function handleSuccess(txId) {
         const booking = confirmBooking(checkoutData);
         // Lưu ID booking vào session để trang invoice hiển thị
         lsSet(KEYS.LAST_BOOKING, booking);
-        window.location.href = './booking_invoice.html';
+        window.location.href = '../booking-success/index.html';
       } catch (e) {
         console.error(e);
         alert('Xác nhận thất bại: ' + e.message);

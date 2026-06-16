@@ -1,4 +1,4 @@
-﻿/**
+/**
  * navbar.js
  * ─────────────────────────────────────────────────────────────
  * Component render thanh Navbar dùng chung cho toàn dự án.
@@ -14,7 +14,46 @@ export function renderNavbar() {
                 <a href="/explore/movie-search/index.html?tab=now-showing">Phim Đang Chiếu</a>
                 <a href="/explore/cinema-map/index.html">Cụm Rạp</a>
                 <a href="/user/user-notifications/index.html?tab=promo">Khuyến Mãi</a>
-                <a href="/wip.html">Đặt vé</a>
+                <div class="quick-book-wrapper">
+                    <a href="#" class="quick-book-toggle" id="quick-book-toggle">Đặt vé <i class="fas fa-chevron-down" style="font-size:0.7rem; margin-left:4px;"></i></a>
+                    <div class="quick-book-dropdown" id="quick-book-dropdown">
+                        <h3 class="qb-title">ĐẶT VÉ NHANH</h3>
+                        <div class="qb-step" id="qb-movie-step">
+                            <label>1. Chọn Phim</label>
+                            <div class="qb-custom-select" id="qb-movie-wrapper">
+                                <div class="qb-select-trigger qb-search-trigger" id="qb-movie-trigger">
+                                    <i class="fas fa-search" style="font-size: 0.8rem; color: rgba(255,255,255,0.5); margin-right: 8px;"></i>
+                                    <input type="text" id="qb-movie-search" placeholder="-- Chọn Phim --" autocomplete="off">
+                                    <i class="fas fa-chevron-down" style="font-size: 0.8rem; color: rgba(255,255,255,0.5); margin-left: auto;"></i>
+                                </div>
+                                <div class="qb-select-menu" id="qb-movie-menu">
+                                    <ul class="qb-options-list" id="qb-movie-list">
+                                        <!-- Render options via JS -->
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="qb-step">
+                            <label>2. Chọn Rạp</label>
+                            <select id="qb-cinema" disabled>
+                                <option value="" disabled selected>-- Chọn Rạp --</option>
+                            </select>
+                        </div>
+                        <div class="qb-step">
+                            <label>3. Chọn Ngày</label>
+                            <select id="qb-date" disabled>
+                                <option value="" disabled selected>-- Chọn Ngày --</option>
+                            </select>
+                        </div>
+                        <div class="qb-step">
+                            <label>4. Chọn Suất</label>
+                            <select id="qb-time" disabled>
+                                <option value="" disabled selected>-- Chọn Suất Chiếu --</option>
+                            </select>
+                        </div>
+                        <button id="qb-submit" class="qb-btn" disabled>Tiếp tục</button>
+                    </div>
+                </div>
             </nav>
         </div>
         <div class="nav-actions">
@@ -58,7 +97,7 @@ export function renderNavbar() {
                         <li><a href="/engagement/minigame/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-gamepad" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Cine Bet</a></li>
                         <li><a href="/engagement/aftercredit-lounge/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-comments" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Thảo luận đánh giá</a></li>
                         <li><a href="/booking/group-booking/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-users" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Đặt & Giữ ghế nhóm</a></li>
-                        <li><a href="/user/loyalty-points/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-star" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Điểm thưởng <span style="font-size:10px; background:#e50914; padding:2px 6px; border-radius:4px; margin-left:5px;">WIP</span></a></li>
+                        <li><a href="/user/loyalty-points/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-star" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Điểm thưởng</a></li>
                         <li><a href="/user/user-notifications/index.html?tab=promo" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-ticket-alt" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Khuyến mãi</a></li>
                         <li><a href="/wip.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-crown" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Gói hội viên <span style="font-size:10px; background:#e50914; padding:2px 6px; border-radius:4px; margin-left:5px;">WIP</span></a></li>
                     </ul>
@@ -147,8 +186,249 @@ export function renderNavbar() {
 }
 
 .nav-links a:hover::after,
-.nav-links a.active::after {
+.nav-links a.active::after,
+.quick-book-toggle.active::after {
     transform: translateX(-50%) scaleX(1) !important;
+}
+
+/* Quick Book Modal */
+.quick-book-wrapper {
+    position: relative;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.quick-book-dropdown {
+    position: absolute;
+    top: calc(100% + 5px);
+    left: 50%;
+    transform: translateX(-50%) translateY(-10px);
+    width: 320px;
+    background: rgba(15, 15, 15, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1000;
+    padding: 24px;
+    cursor: default;
+}
+
+.quick-book-dropdown.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* Caret */
+.quick-book-dropdown::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    width: 12px;
+    height: 12px;
+    background: rgba(15, 15, 15, 0.95);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.qb-title {
+    font-size: 1.1rem;
+    color: #fff;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: 700;
+    letter-spacing: 1px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding-bottom: 12px;
+}
+
+.qb-step {
+    margin-bottom: 16px;
+}
+
+.qb-step label {
+    display: block;
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 6px;
+    font-weight: 500;
+}
+
+.qb-step select {
+    width: 100%;
+    background: rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #fff;
+    padding: 10px 12px;
+    border-radius: 6px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    outline: none;
+    appearance: none;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.qb-step select:focus {
+    border-color: var(--primary-red);
+    box-shadow: 0 0 0 2px rgba(229, 9, 20, 0.2);
+}
+
+.qb-step select:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.qb-step select option {
+    background: #1a1a1a;
+    color: #fff;
+}
+
+/* Custom Select Dropdown UI */
+.qb-custom-select {
+    position: relative;
+    width: 100%;
+}
+
+.qb-select-trigger {
+    background: rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #fff;
+    padding: 10px 12px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    cursor: text;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    transition: all 0.2s;
+}
+
+.qb-select-trigger input {
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    width: 100%;
+    outline: none;
+}
+
+.qb-select-trigger input::placeholder {
+    color: rgba(255,255,255,0.7);
+}
+
+.qb-select-trigger:hover {
+    border-color: rgba(255,255,255,0.4);
+}
+
+.qb-select-trigger.active {
+    border-color: var(--primary-red);
+    box-shadow: 0 0 0 2px rgba(229, 9, 20, 0.2);
+}
+
+.qb-select-menu {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    width: 100%;
+    background: rgba(20, 20, 20, 0.98);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 6px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-5px);
+    transition: all 0.2s;
+    z-index: 1010;
+    overflow: hidden;
+}
+
+.qb-select-menu.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.qb-options-list {
+    max-height: 180px;
+    overflow-y: auto;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.qb-options-list::-webkit-scrollbar {
+    width: 6px;
+}
+.qb-options-list::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0.2);
+}
+.qb-options-list::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.2);
+    border-radius: 3px;
+}
+.qb-options-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(255,255,255,0.4);
+}
+
+.qb-options-list li {
+    padding: 10px 12px;
+    color: rgba(255,255,255,0.8);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.qb-options-list li:hover {
+    background: rgba(229, 9, 20, 0.15);
+    color: #fff;
+}
+
+.qb-options-list li.no-results {
+    cursor: default;
+    color: rgba(255,255,255,0.4);
+    text-align: center;
+    padding: 15px 10px;
+}
+.qb-options-list li.no-results:hover {
+    background: transparent;
+}
+
+.qb-btn {
+    width: 100%;
+    padding: 12px;
+    background: var(--primary-red);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 1rem;
+    margin-top: 10px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.1s;
+}
+
+.qb-btn:hover:not(:disabled) {
+    background: #ff0f1a;
+}
+
+.qb-btn:active:not(:disabled) {
+    transform: scale(0.98);
+}
+
+.qb-btn:disabled {
+    background: #555;
+    cursor: not-allowed;
+    color: rgba(255,255,255,0.5);
 }
 
 .nav-actions {
@@ -651,6 +931,176 @@ export function renderNavbar() {
                 link.classList.remove('active');
             }
         });
+
+        // --- QUICK BOOK LOGIC ---
+        const qbToggle = document.getElementById('quick-book-toggle');
+        const qbDropdown = document.getElementById('quick-book-dropdown');
+        if (qbToggle && qbDropdown) {
+            qbToggle.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                qbDropdown.classList.toggle('active');
+                qbToggle.classList.toggle('active');
+            });
+            qbDropdown.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
+            document.addEventListener('click', (e) => {
+                if (!qbDropdown.contains(e.target) && e.target !== qbToggle) {
+                    qbDropdown.classList.remove('active');
+                    qbToggle.classList.remove('active');
+                }
+            });
+
+            const qbCinema = document.getElementById('qb-cinema');
+            const qbDate = document.getElementById('qb-date');
+            const qbTime = document.getElementById('qb-time');
+            const qbSubmit = document.getElementById('qb-submit');
+
+            // Custom Select Elements
+            const qbMovieWrapper = document.getElementById('qb-movie-wrapper');
+            const qbMovieTrigger = document.getElementById('qb-movie-trigger');
+            const qbMovieMenu = document.getElementById('qb-movie-menu');
+            const qbMovieSearch = document.getElementById('qb-movie-search');
+            const qbMovieList = document.getElementById('qb-movie-list');
+            let selectedMovieId = null;
+
+            // Load phim into Custom Dropdown
+            const moviesData = typeof nowShowingMovies !== 'undefined' ? nowShowingMovies : [{id: 'dummy', title: 'Phim Demo (Hardcoded)'}];
+            
+            function renderMovieOptions(filterText = '') {
+                qbMovieList.innerHTML = '';
+                const filtered = moviesData.filter(m => m.title.toLowerCase().includes(filterText.toLowerCase()));
+                
+                if (filtered.length === 0) {
+                    qbMovieList.innerHTML = '<li class="no-results">Không tìm thấy phim</li>';
+                    return;
+                }
+
+                filtered.forEach(m => {
+                    const li = document.createElement('li');
+                    li.textContent = m.title;
+                    li.dataset.value = m.id;
+                    li.addEventListener('click', () => {
+                        selectedMovieId = m.id;
+                        qbMovieSearch.value = m.title;
+                        qbMovieMenu.classList.remove('active');
+                        qbMovieTrigger.classList.remove('active');
+                        triggerMovieSelection();
+                    });
+                    qbMovieList.appendChild(li);
+                });
+            }
+
+            // Initial render
+            renderMovieOptions();
+
+            // Toggle Dropdown
+            if(qbMovieTrigger) {
+                qbMovieTrigger.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const isActive = qbMovieMenu.classList.contains('active');
+                    if (!isActive) {
+                        qbMovieMenu.classList.add('active');
+                        qbMovieTrigger.classList.add('active');
+                        qbMovieSearch.value = '';
+                        renderMovieOptions();
+                    }
+                    qbMovieSearch.focus();
+                });
+            }
+
+            // Search filtering
+            if(qbMovieSearch) {
+                qbMovieSearch.addEventListener('input', (e) => {
+                    if (!qbMovieMenu.classList.contains('active')) {
+                        qbMovieMenu.classList.add('active');
+                        qbMovieTrigger.classList.add('active');
+                    }
+                    renderMovieOptions(e.target.value);
+                });
+            }
+
+            // Prevent closing when clicking inside menu
+            if(qbMovieMenu) {
+                qbMovieMenu.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                });
+            }
+
+            // Close custom dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (qbMovieWrapper && !qbMovieWrapper.contains(e.target) && qbMovieMenu.classList.contains('active')) {
+                    qbMovieMenu.classList.remove('active');
+                    qbMovieTrigger.classList.remove('active');
+                    if (selectedMovieId) {
+                        const m = moviesData.find(x => x.id === selectedMovieId);
+                        if (m) qbMovieSearch.value = m.title;
+                    } else {
+                        qbMovieSearch.value = '';
+                    }
+                }
+            });
+
+            function triggerMovieSelection() {
+                qbCinema.innerHTML = '<option value="" disabled selected>-- Chọn Rạp --</option>';
+                if (typeof cinemas !== 'undefined') {
+                    cinemas.forEach(c => {
+                        const opt = document.createElement('option');
+                        opt.value = c.id;
+                        opt.textContent = c.name;
+                        qbCinema.appendChild(opt);
+                    });
+                } else {
+                    const opt = document.createElement('option');
+                    opt.value = "dummy-cinema";
+                    opt.textContent = "Rạp Demo";
+                    qbCinema.appendChild(opt);
+                }
+                qbCinema.disabled = false;
+                qbDate.disabled = true;
+                qbTime.disabled = true;
+                qbSubmit.disabled = true;
+                qbDate.innerHTML = '<option value="" disabled selected>-- Chọn Ngày --</option>';
+                qbTime.innerHTML = '<option value="" disabled selected>-- Chọn Suất Chiếu --</option>';
+            }
+
+            qbCinema.addEventListener('change', () => {
+                qbDate.innerHTML = '<option value="" disabled selected>-- Chọn Ngày --</option>';
+                const dates = ["Hôm nay", "Ngày mai", "Ngày mốt"];
+                dates.forEach((d, i) => {
+                    const opt = document.createElement('option');
+                    opt.value = i;
+                    opt.textContent = d;
+                    qbDate.appendChild(opt);
+                });
+                qbDate.disabled = false;
+                qbTime.disabled = true;
+                qbSubmit.disabled = true;
+                qbTime.innerHTML = '<option value="" disabled selected>-- Chọn Suất Chiếu --</option>';
+            });
+
+            qbDate.addEventListener('change', () => {
+                qbTime.innerHTML = '<option value="" disabled selected>-- Chọn Suất Chiếu --</option>';
+                const times = ["09:00", "12:30", "15:00", "18:45", "20:30"];
+                times.forEach(t => {
+                    const opt = document.createElement('option');
+                    opt.value = t;
+                    opt.textContent = t;
+                    qbTime.appendChild(opt);
+                });
+                qbTime.disabled = false;
+                qbSubmit.disabled = true;
+            });
+
+            qbTime.addEventListener('change', () => {
+                qbSubmit.disabled = false;
+            });
+
+            qbSubmit.addEventListener('click', () => {
+                window.location.href = '/booking/seat-booking/booking.html'; 
+            });
+        }
 
         // Hamburger Logic
         const hamburgerBtn = document.getElementById('hamburger-btn');
