@@ -144,7 +144,7 @@ function updateSummary() {
   
   if (selectedSeatsEl) {
     if (seats.length) {
-      selectedSeatsEl.innerHTML = seats.map(s => `<span class="bg-primary-container text-white text-xs font-bold px-2 py-1 rounded tracking-wider">${s}</span>`).join('');
+      selectedSeatsEl.innerHTML = seats.map(s => `<span class="seat-tag">${s}</span>`).join('');
     } else {
       selectedSeatsEl.innerHTML = `<p class="text-secondary text-xs italic">Chưa chọn ghế nào.</p>`;
     }

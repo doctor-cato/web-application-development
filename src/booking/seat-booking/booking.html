@@ -5,7 +5,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Chọn Ghế - 3HD2K Cinema</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
@@ -27,19 +27,29 @@
             <div class="booking-panel">
 
                 <!-- Movie card -->
-                <div id="movie-info-card" class="glass-panel booking-card">
-                    <div class="movie-info-card">
+                <div id="movie-info-card" class="glass-panel booking-card" style="padding: 1.25rem;">
+                    <div class="movie-info-card" style="align-items: center;">
                         <!-- Poster placeholder -->
-                        <div class="movie-poster-sm">
+                        <div class="movie-poster-sm" style="box-shadow: 0 4px 12px rgba(0,0,0,0.5);">
                             <img id="movie-poster" src="" alt="">
                         </div>
                         <div class="movie-details-sm">
-                            <h1 id="movie-title">Đang tải...</h1>
-                            <div id="movie-tags" style="display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px;"></div>
-                            <div style="margin-top: 12px;">
-                                <p>Suất chiếu: <span id="showtime-datetime"></span></p>
-                                <p>Phòng: <span id="showtime-room"></span></p>
-                                <p>Định dạng: <span id="showtime-format"></span></p>
+                            <h1 id="movie-title" style="margin-bottom: 0.25rem; font-size: 1.5rem; text-transform: uppercase;">Đang tải...</h1>
+                            <div id="movie-tags" style="display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 0.75rem;"></div>
+                            
+                            <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; font-size: 0.8rem;">
+                                <div style="display: flex; align-items: center; gap: 4px; background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1);">
+                                    <i class="fa-regular fa-clock" style="color: var(--primary-red);"></i>
+                                    <span id="showtime-datetime" style="color: #fff; font-weight: 500;"></span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 4px; background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1);">
+                                    <i class="fa-solid fa-door-open" style="color: var(--primary-red);"></i>
+                                    <span id="showtime-room" style="color: #fff; font-weight: 500;"></span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 4px; background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1);">
+                                    <i class="fa-solid fa-film" style="color: var(--primary-red);"></i>
+                                    <span id="showtime-format" style="color: #fff; font-weight: 500;"></span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -79,7 +89,7 @@
                     <div class="legend-grid">
                         <div class="legend-item"><span class="seat seat--available" style="width: 20px; height: 20px; border-radius: 4px; cursor: default;"></span> Ghế trống</div>
                         <div class="legend-item"><span class="seat seat--selected" style="width: 20px; height: 20px; border-radius: 4px; cursor: default;"></span> Đang chọn</div>
-                        <div class="legend-item"><span class="seat seat--locked" style="width: 20px; height: 20px; border-radius: 4px; cursor: default;"></span> Đang giữ</div>
+                        <div class="legend-item"><span class="seat seat--locked" style="width: 20px; height: 20px; border-radius: 4px; cursor: default;"></span> Ghế đang được chọn</div>
                         <div class="legend-item"><span class="seat seat--booked" style="width: 20px; height: 20px; border-radius: 4px; cursor: default;"></span> Đã đặt</div>
                     </div>
                 </div>

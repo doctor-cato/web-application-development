@@ -5,7 +5,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Xác nhận đặt vé - 3HD2K Cinema</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
@@ -21,9 +21,15 @@
 
     <main class="booking-page-container">
 
-        <div class="checkout-header">
-            <h1>Xác Nhận Đặt Vé</h1>
-            <p>Kiểm tra thông tin và hoàn tất thanh toán của bạn.</p>
+        <div class="checkout-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <div style="flex: 1;">
+                <h1 style="margin: 0;">Xác Nhận Đặt Vé</h1>
+                <p style="margin: 0.5rem 0 0 0;">Kiểm tra thông tin và hoàn tất thanh toán của bạn.</p>
+            </div>
+            <div class="timer" style="display: flex; align-items: center; gap: 0.5rem; color: var(--primary-red); font-weight: 700; font-size: 1.25rem;">
+                <i class="fas fa-clock"></i>
+                <span id="checkout-countdown">05:00</span>
+            </div>
         </div>
 
         <div class="booking-grid booking-grid-checkout">
@@ -58,13 +64,24 @@
                         </div>
                         <div class="price-row" style="align-items: flex-start;">
                             <span class="price-label">Ghế</span>
-                            <div id="order-summary-seats" style="display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end;">
-                                <span style="color: var(--text-muted); font-size: 0.75rem;">--</span>
+                            <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.25rem;">
+                                <div id="order-summary-seats" style="display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end;">
+                                    <span style="color: var(--text-muted); font-size: 0.75rem;">--</span>
+                                </div>
+                                <a href="../seat-booking/booking.html" style="font-size: 0.75rem; color: var(--primary-red); text-decoration: underline; position: relative; z-index: 10;">Thay đổi ghế</a>
                             </div>
                         </div>
                         <div class="price-row">
                             <span class="price-label">Tiền ghế</span>
                             <span id="order-summary-seat-amount" class="price-value" data-amount="0">0 đ</span>
+                        </div>
+                        <div class="price-row" id="order-summary-combo-row" style="display: none;">
+                            <span class="price-label">Combo</span>
+                            <span id="order-summary-combo-amount" class="price-value" data-amount="0">0 đ</span>
+                        </div>
+                        <div class="price-row" id="order-summary-discount-row" style="display: none; color: #4CAF50;">
+                            <span class="price-label">Giảm giá</span>
+                            <span id="order-summary-discount-amount" class="price-value" data-amount="0">-0 đ</span>
                         </div>
                     </div>
 
@@ -74,7 +91,7 @@
                 <div class="glass-panel booking-card">
                     <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem; margin-bottom: 1rem;">
                         <h2 class="booking-section-title" style="border: none; margin: 0; padding: 0;">Bắp Nước (Combo)</h2>
-                        <a href="../booking-food/index.html" style="color: var(--primary-red); font-size: 0.875rem; font-weight: 600;">Chọn thêm</a>
+                        <a href="../booking-food/index.html" style="color: var(--primary-red); font-size: 0.875rem; font-weight: 600; position: relative; z-index: 10;">Chọn thêm</a>
                     </div>
                     
                     <div style="display: flex; flex-direction: column; gap: 1rem;">
@@ -92,7 +109,7 @@
 
                         <label class="combo-card">
                             <input type="radio" name="combo" value="single" style="display: none;">
-                            <img src="https://www.cgv.vn/media/concession/web/631ade8215967_1662693006.png" alt="Combo" class="combo-img">
+                            <img src="https://images.unsplash.com/photo-1585647347384-2593bc35786b?auto=format&fit=crop&w=150&q=80" alt="Combo" class="combo-img" style="border-radius: 8px;">
                             <div class="combo-info">
                                 <div class="combo-title">Combo 1 Người</div>
                                 <div class="combo-desc">1 Bắp Lớn + 1 Nước Ngọt Lớn</div>
@@ -102,7 +119,7 @@
 
                         <label class="combo-card">
                             <input type="radio" name="combo" value="double" style="display: none;">
-                            <img src="https://www.cgv.vn/media/concession/web/631ade969f696_1662693016.png" alt="Combo" class="combo-img">
+                            <img src="https://images.unsplash.com/photo-1541167760496-1628856ab772?auto=format&fit=crop&w=150&q=80" alt="Combo" class="combo-img" style="border-radius: 8px;">
                             <div class="combo-info">
                                 <div class="combo-title">Combo 2 Người</div>
                                 <div class="combo-desc">1 Bắp Lớn + 2 Nước Ngọt Lớn</div>
@@ -121,23 +138,62 @@
                     <h2 class="booking-section-title">Thanh Toán</h2>
                     
                     <!-- Promo -->
-                    <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
-                        <input type="text" placeholder="Mã khuyến mãi" style="flex: 1; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); border-radius: 8px; padding: 0.5rem 1rem; color: white; outline: none;">
-                        <button class="btn btn-outline" style="padding: 0.5rem 1rem;">Áp dụng</button>
+                    <div class="promo-section" style="margin-bottom: 1.5rem;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; align-items: center;">
+                            <label style="font-size: 0.875rem; color: var(--text-muted);">Mã khuyến mãi</label>
+                            <a href="javascript:void(0)" id="btn-show-offers" style="font-size: 0.875rem; color: var(--primary-red); text-decoration: underline;">Ưu đãi của tôi</a>
+                        </div>
+                        <div style="display: flex; gap: 0.5rem;" id="promo-input-group">
+                            <input type="text" id="promo-input" placeholder="Nhập mã khuyến mãi" style="flex: 1; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); border-radius: 8px; padding: 0.5rem 1rem; color: white; outline: none; text-transform: uppercase;">
+                            <button id="btn-apply-promo" class="btn btn-outline" style="padding: 0.5rem 1rem;">Áp dụng</button>
+                        </div>
+                        
+                        <!-- Applied Promo -->
+                        <div id="applied-promo-container" style="display: none; margin-top: 0.5rem; padding: 0.75rem 1rem; background: rgba(76, 175, 80, 0.1); border: 1px solid rgba(76, 175, 80, 0.3); border-radius: 8px; align-items: center; justify-content: space-between;">
+                            <div style="display: flex; align-items: center; gap: 0.5rem; color: #4CAF50;">
+                                <i class="fas fa-check-circle"></i>
+                                <span style="font-size: 0.875rem;">Đã áp dụng: <strong id="applied-promo-code" style="letter-spacing: 1px;"></strong></span>
+                            </div>
+                            <i class="fas fa-times" id="btn-remove-promo" style="cursor: pointer; color: var(--text-muted); font-size: 1rem;"></i>
+                        </div>
+
+                        <!-- Offers List Dropdown -->
+                        <div id="offers-list" style="display: none; flex-direction: column; gap: 0.5rem; margin-top: 1rem; background: rgba(0,0,0,0.4); padding: 1rem; border-radius: 8px; border: 1px solid var(--glass-border);">
+                            <div class="offer-item" data-code="GIAM50K" style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: background 0.3s; border-radius: 6px;">
+                                <div style="display: flex; gap: 1rem; align-items: center;">
+                                    <div style="font-size: 1.5rem; color: #f59e0b;"><i class="fas fa-tags"></i></div>
+                                    <div>
+                                        <div style="font-weight: 600; color: #f59e0b; letter-spacing: 0.5px;">GIAM50K</div>
+                                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">Giảm 50.000đ cho đơn từ 200k</div>
+                                    </div>
+                                </div>
+                                <button class="btn-select-offer" style="background: var(--primary-red); border: none; color: white; padding: 0.4rem 0.75rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600; cursor: pointer;">Dùng</button>
+                            </div>
+                            <div class="offer-item" data-code="BAPFREE" style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; cursor: pointer; transition: background 0.3s; border-radius: 6px;">
+                                <div style="display: flex; gap: 1rem; align-items: center;">
+                                    <div style="font-size: 1.5rem; color: #10b981;"><i class="fas fa-gift"></i></div>
+                                    <div>
+                                        <div style="font-weight: 600; color: #10b981; letter-spacing: 0.5px;">BAPFREE</div>
+                                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">Giảm 65.000đ (Trị giá 1 Bắp Lớn)</div>
+                                    </div>
+                                </div>
+                                <button class="btn-select-offer" style="background: var(--primary-red); border: none; color: white; padding: 0.4rem 0.75rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600; cursor: pointer;">Dùng</button>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Payment methods -->
                     <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem;">
                         <label class="payment-card selected-momo">
                             <input type="radio" name="payment" value="momo" checked style="display: none;">
-                            <img src="https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png" alt="MoMo" class="payment-icon">
+                            <img src="https://img.mservice.io/momo-payment/icon/images/logo512.png" alt="MoMo" class="payment-icon">
                             <div style="flex: 1; font-weight: 600;">Ví MoMo</div>
                             <i class="fas fa-check-circle" style="color: #ae2070;"></i>
                         </label>
                         
                         <label class="payment-card">
                             <input type="radio" name="payment" value="vnpay" style="display: none;">
-                            <img src="https://vnpay.vn/s1/statics.vnpay.vn/2023/9/06ncktiwd6dc1694418189687.png" alt="VNPay" class="payment-icon">
+                            <img src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-VNPAY-QR-1.png" alt="VNPay" class="payment-icon">
                             <div style="flex: 1; font-weight: 600;">VNPay</div>
                             <i class="fas fa-check-circle" style="color: #005baa; display: none;"></i>
                         </label>

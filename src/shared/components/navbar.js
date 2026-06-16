@@ -5,15 +5,29 @@
  */
 
 export function renderNavbar() {
+    function getSrcPrefix() {
+        const pathname = window.location.pathname;
+        if (pathname.includes('/src/')) {
+            const parts = pathname.split('/src/')[1].split('/');
+            const depth = parts.length - 1;
+            return depth > 0 ? '../'.repeat(depth).slice(0, -1) : '.';
+        } else {
+            const parts = pathname.split('/').filter(Boolean);
+            const depth = parts.length > 0 ? parts.length - 1 : 0;
+            return depth > 0 ? '../'.repeat(depth).slice(0, -1) : '.';
+        }
+    }
+    const srcPrefix = getSrcPrefix();
+
     const navbarHTML = `
     <header class="navbar">
         <div class="nav-left">
-            <a href="/explore/home-page/index.html" class="logo">3HD2K</a>
+            <a href="${srcPrefix}/explore/home-page/index.html" class="logo">3HD2K</a>
             <nav class="nav-links">
-                <a href="/explore/home-page/index.html">Trang chủ</a>
-                <a href="/explore/movie-search/index.html?tab=now-showing">Phim Đang Chiếu</a>
-                <a href="/explore/cinema-map/index.html">Cụm Rạp</a>
-                <a href="/user/user-notifications/index.html?tab=promo">Khuyến Mãi</a>
+                <a href="${srcPrefix}/explore/home-page/index.html">Trang chủ</a>
+                <a href="${srcPrefix}/explore/movie-search/index.html?tab=now-showing">Phim Đang Chiếu</a>
+                <a href="${srcPrefix}/explore/cinema-map/index.html">Cụm Rạp</a>
+                <a href="${srcPrefix}/user/user-notifications/index.html?tab=promo">Khuyến Mãi</a>
                 <div class="quick-book-wrapper">
                     <a href="#" class="quick-book-toggle" id="quick-book-toggle">Đặt vé <i class="fas fa-chevron-down" style="font-size:0.7rem; margin-left:4px;"></i></a>
                     <div class="quick-book-dropdown" id="quick-book-dropdown">
@@ -72,13 +86,13 @@ export function renderNavbar() {
                     <div class="notif-empty" style="display: flex; flex-direction: column; align-items: center; padding: 40px 20px; color: rgba(255,255,255,0.5);">
                         <i class="fas fa-user-lock" style="font-size: 3rem; margin-bottom: 15px; color: rgba(255,255,255,0.2);"></i>
                         <p style="margin-bottom: 20px; text-align: center;">Vui lòng đăng nhập để xem thông báo</p>
-                        <a href="/auth/user-login/login.html" class="btn-primary" style="background: var(--primary-red); color: white; padding: 10px 25px; border-radius: 8px; text-decoration: none; font-weight: bold; transition: opacity 0.3s;">Đăng nhập ngay</a>
+                        <a href="${srcPrefix}/auth/user-login/login.html" class="btn-primary" style="background: var(--primary-red); color: white; padding: 10px 25px; border-radius: 8px; text-decoration: none; font-weight: bold; transition: opacity 0.3s;">Đăng nhập ngay</a>
                     </div>
                 </div>
             </div>
-            <a href="/auth/user-login/login.html" class="user-btn" style="text-decoration: none; color: white;">
+            <a href="${srcPrefix}/auth/user-login/login.html" class="user-btn" style="text-decoration: none; color: white;">
                 <div class="avatar-wrapper" style="background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.2);">
-                    <img src="/shared/images/avatar.jpg" alt="Guest Avatar" class="user-avatar" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                    <img src="${srcPrefix}/shared/images/avatar.jpg" alt="Guest Avatar" class="user-avatar" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
                 </div>
             </a>
             <!-- Hamburger Menu -->
@@ -87,19 +101,19 @@ export function renderNavbar() {
                 <div class="hamburger-dropdown" id="hamburger-dropdown" style="display:none; position:absolute; top:50px; right:0; background:var(--bg-elevated, #1a1a1a); border:1px solid var(--glass-border, rgba(255,255,255,0.08)); border-radius:12px; width:260px; padding:10px 0; box-shadow:0 10px 40px rgba(0,0,0,0.8); z-index:9999; text-align:left;">
                     <div style="padding: 10px 20px; font-family:'Inter', sans-serif; text-transform:uppercase; font-weight:700; color: var(--primary-red, #e50914); font-size: 0.9rem; letter-spacing:1px; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 5px;" class="mobile-only">Menu Chính</div>
                     <ul style="list-style:none; padding:0; margin:0;" class="mobile-only">
-                        <li><a href="/explore/home-page/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;">Trang chủ</a></li>
-                        <li><a href="/explore/movie-search/index.html?tab=now-showing" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;">Phim Đang Chiếu</a></li>
-                        <li><a href="/explore/cinema-map/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;">Cụm Rạp</a></li>
+                        <li><a href="${srcPrefix}/explore/home-page/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;">Trang chủ</a></li>
+                        <li><a href="${srcPrefix}/explore/movie-search/index.html?tab=now-showing" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;">Phim Đang Chiếu</a></li>
+                        <li><a href="${srcPrefix}/explore/cinema-map/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;">Cụm Rạp</a></li>
                     </ul>
                     <div style="padding: 10px 20px; font-family:'Inter', sans-serif; text-transform:uppercase; font-weight:700; color: var(--primary-red, #e50914); font-size: 0.9rem; letter-spacing:1px; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 5px; margin-top: 5px;">Hệ Sinh Thái 3HD2K</div>
                     <ul style="list-style:none; padding:0; margin:0;">
-                        <li><a href="/engagement/dating/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-heart" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Cine Match</a></li>
-                        <li><a href="/engagement/minigame/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-gamepad" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Cine Bet</a></li>
-                        <li><a href="/engagement/aftercredit-lounge/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-comments" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Thảo luận đánh giá</a></li>
-                        <li><a href="/booking/group-booking/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-users" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Đặt & Giữ ghế nhóm</a></li>
-                        <li><a href="/user/loyalty-points/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-star" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Điểm thưởng</a></li>
-                        <li><a href="/user/user-notifications/index.html?tab=promo" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-ticket-alt" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Khuyến mãi</a></li>
-                        <li><a href="/wip.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-crown" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Gói hội viên <span style="font-size:10px; background:#e50914; padding:2px 6px; border-radius:4px; margin-left:5px;">WIP</span></a></li>
+                        <li><a href="${srcPrefix}/engagement/dating/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-heart" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Cine Match</a></li>
+                        <li><a href="${srcPrefix}/engagement/minigame/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-gamepad" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Cine Bet</a></li>
+                        <li><a href="${srcPrefix}/engagement/aftercredit-lounge/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-comments" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Thảo luận đánh giá</a></li>
+                        <li><a href="${srcPrefix}/booking/group-booking/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-users" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Đặt & Giữ ghế nhóm</a></li>
+                        <li><a href="${srcPrefix}/user/loyalty-points/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-star" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Điểm thưởng</a></li>
+                        <li><a href="${srcPrefix}/user/user-notifications/index.html?tab=promo" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-ticket-alt" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Khuyến mãi</a></li>
+                        <li><a href="${srcPrefix}/wip.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-crown" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Gói hội viên <span style="font-size:10px; background:#e50914; padding:2px 6px; border-radius:4px; margin-left:5px;">WIP</span></a></li>
                     </ul>
                 </div>
             </div>
@@ -1098,7 +1112,7 @@ export function renderNavbar() {
             });
 
             qbSubmit.addEventListener('click', () => {
-                window.location.href = '/booking/seat-booking/booking.html'; 
+                window.location.href = `${srcPrefix}/booking/seat-booking/booking.html`; 
             });
         }
 
@@ -1130,17 +1144,7 @@ export function renderNavbar() {
                 if (oldUserBtn) oldUserBtn.remove();
 
                 const userName = localStorage.getItem('userName') || 'Sigma Sicula';
-                function getSrcPrefix() {
-                    const pathname = window.location.pathname;
-                    if (pathname.includes('/user-profile/') || pathname.includes('/user-notifications/') || pathname.includes('/user-login/') || pathname.includes('/user-register/')) {
-                        return '../../..';
-                    }
-                    if (pathname.includes('/home-page/') || pathname.includes('/movie-search/') || pathname.includes('/movie-details/') || pathname.includes('/cinema-map/') || pathname.includes('/aftercredit-lounge/')) {
-                        return '../..';
-                    }
-                    return '.';
-                }
-                const srcPrefix = getSrcPrefix();
+
                 const defaultAvatar = `${srcPrefix}/shared/images/avatar.jpg`;
                 const userAvatar = localStorage.getItem('userAvatar') || defaultAvatar;
 

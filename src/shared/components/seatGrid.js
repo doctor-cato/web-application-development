@@ -15,23 +15,23 @@ export function renderSeatGrid(container, seatMap, callbacks) {
   container.innerHTML = '';
   
   const gridContainer = document.createElement('div');
-  gridContainer.className = 'seat-rows space-y-4 w-full max-w-4xl flex flex-col items-center';
+  gridContainer.className = 'seat-grid-container';
 
   const rows = ['A','B','C','D','E','F','G','H','I','J'];
   
   rows.forEach(row => {
     const rowEl = document.createElement('div');
-    rowEl.className = 'flex items-center gap-3 w-full justify-center';
+    rowEl.className = 'seat-row-wrapper';
     
     // Row label start
     const labelStart = document.createElement('div');
-    labelStart.className = 'w-6 text-sm text-secondary text-right font-bold';
+    labelStart.className = 'seat-row-label text-right';
     labelStart.innerText = row;
     rowEl.appendChild(labelStart);
 
     // Seats container
     const seatsContainer = document.createElement('div');
-    seatsContainer.className = 'flex gap-2 flex-wrap justify-center';
+    seatsContainer.className = 'seat-row-seats';
 
     const isCoupleRow = row === 'J';
     const numSeats = isCoupleRow ? 6 : 12;
@@ -46,7 +46,7 @@ export function renderSeatGrid(container, seatMap, callbacks) {
       // Add aisle
       if ((isCoupleRow && i === 3) || (!isCoupleRow && i === 6)) {
          const aisle = document.createElement('div');
-         aisle.className = 'w-8';
+         aisle.className = 'seat-aisle';
          seatsContainer.appendChild(aisle);
       }
     }
@@ -55,7 +55,7 @@ export function renderSeatGrid(container, seatMap, callbacks) {
 
     // Row label end
     const labelEnd = document.createElement('div');
-    labelEnd.className = 'w-6 text-sm text-secondary text-left font-bold';
+    labelEnd.className = 'seat-row-label text-left';
     labelEnd.innerText = row;
     rowEl.appendChild(labelEnd);
 
@@ -106,8 +106,7 @@ export function clearSelection() {
 
 function _createSeatEl(seatId, seatInfo) {
   const el = document.createElement('div');
-  // Match Tailwind mockup exactly
-  el.className = 'seat seat--available w-9 h-9 rounded-sm flex justify-center items-center text-[9px] text-white/30 font-bold';
+  el.className = 'seat seat--available';
   el.innerText = seatId;
   el.dataset.id = seatId;
 

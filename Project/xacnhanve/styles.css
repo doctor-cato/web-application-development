@@ -1,0 +1,646 @@
+:root {
+  --bg: #0b0b0b;
+  --panel: #111111;
+  --card: #161616;
+  --card-2: #1a1a1a;
+  --accent: #e50914;
+  --accent-soft: rgba(229, 9, 20, 0.15);
+  --muted: #8a8a8a;
+  --text: #f0f0f0;
+  --border: rgba(255, 255, 255, 0.06);
+  --sidebar-w: 220px;
+  --topbar-h: 80px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  margin: 0;
+  font-family: Inter, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+button, input { font: inherit; cursor: pointer; }
+input.search { cursor: text; }
+a { color: inherit; text-decoration: none; }
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* === TOPBAR (Same as tichdiem) === */
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--topbar-h);
+  z-index: 60;
+  background: rgba(8, 8, 8, 0.92);
+  border-bottom: 1px solid rgba(229, 9, 20, 0.22);
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.02);
+}
+
+.topbar-inner {
+  max-width: 1109px;
+  height: 100%;
+  margin: 0 auto;
+  padding: 0 55px;
+  display: flex;
+  align-items: center;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 86px;
+  color: var(--accent);
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 37px;
+  line-height: 1;
+  letter-spacing: 1.5px;
+  transform: translateY(-1px);
+  transform-origin: left center;
+  flex-shrink: 0;
+}
+
+.nav {
+  display: flex;
+  align-items: stretch;
+  gap: 28px;
+  margin-left: 28px;
+  height: 100%;
+}
+
+.nav a {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  color: var(--muted);
+  font-size: 15px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: color 0.15s ease;
+}
+
+.nav a:hover { color: #cfcfcf; }
+
+.nav a.active {
+  color: #f2f2f2;
+}
+
+.nav a.active::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 66px;
+  height: 3px;
+  background: var(--accent);
+  transform: translateX(-50%);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+}
+
+.search-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 144px;
+  height: 44px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: #0c0c0c;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.015);
+}
+
+.search-icon {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  fill: #8c8c8c;
+}
+
+.search {
+  width: 100%;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: #e5e5e5;
+  padding: 0;
+  font-size: 14px;
+}
+
+.search::placeholder {
+  color: #7f7f7f;
+  opacity: 1;
+}
+
+.icon-btn {
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #979797;
+  cursor: pointer;
+  flex: 0 0 auto;
+  transition: color 0.15s ease;
+}
+
+.icon-btn svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+.icon-btn:hover { color: #d4d4d4; }
+
+/* === LAYOUT (Same as tichdiem) === */
+.layout {
+  display: flex;
+  flex: 1;
+  margin-top: var(--topbar-h);
+}
+
+.sidebar {
+  position: fixed;
+  top: var(--topbar-h);
+  left: 0;
+  width: var(--sidebar-w);
+  height: calc(100vh - var(--topbar-h));
+  padding: 24px 16px;
+  border-right: 1px solid var(--border);
+  background: rgba(10, 10, 10, 0.6);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 40;
+}
+
+.side-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.side-link:hover {
+  color: #d0d0d0;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.side-link.active {
+  color: #fff;
+  background: linear-gradient(90deg, rgba(229, 9, 20, 0.18), rgba(229, 9, 20, 0.06));
+  border: 1px solid rgba(229, 9, 20, 0.2);
+}
+
+.side-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.04);
+  flex-shrink: 0;
+}
+
+.side-link.active .side-icon {
+  background: rgba(229, 9, 20, 0.25);
+}
+
+.side-icon svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+}
+
+.side-link.active .side-icon svg { fill: var(--accent); }
+
+.main {
+  flex: 1;
+  margin-left: var(--sidebar-w);
+  padding: 28px 40px 40px;
+  width: calc(100% - var(--sidebar-w));
+}
+
+.content-container {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* === HERO BANNER === */
+.hero-banner {
+  position: relative;
+  height: 360px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.hero-image {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center 30%;
+}
+
+.hero-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 2;
+}
+
+.success-badge {
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.movie-title {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 58px;
+  line-height: 1;
+  letter-spacing: 1.5px;
+}
+
+.movie-tags {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.tag {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  padding: 4px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.8);
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(4px);
+}
+
+.tag.rating {
+  color: #ffd700;
+  border-color: rgba(255, 215, 0, 0.25);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.star-icon {
+  font-size: 10px;
+}
+
+/* === DETAILS & QR SECTION === */
+.details-section {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 20px;
+}
+
+.glass-panel {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+
+/* Ticket Info Card */
+.info-card {
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+}
+
+.info-card h2 {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 26px;
+  letter-spacing: 1px;
+  margin-bottom: 20px;
+  font-weight: normal;
+  color: #fff;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 16px;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px 24px;
+  margin-bottom: 36px;
+}
+
+.grid-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.grid-item .label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: 0.8px;
+}
+
+.grid-item .value {
+  font-size: 15px;
+  color: #f0f0f0;
+  line-height: 1.4;
+}
+
+.grid-item .value.font-bold {
+  font-weight: 700;
+}
+
+.grid-item .value.highlight-value {
+  color: #ff5252;
+}
+
+.btn-group {
+  display: flex;
+  gap: 12px;
+  margin-top: auto;
+}
+
+.btn {
+  flex: 1;
+  padding: 14px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-red {
+  background: var(--accent);
+  color: #fff;
+  border: 0;
+  box-shadow: 0 4px 12px rgba(229, 9, 20, 0.2);
+}
+
+.btn-red:hover {
+  background: #c40610;
+  transform: translateY(-1px);
+}
+
+.btn-outline {
+  background: transparent;
+  color: #ccc;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.btn-outline:hover {
+  background: rgba(255, 255, 255, 0.03);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.22);
+  transform: translateY(-1px);
+}
+
+/* QR Code Card */
+.qr-card {
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 24px;
+}
+
+.qr-wrapper {
+  background: #fff;
+  padding: 18px;
+  border-radius: 12px;
+  width: 154px;
+  height: 154px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.qr-code {
+  width: 100%;
+  height: 100%;
+}
+
+.qr-details {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.code-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: 1px;
+}
+
+.code-value {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 28px;
+  letter-spacing: 1.5px;
+  color: #fff;
+}
+
+.qr-hint {
+  font-size: 11px;
+  color: var(--muted);
+  font-style: italic;
+  margin-top: 4px;
+}
+
+/* === UPSELL SECTION === */
+.upsell-section {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.upsell-section h2 {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 26px;
+  letter-spacing: 1px;
+  font-weight: normal;
+  color: #fff;
+}
+
+.upsell-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.upsell-card {
+  display: flex;
+  padding: 20px;
+  gap: 20px;
+  align-items: center;
+  border-radius: 14px;
+}
+
+.upsell-img-wrap {
+  width: 86px;
+  height: 86px;
+  border-radius: 10px;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+}
+
+.upsell-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.upsell-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.upsell-body h3 {
+  font-size: 15px;
+  font-weight: 700;
+  color: #f0f0f0;
+}
+
+.upsell-body p {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.btn-buy {
+  align-self: flex-start;
+  background: transparent;
+  border: 0;
+  color: #ff5252;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s ease;
+  text-align: left;
+}
+
+.btn-buy:hover {
+  color: #ff7b7b;
+  text-decoration: underline;
+}
+
+/* === FOOTER (Same as tichdiem) === */
+.footer {
+  padding: 24px 0 0;
+  margin-top: 36px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.foot-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.foot-brand {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 22px;
+  color: var(--accent);
+  letter-spacing: 1px;
+}
+
+.foot-copy {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.foot-links {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.foot-links a {
+  font-size: 11px;
+  color: var(--muted);
+  transition: color 0.2s ease;
+}
+
+.foot-links a:hover { color: #ccc; }
+
+/* === RESPONSIVE DESIGN === */
+@media (max-width: 1024px) {
+  .details-section {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  :root { --sidebar-w: 0px; }
+
+  .sidebar { display: none; }
+  .main { margin-left: 0; padding: 20px 16px 32px; }
+  .nav { display: none; }
+  .topbar-inner { padding: 0 20px; }
+  .upsell-grid { grid-template-columns: 1fr; }
+  
+  .hero-banner {
+    height: 280px;
+  }
+  
+  .movie-title {
+    font-size: 42px;
+  }
+}
