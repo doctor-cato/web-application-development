@@ -339,7 +339,7 @@
 .features-section {
     padding: 60px var(--page-padding);
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     gap: 30px;
 }
 
