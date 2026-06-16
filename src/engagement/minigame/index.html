@@ -21,10 +21,6 @@
         <section class="hero-banner">
             <div class="hero-content">
                 <h1 class="hero-title">CINE PREDICT</h1>
-                <div class="countdown-box">
-                    <span class="countdown-label">BẮT ĐẦU SAU</span>
-                    <span class="countdown-time" id="main-timer">14:54</span>
-                </div>
             </div>
             
             <div class="wallet-bar-container">
@@ -49,7 +45,13 @@
         <main class="main-content-area">
                         <div class="section-header-row">
                 <h2 class="section-title">SỰ KIỆN ĐANG DIỄN RA</h2>
-                <span class="live-indicator"><span class="pulse-dot"></span> MỞ DỰ ĐOÁN</span>
+                <div style="display: flex; align-items: center; gap: 24px;">
+                    <div class="countdown-box" style="margin: 0; padding: 6px 16px; flex-direction: row; gap: 10px;">
+                        <span class="countdown-label" style="font-size: 0.8rem;">KẾT THÚC SAU</span>
+                        <span class="countdown-time" id="main-timer" style="font-size: 1.5rem; letter-spacing: 1px;">14:54</span>
+                    </div>
+                    <span class="live-indicator"><span class="pulse-dot"></span> MỞ DỰ ĐOÁN</span>
+                </div>
             </div>
 
             <div class="pools-grid">

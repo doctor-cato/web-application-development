@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (minutes === 0) {
                     clearInterval(interval);
                     timerElement.textContent = "00:00";
-                    showToast("Thời gian dự đoán đã kết thúc! Trận đấu bắt đầu.");
+                    showToast("Thời gian dự đoán đã kết thúc! Sự kiện đã đóng.");
                     return;
                 }
                 minutes--;
