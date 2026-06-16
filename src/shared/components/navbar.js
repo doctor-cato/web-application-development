@@ -4,20 +4,11 @@
  * Component render thanh Navbar dùng chung cho toàn dự án.
  */
 
+import { logout, getSession } from '/auth/auth-services/authService.js';
+
 export function renderNavbar() {
-    function getSrcPrefix() {
-        const pathname = window.location.pathname;
-        if (pathname.includes('/src/')) {
-            const parts = pathname.split('/src/')[1].split('/');
-            const depth = parts.length - 1;
-            return depth > 0 ? '../'.repeat(depth).slice(0, -1) : '.';
-        } else {
-            const parts = pathname.split('/').filter(Boolean);
-            const depth = parts.length > 0 ? parts.length - 1 : 0;
-            return depth > 0 ? '../'.repeat(depth).slice(0, -1) : '.';
-        }
-    }
-    const srcPrefix = getSrcPrefix();
+    // Luôn dùng đường dẫn tuyệt đối từ root (thư mục src/)
+    const srcPrefix = '';
 
     const navbarHTML = `
     <header class="navbar">
@@ -1131,10 +1122,10 @@ export function renderNavbar() {
             });
         }
 
-        // --- AUTH LOGIC (LOCALSTORAGE) ---
-        const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+        // --- AUTH LOGIC ---
+        const session = getSession();
 
-        if (isLoggedIn) {
+        if (session) {
             const navActions = document.querySelector('.nav-actions');
             if (navActions) {
                 // Xóa nút chưa đăng nhập hiện tại
@@ -1143,10 +1134,9 @@ export function renderNavbar() {
                 if (oldNotifBtn) oldNotifBtn.remove();
                 if (oldUserBtn) oldUserBtn.remove();
 
-                const userName = localStorage.getItem('userName') || 'Sigma Sicula';
-
+                const userName = session.name || 'Khách';
                 const defaultAvatar = `${srcPrefix}/shared/images/avatar.jpg`;
-                const userAvatar = localStorage.getItem('userAvatar') || defaultAvatar;
+                const userAvatar = session.avatar || defaultAvatar;
 
                 const loggedInHtml = `
                     <div class="notif-btn" id="notif-btn">
@@ -1227,15 +1217,12 @@ export function renderNavbar() {
                 if (logoutBtn) {
                     logoutBtn.addEventListener('click', (e) => {
                         e.preventDefault();
-                        localStorage.removeItem('isLoggedIn');
-                        localStorage.removeItem('userName');
-                        localStorage.removeItem('userAvatar');
-                        localStorage.removeItem('userEmail');
-                        window.location.reload();
+                        logout(); // Gọi service để xóa auth_token và reload
                     });
                 }
             }
         }
+
 
         // --- SEARCH EXPAND LOGIC ---
         const searchPill = document.getElementById('search-pill');

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="utf-8">
@@ -67,6 +67,13 @@
                         <div id="password-error" class="inline-error">Mật khẩu phải có ít nhất 6 ký tự.</div>
                     </div>
 
+                    <!-- Forgot Password Link -->
+                    <div style="text-align: right; margin-bottom: 1.5rem; margin-top: -0.5rem;">
+                        <a href="/auth/forgot-password/index.html" style="font-size: 13px; color: var(--primary-red); text-decoration: none;">
+                            Quên mật khẩu?
+                        </a>
+                    </div>
+
                     <!-- Submit Button -->
                     <button type="submit" class="btn-submit">
                         Đăng Nhập
@@ -81,75 +88,6 @@
         <div class="footer-copy">© 2026 3HD2K Cinema. All rights reserved.</div>
     </footer>
 
-    <script>
-        // Redirect if already logged in
-        if (localStorage.getItem('isLoggedIn') === 'true') {
-            window.location.href = '/explore/home-page/index.html';
-        }
-
-        // Password Visibility Toggle
-        const togglePassword = document.getElementById('togglePassword');
-        const passwordInput = document.getElementById('password');
-
-        togglePassword.addEventListener('click', function () {
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
-            this.textContent = type === 'password' ? 'visibility_off' : 'visibility';
-        });
-
-        // Form Submission Logic
-        const loginForm = document.getElementById('loginForm');
-        const errorBanner = document.getElementById('form-error-banner');
-        
-        loginForm.addEventListener('submit', function(e) {
-            e.preventDefault(); // Prevent default form submission
-            
-            errorBanner.classList.remove('show');
-            
-            const email = document.getElementById('email').value.trim();
-            const password = passwordInput.value;
-            
-            // Lấy danh sách tài khoản đã đăng ký từ localStorage
-            let users = [];
-            try {
-                users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
-                if (!Array.isArray(users)) users = [];
-            } catch (err) {
-                users = [];
-            }
-            
-            // Tìm user có email và mật khẩu khớp
-            const matchedUser = users.find(u => u.email === email && u.password === password);
-            
-            if (matchedUser) {
-                // Đăng nhập thành công
-                localStorage.setItem('isLoggedIn', 'true');
-                localStorage.setItem('userName', matchedUser.fullname);
-                localStorage.setItem('userEmail', matchedUser.email);
-                localStorage.setItem('userAvatar', matchedUser.avatar);
-                
-                // Chuyển hướng về trang chủ
-                window.location.href = '/explore/home-page/index.html';
-            } else {
-                // Đăng nhập thất bại (Hiển thị banner lỗi thay vì alert)
-                errorBanner.textContent = "Sai email hoặc mật khẩu! Nếu chưa có tài khoản, vui lòng Đăng ký trước.";
-                errorBanner.classList.add('show');
-                
-                // Thêm viền đỏ báo lỗi (Hiệu ứng)
-                document.getElementById('email').classList.add('error');
-                document.getElementById('password').classList.add('error');
-                
-                // Gỡ viền đỏ khi người dùng gõ lại
-                document.getElementById('email').addEventListener('input', function() {
-                    this.classList.remove('error');
-                    errorBanner.classList.remove('show');
-                }, { once: true });
-                document.getElementById('password').addEventListener('input', function() {
-                    this.classList.remove('error');
-                    errorBanner.classList.remove('show');
-                }, { once: true });
-            }
-        });
-    </script>
+    <script type="module" src="/auth/user-login/login.js"></script>
 </body>
 </html>
