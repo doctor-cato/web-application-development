@@ -84,6 +84,13 @@
     gap: 12px;
     flex: 1;
     border-right: 1px solid var(--glass-border);
+    padding: 0 10px;
+    transition: background 0.3s;
+    border-radius: 8px;
+}
+
+.filter-item:hover {
+    background: rgba(255, 255, 255, 0.05);
 }
 
 .filter-item:last-of-type {
@@ -91,7 +98,7 @@
 }
 
 .filter-item i {
-    color: var(--text-muted);
+    color: var(--primary-red);
 }
 
 .filter-item select {
@@ -99,16 +106,26 @@
     border: none;
     color: white;
     font-family: 'Inter', sans-serif;
-    font-size: 0.875rem;
+    font-size: 0.95rem;
     width: 100%;
     outline: none;
     cursor: pointer;
     appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding: 8px 30px 8px 5px;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 14px;
+    font-weight: 500;
 }
 
 .filter-item select option {
-    background: var(--bg-elevated);
+    background: #1a1a1a;
     color: white;
+    padding: 10px;
+    font-size: 0.95rem;
 }
 
 .filter-btn {
