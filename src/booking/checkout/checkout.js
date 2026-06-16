@@ -228,36 +228,32 @@ function init() {
   if (payBtn) payBtn.addEventListener('click', handlePayClick);
 
   // combo radio behavior
-  document.querySelectorAll('label.combo-card').forEach(l => {
-    l.addEventListener('click', (e) => {
-      e.preventDefault();
+  document.querySelectorAll('input[name="combo"]').forEach(radio => {
+    radio.addEventListener('change', (e) => {
       document.querySelectorAll('label.combo-card').forEach(x => x.classList.remove('selected'));
-      l.classList.add('selected');
-      const radio = l.querySelector('input[name="combo"]');
-      if (radio) radio.checked = true;
+      const card = e.target.closest('.combo-card');
+      if (card) card.classList.add('selected');
       updateTotal();
     });
   });
 
   // payment radio behavior
-  document.querySelectorAll('label.payment-card').forEach(l => {
-    l.addEventListener('click', (e) => {
-      e.preventDefault();
+  document.querySelectorAll('input[name="payment"]').forEach(radio => {
+    radio.addEventListener('change', (e) => {
       document.querySelectorAll('label.payment-card').forEach(x => {
         x.classList.remove('selected-momo', 'selected-vnpay');
         const icon = x.querySelector('i');
         if (icon) icon.style.display = 'none';
       });
 
-      const radio = l.querySelector('input[name="payment"]');
-      if (radio) {
-        radio.checked = true;
-        if (radio.value === 'momo') l.classList.add('selected-momo');
-        if (radio.value === 'vnpay') l.classList.add('selected-vnpay');
+      const selectedRadio = e.target;
+      const card = selectedRadio.closest('.payment-card');
+      if (card) {
+        if (selectedRadio.value === 'momo') card.classList.add('selected-momo');
+        if (selectedRadio.value === 'vnpay') card.classList.add('selected-vnpay');
+        const icon = card.querySelector('i');
+        if (icon) icon.style.display = 'block';
       }
-      
-      const icon = l.querySelector('i');
-      if (icon) icon.style.display = 'block';
     });
   });
 
