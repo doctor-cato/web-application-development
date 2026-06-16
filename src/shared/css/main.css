@@ -228,6 +228,8 @@ a:hover {
     display: flex;
     align-items: center;
     gap: 18px;
+    position: absolute;
+    right: 3%;
 }
 
 /* Pill-shaped search */
