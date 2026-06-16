@@ -229,7 +229,8 @@ function init() {
 
   // combo radio behavior
   document.querySelectorAll('label.combo-card').forEach(l => {
-    l.addEventListener('click', () => {
+    l.addEventListener('click', (e) => {
+      e.preventDefault();
       document.querySelectorAll('label.combo-card').forEach(x => x.classList.remove('selected'));
       l.classList.add('selected');
       const radio = l.querySelector('input[name="combo"]');
@@ -240,7 +241,8 @@ function init() {
 
   // payment radio behavior
   document.querySelectorAll('label.payment-card').forEach(l => {
-    l.addEventListener('click', () => {
+    l.addEventListener('click', (e) => {
+      e.preventDefault();
       document.querySelectorAll('label.payment-card').forEach(x => {
         x.classList.remove('selected-momo', 'selected-vnpay');
         const icon = x.querySelector('i');
