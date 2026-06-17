@@ -1119,6 +1119,9 @@ export function renderNavbar() {
             
             hamburgerDropdown.addEventListener('click', (e) => {
                 e.stopPropagation();
+                if (e.target.closest('a')) {
+                    hamburgerDropdown.style.display = 'none';
+                }
             });
         }
 
@@ -1270,6 +1273,9 @@ export function renderNavbar() {
         if (notifDropdown) {
             notifDropdown.addEventListener('click', (e) => {
                 e.stopPropagation();
+                if (e.target.closest('a')) {
+                    notifBtn.classList.remove('active');
+                }
             });
         }
 
@@ -1280,7 +1286,6 @@ export function renderNavbar() {
         if (userBtn) {
             userBtn.addEventListener('click', (e) => {
                 e.stopPropagation(); 
-                e.preventDefault(); // Ngăn link chuyển trang nếu là <a>
                 userBtn.classList.toggle('active');
                 if (notifBtn && notifBtn.classList.contains('active')) {
                     notifBtn.classList.remove('active');
@@ -1291,6 +1296,9 @@ export function renderNavbar() {
         if (userDropdown) {
             userDropdown.addEventListener('click', (e) => {
                 e.stopPropagation(); 
+                if (e.target.closest('a')) {
+                    userBtn.classList.remove('active');
+                }
             });
         }
 
