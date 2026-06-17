@@ -62,10 +62,14 @@ export function renderNavbar() {
             </nav>
         </div>
         <div class="nav-actions">
-            <div class="search-pill" id="search-pill">
+            <div class="search-pill" id="search-pill" style="position: relative;">
                 <i class="fas fa-search" id="search-icon"></i>
-                <input type="text" id="search-input" placeholder="Tìm kiếm phim..." />
+                <input type="text" id="search-input" placeholder="Tìm kiếm phim..." autocomplete="off" />
                 <span id="search-text">Tìm kiếm</span>
+                
+                <div id="search-suggestions" style="display: none; position: absolute; top: 120%; right: 0; width: 340px; max-height: 400px; overflow-y: auto; background: var(--bg-elevated, #1a1a1a); border: 1px solid var(--glass-border, rgba(255,255,255,0.08)); border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); z-index: 10000; flex-direction: column; text-align: left;">
+                    <!-- Render suggestions here via JS -->
+                </div>
             </div>
             <div class="notif-btn" id="notif-btn">
                 <i class="fas fa-bell"></i>
@@ -1241,6 +1245,8 @@ export function renderNavbar() {
         }
 
         if (searchInput) {
+            const searchSuggestions = document.getElementById('search-suggestions');
+            
             searchInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     const q = e.target.value.trim();
@@ -1249,6 +1255,57 @@ export function renderNavbar() {
                     }
                 }
             });
+
+            if (searchSuggestions) {
+                searchInput.addEventListener('input', (e) => {
+                    const q = e.target.value.trim().toLowerCase();
+                    if (!q) {
+                        searchSuggestions.style.display = 'none';
+                        return;
+                    }
+                    
+                    let allMovies = [];
+                    if (typeof window.nowShowingMovies !== 'undefined') allMovies = allMovies.concat(window.nowShowingMovies);
+                    if (typeof window.comingSoonMovies !== 'undefined') allMovies = allMovies.concat(window.comingSoonMovies);
+                    
+                    if (allMovies.length === 0) {
+                        searchSuggestions.style.display = 'none';
+                        return;
+                    }
+                    
+                    const matches = allMovies.filter(m => {
+                        const titleMatch = m.title && m.title.toLowerCase().includes(q);
+                        const titleEnMatch = m.titleEn && m.titleEn.toLowerCase().includes(q);
+                        return titleMatch || titleEnMatch;
+                    }).slice(0, 5); // Limit top 5
+                    
+                    if (matches.length > 0) {
+                        searchSuggestions.innerHTML = matches.map(m => {
+                            const posterSrc = m.poster.includes('../../') ? `${srcPrefix}/${m.poster.replace('../../', '')}` : m.poster;
+                            return `
+                            <a href="${srcPrefix}/booking/seat-booking/booking.html?id=${m.id}" style="display: flex; gap: 12px; padding: 12px 15px; text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.2s; align-items: center;">
+                                <img src="${posterSrc}" alt="${m.title}" style="width: 45px; height: 65px; object-fit: cover; border-radius: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.5);">
+                                <div style="flex: 1; min-width: 0;">
+                                    <div style="color: white; font-weight: bold; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 4px;">${m.title}</div>
+                                    <div style="color: rgba(255,255,255,0.5); font-size: 0.8rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${m.titleEn || (m.tags ? m.tags.join(', ') : '')}</div>
+                                </div>
+                            </a>
+                        `}).join('') + `
+                            <a href="${srcPrefix}/explore/movie-search/index.html?q=${encodeURIComponent(q)}" style="display: block; padding: 12px; text-align: center; color: var(--primary-red, #e50914); text-decoration: none; font-size: 0.9rem; font-weight: bold; background: rgba(229, 9, 20, 0.05); transition: background 0.2s;">
+                                Xem tất cả kết quả
+                            </a>
+                        `;
+                        searchSuggestions.style.display = 'flex';
+                    } else {
+                        searchSuggestions.innerHTML = `
+                            <div style="padding: 20px; text-align: center; color: rgba(255,255,255,0.5); font-size: 0.9rem;">
+                                Không tìm thấy phim phù hợp
+                            </div>
+                        `;
+                        searchSuggestions.style.display = 'flex';
+                    }
+                });
+            }
         }
 
         // --- NOTIFICATION DROPDOWN LOGIC ---
@@ -1309,6 +1366,10 @@ export function renderNavbar() {
                 searchPill.classList.remove('active');
                 if (searchInput) {
                     searchInput.value = '';
+                }
+                const searchSuggestions = document.getElementById('search-suggestions');
+                if (searchSuggestions) {
+                    searchSuggestions.style.display = 'none';
                 }
             }
             // Đóng notification
