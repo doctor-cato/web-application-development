@@ -37,7 +37,9 @@ function init() {
       movieData = {
         id: foundMovie.id,
         title: foundMovie.title,
-        poster: foundMovie.poster || foundMovie.bg
+        poster: foundMovie.poster || foundMovie.bg,
+        genre: foundMovie.genre,
+        tags: foundMovie.tags
       };
     }
   }
@@ -204,6 +206,8 @@ function handleContinue() {
     showtimeId: currentShowtimeId,
     movieTitle: movieData.title,
     poster: movieData.poster,
+    genre: movieData.genre,
+    tags: movieData.tags,
     room: 'Phòng 3',
     showtimeText: '19:30',
     selectedSeats: seats,
