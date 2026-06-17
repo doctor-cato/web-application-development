@@ -31,7 +31,7 @@ function verifyPassword(password, hash) {
 
 function buildPayload(user) {
     return {
-        name:   user.fullname,
+        name:   user.fullname || user.name || 'Khách',
         email:  user.email,
         phone:  user.phone,
         dob:    user.dob,
@@ -117,7 +117,16 @@ export function logout() {
  * @returns {object|null}
  */
 export function getSession() {
-    return getCurrentUser();
+    const session = getCurrentUser();
+    if (session && !session.name) {
+        const users = getUsers();
+        const user = users.find(u => u.email === session.email);
+        if (user) {
+            session.name = user.fullname || user.name || 'Khách';
+            // Optionally, we could save the new token here by calling setCurrentUser
+        }
+    }
+    return session;
 }
 
 /**
