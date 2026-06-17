@@ -361,9 +361,9 @@ function setupMultiSelect() {
             // Update localStorage
             if (idsToRemove.length > 0) {
                 try {
-                    let bookings = JSON.parse(localStorage.getItem('bookings') || '[]');
+                    let bookings = JSON.parse(localStorage.getItem('cinema_bookings') || '[]');
                     bookings = bookings.filter(b => !idsToRemove.includes(b.id));
-                    localStorage.setItem('bookings', JSON.stringify(bookings));
+                    localStorage.setItem('cinema_bookings', JSON.stringify(bookings));
                 } catch(e) {
                     console.error('Error updating localStorage bookings', e);
                 }

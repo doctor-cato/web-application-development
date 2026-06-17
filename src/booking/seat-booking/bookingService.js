@@ -99,6 +99,7 @@ export function confirmBooking(checkoutData) {
     userId: checkoutData.userId || null,
     transactionId: checkoutData.transactionId || null,
     paymentMethod: checkoutData.paymentMethod || null,
+    poster: checkoutData.poster || '',
     createdAt: now.toISOString()
   };
 
