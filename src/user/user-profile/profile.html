@@ -196,7 +196,43 @@
         margin: 0;
     }
 
+
+    /* Multi-select */
+    .ticket-select-wrapper {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        z-index: 10;
+        background: rgba(0,0,0,0.7);
+        border-radius: 6px;
+        padding: 8px;
+        display: none;
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+    .select-mode .ticket-select-wrapper {
+        display: block;
+    }
+    .history-card.selected {
+        border-color: var(--primary-red) !important;
+        box-shadow: 0 0 15px rgba(229, 9, 20, 0.4) !important;
+    }
+    .select-mode .history-card {
+        cursor: pointer;
+    }
+    .select-mode .history-card * {
+        pointer-events: none; /* prevent children from capturing clicks */
+    }
+    .select-mode .history-card .ticket-select-wrapper * {
+        pointer-events: auto; /* allow checkbox interaction but we handle it anyway */
+    }
+    .ticket-cb {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+        accent-color: #e50914;
+    }
 </style>
+
 
 </head>
 <body>
@@ -313,6 +349,8 @@
                             <button class="filter-btn active" data-filter="all">Tất cả</button>
                             <button class="filter-btn" data-filter="upcoming">Sắp chiếu</button>
                             <button class="filter-btn" data-filter="completed">Đã xem</button>
+                            <button id="btn-toggle-select" class="btn-outline-small" style="margin-left: 10px; color: var(--primary-red); border-color: var(--primary-red);"><i class="fas fa-check-square"></i> Chọn nhiều</button>
+                            <button id="btn-delete-selected" class="btn-save" style="display: none; background: var(--primary-red);"><i class="fas fa-trash-alt"></i> Xóa (<span id="delete-count">0</span>)</button>
                         </div>
                     </div>
                     <div class="content-body">
@@ -321,6 +359,7 @@
 
                             <!-- Ticket 2: Group Ticket -->
                             <div class="history-card">
+                                <div class="ticket-select-wrapper"><input type="checkbox" class="ticket-cb" data-static="true"></div>
                                 <div class="history-img">
                                     <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=400&q=80" alt="Avenger">
                                 </div>
@@ -343,6 +382,7 @@
 
                             <!-- Ticket 1 -->
                             <div class="history-card">
+                                <div class="ticket-select-wrapper"><input type="checkbox" class="ticket-cb" data-static="true"></div>
                                 <div class="history-img">
                                     <img src="/shared/images/f1_movie.jpg" alt="F1 The Movie" onerror="this.src='https://images.unsplash.com/photo-1440404653325-ab127d49abc1?auto=format&fit=crop&w=400&q=80'">
                                 </div>
@@ -364,6 +404,7 @@
                             
                             <!-- Ticket 2 -->
                             <div class="history-card">
+                                <div class="ticket-select-wrapper"><input type="checkbox" class="ticket-cb" data-static="true"></div>
                                 <div class="history-img">
                                     <img src="/shared/images/war_machine.jpg" alt="War Machine" onerror="this.src='https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=400&q=80'">
                                 </div>

@@ -8,6 +8,7 @@ export function setupProfileUI() {
     setupPasswordModal();
     setupLogoutDeviceModal();
     setupPaymentModals();
+    setupMultiSelect();
 }
 
 function setupHistoryFilters() {
@@ -270,4 +271,108 @@ function setupPaymentModals() {
             if(addPaymentModal) addPaymentModal.style.display = 'none';
         });
     }
+}
+
+function setupMultiSelect() {
+    const tabHistory = document.getElementById('tab-history');
+    const btnToggle = document.getElementById('btn-toggle-select');
+    const btnDelete = document.getElementById('btn-delete-selected');
+    const countSpan = document.getElementById('delete-count');
+    
+    if (!tabHistory || !btnToggle || !btnDelete) return;
+
+    let isSelectMode = false;
+
+    btnToggle.addEventListener('click', () => {
+        isSelectMode = !isSelectMode;
+        if (isSelectMode) {
+            tabHistory.classList.add('select-mode');
+            btnToggle.innerHTML = '<i class="fas fa-times"></i> Hủy chọn';
+            btnDelete.style.display = 'inline-block';
+            updateCount();
+        } else {
+            tabHistory.classList.remove('select-mode');
+            btnToggle.innerHTML = '<i class="fas fa-check-square"></i> Chọn nhiều';
+            btnDelete.style.display = 'none';
+            // uncheck all
+            document.querySelectorAll('.ticket-cb').forEach(cb => {
+                cb.checked = false;
+                cb.closest('.history-card').classList.remove('selected');
+            });
+        }
+    });
+
+    // Enhanced UX: Event delegation for clicking anywhere on the card during select mode
+    tabHistory.addEventListener('click', (e) => {
+        if (!isSelectMode) return;
+        
+        const card = e.target.closest('.history-card');
+        if (!card) return;
+
+        // Intercept all clicks inside the card during select mode
+        e.stopPropagation();
+        e.preventDefault();
+
+        const cb = card.querySelector('.ticket-cb');
+        if (cb) {
+            // Toggle the checkbox manually
+            cb.checked = !cb.checked;
+            
+            // Update visual selection state
+            if (cb.checked) {
+                card.classList.add('selected');
+            } else {
+                card.classList.remove('selected');
+            }
+            updateCount();
+        }
+    }, true); // useCapture to intercept before child elements handle it
+
+    function updateCount() {
+        const checked = document.querySelectorAll('.ticket-cb:checked');
+        if (countSpan) countSpan.innerText = checked.length;
+        if (checked.length > 0) {
+            btnDelete.style.opacity = '1';
+            btnDelete.style.pointerEvents = 'auto';
+        } else {
+            btnDelete.style.opacity = '0.5';
+            btnDelete.style.pointerEvents = 'none';
+        }
+    }
+
+    btnDelete.addEventListener('click', () => {
+        const checked = document.querySelectorAll('.ticket-cb:checked');
+        if (checked.length === 0) return;
+        
+        if (confirm(`Bạn có chắc chắn muốn xóa ${checked.length} vé đã chọn khỏi lịch sử?`)) {
+            // Get IDs for local storage removal
+            const idsToRemove = [];
+            checked.forEach(cb => {
+                const id = cb.getAttribute('data-id');
+                if (id) idsToRemove.push(id);
+                // Remove from UI
+                const card = cb.closest('.history-card');
+                card.style.transition = 'all 0.3s ease';
+                card.style.opacity = '0';
+                card.style.transform = 'scale(0.9)';
+                setTimeout(() => card.remove(), 300);
+            });
+
+            // Update localStorage
+            if (idsToRemove.length > 0) {
+                try {
+                    let bookings = JSON.parse(localStorage.getItem('bookings') || '[]');
+                    bookings = bookings.filter(b => !idsToRemove.includes(b.id));
+                    localStorage.setItem('bookings', JSON.stringify(bookings));
+                } catch(e) {
+                    console.error('Error updating localStorage bookings', e);
+                }
+            }
+
+            // reset mode
+            setTimeout(() => {
+                btnToggle.click();
+            }, 300);
+        }
+    });
 }

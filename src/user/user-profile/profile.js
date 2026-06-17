@@ -1,4 +1,6 @@
 import { getBookings } from '../../shared/utils/storage.js';
+import { getCurrentUser, clearCurrentUser } from '../../auth/auth-services/storage.js';
+import { setupProfileUI } from './profile-ui.js';
 
 function formatPrice(amount) {
     if (!amount) return '0 đ';
@@ -10,7 +12,11 @@ function renderRealHistory() {
     if (!container) return;
     
     // Get all bookings from localStorage
-    const bookings = getBookings();
+    let bookings = getBookings();
+    
+    if (!Array.isArray(bookings)) {
+        bookings = [];
+    }
     
     // Reverse so newest is at the top
     bookings.reverse();
@@ -55,7 +61,10 @@ function renderRealHistory() {
 
         html += `
             <div class="history-card" style="border: 1px solid rgba(16, 185, 129, 0.4) !important; box-shadow: 0 0 15px rgba(16, 185, 129, 0.1) !important;">
-                <!-- Highlight border to show it's a real active booking -->
+                
+                <div class="ticket-select-wrapper">
+                    <input type="checkbox" class="ticket-cb" data-id="${idStr}" data-index="${index}">
+                </div>
                 <div class="history-img">
                     <img src="${poster}" alt="${titleSafe}">
                 </div>
@@ -74,8 +83,143 @@ function renderRealHistory() {
     container.innerHTML = html;
 }
 
+function initTabs() {
+    const menuItems = document.querySelectorAll('.sidebar-menu .menu-item:not(.logout)');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    menuItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            // Remove active from all tabs and menus
+            menuItems.forEach(m => m.classList.remove('active'));
+            tabContents.forEach(t => t.classList.remove('active'));
+            
+            // Add active to clicked item
+            item.classList.add('active');
+            
+            // Show corresponding tab
+            const targetId = 'tab-' + item.getAttribute('data-tab');
+            const targetTab = document.getElementById(targetId);
+            if (targetTab) {
+                targetTab.classList.add('active');
+            }
+        });
+    });
+}
+
+function loadUserInfo() {
+    // Check if the user is logged in
+    const isLogged = localStorage.getItem('isLoggedIn') === 'true';
+    let user = null;
+    try {
+        user = getCurrentUser();
+    } catch(e) {
+        console.error("getCurrentUser error", e);
+    }
+    
+    if (user || isLogged) {
+        const name = localStorage.getItem('userName') || (user ? user.name : '');
+        const email = localStorage.getItem('userEmail') || (user ? user.email : '');
+        const avatar = localStorage.getItem('userAvatar') || (user ? user.avatar : '');
+        const phone = '0987654321'; // Dummy phone
+        
+        // Update Sidebar
+        const nameEl = document.getElementById('sidebar-name');
+        if (nameEl) nameEl.innerText = name || email.split('@')[0] || 'User';
+        
+        const avatarEl = document.getElementById('sidebar-avatar');
+        if (avatarEl && avatar) avatarEl.src = avatar;
+        
+        const pointsEl = document.getElementById('sidebar-points');
+        if (pointsEl) pointsEl.innerText = '120'; // dummy points
+
+        // Update Form Inputs (if they exist in tab-info)
+        const fullnameInput = document.getElementById('fullname');
+        if (fullnameInput) fullnameInput.value = name || '';
+        
+        const emailInput = document.getElementById('email');
+        if (emailInput) emailInput.value = email || '';
+        
+        const phoneInput = document.getElementById('phone');
+        if (phoneInput) phoneInput.value = phone;
+    } else {
+        // Not logged in
+        const nameEl = document.getElementById('sidebar-name');
+        if (nameEl) nameEl.innerText = 'Khách';
+    }
+}
+
+function initLogout() {
+    const logoutBtn = document.getElementById('sidebar-logout');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (confirm('Bạn có chắc chắn muốn đăng xuất?')) {
+                try {
+                    clearCurrentUser();
+                } catch(e) {}
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('userName');
+                localStorage.removeItem('userEmail');
+                localStorage.removeItem('userAvatar');
+                window.location.href = '../../index.html';
+            }
+        });
+    }
+}
+
+function setupProfileForm() {
+    const form = document.getElementById('profile-form');
+    if (!form) return;
+    
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const fullnameInput = document.getElementById('fullname');
+        
+        if (fullnameInput) {
+            const newName = fullnameInput.value.trim();
+            localStorage.setItem('userName', newName);
+            
+            // Update sidebar
+            const nameEl = document.getElementById('sidebar-name');
+            if (nameEl) nameEl.innerText = newName || 'User';
+            
+            // Update auth token if needed, or we rely on localStorage
+            let user = null;
+            try { user = getCurrentUser(); } catch(e) {}
+            if (user) {
+                // Not cleanly exporting setCurrentUser here, but localStorage is updated.
+                // Ideally we'd update token, but navbar uses localStorage fallback.
+            }
+            
+            // Show feedback
+            const btn = form.querySelector('.btn-save');
+            if (btn) {
+                const origText = btn.innerText;
+                btn.innerText = 'Đã lưu thành công!';
+                btn.style.background = '#10b981';
+                setTimeout(() => {
+                    btn.innerText = origText;
+                    btn.style.background = '';
+                }, 2000);
+            }
+        }
+    });
+}
+
+function initProfile() {
+    try { initTabs(); } catch(e) { console.error('initTabs error:', e); }
+    try { loadUserInfo(); } catch(e) { console.error('loadUserInfo error:', e); }
+    try { setupProfileForm(); } catch(e) { console.error('setupProfileForm error:', e); }
+    try { setupProfileUI(); } catch(e) { console.error('setupProfileUI error:', e); }
+    try { renderRealHistory(); } catch(e) { console.error('renderRealHistory error:', e); }
+    try { initLogout(); } catch(e) { console.error('initLogout error:', e); }
+}
+
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', renderRealHistory);
+    document.addEventListener('DOMContentLoaded', initProfile);
 } else {
-    renderRealHistory();
+    initProfile();
 }
