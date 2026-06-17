@@ -3,7 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>3HD2K | Đặt vé</title>
+  <title>3HD2K | Đặt vé - Đồ ăn</title>
+  
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  
   <link rel="stylesheet" href="../../shared/css/main.css">
   <link rel="stylesheet" href="styles.css">
 </head>
@@ -11,48 +16,38 @@
 <div id="navbar-placeholder"></div>
 
 <main class="page">
-  <div class="steps">
-    <div class="step">Thanh toán</div>
-    <div class="step active">Đồ ăn</div>
-    <div class="step">Thanh toán</div>
-  </div>
+
 
   <form class="content">
     <section class="items">
-      <h2>Đồ ăn</h2>
+      
+      <!-- STICKY TABS -->
+      <div class="food-tabs" id="food-tabs">
+        <a href="#section-combo" class="food-tab active" data-target="section-combo"><i class="fas fa-fire"></i> Combo Ưu Đãi</a>
+        <a href="#section-popcorn" class="food-tab" data-target="section-popcorn"><i class="fas fa-hamburger"></i> Đồ Ăn Vặt</a>
+        <a href="#section-drinks" class="food-tab" data-target="section-drinks"><i class="fas fa-glass-cheers"></i> Nước Uống</a>
+      </div>
 
-      <section class="category">
-        <h3>Combo riêng</h3>
+      <div id="section-combo" class="menu-section">
+        <h2 class="section-title"><i class="fas fa-fire"></i> Combo Ưu Đãi <span>Khuyên dùng</span></h2>
+        <section class="category">
+
+        
+        <button type="button" class="slider-btn prev"><i class="fas fa-chevron-left"></i></button>
         <div class="grid">
           <article class="card" data-product="combo">
-            <div class="media" style="background-image:linear-gradient(135deg,#262626,#111);"></div>
+            <div class="media">
+              <img src="../../shared/images/combo_double.png" alt="combo">
+            </div>
             <div class="body">
               <h3>Combo Người Yêu Phim</h3>
               <div class="price">150.000đ</div>
               <p class="desc">Bữa combo lớn cho 2 người, gồm bắp và nước.</p>
               <div class="controls">
                 <div class="qty-row">
-                  <label class="qty-label btn-minus-1" for="combo-q1">-</label>
-                  <label class="qty-label btn-minus-2" for="combo-q1">-</label>
-                  <label class="qty-label btn-minus-3" for="combo-q2">-</label>
-                  <label class="qty-label btn-minus-4" for="combo-q3">-</label>
-                  <label class="qty-label btn-minus-5" for="combo-q4">-</label>
-                  <label class="qty-label btn-minus-6" for="combo-q5">-</label>
-                  <label class="qty-label btn-minus-7" for="combo-q6">-</label>
-                  <label class="qty-label btn-minus-8" for="combo-q7">-</label>
-                  <label class="qty-label btn-minus-9" for="combo-q8">-</label>
-                  <label class="qty-label btn-minus-10" for="combo-q9">-</label>
-                  <span class="qty-display val-1">1</span><span class="qty-display val-2">2</span><span class="qty-display val-3">3</span><span class="qty-display val-4">4</span><span class="qty-display val-5">5</span><span class="qty-display val-6">6</span><span class="qty-display val-7">7</span><span class="qty-display val-8">8</span><span class="qty-display val-9">9</span><span class="qty-display val-10">10</span>
-                  <label class="qty-label btn-plus-2" for="combo-q2">+</label>
-                  <label class="qty-label btn-plus-3" for="combo-q3">+</label>
-                  <label class="qty-label btn-plus-4" for="combo-q4">+</label>
-                  <label class="qty-label btn-plus-5" for="combo-q5">+</label>
-                  <label class="qty-label btn-plus-6" for="combo-q6">+</label>
-                  <label class="qty-label btn-plus-7" for="combo-q7">+</label>
-                  <label class="qty-label btn-plus-8" for="combo-q8">+</label>
-                  <label class="qty-label btn-plus-9" for="combo-q9">+</label>
-                  <label class="qty-label btn-plus-10" for="combo-q10">+</label>
-                  <label class="qty-label btn-plus-11" for="combo-q10">+</label>
+                  <div class="qty-label btn-minus">-</div>
+                  <span class="qty-display">1</span>
+                  <div class="qty-label btn-plus">+</div>
                 </div>
                 <div class="add-row"><label class="add-label combo-btn-label"></label></div>
               </div>
@@ -60,74 +55,104 @@
           </article>
 
           <article class="card" data-product="comboBimBim">
-            <div class="media" style="background-image:linear-gradient(135deg,#2a2a2a,#111);"></div>
+            <div class="media">
+              <img src="../../shared/images/combo_single.png" alt="comboBimBim">
+            </div>
             <div class="body">
               <h3>Combo 2 Bỏng</h3>
               <div class="price">125.000đ</div>
               <p class="desc">1 bắp rang + 1 bim bim khoai tây.</p>
               <div class="controls">
                 <div class="qty-row">
-                  <label class="qty-label btn-minus-1" for="comboBimBim-q1">-</label>
-                  <label class="qty-label btn-minus-2" for="comboBimBim-q1">-</label>
-                  <label class="qty-label btn-minus-3" for="comboBimBim-q2">-</label>
-                  <label class="qty-label btn-minus-4" for="comboBimBim-q3">-</label>
-                  <label class="qty-label btn-minus-5" for="comboBimBim-q4">-</label>
-                  <label class="qty-label btn-minus-6" for="comboBimBim-q5">-</label>
-                  <label class="qty-label btn-minus-7" for="comboBimBim-q6">-</label>
-                  <label class="qty-label btn-minus-8" for="comboBimBim-q7">-</label>
-                  <label class="qty-label btn-minus-9" for="comboBimBim-q8">-</label>
-                  <label class="qty-label btn-minus-10" for="comboBimBim-q9">-</label>
-                  <span class="qty-display val-1">1</span><span class="qty-display val-2">2</span><span class="qty-display val-3">3</span><span class="qty-display val-4">4</span><span class="qty-display val-5">5</span><span class="qty-display val-6">6</span><span class="qty-display val-7">7</span><span class="qty-display val-8">8</span><span class="qty-display val-9">9</span><span class="qty-display val-10">10</span>
-                  <label class="qty-label btn-plus-2" for="comboBimBim-q2">+</label>
-                  <label class="qty-label btn-plus-3" for="comboBimBim-q3">+</label>
-                  <label class="qty-label btn-plus-4" for="comboBimBim-q4">+</label>
-                  <label class="qty-label btn-plus-5" for="comboBimBim-q5">+</label>
-                  <label class="qty-label btn-plus-6" for="comboBimBim-q6">+</label>
-                  <label class="qty-label btn-plus-7" for="comboBimBim-q7">+</label>
-                  <label class="qty-label btn-plus-8" for="comboBimBim-q8">+</label>
-                  <label class="qty-label btn-plus-9" for="comboBimBim-q9">+</label>
-                  <label class="qty-label btn-plus-10" for="comboBimBim-q10">+</label>
-                  <label class="qty-label btn-plus-11" for="comboBimBim-q10">+</label>
+                  <div class="qty-label btn-minus">-</div>
+                  <span class="qty-display">1</span>
+                  <div class="qty-label btn-plus">+</div>
                 </div>
                 <div class="add-row"><label class="add-label comboBimBim-btn-label"></label></div>
               </div>
             </div>
           </article>
-        </div>
-      </section>
 
-      <section class="category">
-        <h3>Đồ ăn riêng</h3>
+          <article class="card" data-product="comboCinema">
+            <div class="media">
+              <img src="../../shared/images/food_popcorn.png" alt="comboCinema">
+            </div>
+            <div class="body">
+              <h3>Combo Siêu Khổng Lồ</h3>
+              <div class="price">115.000đ</div>
+              <p class="desc">1 Bắp siêu lớn + 1 Nước khổng lồ. Ăn mãi không hết.</p>
+              <div class="controls">
+                <div class="qty-row">
+                  <div class="qty-label btn-minus">-</div>
+                  <span class="qty-display">1</span>
+                  <div class="qty-label btn-plus">+</div>
+                </div>
+                <div class="add-row"><label class="add-label comboCinema-btn-label"></label></div>
+              </div>
+            </div>
+          </article>
+
+          <article class="card" data-product="comboDate">
+            <div class="media">
+              <img src="../../shared/images/combo_single.png" alt="comboDate">
+            </div>
+            <div class="body">
+              <h3>Combo Hẹn Hò VIP</h3>
+              <div class="price">135.000đ</div>
+              <p class="desc">2 Bắp nhỏ + 2 Nước ngọt + 2 Xúc xích nướng.</p>
+              <div class="controls">
+                <div class="qty-row">
+                  <div class="qty-label btn-minus">-</div>
+                  <span class="qty-display">1</span>
+                  <div class="qty-label btn-plus">+</div>
+                </div>
+                <div class="add-row"><label class="add-label comboDate-btn-label"></label></div>
+              </div>
+            </div>
+          </article>
+          
+          <article class="card" data-product="comboParty">
+            <div class="media">
+              <img src="../../shared/images/combo_double.png" alt="comboParty">
+            </div>
+            <div class="body">
+              <h3>Combo Tiệc Tùng</h3>
+              <div class="price">250.000đ</div>
+              <p class="desc">4 Bắp lớn + 4 Nước ngọt + 4 Snack. Quẩy hết mình.</p>
+              <div class="controls">
+                <div class="qty-row">
+                  <div class="qty-label btn-minus">-</div>
+                  <span class="qty-display">1</span>
+                  <div class="qty-label btn-plus">+</div>
+                </div>
+                <div class="add-row"><label class="add-label comboParty-btn-label"></label></div>
+              </div>
+            </div>
+          </article>
+        </div>
+      <button type="button" class="slider-btn next"><i class="fas fa-chevron-right"></i></button>
+      </section>
+      </div>
+      
+      <div id="section-popcorn" class="menu-section">
+        <h2 class="section-title"><i class="fas fa-hamburger"></i> Bắp & Đồ Ăn Vặt <span>Giòn rụm</span></h2>
+        <section class="category">
+        
+        <button type="button" class="slider-btn prev"><i class="fas fa-chevron-left"></i></button>
         <div class="grid">
           <article class="card" data-product="popcorn">
-            <div class="media" style="background-image:linear-gradient(135deg,#272727,#111);"></div>
+            <div class="media">
+              <img src="../../shared/images/food_popcorn.png" alt="popcorn">
+            </div>
             <div class="body">
               <h3>Bắp Đơn</h3>
               <div class="price">65.000đ</div>
               <p class="desc">Bắp rang bơ cỡ lớn.</p>
               <div class="controls">
                 <div class="qty-row">
-                  <label class="qty-label btn-minus-1" for="popcorn-q1">-</label>
-                  <label class="qty-label btn-minus-2" for="popcorn-q1">-</label>
-                  <label class="qty-label btn-minus-3" for="popcorn-q2">-</label>
-                  <label class="qty-label btn-minus-4" for="popcorn-q3">-</label>
-                  <label class="qty-label btn-minus-5" for="popcorn-q4">-</label>
-                  <label class="qty-label btn-minus-6" for="popcorn-q5">-</label>
-                  <label class="qty-label btn-minus-7" for="popcorn-q6">-</label>
-                  <label class="qty-label btn-minus-8" for="popcorn-q7">-</label>
-                  <label class="qty-label btn-minus-9" for="popcorn-q8">-</label>
-                  <label class="qty-label btn-minus-10" for="popcorn-q9">-</label>
-                  <span class="qty-display val-1">1</span><span class="qty-display val-2">2</span><span class="qty-display val-3">3</span><span class="qty-display val-4">4</span><span class="qty-display val-5">5</span><span class="qty-display val-6">6</span><span class="qty-display val-7">7</span><span class="qty-display val-8">8</span><span class="qty-display val-9">9</span><span class="qty-display val-10">10</span>
-                  <label class="qty-label btn-plus-2" for="popcorn-q2">+</label>
-                  <label class="qty-label btn-plus-3" for="popcorn-q3">+</label>
-                  <label class="qty-label btn-plus-4" for="popcorn-q4">+</label>
-                  <label class="qty-label btn-plus-5" for="popcorn-q5">+</label>
-                  <label class="qty-label btn-plus-6" for="popcorn-q6">+</label>
-                  <label class="qty-label btn-plus-7" for="popcorn-q7">+</label>
-                  <label class="qty-label btn-plus-8" for="popcorn-q8">+</label>
-                  <label class="qty-label btn-plus-9" for="popcorn-q9">+</label>
-                  <label class="qty-label btn-plus-10" for="popcorn-q10">+</label>
-                  <label class="qty-label btn-plus-11" for="popcorn-q10">+</label>
+                  <div class="qty-label btn-minus">-</div>
+                  <span class="qty-display">1</span>
+                  <div class="qty-label btn-plus">+</div>
                 </div>
                 <div class="add-row"><label class="add-label popcorn-btn-label"></label></div>
               </div>
@@ -135,76 +160,47 @@
           </article>
 
           <article class="card" data-product="popcornDuo">
-            <div class="media" style="background-image:linear-gradient(135deg,#2b2b2b,#111);"></div>
+            <div class="media">
+              <img src="../../shared/images/food_popcorn.png" alt="popcornDuo">
+            </div>
             <div class="body">
               <h3>Bắp Rang Đôi</h3>
               <div class="price">95.000đ</div>
               <p class="desc">Bắp cho 2 người.</p>
               <div class="controls">
                 <div class="qty-row">
-                  <label class="qty-label btn-minus-1" for="popcorn-q1">-</label>
-                  <label class="qty-label btn-minus-2" for="popcorn-q1">-</label>
-                  <label class="qty-label btn-minus-3" for="popcorn-q2">-</label>
-                  <label class="qty-label btn-minus-4" for="popcorn-q3">-</label>
-                  <label class="qty-label btn-minus-5" for="popcorn-q4">-</label>
-                  <label class="qty-label btn-minus-6" for="popcorn-q5">-</label>
-                  <label class="qty-label btn-minus-7" for="popcorn-q6">-</label>
-                  <label class="qty-label btn-minus-8" for="popcorn-q7">-</label>
-                  <label class="qty-label btn-minus-9" for="popcorn-q8">-</label>
-                  <label class="qty-label btn-minus-10" for="popcorn-q9">-</label>
-                  <span class="qty-display val-1">1</span><span class="qty-display val-2">2</span><span class="qty-display val-3">3</span><span class="qty-display val-4">4</span><span class="qty-display val-5">5</span><span class="qty-display val-6">6</span><span class="qty-display val-7">7</span><span class="qty-display val-8">8</span><span class="qty-display val-9">9</span><span class="qty-display val-10">10</span>
-                  <label class="qty-label btn-plus-2" for="popcorn-q2">+</label>
-                  <label class="qty-label btn-plus-3" for="popcorn-q3">+</label>
-                  <label class="qty-label btn-plus-4" for="popcorn-q4">+</label>
-                  <label class="qty-label btn-plus-5" for="popcorn-q5">+</label>
-                  <label class="qty-label btn-plus-6" for="popcorn-q6">+</label>
-                  <label class="qty-label btn-plus-7" for="popcorn-q7">+</label>
-                  <label class="qty-label btn-plus-8" for="popcorn-q8">+</label>
-                  <label class="qty-label btn-plus-9" for="popcorn-q9">+</label>
-                  <label class="qty-label btn-plus-10" for="popcorn-q10">+</label>
-                  <label class="qty-label btn-plus-11" for="popcorn-q10">+</label>
+                  <div class="qty-label btn-minus">-</div>
+                  <span class="qty-display">1</span>
+                  <div class="qty-label btn-plus">+</div>
                 </div>
                 <div class="add-row"><label class="add-label popcornDuo-btn-label"></label></div>
               </div>
             </div>
           </article>
         </div>
+      <button type="button" class="slider-btn next"><i class="fas fa-chevron-right"></i></button>
       </section>
+      </div>
 
-      <h2 style="margin-top:18px;">Nước uống</h2>
-
-      <section class="category">
-        <h3>Combo riêng</h3>
+      <div id="section-drinks" class="menu-section">
+        <h2 class="section-title"><i class="fas fa-glass-cheers"></i> Nước Uống <span>Giải khát cực đã</span></h2>
+        <section class="category">
+        
+        <button type="button" class="slider-btn prev"><i class="fas fa-chevron-left"></i></button>
         <div class="grid">
           <article class="card" data-product="coupleDrink">
-            <div class="media" style="background-image:linear-gradient(135deg,#27313a,#111);"></div>
+            <div class="media">
+              <img src="../../shared/images/food_coca.png" alt="coupleDrink">
+            </div>
             <div class="body">
               <h3>Combo Cặp Đôi</h3>
               <div class="price">55.000đ</div>
               <p class="desc">Một cốc nước to kèm 2 ống hút chia đôi.</p>
               <div class="controls">
                 <div class="qty-row">
-                  <label class="qty-label btn-minus-1" for="drinks-q1">-</label>
-                  <label class="qty-label btn-minus-2" for="drinks-q1">-</label>
-                  <label class="qty-label btn-minus-3" for="drinks-q2">-</label>
-                  <label class="qty-label btn-minus-4" for="drinks-q3">-</label>
-                  <label class="qty-label btn-minus-5" for="drinks-q4">-</label>
-                  <label class="qty-label btn-minus-6" for="drinks-q5">-</label>
-                  <label class="qty-label btn-minus-7" for="drinks-q6">-</label>
-                  <label class="qty-label btn-minus-8" for="drinks-q7">-</label>
-                  <label class="qty-label btn-minus-9" for="drinks-q8">-</label>
-                  <label class="qty-label btn-minus-10" for="drinks-q9">-</label>
-                  <span class="qty-display val-1">1</span><span class="qty-display val-2">2</span><span class="qty-display val-3">3</span><span class="qty-display val-4">4</span><span class="qty-display val-5">5</span><span class="qty-display val-6">6</span><span class="qty-display val-7">7</span><span class="qty-display val-8">8</span><span class="qty-display val-9">9</span><span class="qty-display val-10">10</span>
-                  <label class="qty-label btn-plus-2" for="drinks-q2">+</label>
-                  <label class="qty-label btn-plus-3" for="drinks-q3">+</label>
-                  <label class="qty-label btn-plus-4" for="drinks-q4">+</label>
-                  <label class="qty-label btn-plus-5" for="drinks-q5">+</label>
-                  <label class="qty-label btn-plus-6" for="drinks-q6">+</label>
-                  <label class="qty-label btn-plus-7" for="drinks-q7">+</label>
-                  <label class="qty-label btn-plus-8" for="drinks-q8">+</label>
-                  <label class="qty-label btn-plus-9" for="drinks-q9">+</label>
-                  <label class="qty-label btn-plus-10" for="drinks-q10">+</label>
-                  <label class="qty-label btn-plus-11" for="drinks-q10">+</label>
+                  <div class="qty-label btn-minus">-</div>
+                  <span class="qty-display">1</span>
+                  <div class="qty-label btn-plus">+</div>
                 </div>
                 <div class="add-row"><label class="add-label drinks-btn-label"></label></div>
               </div>
@@ -212,74 +208,37 @@
           </article>
 
           <article class="card" data-product="drinksCombo2">
-            <div class="media" style="background-image:linear-gradient(135deg,#2b323c,#111);"></div>
+            <div class="media">
+              <img src="../../shared/images/combo_double.png" alt="drinksCombo2">
+            </div>
             <div class="body">
               <h3>Combo 2 Nước</h3>
               <div class="price">65.000đ</div>
               <p class="desc">Combo gồm 2 ly nước riêng cho 2 người.</p>
               <div class="controls">
                 <div class="qty-row">
-                  <label class="qty-label btn-minus-1" for="drinksCombo2-q1">-</label>
-                  <label class="qty-label btn-minus-2" for="drinksCombo2-q1">-</label>
-                  <label class="qty-label btn-minus-3" for="drinksCombo2-q2">-</label>
-                  <label class="qty-label btn-minus-4" for="drinksCombo2-q3">-</label>
-                  <label class="qty-label btn-minus-5" for="drinksCombo2-q4">-</label>
-                  <label class="qty-label btn-minus-6" for="drinksCombo2-q5">-</label>
-                  <label class="qty-label btn-minus-7" for="drinksCombo2-q6">-</label>
-                  <label class="qty-label btn-minus-8" for="drinksCombo2-q7">-</label>
-                  <label class="qty-label btn-minus-9" for="drinksCombo2-q8">-</label>
-                  <label class="qty-label btn-minus-10" for="drinksCombo2-q9">-</label>
-                  <span class="qty-display val-1">1</span><span class="qty-display val-2">2</span><span class="qty-display val-3">3</span><span class="qty-display val-4">4</span><span class="qty-display val-5">5</span><span class="qty-display val-6">6</span><span class="qty-display val-7">7</span><span class="qty-display val-8">8</span><span class="qty-display val-9">9</span><span class="qty-display val-10">10</span>
-                  <label class="qty-label btn-plus-2" for="drinksCombo2-q2">+</label>
-                  <label class="qty-label btn-plus-3" for="drinksCombo2-q3">+</label>
-                  <label class="qty-label btn-plus-4" for="drinksCombo2-q4">+</label>
-                  <label class="qty-label btn-plus-5" for="drinksCombo2-q5">+</label>
-                  <label class="qty-label btn-plus-6" for="drinksCombo2-q6">+</label>
-                  <label class="qty-label btn-plus-7" for="drinksCombo2-q7">+</label>
-                  <label class="qty-label btn-plus-8" for="drinksCombo2-q8">+</label>
-                  <label class="qty-label btn-plus-9" for="drinksCombo2-q9">+</label>
-                  <label class="qty-label btn-plus-10" for="drinksCombo2-q10">+</label>
-                  <label class="qty-label btn-plus-11" for="drinksCombo2-q10">+</label>
+                  <div class="qty-label btn-minus">-</div>
+                  <span class="qty-display">1</span>
+                  <div class="qty-label btn-plus">+</div>
                 </div>
                 <div class="add-row"><label class="add-label drinksCombo2-btn-label"></label></div>
               </div>
             </div>
           </article>
-        </div>
-      </section>
-
-      <section class="category">
-        <h3>Nước thường</h3>
-        <div class="grid">
-          <article class="card" data-product="coca">
-            <div class="media" style="background-image:linear-gradient(135deg,#29323a,#111);"></div>
+        
+<article class="card" data-product="coca">
+            <div class="media">
+              <img src="../../shared/images/food_coca.png" alt="coca">
+            </div>
             <div class="body">
               <h3>Coca</h3>
               <div class="price">35.000đ</div>
               <p class="desc">Nước ngọt Coca mát lạnh.</p>
               <div class="controls">
                 <div class="qty-row">
-                  <label class="qty-label btn-minus-1" for="coca-q1">-</label>
-                  <label class="qty-label btn-minus-2" for="coca-q1">-</label>
-                  <label class="qty-label btn-minus-3" for="coca-q2">-</label>
-                  <label class="qty-label btn-minus-4" for="coca-q3">-</label>
-                  <label class="qty-label btn-minus-5" for="coca-q4">-</label>
-                  <label class="qty-label btn-minus-6" for="coca-q5">-</label>
-                  <label class="qty-label btn-minus-7" for="coca-q6">-</label>
-                  <label class="qty-label btn-minus-8" for="coca-q7">-</label>
-                  <label class="qty-label btn-minus-9" for="coca-q8">-</label>
-                  <label class="qty-label btn-minus-10" for="coca-q9">-</label>
-                  <span class="qty-display val-1">1</span><span class="qty-display val-2">2</span><span class="qty-display val-3">3</span><span class="qty-display val-4">4</span><span class="qty-display val-5">5</span><span class="qty-display val-6">6</span><span class="qty-display val-7">7</span><span class="qty-display val-8">8</span><span class="qty-display val-9">9</span><span class="qty-display val-10">10</span>
-                  <label class="qty-label btn-plus-2" for="coca-q2">+</label>
-                  <label class="qty-label btn-plus-3" for="coca-q3">+</label>
-                  <label class="qty-label btn-plus-4" for="coca-q4">+</label>
-                  <label class="qty-label btn-plus-5" for="coca-q5">+</label>
-                  <label class="qty-label btn-plus-6" for="coca-q6">+</label>
-                  <label class="qty-label btn-plus-7" for="coca-q7">+</label>
-                  <label class="qty-label btn-plus-8" for="coca-q8">+</label>
-                  <label class="qty-label btn-plus-9" for="coca-q9">+</label>
-                  <label class="qty-label btn-plus-10" for="coca-q10">+</label>
-                  <label class="qty-label btn-plus-11" for="coca-q10">+</label>
+                  <div class="qty-label btn-minus">-</div>
+                  <span class="qty-display">1</span>
+                  <div class="qty-label btn-plus">+</div>
                 </div>
                 <div class="add-row"><label class="add-label coca-btn-label"></label></div>
               </div>
@@ -287,41 +246,28 @@
           </article>
 
           <article class="card" data-product="pepsi">
-            <div class="media" style="background-image:linear-gradient(135deg,#2f3742,#111);"></div>
+            <div class="media">
+              <img src="../../shared/images/food_pepsi.png" alt="pepsi">
+            </div>
             <div class="body">
               <h3>Pepsi</h3>
               <div class="price">35.000đ</div>
               <p class="desc">Nước ngọt Pepsi mát lạnh.</p>
               <div class="controls">
                 <div class="qty-row">
-                  <label class="qty-label btn-minus-1" for="pepsi-q1">-</label>
-                  <label class="qty-label btn-minus-2" for="pepsi-q1">-</label>
-                  <label class="qty-label btn-minus-3" for="pepsi-q2">-</label>
-                  <label class="qty-label btn-minus-4" for="pepsi-q3">-</label>
-                  <label class="qty-label btn-minus-5" for="pepsi-q4">-</label>
-                  <label class="qty-label btn-minus-6" for="pepsi-q5">-</label>
-                  <label class="qty-label btn-minus-7" for="pepsi-q6">-</label>
-                  <label class="qty-label btn-minus-8" for="pepsi-q7">-</label>
-                  <label class="qty-label btn-minus-9" for="pepsi-q8">-</label>
-                  <label class="qty-label btn-minus-10" for="pepsi-q9">-</label>
-                  <span class="qty-display val-1">1</span><span class="qty-display val-2">2</span><span class="qty-display val-3">3</span><span class="qty-display val-4">4</span><span class="qty-display val-5">5</span><span class="qty-display val-6">6</span><span class="qty-display val-7">7</span><span class="qty-display val-8">8</span><span class="qty-display val-9">9</span><span class="qty-display val-10">10</span>
-                  <label class="qty-label btn-plus-2" for="pepsi-q2">+</label>
-                  <label class="qty-label btn-plus-3" for="pepsi-q3">+</label>
-                  <label class="qty-label btn-plus-4" for="pepsi-q4">+</label>
-                  <label class="qty-label btn-plus-5" for="pepsi-q5">+</label>
-                  <label class="qty-label btn-plus-6" for="pepsi-q6">+</label>
-                  <label class="qty-label btn-plus-7" for="pepsi-q7">+</label>
-                  <label class="qty-label btn-plus-8" for="pepsi-q8">+</label>
-                  <label class="qty-label btn-plus-9" for="pepsi-q9">+</label>
-                  <label class="qty-label btn-plus-10" for="pepsi-q10">+</label>
-                  <label class="qty-label btn-plus-11" for="pepsi-q10">+</label>
+                  <div class="qty-label btn-minus">-</div>
+                  <span class="qty-display">1</span>
+                  <div class="qty-label btn-plus">+</div>
                 </div>
                 <div class="add-row"><label class="add-label pepsi-btn-label"></label></div>
               </div>
             </div>
           </article>
         </div>
+      <button type="button" class="slider-btn next"><i class="fas fa-chevron-right"></i></button>
       </section>
+        
+    </div>
     </section>
 
     <aside class="summary">

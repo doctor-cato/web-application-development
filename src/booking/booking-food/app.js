@@ -17,7 +17,7 @@
       desc:
         'Phần bắp đôi dành cho 2 người, nhiều hơn, giòn hơn và cực hợp khi xem phim cùng nhau.',
     },
-    comboBimBim: {
+    comboFamily: { name: 'Combo Gia Đình', price: 195000, desc: '2 Bắp lớn + 4 Nước ngọt. Phù hợp cho cả nhà.' }, comboSnack: { name: 'Combo Ăn Vặt', price: 85000, desc: '1 Nước ngọt + 1 Xúc xích + 1 Khoai tây chiên.' }, comboCinema: { name: 'Combo Siêu Khổng Lồ', price: 115000, desc: '1 Bắp siêu lớn + 1 Nước khổng lồ. Ăn mãi không hết.' }, comboDate: { name: 'Combo Hẹn Hò VIP', price: 135000, desc: '2 Bắp nhỏ + 2 Nước ngọt + 2 Xúc xích nướng.' }, comboParty: { name: 'Combo Tiệc Tùng', price: 250000, desc: '4 Bắp lớn + 4 Nước ngọt + 4 Snack. Quẩy hết mình.' }, comboBimBim: {
       name: 'Combo 2 Bỏng',
       price: 125000,
       desc:
@@ -99,6 +99,7 @@
     if (descEl) descEl.textContent = product.desc;
 
     if (addToggle) addToggle.checked = current.added;
+
     if (addLabel) {
       addLabel.setAttribute('aria-pressed', String(current.added));
       addLabel.textContent = current.added ? 'ĐÃ THÊM VÀO ĐƠN' : 'THÊM VÀO ĐƠN';
@@ -107,37 +108,39 @@
       addLabel.style.border = current.added ? '1px solid rgba(255,255,255,0.1)' : '';
       addLabel.style.boxShadow = current.added ? 'none' : '';
     }
+    
+    if (current.added) {
+      card.classList.add('active');
+    } else {
+      card.classList.remove('active');
+    }
+
 
     if (!qtyRow) return;
 
-    qtyRow.querySelectorAll('.qty-label, .qty-display').forEach((el) => {
-      el.style.display = 'none';
-      el.style.opacity = '';
-      el.style.pointerEvents = '';
-    });
+    const minusEl = qtyRow.querySelector('.btn-minus');
+    const valueEl = qtyRow.querySelector('.qty-display');
+    const plusEl = qtyRow.querySelector('.btn-plus');
 
-    const minusIndex = current.qty === 1 ? 1 : current.qty;
-    const plusIndex = current.qty === 10 ? 11 : current.qty + 1;
-
-    const minusEl = qtyRow.querySelector(`.btn-minus-${minusIndex}`);
-    const valueEl = qtyRow.querySelector(`.val-${current.qty}`);
-    const plusEl = qtyRow.querySelector(`.btn-plus-${plusIndex}`);
+    if (valueEl) valueEl.textContent = current.qty;
 
     if (minusEl) {
-      minusEl.style.display = 'inline-flex';
       if (current.qty === 1) {
         minusEl.style.opacity = '0.35';
         minusEl.style.pointerEvents = 'none';
+      } else {
+        minusEl.style.opacity = '1';
+        minusEl.style.pointerEvents = 'auto';
       }
     }
 
-    if (valueEl) valueEl.style.display = 'inline-flex';
-
     if (plusEl) {
-      plusEl.style.display = 'inline-flex';
       if (current.qty === 10) {
         plusEl.style.opacity = '0.35';
         plusEl.style.pointerEvents = 'none';
+      } else {
+        plusEl.style.opacity = '1';
+        plusEl.style.pointerEvents = 'auto';
       }
     }
   }
@@ -172,6 +175,16 @@
     renderSummary();
   }
 
+
+  function shakeSummary() {
+    const card = document.querySelector('.summary-card');
+    if (card) {
+      card.classList.remove('shake');
+      void card.offsetWidth;
+      card.classList.add('shake');
+    }
+  }
+
   function applySearchFilter(query) {
     const normalized = query.trim().toLowerCase();
 
@@ -199,28 +212,76 @@
     const id = card.dataset.product;
     if (!state[id]) return;
 
+
     if (addLabel) {
       state[id].added = !state[id].added;
+      if (state[id].added) shakeSummary();
     } else if (qtyLabel) {
       const step = qtyLabel.textContent.trim() === '+' ? 1 : -1;
       state[id].qty = Math.max(1, Math.min(10, state[id].qty + step));
+      if (step === 1 && state[id].added) shakeSummary();
     }
+
 
     renderCard(id);
     renderSummary();
   });
 
-  if (refs.search) {
-    refs.search.addEventListener('input', (event) => {
-      applySearchFilter(event.target.value);
-    });
-  }
+  // (Bỏ qua search và navLinks cũ do đã sử dụng component navbar.js toàn cục)
 
-  refs.navLinks.forEach((link) => {
-    link.addEventListener('click', (event) => {
-      event.preventDefault();
-      refs.navLinks.forEach((item) => item.classList.remove('active'));
-      link.classList.add('active');
+  
+  // Slider logic
+  document.querySelectorAll('.category').forEach(cat => {
+    const prev = cat.querySelector('.prev');
+    const next = cat.querySelector('.next');
+    const grid = cat.querySelector('.grid');
+    if(prev && next && grid) {
+      prev.addEventListener('click', () => {
+        grid.scrollBy({ left: -340, behavior: 'smooth' });
+      });
+      next.addEventListener('click', () => {
+        grid.scrollBy({ left: 340, behavior: 'smooth' });
+      });
+    }
+  });
+
+
+  // Sticky Tabs Scroll Spy
+  const sections = document.querySelectorAll('.menu-section');
+  const tabs = document.querySelectorAll('.food-tab');
+
+  const observerOptions = {
+    root: null,
+    rootMargin: '-180px 0px -40% 0px',
+    threshold: 0
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        tabs.forEach(tab => {
+          if (tab.dataset.target === id) {
+            tab.classList.add('active');
+          } else {
+            tab.classList.remove('active');
+          }
+        });
+      }
+    });
+  }, observerOptions);
+
+  sections.forEach(sec => observer.observe(sec));
+
+  // Smooth scroll for tabs
+  tabs.forEach(tab => {
+    tab.addEventListener('click', (e) => {
+      e.preventDefault();
+      const targetId = tab.dataset.target;
+      const targetSec = document.getElementById(targetId);
+      if (targetSec) {
+        targetSec.scrollIntoView({ behavior: 'smooth' });
+      }
     });
   });
 
