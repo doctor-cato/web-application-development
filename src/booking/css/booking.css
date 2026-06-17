@@ -341,51 +341,191 @@
     font-size: 0.875rem;
 }
 
-/* Combo Card */
-.combo-card {
+/* Combo List Horizontal */
+.combo-list-horizontal {
     display: flex;
     gap: 1rem;
+    overflow-x: auto;
+    padding-bottom: 1rem;
+    padding-top: 0.5rem;
+    /* Hide scrollbar */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+.combo-list-horizontal::-webkit-scrollbar {
+    display: none;
+}
+
+/* Combo Card V2 */
+.combo-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 160px;
+    width: 160px;
     padding: 1rem;
-    border: 1px solid var(--glass-border);
-    border-radius: 12px;
-    background: var(--surface-container-low, #1a1c1c);
+    border: 2px solid transparent;
+    border-radius: 16px;
+    background: linear-gradient(145deg, rgba(30, 32, 32, 0.8), rgba(20, 22, 22, 0.9));
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     align-items: center;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
 }
 
 .combo-card:hover {
-    border-color: var(--primary-red);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(229, 9, 20, 0.2);
+    border-color: rgba(229, 9, 20, 0.5);
 }
 
 .combo-card.selected {
     border-color: var(--primary-red);
-    background-color: rgba(229, 9, 20, 0.08);
+    background: linear-gradient(145deg, rgba(229, 9, 20, 0.15), rgba(26, 28, 28, 0.9));
+    box-shadow: 0 8px 25px rgba(229, 9, 20, 0.4);
+}
+
+/* 3D Pop-out Image */
+.combo-img-wrap {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+}
+
+.combo-card:hover .combo-img-wrap {
+    transform: scale(1.15) translateY(-5px);
 }
 
 .combo-img {
-    width: 64px;
-    height: 64px;
+    width: 100%;
+    height: 100%;
     object-fit: contain;
+    filter: drop-shadow(0 10px 10px rgba(0,0,0,0.5));
 }
 
 .combo-info {
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
 }
 
 .combo-title {
-    font-weight: 600;
+    font-weight: 700;
+    font-size: 0.9rem;
     margin-bottom: 0.25rem;
+    color: #fff;
 }
 
 .combo-desc {
     font-size: 0.75rem;
     color: var(--text-muted);
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
 }
 
 .combo-price {
+    font-weight: 900;
+    font-size: 1rem;
+    color: #f59e0b; /* gradient có thể dùng background-clip, tạm thời dùng màu vàng cam */
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+/* Badges */
+.combo-badge {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: linear-gradient(45deg, #f59e0b, #d97706);
+    color: white;
+    font-size: 0.7rem;
     font-weight: bold;
+    padding: 0.25rem 0.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    z-index: 2;
+    text-transform: uppercase;
+}
+
+.combo-badge.discount {
+    background: linear-gradient(45deg, #10b981, #059669);
+}
+
+/* Checkmark animation */
+.combo-check {
+    position: absolute;
+    top: 10px;
+    left: 10px;
     color: var(--primary-red);
+    font-size: 1.25rem;
+    opacity: 0;
+    transform: scale(0);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.combo-card.selected .combo-check {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Food Upsell Button */
+.btn-upsell-food {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1.25rem;
+    background: linear-gradient(135deg, rgba(229, 9, 20, 0.1), rgba(229, 9, 20, 0.2));
+    border: 1px solid rgba(229, 9, 20, 0.5);
+    border-radius: 50px;
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 0 0 10px rgba(229, 9, 20, 0.1);
+    position: relative;
+    overflow: hidden;
+    /* Hiệu ứng pulse nhẹ liên tục */
+    animation: pulse-border 2s infinite;
+}
+
+@keyframes pulse-border {
+    0% { box-shadow: 0 0 0 0 rgba(229, 9, 20, 0.4); }
+    70% { box-shadow: 0 0 0 8px rgba(229, 9, 20, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(229, 9, 20, 0); }
+}
+
+.btn-upsell-food::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.btn-upsell-food:hover {
+    background: linear-gradient(135deg, rgba(229, 9, 20, 0.3), rgba(229, 9, 20, 0.6));
+    border-color: var(--primary-red);
+    transform: translateY(-2px);
+    animation: none; /* Dừng pulse khi hover */
+    box-shadow: 0 5px 15px rgba(229, 9, 20, 0.4);
+}
+
+.btn-upsell-food:hover::before {
+    left: 100%;
+}
+
+.btn-upsell-food i {
+    color: #f59e0b;
+    font-size: 1.1rem;
 }
 
 /* Payment Card */

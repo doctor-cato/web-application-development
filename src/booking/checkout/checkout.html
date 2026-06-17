@@ -91,38 +91,49 @@
                 <div class="glass-panel booking-card">
                     <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem; margin-bottom: 1rem;">
                         <h2 class="booking-section-title" style="border: none; margin: 0; padding: 0;">Bắp Nước (Combo)</h2>
-                        <a href="../booking-food/index.html" style="color: var(--primary-red); font-size: 0.875rem; font-weight: 600; position: relative; z-index: 10;">Chọn thêm</a>
+                        <a href="../booking-food/index.html" class="btn-upsell-food">
+                            <i class="fas fa-utensils"></i> Menu Đầy Đủ
+                        </a>
                     </div>
                     
-                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <div class="combo-list-horizontal">
                         <label class="combo-card selected">
                             <input type="radio" name="combo" value="none" checked style="position: absolute; opacity: 0; width: 0; height: 0;">
-                            <div style="width: 64px; height: 64px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.05); border-radius: 8px;">
-                                <i class="fas fa-ban" style="color: var(--text-muted); font-size: 1.5rem;"></i>
+                            <div class="combo-check"><i class="fas fa-check-circle"></i></div>
+                            <div class="combo-img-wrap">
+                                <i class="fas fa-ban" style="color: var(--text-muted); font-size: 2.5rem;"></i>
                             </div>
                             <div class="combo-info">
-                                <div class="combo-title">Không kèm combo</div>
-                                <div class="combo-desc">Chỉ mua vé xem phim</div>
+                                <div class="combo-title">Không lấy bắp nước</div>
+                                <div class="combo-desc">Chỉ mua vé</div>
                             </div>
                             <div class="combo-price">0 đ</div>
                         </label>
 
                         <label class="combo-card">
                             <input type="radio" name="combo" value="single" style="position: absolute; opacity: 0; width: 0; height: 0;">
-                            <img src="https://images.unsplash.com/photo-1585647347384-2593bc35786b?auto=format&fit=crop&w=150&q=80" alt="Combo" class="combo-img" style="border-radius: 8px;">
+                            <div class="combo-badge">Best Seller</div>
+                            <div class="combo-check"><i class="fas fa-check-circle"></i></div>
+                            <div class="combo-img-wrap">
+                                <img src="/shared/images/combo_single.png" alt="Combo 1" class="combo-img">
+                            </div>
                             <div class="combo-info">
                                 <div class="combo-title">Combo 1 Người</div>
-                                <div class="combo-desc">1 Bắp Lớn + 1 Nước Ngọt Lớn</div>
+                                <div class="combo-desc">1 Bắp Lớn + 1 Nước</div>
                             </div>
                             <div class="combo-price">65.000 đ</div>
                         </label>
 
                         <label class="combo-card">
                             <input type="radio" name="combo" value="double" style="position: absolute; opacity: 0; width: 0; height: 0;">
-                            <img src="https://images.unsplash.com/photo-1541167760496-1628856ab772?auto=format&fit=crop&w=150&q=80" alt="Combo" class="combo-img" style="border-radius: 8px;">
+                            <div class="combo-badge discount">Tiết kiệm 20%</div>
+                            <div class="combo-check"><i class="fas fa-check-circle"></i></div>
+                            <div class="combo-img-wrap">
+                                <img src="/shared/images/combo_double.png" alt="Combo 2" class="combo-img">
+                            </div>
                             <div class="combo-info">
                                 <div class="combo-title">Combo 2 Người</div>
-                                <div class="combo-desc">1 Bắp Lớn + 2 Nước Ngọt Lớn</div>
+                                <div class="combo-desc">1 Bắp Lớn + 2 Nước</div>
                             </div>
                             <div class="combo-price">95.000 đ</div>
                         </label>
