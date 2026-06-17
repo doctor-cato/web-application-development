@@ -74,6 +74,7 @@ function renderApp() {
     
     const isFullyPaid = paidCount >= allSeats.length;
     const hasPaidMyPart = sessionStorage.getItem('my_split_payment_' + orderId) === 'true';
+    const hasCanceledMyPart = sessionStorage.getItem('my_split_canceled_' + orderId) === 'true';
     
     if (isFullyPaid) {
         if (orderData.status !== 'COMPLETED') {
@@ -169,12 +170,14 @@ function renderApp() {
             <div class="total-price" id="total-display">0 đ</div>
         </div>
         
-        ${hasPaidMyPart 
-            ? `<button id="btn-pay-my-part" class="btn btn-primary" style="width: 100%; margin-top: 1.5rem; padding: 1rem; font-size: 1.1rem; background: #10b981; border-color: #10b981;" disabled><i class="fas fa-check"></i> ĐÃ THANH TOÁN. ĐANG CHỜ NHÓM CỦA BẠN...</button>`
-            : `<button id="btn-pay-my-part" class="btn btn-primary" style="width: 100%; margin-top: 1.5rem; padding: 1rem; font-size: 1.1rem;" disabled>THANH TOÁN PHẦN CỦA TÔI</button>
-               <div style="text-align: center; margin-top: 1rem;">
-                   <button id="btn-cancel-my-part" class="btn btn-outline" style="border: none; padding: 0.5rem; font-size: 0.95rem; color: #ff4b4b; background: transparent; cursor: pointer; opacity: 0.8; transition: all 0.3s;"><i class="fas fa-times-circle"></i> Hủy chỗ ngồi của tôi</button>
-               </div>`
+        ${hasCanceledMyPart 
+            ? `<button id="btn-pay-my-part" class="btn btn-primary" style="width: 100%; margin-top: 1.5rem; padding: 1rem; font-size: 1.1rem; background: #666; border-color: #666; color: #ccc;" disabled><i class="fas fa-ban"></i> ĐÃ HỦY CHỖ NGỒI</button>`
+            : (hasPaidMyPart 
+                ? `<button id="btn-pay-my-part" class="btn btn-primary" style="width: 100%; margin-top: 1.5rem; padding: 1rem; font-size: 1.1rem; background: #10b981; border-color: #10b981;" disabled><i class="fas fa-check"></i> ĐÃ THANH TOÁN. ĐANG CHỜ NHÓM CỦA BẠN...</button>`
+                : `<button id="btn-pay-my-part" class="btn btn-primary" style="width: 100%; margin-top: 1.5rem; padding: 1rem; font-size: 1.1rem;" disabled>THANH TOÁN PHẦN CỦA TÔI</button>
+                   <div style="text-align: center; margin-top: 1rem;">
+                       <button id="btn-cancel-my-part" class="btn btn-outline" style="border: none; padding: 0.5rem; font-size: 0.95rem; color: #ff4b4b; background: transparent; cursor: pointer; opacity: 0.8; transition: all 0.3s;"><i class="fas fa-times-circle"></i> Hủy chỗ ngồi của tôi</button>
+                   </div>`)
         }
         ` : `
         <div style="text-align: center; margin-top: 3rem; padding: 2rem; background: rgba(16, 185, 129, 0.1); border: 1px solid #10b981; border-radius: 12px;">
@@ -213,13 +216,14 @@ function renderApp() {
 
 function attachEvents() {
     const hasPaidMyPart = sessionStorage.getItem('my_split_payment_' + orderId) === 'true';
+    const hasCanceledMyPart = sessionStorage.getItem('my_split_canceled_' + orderId) === 'true';
     
     // Seat selection
     document.querySelectorAll('.split-seat-card:not(.paid)').forEach(card => {
-        if (hasPaidMyPart) {
+        if (hasPaidMyPart || hasCanceledMyPart) {
             card.style.cursor = 'not-allowed';
             card.style.opacity = '0.7';
-            return; // Don't attach click event if already paid
+            return; // Don't attach click event if already paid or canceled
         }
         card.addEventListener('click', () => {
             const seat = card.getAttribute('data-seat');
@@ -314,6 +318,9 @@ function attachEvents() {
                 
                 // Save updated order back
                 localStorage.setItem('splitOrder_' + orderId, JSON.stringify(orderData));
+                
+                // Mark this user's session as canceled
+                sessionStorage.setItem('my_split_canceled_' + orderId, 'true');
                 
                 alert("Đã hủy ghế thành công!");
                 
