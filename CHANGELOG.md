@@ -20,3 +20,7 @@ All notable changes to this project will be documented in this file.
 
 ### Security
 - **Mock Tokenization**: Plain-text passwords from legacy users are now safely hashed (Base64 for demo purposes) and migrated upon login. Session tokens are used instead of storing raw passwords in local storage.
+
+### Removed
+- **Temp Folders**: Removed `Project` and `So_sanh` template/prototype folders as they are no longer needed.
+- **Tooling Scripts**: Removed all one-off Python and JS tooling scripts from the root and src directories to clean up the repository.

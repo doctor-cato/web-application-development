@@ -64,25 +64,6 @@ main ─────────────────────────
 
 ---
 
-## Các File Tạm / Script Tooling
-
-Trong codebase có một số file tooling Python không phải source code:
-
-| File | Mô tả |
-|---|---|
-| `src/booking/checkout/fix_checkout.py` | Script fix path import (đã dùng xong) |
-| `src/booking/checkout/fix_paths.py` | Script fix path import (đã dùng xong) |
-| `src/shared/components/fix_navbar.py` | Script fix navbar injection |
-| `src/engagement/minigame/append_cards.py` | Script append card HTML |
-| `src/engagement/minigame/update_filter.py` | Script cập nhật filter |
-| `src/engagement/minigame/update_layout.py` | Script cập nhật layout |
-| `update_navbar.py` | Script batch update navbar toàn site |
-| `remove-tailwind-cdn.js` | Script xóa Tailwind CDN khỏi các HTML file |
-
-> Các file `.py` này là one-off scripts, không phải source code chức năng. Có thể xóa sau khi không cần.
-
----
-
 ## Trạng thái Kỹ thuật Nợ (Technical Debt)
 
 | Vấn đề | Mức độ | File |
