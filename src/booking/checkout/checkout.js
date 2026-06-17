@@ -193,20 +193,17 @@ function init() {
     });
   });
 
-  // Promo Code Handlers
-  const btnShowOffers = document.getElementById('btn-show-offers');
   const offersList = document.getElementById('offers-list');
-  if (btnShowOffers && offersList) {
-    btnShowOffers.addEventListener('click', () => {
-      offersList.style.display = offersList.style.display === 'none' ? 'flex' : 'none';
-    });
-  }
 
   const btnApplyPromo = document.getElementById('btn-apply-promo');
   if (btnApplyPromo) {
     btnApplyPromo.addEventListener('click', () => {
       const val = document.getElementById('promo-input').value.trim();
-      if (val) applyPromo(val);
+      if (val) {
+        applyPromo(val);
+      } else if (offersList) {
+        offersList.style.display = offersList.style.display === 'none' ? 'flex' : 'none';
+      }
     });
   }
 
