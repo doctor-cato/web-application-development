@@ -13,8 +13,13 @@ function init() {
 
     // Update Hero Banner
     const heroImage = document.getElementById('bs-hero-image');
-    if (heroImage && booking.poster) {
-        heroImage.style.backgroundImage = `linear-gradient(to top, rgba(12, 12, 12, 1) 0%, rgba(12, 12, 12, 0.4) 60%, rgba(12, 12, 12, 0.1) 100%), url('${booking.poster}')`;
+    let poster = booking.poster;
+    if (poster && (poster.startsWith('images/') || poster.startsWith('assets/'))) {
+        poster = '/shared/' + poster;
+    }
+
+    if (heroImage && poster) {
+        heroImage.style.backgroundImage = `linear-gradient(to top, rgba(12, 12, 12, 1) 0%, rgba(12, 12, 12, 0.4) 60%, rgba(12, 12, 12, 0.1) 100%), url('${poster}')`;
     }
 
     const titleEl = document.getElementById('bs-movie-title');

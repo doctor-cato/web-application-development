@@ -30,13 +30,38 @@ function renderRealHistory() {
             ? `<div style="margin-top: 0.5rem;"><span style="background: rgba(16,185,129,0.2); color: #10b981; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; border: 1px solid rgba(16,185,129,0.4);">Vé Nhóm (Split & Lock)</span></div>` 
             : `<div style="margin-top: 0.5rem;"><span style="background: rgba(229, 9, 20, 0.2); color: #ff4b4b; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; border: 1px solid rgba(229, 9, 20, 0.3);">Vé Tiêu Chuẩn</span></div>`;
         
-        // Use poster from booking, fallback to default if not exact
-        let poster = booking.poster || '/shared/images/f1_movie.jpg';
-        if (!booking.poster) {
+        // Use poster from booking or look it up from data.js
+        let poster = booking.poster;
+        
+        // Try to lookup from data.js if poster is missing or we just want to be sure
+        if (!poster && typeof heroMovies !== 'undefined' && typeof nowShowingMovies !== 'undefined') {
+            const allMovies = [
+                ...(typeof heroMovies !== 'undefined' ? heroMovies : []),
+                ...(typeof nowShowingMovies !== 'undefined' ? nowShowingMovies : []),
+                ...(typeof comingSoonMovies !== 'undefined' ? comingSoonMovies : [])
+            ];
+            const foundMovie = allMovies.find(m => m.title && booking.movieTitle && m.title.toLowerCase() === booking.movieTitle.toLowerCase());
+            if (foundMovie) {
+                poster = foundMovie.poster || foundMovie.bg;
+            }
+        }
+
+        // Fix relative paths (images/... or assets/...) to point to /shared/
+        if (poster && poster.startsWith('images/')) {
+            poster = '/shared/' + poster;
+        } else if (poster && poster.startsWith('assets/')) {
+            poster = '/shared/' + poster;
+        }
+
+        // Fallbacks
+        if (!poster) {
             if (booking.movieTitle && booking.movieTitle.toLowerCase().includes('war machine')) {
                 poster = 'https://images.unsplash.com/photo-1534809027769-62466286b595?auto=format&fit=crop&w=400&q=80';
             } else if (booking.movieTitle && booking.movieTitle.toLowerCase().includes('interstellar')) {
                 poster = 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=400&q=80';
+            } else {
+                // If nothing else, use a generic icon or the f1_movie.jpg
+                poster = '/shared/images/f1_movie.jpg';
             }
         }
 
