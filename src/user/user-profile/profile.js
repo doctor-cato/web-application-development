@@ -30,12 +30,14 @@ function renderRealHistory() {
             ? `<div style="margin-top: 0.5rem;"><span style="background: rgba(16,185,129,0.2); color: #10b981; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; border: 1px solid rgba(16,185,129,0.4);">Vé Nhóm (Split & Lock)</span></div>` 
             : `<div style="margin-top: 0.5rem;"><span style="background: rgba(229, 9, 20, 0.2); color: #ff4b4b; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; border: 1px solid rgba(229, 9, 20, 0.3);">Vé Tiêu Chuẩn</span></div>`;
         
-        // Assume poster based on title, fallback to default if not exact
-        let poster = '/shared/images/f1_movie.jpg';
-        if (booking.movieTitle && booking.movieTitle.toLowerCase().includes('war machine')) {
-            poster = 'https://images.unsplash.com/photo-1534809027769-62466286b595?auto=format&fit=crop&w=400&q=80';
-        } else if (booking.movieTitle && booking.movieTitle.toLowerCase().includes('interstellar')) {
-            poster = 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=400&q=80';
+        // Use poster from booking, fallback to default if not exact
+        let poster = booking.poster || '/shared/images/f1_movie.jpg';
+        if (!booking.poster) {
+            if (booking.movieTitle && booking.movieTitle.toLowerCase().includes('war machine')) {
+                poster = 'https://images.unsplash.com/photo-1534809027769-62466286b595?auto=format&fit=crop&w=400&q=80';
+            } else if (booking.movieTitle && booking.movieTitle.toLowerCase().includes('interstellar')) {
+                poster = 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=400&q=80';
+            }
         }
 
         const dateStr = booking.createdAt ? new Date(booking.createdAt).toLocaleDateString('vi-VN') : 'N/A';
@@ -87,25 +89,39 @@ function initTabs() {
     const menuItems = document.querySelectorAll('.sidebar-menu .menu-item:not(.logout)');
     const tabContents = document.querySelectorAll('.tab-content');
 
+    function switchTab(tabId) {
+        // Remove active from all tabs and menus
+        menuItems.forEach(m => m.classList.remove('active'));
+        tabContents.forEach(t => t.classList.remove('active'));
+        
+        // Add active to the requested item
+        const item = Array.from(menuItems).find(m => m.getAttribute('data-tab') === tabId);
+        if (item) item.classList.add('active');
+        
+        // Show corresponding tab
+        const targetId = 'tab-' + tabId;
+        const targetTab = document.getElementById(targetId);
+        if (targetTab) {
+            targetTab.classList.add('active');
+        }
+    }
+
     menuItems.forEach(item => {
         item.addEventListener('click', (e) => {
             e.preventDefault();
-            
-            // Remove active from all tabs and menus
-            menuItems.forEach(m => m.classList.remove('active'));
-            tabContents.forEach(t => t.classList.remove('active'));
-            
-            // Add active to clicked item
-            item.classList.add('active');
-            
-            // Show corresponding tab
-            const targetId = 'tab-' + item.getAttribute('data-tab');
-            const targetTab = document.getElementById(targetId);
-            if (targetTab) {
-                targetTab.classList.add('active');
-            }
+            const tabId = item.getAttribute('data-tab');
+            switchTab(tabId);
+            // Optionally update URL
+            window.history.pushState({}, '', '?tab=' + tabId);
         });
     });
+
+    // Handle initial load from URL
+    const params = new URLSearchParams(window.location.search);
+    const tab = params.get('tab');
+    if (tab) {
+        switchTab(tab);
+    }
 }
 
 function loadUserInfo() {

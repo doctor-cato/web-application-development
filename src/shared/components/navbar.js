@@ -1198,10 +1198,10 @@ export function renderNavbar() {
                                 </div>
                             </div>
                             <ul class="user-menu-list">
-                                <li><a href="${srcPrefix}/user/user-profile/profile.html#info"><i class="fas fa-user-circle"></i> Thông tin cá nhân</a></li>
-                                <li><a href="${srcPrefix}/user/user-profile/profile.html#history"><i class="fas fa-ticket-alt"></i> Lịch sử đặt vé</a></li>
-                                <li><a href="${srcPrefix}/user/user-profile/profile.html#offers"><i class="fas fa-gift"></i> Ưu đãi của tôi</a></li>
-                                <li><a href="${srcPrefix}/user/user-profile/profile.html#settings"><i class="fas fa-cog"></i> Cài đặt</a></li>
+                                <li><a href="${srcPrefix}/user/user-profile/profile.html?tab=info"><i class="fas fa-user-circle"></i> Thông tin cá nhân</a></li>
+                                <li><a href="${srcPrefix}/user/user-profile/profile.html?tab=history"><i class="fas fa-ticket-alt"></i> Lịch sử đặt vé</a></li>
+                                <li><a href="${srcPrefix}/user/user-profile/profile.html?tab=offers"><i class="fas fa-gift"></i> Ưu đãi của tôi</a></li>
+                                <li><a href="${srcPrefix}/user/user-profile/profile.html?tab=settings"><i class="fas fa-cog"></i> Cài đặt</a></li>
                             </ul>
                             <div class="user-menu-footer">
                                 <a href="#" class="logout-btn" id="logout-action"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
