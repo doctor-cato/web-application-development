@@ -172,11 +172,19 @@ function setupTabs() {
         });
     });
 
-    if (window.location.hash) {
-        const hashTab = window.location.hash.substring(1);
-        const validTabs = ['info', 'history', 'offers', 'settings'];
-        if (validTabs.includes(hashTab)) {
-            switchTab(hashTab);
+    function handleHashChange() {
+        if (window.location.hash) {
+            const hashTab = window.location.hash.substring(1);
+            const validTabs = ['info', 'history', 'offers', 'settings'];
+            if (validTabs.includes(hashTab)) {
+                switchTab(hashTab);
+            }
         }
     }
+
+    // Initial check on load
+    handleHashChange();
+
+    // Listen for hash changes when navigating from navbar while already on the page
+    window.addEventListener('hashchange', handleHashChange);
 }
