@@ -1,4 +1,4 @@
-```text
+```Sơ dồ kiến trúc hệ thống text
 ┌─────────────────────────────────────────────────────────────┐
 │                     TẦNG GIAO DIỆN (Views / HTML Pages)     │
 │  (Trang Đăng nhập, Trang Chủ, Trang Đặt vé, Hồ sơ user...)  │
