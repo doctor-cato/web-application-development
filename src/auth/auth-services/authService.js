@@ -118,12 +118,11 @@ export function logout() {
  */
 export function getSession() {
     const session = getCurrentUser();
-    if (session && !session.name) {
+    if (session && (!session.name || session.name === 'Khách')) {
         const users = getUsers();
         const user = users.find(u => u.email === session.email);
         if (user) {
             session.name = user.fullname || user.name || 'Khách';
-            // Optionally, we could save the new token here by calling setCurrentUser
         }
     }
     return session;
