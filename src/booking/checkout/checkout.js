@@ -227,8 +227,17 @@ function init() {
   updateTotal();
 }
 
+let expireTime = 0;
+let isExpired = false;
+
 function handlePayClick(e) {
   e.preventDefault();
+  
+  if (isExpired || (expireTime > 0 && Date.now() >= expireTime)) {
+    alert('Thời gian giữ ghế đã hết! Vui lòng chọn lại ghế.');
+    window.location.href = '../seat-booking/booking.html';
+    return;
+  }
   
   // read final total (including discount & combo) from DOM data attribute
   const totalEl = document.getElementById('order-total');
@@ -261,20 +270,32 @@ function startCountdown(seconds) {
   const cdEl = document.getElementById('checkout-countdown');
   if (!cdEl) return;
   
-  let remain = seconds;
+  expireTime = Date.now() + seconds * 1000;
+  
   const formatTime = (sec) => {
     const m = Math.floor(sec / 60).toString().padStart(2, '0');
     const s = (sec % 60).toString().padStart(2, '0');
     return `${m}:${s}`;
   };
   
-  cdEl.innerText = formatTime(remain);
+  cdEl.innerText = formatTime(seconds);
   
   const timer = setInterval(() => {
-    remain--;
+    const remain = Math.max(0, Math.floor((expireTime - Date.now()) / 1000));
+    
     if (remain <= 0) {
+      isExpired = true;
       clearInterval(timer);
       cdEl.innerText = '00:00';
+      
+      const payBtn = document.getElementById('btn-pay');
+      if (payBtn) {
+        payBtn.disabled = true;
+        payBtn.innerText = 'ĐÃ HẾT HẠN';
+        payBtn.style.opacity = '0.5';
+        payBtn.style.cursor = 'not-allowed';
+      }
+
       alert('Thời gian giữ ghế đã hết! Vui lòng chọn lại ghế.');
       window.location.href = '../seat-booking/booking.html';
     } else {
