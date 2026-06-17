@@ -171,7 +171,10 @@ function renderApp() {
         
         ${hasPaidMyPart 
             ? `<button id="btn-pay-my-part" class="btn btn-primary" style="width: 100%; margin-top: 1.5rem; padding: 1rem; font-size: 1.1rem; background: #10b981; border-color: #10b981;" disabled><i class="fas fa-check"></i> ĐÃ THANH TOÁN. ĐANG CHỜ NHÓM CỦA BẠN...</button>`
-            : `<button id="btn-pay-my-part" class="btn btn-primary" style="width: 100%; margin-top: 1.5rem; padding: 1rem; font-size: 1.1rem;" disabled>THANH TOÁN PHẦN CỦA TÔI</button>`
+            : `<button id="btn-pay-my-part" class="btn btn-primary" style="width: 100%; margin-top: 1.5rem; padding: 1rem; font-size: 1.1rem;" disabled>THANH TOÁN PHẦN CỦA TÔI</button>
+               <div style="text-align: center; margin-top: 1rem;">
+                   <button id="btn-cancel-my-part" class="btn btn-outline" style="border: none; padding: 0.5rem; font-size: 0.95rem; color: #ff4b4b; background: transparent; cursor: pointer; opacity: 0.8; transition: all 0.3s;"><i class="fas fa-times-circle"></i> Hủy chỗ ngồi của tôi</button>
+               </div>`
         }
         ` : `
         <div style="text-align: center; margin-top: 3rem; padding: 2rem; background: rgba(16, 185, 129, 0.1); border: 1px solid #10b981; border-radius: 12px;">
