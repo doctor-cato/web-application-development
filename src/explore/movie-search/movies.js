@@ -25,6 +25,11 @@ function getTabFromURL() {
     return params.get('tab') || 'coming-soon';
 }
 
+function getSearchQueryFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('q') || '';
+}
+
 // --- GET AGE BADGE CLASS ---
 function getAgeBadgeClass(age) {
     const ageMap = {
@@ -93,11 +98,25 @@ function renderMoviesGrid(movies) {
 
 // --- GET DATA FOR CURRENT TAB ---
 function getMoviesForTab(tab) {
+    const searchQuery = getSearchQueryFromURL().toLowerCase();
+    
+    // If searching, we combine all movies from both tabs to give the best results
+    if (searchQuery) {
+        const nowShowing = typeof nowShowingMovies !== 'undefined' ? nowShowingMovies : [];
+        const comingSoon = typeof comingSoonMovies !== 'undefined' ? comingSoonMovies : [];
+        const combined = [...nowShowing, ...comingSoon];
+        return combined.map(m => ({
+            ...m,
+            genre: m.genre || (m.tags ? m.tags.join(', ') : '')
+        }));
+    }
+
+    // Normal behavior
     if (tab === 'now-showing') {
         // Add genre field to nowShowingMovies if missing
         return nowShowingMovies.map(m => ({
             ...m,
-            genre: m.genre || m.tags.join(', ')
+            genre: m.genre || (m.tags ? m.tags.join(', ') : '')
         }));
     } else {
         return comingSoonMovies;
@@ -112,6 +131,16 @@ function applyMoviesFilters() {
     const format = filterFormat ? filterFormat.value : 'all';
     const age = filterAge ? filterAge.value : 'all';
     const sort = sortSelect ? sortSelect.value : 'newest';
+    const searchQuery = getSearchQueryFromURL().toLowerCase();
+
+    // Filter by search query
+    if (searchQuery) {
+        movies = movies.filter(m => {
+            const titleMatch = m.title && m.title.toLowerCase().includes(searchQuery);
+            const titleEnMatch = m.titleEn && m.titleEn.toLowerCase().includes(searchQuery);
+            return titleMatch || titleEnMatch;
+        });
+    }
 
     // Filter by genre
     if (genre !== 'all') {
@@ -178,9 +207,29 @@ function switchTab(tab) {
     if (sortSelect) sortSelect.value = 'newest';
 
     // Update URL without reload
-    const newUrl = `movies.html?tab=${tab}`;
+    const sq = getSearchQueryFromURL();
+    const newUrl = sq ? `index.html?tab=${tab}&q=${encodeURIComponent(sq)}` : `index.html?tab=${tab}`;
     window.history.replaceState(null, '', newUrl);
 
+    // Check URL params for search to update UI title
+    if (sq) {
+        if (breadcrumbCurrent) breadcrumbCurrent.innerText = `Tìm kiếm: "${sq}"`;
+        // Select the navbar search input and put the value back
+        const searchInput = document.getElementById('search-input');
+        if (searchInput) {
+            searchInput.value = sq;
+        }
+        // Maybe open the search pill
+        const searchPill = document.getElementById('search-pill');
+        if (searchPill) {
+            searchPill.classList.add('active');
+        }
+    } else {
+        if (breadcrumbCurrent) {
+            breadcrumbCurrent.textContent = tab === 'now-showing' ? 'Phim Đang Chiếu' : 'Phim Sắp Chiếu';
+        }
+    }
+    
     applyMoviesFilters();
 }
 
