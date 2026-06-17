@@ -103,5 +103,5 @@ index.html → explore/home-page/index.html
            → booking/booking-food/index.html
            → booking/checkout/checkout.html
            → booking/checkout/payment_simulation.html
-           → booking/checkout/booking_invoice.html
+           → booking/booking-success/index.html
 ```

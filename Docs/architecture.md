@@ -50,6 +50,7 @@ src/
 │   ├── seat-booking/booking.js        ← Controller
 │   ├── seat-booking/bookingService.js ← Service (BroadcastChannel logic)
 │   ├── checkout/checkout.js           ← Controller
+│   ├── booking-success/booking-success.js ← Controller (Trang thành công sau khi đặt vé)
 │   └── cancel-booking/cancel-booking.js ← Controller (hủy vé + lịch sử)
 ├── explore/
 │   ├── home-page/home.js              ← Controller (hero slider, now showing)

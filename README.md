@@ -67,6 +67,7 @@ Click phải vào `src/index.html` → **Open with Live Server**
 | ✅ Hoàn thành | Chọn combo Bắp Nước | `src/booking/booking-food/` |
 | ✅ Hoàn thành | Thanh toán & Cổng thanh toán giả lập | `src/booking/checkout/` |
 | ✅ Hoàn thành | Hóa đơn điện tử (QR Code) | `src/booking/checkout/booking_invoice.html` |
+| ✅ Hoàn thành | Trang Đặt Vé Thành Công | `src/booking/booking-success/` |
 | ✅ Hoàn thành | Hủy vé & Đổi suất chiếu + Lịch sử | `src/booking/cancel-booking/` |
 | ✅ Hoàn thành | Hồ sơ cá nhân | `src/user/user-profile/` |
 | ✅ Hoàn thành | Hệ thống tích điểm & hạng thành viên | `src/user/loyalty-points/` |
