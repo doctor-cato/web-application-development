@@ -1,0 +1,632 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|c:\\users\\le minh khuong 1\\source\\repos\\appweb\\controllers\\homecontroller.cs\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|solutionrelative:controllers\\homecontroller.cs\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|c:\\users\\le minh khuong 1\\source\\repos\\appweb\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|c:\\users\\le minh khuong 1\\source\\repos\\appweb\\services\\fileservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|solutionrelative:services\\fileservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|c:\\users\\le minh khuong 1\\source\\repos\\appweb\\controllers\\homecontroller.cs\\bookingscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|solutionrelative:controllers\\homecontroller.cs\\bookingscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|c:\\users\\le minh khuong 1\\source\\repos\\appweb\\services\\ticketverificationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|solutionrelative:services\\ticketverificationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|c:\\users\\le minh khuong 1\\source\\repos\\appweb\\controllers\\homecontroller.cs\\cinemascontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|solutionrelative:controllers\\homecontroller.cs\\cinemascontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|c:\\users\\le minh khuong 1\\source\\repos\\appweb\\queries\\bookingquery.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|solutionrelative:queries\\bookingquery.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|c:\\users\\le minh khuong 1\\source\\repos\\appweb\\models\\booking.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|solutionrelative:models\\booking.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|c:\\users\\le minh khuong 1\\source\\repos\\appweb\\infrastructure\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|solutionrelative:infrastructure\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|c:\\users\\le minh khuong 1\\source\\repos\\appweb\\dtos\\booking\\bookingresponsedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|solutionrelative:dtos\\booking\\bookingresponsedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|c:\\users\\le minh khuong 1\\source\\repos\\appweb\\controllers\\homecontroller.cs\\bookingdetailscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|solutionrelative:controllers\\homecontroller.cs\\bookingdetailscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|c:\\users\\le minh khuong 1\\source\\repos\\appweb\\repositories\\bookingrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|solutionrelative:repositories\\bookingrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|c:\\users\\le minh khuong 1\\source\\repos\\appweb\\models\\movie.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|solutionrelative:models\\movie.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|c:\\users\\le minh khuong 1\\source\\repos\\appweb\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|solutionrelative:models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|c:\\users\\le minh khuong 1\\source\\repos\\appweb\\services\\bookingservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|solutionrelative:services\\bookingservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|c:\\users\\le minh khuong 1\\source\\repos\\appweb\\queries\\userquery.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|solutionrelative:queries\\userquery.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|c:\\users\\le minh khuong 1\\source\\repos\\appweb\\controllers\\homecontroller.cs\\moviescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|solutionrelative:controllers\\homecontroller.cs\\moviescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|c:\\users\\le minh khuong 1\\source\\repos\\appweb\\infrastructure\\dbinitializer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|solutionrelative:infrastructure\\dbinitializer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|c:\\users\\le minh khuong 1\\source\\repos\\appweb\\repositories\\movierepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|solutionrelative:repositories\\movierepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|c:\\users\\le minh khuong 1\\source\\repos\\appweb\\repositories\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|solutionrelative:repositories\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|c:\\users\\le minh khuong 1\\source\\repos\\appweb\\repositories\\showtimerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|solutionrelative:repositories\\showtimerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|c:\\users\\le minh khuong 1\\source\\repos\\appweb\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|c:\\users\\le minh khuong 1\\source\\repos\\appweb\\dtos\\showtimes\\showtimeresponsedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|solutionrelative:dtos\\showtimes\\showtimeresponsedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|c:\\users\\le minh khuong 1\\source\\repos\\appweb\\dtos\\movies\\movieresponsedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|solutionrelative:dtos\\movies\\movieresponsedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|c:\\users\\le minh khuong 1\\source\\repos\\appweb\\dtos\\movies\\updatemoviedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|solutionrelative:dtos\\movies\\updatemoviedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|c:\\users\\le minh khuong 1\\source\\repos\\appweb\\dtos\\movies\\createmoviedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|solutionrelative:dtos\\movies\\createmoviedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|c:\\users\\le minh khuong 1\\source\\repos\\appweb\\dtos\\booking\\createbookingdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|solutionrelative:dtos\\booking\\createbookingdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|c:\\users\\le minh khuong 1\\source\\repos\\appweb\\dtos\\auth\\registerdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|solutionrelative:dtos\\auth\\registerdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|c:\\users\\le minh khuong 1\\source\\repos\\appweb\\dtos\\auth\\logindto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|solutionrelative:dtos\\auth\\logindto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|c:\\users\\le minh khuong 1\\source\\repos\\appweb\\queries\\showtimequery.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|solutionrelative:queries\\showtimequery.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|c:\\users\\le minh khuong 1\\source\\repos\\appweb\\queries\\moviequery.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|solutionrelative:queries\\moviequery.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|c:\\users\\le minh khuong 1\\source\\repos\\appweb\\controllers\\homecontroller.cs\\userscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|solutionrelative:controllers\\homecontroller.cs\\userscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|c:\\users\\le minh khuong 1\\source\\repos\\appweb\\controllers\\homecontroller.cs\\showtimescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|solutionrelative:controllers\\homecontroller.cs\\showtimescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|c:\\users\\le minh khuong 1\\source\\repos\\appweb\\controllers\\homecontroller.cs\\seatscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|solutionrelative:controllers\\homecontroller.cs\\seatscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|c:\\users\\le minh khuong 1\\source\\repos\\appweb\\controllers\\homecontroller.cs\\roomscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|solutionrelative:controllers\\homecontroller.cs\\roomscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|c:\\users\\le minh khuong 1\\source\\repos\\appweb\\repositories\\cinemarepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|solutionrelative:repositories\\cinemarepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|c:\\users\\le minh khuong 1\\source\\repos\\appweb\\services\\orderservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|solutionrelative:services\\orderservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|c:\\users\\le minh khuong 1\\source\\repos\\appweb\\appweb.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "RelativeMoniker": "D:0:0:{B0EB8346-3AAA-9DFD-50F8-A0D276CF75D7}|appweb.csproj|solutionrelative:appweb.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 5,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\appsettings.json",
+              "RelativeDocumentMoniker": "appsettings.json",
+              "ToolTip": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\appsettings.json",
+              "RelativeToolTip": "appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-06-04T07:21:23.405Z",
+              "IsPinned": true
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "CinemasController.cs",
+              "DocumentMoniker": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Controllers\\HomeController.cs\\CinemasController.cs",
+              "RelativeDocumentMoniker": "Controllers\\HomeController.cs\\CinemasController.cs",
+              "ToolTip": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Controllers\\HomeController.cs\\CinemasController.cs",
+              "RelativeToolTip": "Controllers\\HomeController.cs\\CinemasController.cs",
+              "ViewState": "AgIAADUAAAAAAAAAAAAowE8AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-08T08:49:17.351Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "BookingsController.cs",
+              "DocumentMoniker": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Controllers\\HomeController.cs\\BookingsController.cs",
+              "RelativeDocumentMoniker": "Controllers\\HomeController.cs\\BookingsController.cs",
+              "ToolTip": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Controllers\\HomeController.cs\\BookingsController.cs",
+              "RelativeToolTip": "Controllers\\HomeController.cs\\BookingsController.cs",
+              "ViewState": "AgIAACQAAAAAAAAAAAAowDYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-08T08:48:05.189Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "TicketVerificationService.cs",
+              "DocumentMoniker": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Services\\TicketVerificationService.cs",
+              "RelativeDocumentMoniker": "Services\\TicketVerificationService.cs",
+              "ToolTip": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Services\\TicketVerificationService.cs",
+              "RelativeToolTip": "Services\\TicketVerificationService.cs",
+              "ViewState": "AgIAAAEAAAAAAAAAAAAowBsAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-08T09:17:44.725Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAABgAAAAAAAAAAAAqwCsAAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-04T07:34:51.883Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "AccountController.cs",
+              "DocumentMoniker": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Controllers\\HomeController.cs\\AccountController.cs",
+              "RelativeDocumentMoniker": "Controllers\\HomeController.cs\\AccountController.cs",
+              "ToolTip": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Controllers\\HomeController.cs\\AccountController.cs",
+              "RelativeToolTip": "Controllers\\HomeController.cs\\AccountController.cs",
+              "ViewState": "AgIAAE4AAAAAAAAAAAAgwGIAAABdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-15T08:11:50.655Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "FileService.cs",
+              "DocumentMoniker": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Services\\FileService.cs",
+              "RelativeDocumentMoniker": "Services\\FileService.cs",
+              "ToolTip": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Services\\FileService.cs",
+              "RelativeToolTip": "Services\\FileService.cs",
+              "ViewState": "AgIAADcAAAAAAAAAAAAuwEcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-17T09:03:20.745Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "BookingQuery.cs",
+              "DocumentMoniker": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Queries\\BookingQuery.cs",
+              "RelativeDocumentMoniker": "Queries\\BookingQuery.cs",
+              "ToolTip": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Queries\\BookingQuery.cs",
+              "RelativeToolTip": "Queries\\BookingQuery.cs",
+              "ViewState": "AgIAAA0AAAAAAAAAAAA7wCcAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-09T07:46:10.312Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Booking.cs",
+              "DocumentMoniker": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Models\\Booking.cs",
+              "RelativeDocumentMoniker": "Models\\Booking.cs",
+              "ToolTip": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Models\\Booking.cs",
+              "RelativeToolTip": "Models\\Booking.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-15T08:46:11.399Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "ApplicationDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Infrastructure\\ApplicationDbContext.cs",
+              "RelativeDocumentMoniker": "Infrastructure\\ApplicationDbContext.cs",
+              "ToolTip": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Infrastructure\\ApplicationDbContext.cs",
+              "RelativeToolTip": "Infrastructure\\ApplicationDbContext.cs",
+              "ViewState": "AgIAADYAAAAAAAAAAAAowF8AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-04T07:46:34.855Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "BookingResponseDto.cs",
+              "DocumentMoniker": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\DTOs\\Booking\\BookingResponseDto.cs",
+              "RelativeDocumentMoniker": "DTOs\\Booking\\BookingResponseDto.cs",
+              "ToolTip": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\DTOs\\Booking\\BookingResponseDto.cs",
+              "RelativeToolTip": "DTOs\\Booking\\BookingResponseDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-15T08:13:35.185Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "BookingDetailsController.cs",
+              "DocumentMoniker": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Controllers\\HomeController.cs\\BookingDetailsController.cs",
+              "RelativeDocumentMoniker": "Controllers\\HomeController.cs\\BookingDetailsController.cs",
+              "ToolTip": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Controllers\\HomeController.cs\\BookingDetailsController.cs",
+              "RelativeToolTip": "Controllers\\HomeController.cs\\BookingDetailsController.cs",
+              "ViewState": "AgIAAA4AAAAAAAAAAAAAwAkAAAA6AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-04T08:15:29.922Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "BookingRepository.cs",
+              "DocumentMoniker": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Repositories\\BookingRepository.cs",
+              "RelativeDocumentMoniker": "Repositories\\BookingRepository.cs",
+              "ToolTip": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Repositories\\BookingRepository.cs",
+              "RelativeToolTip": "Repositories\\BookingRepository.cs",
+              "ViewState": "AgIAABQAAAAAAAAAAAAowC4AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-08T09:10:51.74Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "Movie.cs",
+              "DocumentMoniker": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Models\\Movie.cs",
+              "RelativeDocumentMoniker": "Models\\Movie.cs",
+              "ToolTip": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Models\\Movie.cs",
+              "RelativeToolTip": "Models\\Movie.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAowCAAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-15T08:41:12.136Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "User.cs",
+              "DocumentMoniker": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Models\\User.cs",
+              "RelativeDocumentMoniker": "Models\\User.cs",
+              "ToolTip": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Models\\User.cs",
+              "RelativeToolTip": "Models\\User.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAowCAAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-15T08:40:59.775Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "BookingService.cs",
+              "DocumentMoniker": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Services\\BookingService.cs",
+              "RelativeDocumentMoniker": "Services\\BookingService.cs",
+              "ToolTip": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Services\\BookingService.cs",
+              "RelativeToolTip": "Services\\BookingService.cs",
+              "ViewState": "AgIAAAIAAAAAAAAAAAAhwAoAAABjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-08T09:16:30.095Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "UserQuery.cs",
+              "DocumentMoniker": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Queries\\UserQuery.cs",
+              "RelativeDocumentMoniker": "Queries\\UserQuery.cs",
+              "ToolTip": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Queries\\UserQuery.cs",
+              "RelativeToolTip": "Queries\\UserQuery.cs",
+              "ViewState": "AgIAAAcAAAAAAAAAAAAkwBcAAAA6AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-09T07:51:36.606Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "MoviesController.cs",
+              "DocumentMoniker": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Controllers\\HomeController.cs\\MoviesController.cs",
+              "RelativeDocumentMoniker": "Controllers\\HomeController.cs\\MoviesController.cs",
+              "ToolTip": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Controllers\\HomeController.cs\\MoviesController.cs",
+              "RelativeToolTip": "Controllers\\HomeController.cs\\MoviesController.cs",
+              "ViewState": "AgIAADYAAAAAAAAAAAAowFAAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-08T08:51:13.088Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "DbInitializer.cs",
+              "DocumentMoniker": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Infrastructure\\DbInitializer.cs",
+              "RelativeDocumentMoniker": "Infrastructure\\DbInitializer.cs",
+              "ToolTip": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Infrastructure\\DbInitializer.cs",
+              "RelativeToolTip": "Infrastructure\\DbInitializer.cs",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAowBoAAAAVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-08T09:40:46.746Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "MovieRepository.cs",
+              "DocumentMoniker": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Repositories\\MovieRepository.cs",
+              "RelativeDocumentMoniker": "Repositories\\MovieRepository.cs",
+              "ToolTip": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Repositories\\MovieRepository.cs",
+              "RelativeToolTip": "Repositories\\MovieRepository.cs",
+              "ViewState": "AgIAABYAAAAAAAAAAAAowDAAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-08T09:10:08.54Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "UserRepository.cs",
+              "DocumentMoniker": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Repositories\\UserRepository.cs",
+              "RelativeDocumentMoniker": "Repositories\\UserRepository.cs",
+              "ToolTip": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Repositories\\UserRepository.cs",
+              "RelativeToolTip": "Repositories\\UserRepository.cs",
+              "ViewState": "AgIAAAsAAAAAAAAAAAAowCUAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-15T08:17:34.439Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "ShowtimeRepository.cs",
+              "DocumentMoniker": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Repositories\\ShowtimeRepository.cs",
+              "RelativeDocumentMoniker": "Repositories\\ShowtimeRepository.cs",
+              "ToolTip": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Repositories\\ShowtimeRepository.cs",
+              "RelativeToolTip": "Repositories\\ShowtimeRepository.cs",
+              "ViewState": "AgIAACAAAAAAAAAAAAAowDoAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-15T08:17:21.462Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "ShowtimeResponseDto.cs",
+              "DocumentMoniker": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\DTOs\\Showtimes\\ShowtimeResponseDto.cs",
+              "RelativeDocumentMoniker": "DTOs\\Showtimes\\ShowtimeResponseDto.cs",
+              "ToolTip": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\DTOs\\Showtimes\\ShowtimeResponseDto.cs",
+              "RelativeToolTip": "DTOs\\Showtimes\\ShowtimeResponseDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-15T08:15:32.537Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "MovieResponseDto.cs",
+              "DocumentMoniker": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\DTOs\\Movies\\MovieResponseDto.cs",
+              "RelativeDocumentMoniker": "DTOs\\Movies\\MovieResponseDto.cs",
+              "ToolTip": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\DTOs\\Movies\\MovieResponseDto.cs",
+              "RelativeToolTip": "DTOs\\Movies\\MovieResponseDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-15T08:14:59.905Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "UpdateMovieDto.cs",
+              "DocumentMoniker": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\DTOs\\Movies\\UpdateMovieDto.cs",
+              "RelativeDocumentMoniker": "DTOs\\Movies\\UpdateMovieDto.cs",
+              "ToolTip": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\DTOs\\Movies\\UpdateMovieDto.cs",
+              "RelativeToolTip": "DTOs\\Movies\\UpdateMovieDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB8AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-15T08:14:47.798Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "CreateMovieDto.cs",
+              "DocumentMoniker": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\DTOs\\Movies\\CreateMovieDto.cs",
+              "RelativeDocumentMoniker": "DTOs\\Movies\\CreateMovieDto.cs",
+              "ToolTip": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\DTOs\\Movies\\CreateMovieDto.cs",
+              "RelativeToolTip": "DTOs\\Movies\\CreateMovieDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABsAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-15T08:14:38.441Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 26,
+              "Title": "CreateBookingDto.cs",
+              "DocumentMoniker": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\DTOs\\Booking\\CreateBookingDto.cs",
+              "RelativeDocumentMoniker": "DTOs\\Booking\\CreateBookingDto.cs",
+              "ToolTip": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\DTOs\\Booking\\CreateBookingDto.cs",
+              "RelativeToolTip": "DTOs\\Booking\\CreateBookingDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-15T08:13:25.38Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 27,
+              "Title": "RegisterDto.cs",
+              "DocumentMoniker": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\DTOs\\Auth\\RegisterDto.cs",
+              "RelativeDocumentMoniker": "DTOs\\Auth\\RegisterDto.cs",
+              "ToolTip": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\DTOs\\Auth\\RegisterDto.cs",
+              "RelativeToolTip": "DTOs\\Auth\\RegisterDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-15T08:13:01.326Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 28,
+              "Title": "LoginDto.cs",
+              "DocumentMoniker": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\DTOs\\Auth\\LoginDto.cs",
+              "RelativeDocumentMoniker": "DTOs\\Auth\\LoginDto.cs",
+              "ToolTip": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\DTOs\\Auth\\LoginDto.cs",
+              "RelativeToolTip": "DTOs\\Auth\\LoginDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-15T08:12:49.748Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 30,
+              "Title": "MovieQuery.cs",
+              "DocumentMoniker": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Queries\\MovieQuery.cs",
+              "RelativeDocumentMoniker": "Queries\\MovieQuery.cs",
+              "ToolTip": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Queries\\MovieQuery.cs",
+              "RelativeToolTip": "Queries\\MovieQuery.cs",
+              "ViewState": "AgIAAAcAAAAAAAAAAAAowBkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-09T07:50:58.264Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 29,
+              "Title": "ShowtimeQuery.cs",
+              "DocumentMoniker": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Queries\\ShowtimeQuery.cs",
+              "RelativeDocumentMoniker": "Queries\\ShowtimeQuery.cs",
+              "ToolTip": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Queries\\ShowtimeQuery.cs",
+              "RelativeToolTip": "Queries\\ShowtimeQuery.cs",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAowBMAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-09T07:52:24.013Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 31,
+              "Title": "UsersController.cs",
+              "DocumentMoniker": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Controllers\\HomeController.cs\\UsersController.cs",
+              "RelativeDocumentMoniker": "Controllers\\HomeController.cs\\UsersController.cs",
+              "ToolTip": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Controllers\\HomeController.cs\\UsersController.cs",
+              "RelativeToolTip": "Controllers\\HomeController.cs\\UsersController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-08T08:57:37.158Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 32,
+              "Title": "ShowtimesController.cs",
+              "DocumentMoniker": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Controllers\\HomeController.cs\\ShowtimesController.cs",
+              "RelativeDocumentMoniker": "Controllers\\HomeController.cs\\ShowtimesController.cs",
+              "ToolTip": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Controllers\\HomeController.cs\\ShowtimesController.cs",
+              "RelativeToolTip": "Controllers\\HomeController.cs\\ShowtimesController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-08T08:57:01.237Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 33,
+              "Title": "SeatsController.cs",
+              "DocumentMoniker": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Controllers\\HomeController.cs\\SeatsController.cs",
+              "RelativeDocumentMoniker": "Controllers\\HomeController.cs\\SeatsController.cs",
+              "ToolTip": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Controllers\\HomeController.cs\\SeatsController.cs",
+              "RelativeToolTip": "Controllers\\HomeController.cs\\SeatsController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-08T08:52:59.814Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 34,
+              "Title": "RoomsController.cs",
+              "DocumentMoniker": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Controllers\\HomeController.cs\\RoomsController.cs",
+              "RelativeDocumentMoniker": "Controllers\\HomeController.cs\\RoomsController.cs",
+              "ToolTip": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Controllers\\HomeController.cs\\RoomsController.cs",
+              "RelativeToolTip": "Controllers\\HomeController.cs\\RoomsController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-08T08:52:26.13Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 35,
+              "Title": "CinemaRepository.cs",
+              "DocumentMoniker": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Repositories\\CinemaRepository.cs",
+              "RelativeDocumentMoniker": "Repositories\\CinemaRepository.cs",
+              "ToolTip": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Repositories\\CinemaRepository.cs",
+              "RelativeToolTip": "Repositories\\CinemaRepository.cs",
+              "ViewState": "AgIAACAAAAAAAAAAAAA9wDgAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-08T09:12:51.429Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 36,
+              "Title": "OrderService.cs",
+              "DocumentMoniker": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Services\\OrderService.cs",
+              "RelativeDocumentMoniker": "Services\\OrderService.cs",
+              "ToolTip": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\Services\\OrderService.cs",
+              "RelativeToolTip": "Services\\OrderService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAABbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-08T09:17:17.122Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 37,
+              "Title": "appweb.csproj",
+              "DocumentMoniker": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\appweb.csproj",
+              "RelativeDocumentMoniker": "appweb.csproj",
+              "ToolTip": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\appweb.csproj",
+              "RelativeToolTip": "appweb.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAABUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-06-06T06:01:30.138Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

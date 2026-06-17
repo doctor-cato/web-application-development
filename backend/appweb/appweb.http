@@ -1,0 +1,6 @@
+@appweb_HostAddress = http://localhost:5111
+
+GET {{appweb_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

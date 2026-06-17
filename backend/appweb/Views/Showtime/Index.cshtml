@@ -1,0 +1,83 @@
+@model IEnumerable<appweb.Models.Showtime>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.MovieId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RoomId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StartTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EndTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TicketPrice)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BookingDetails)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Bookings)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Movie)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Room)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(model => item.MovieId)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.RoomId)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.StartTime)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.EndTime)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.TicketPrice)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.BookingDetails)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.Bookings)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.Movie)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.Room)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
