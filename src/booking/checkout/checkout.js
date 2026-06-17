@@ -21,10 +21,7 @@ function renderCheckout() {
   const posterEl = document.getElementById('order-summary-poster');
   if (posterEl && co.poster) posterEl.src = co.poster;
 
-  if (co.tags && Array.isArray(co.tags)) {
-    const tagsEl = document.getElementById('order-summary-tags');
-    if (tagsEl) tagsEl.innerHTML = co.tags.map(t => `<span class="text-[10px] bg-primary-container/20 text-primary-container border border-primary-container/40 rounded px-2 py-0.5 font-semibold uppercase tracking-wider">${t}</span>`).join(' ');
-  }
+
 
   if (co.genre) {
     const g = document.getElementById('order-summary-genre');
