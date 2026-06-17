@@ -287,6 +287,48 @@ function attachEvents() {
     
     // Confirm Pay
     document.getElementById('btn-confirm-pay').addEventListener('click', handleConfirmPayment);
+
+    // Cancel seat logic
+    const btnCancel = document.getElementById('btn-cancel-my-part');
+    if (btnCancel) {
+        btnCancel.addEventListener('mouseover', () => { btnCancel.style.opacity = '1'; });
+        btnCancel.addEventListener('mouseout', () => { btnCancel.style.opacity = '0.8'; });
+        
+        btnCancel.addEventListener('click', () => {
+            let seatsToCancel = [...selectedSeats];
+            
+            // If no seat selected, automatically pick one unpaid seat
+            if (seatsToCancel.length === 0) {
+                const unpaidSeats = orderData.checkoutData.seats.filter(s => !orderData.paidSeats.includes(s));
+                if (unpaidSeats.length > 0) {
+                    seatsToCancel = [unpaidSeats[unpaidSeats.length - 1]]; // Pick the last one
+                } else {
+                    alert("Không còn ghế trống nào để hủy!");
+                    return;
+                }
+            }
+
+            if (confirm("Bạn có chắc chắn muốn hủy " + seatsToCancel.length + " ghế (" + seatsToCancel.join(', ') + ")? Chỗ ngồi này sẽ được giải phóng để người khác có thể đặt.")) {
+                // Remove the selected seats from the order
+                orderData.checkoutData.seats = orderData.checkoutData.seats.filter(s => !seatsToCancel.includes(s));
+                
+                // Save updated order back
+                localStorage.setItem('splitOrder_' + orderId, JSON.stringify(orderData));
+                
+                alert("Đã hủy ghế thành công!");
+                
+                // If no seats left in the whole order, maybe redirect to home or cancel completely
+                if (orderData.checkoutData.seats.length === 0) {
+                    localStorage.removeItem('splitOrder_' + orderId);
+                    window.location.href = '../../index.html';
+                } else {
+                    // Reset selection and reload
+                    selectedSeats = [];
+                    window.location.reload();
+                }
+            }
+        });
+    }
 }
 
 function updateTotal() {
