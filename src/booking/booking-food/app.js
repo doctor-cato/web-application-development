@@ -168,6 +168,23 @@
     }, 0);
 
     refs.summary.amount.textContent = money(order.ticketPrice + productTotal);
+
+    // Save selected items to localStorage for the checkout page
+    const selectedFoods = [];
+    productIds.forEach(id => {
+      if(state[id].added) {
+        const card = refs.cards[id];
+        const img = card ? card.querySelector('img').getAttribute('src') : '';
+        selectedFoods.push({
+          id: id,
+          name: products[id].name,
+          price: products[id].price,
+          qty: state[id].qty,
+          img: img
+        });
+      }
+    });
+    localStorage.setItem('selectedFood', JSON.stringify(selectedFoods));
   }
 
   function renderAll() {

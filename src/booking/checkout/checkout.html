@@ -75,9 +75,12 @@
                             <span class="price-label">Tiền ghế</span>
                             <span id="order-summary-seat-amount" class="price-value" data-amount="0">0 đ</span>
                         </div>
-                        <div class="price-row" id="order-summary-combo-row" style="display: none;">
-                            <span class="price-label">Combo</span>
-                            <span id="order-summary-combo-amount" class="price-value" data-amount="0">0 đ</span>
+                        <div class="price-row" id="order-summary-combo-row" style="display: none; align-items: flex-start; flex-direction: column; gap: 0.5rem;">
+                            <div style="display: flex; justify-content: space-between; width: 100%;">
+                                <span class="price-label">Đồ ăn & Thức uống</span>
+                                <span id="order-summary-combo-amount" class="price-value" data-amount="0">0 đ</span>
+                            </div>
+                            <div id="order-summary-food-list" style="width: 100%; display: flex; flex-direction: column; gap: 4px; padding-left: 0.5rem; border-left: 2px solid var(--glass-border);"></div>
                         </div>
                         <div class="price-row" id="order-summary-discount-row" style="display: none; color: #4CAF50;">
                             <span class="price-label">Giảm giá</span>
@@ -91,12 +94,12 @@
                 <div class="glass-panel booking-card">
                     <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem; margin-bottom: 1rem;">
                         <h2 class="booking-section-title" style="border: none; margin: 0; padding: 0;">Bắp Nước (Combo)</h2>
-                        <a href="../booking-food/index.html" class="btn-upsell-food">
-                            <i class="fas fa-utensils"></i> Menu Đầy Đủ
+                        <a href="../booking-food/index.html" class="btn-upsell-food" id="btn-edit-food">
+                            <i class="fas fa-utensils"></i> <span id="btn-edit-food-text">Menu Đầy Đủ</span>
                         </a>
                     </div>
                     
-                    <div class="combo-list-horizontal">
+                    <div class="combo-list-horizontal" id="food-upsell-panel">
                         <label class="combo-card selected">
                             <input type="radio" name="combo" value="none" checked style="position: absolute; opacity: 0; width: 0; height: 0;">
                             <div class="combo-check"><i class="fas fa-check-circle"></i></div>
@@ -215,9 +218,14 @@
                         <span id="order-total" class="summary-total-price" data-amount="0">0 đ</span>
                     </div>
 
-                    <button id="btn-pay" class="btn btn-primary btn-continue" style="margin-top: 1rem;">
-                        THANH TOÁN NGAY
-                    </button>
+                    <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                        <button id="btn-split-pay" class="btn btn-outline" style="flex: 1; border-color: var(--primary-red); color: var(--primary-red); padding: 0.75rem; font-weight: 700;">
+                            <i class="fas fa-users"></i> SPLIT & LOCK
+                        </button>
+                        <button id="btn-pay" class="btn btn-primary btn-continue" style="flex: 1; margin-top: 0;">
+                            THANH TOÁN
+                        </button>
+                    </div>
                     
                     <p style="text-align: center; color: var(--text-muted); font-size: 0.75rem; margin-top: 1rem;">
                         Giao dịch được mã hóa và bảo mật 256-bit.
@@ -228,6 +236,32 @@
 
         </div>
     </main>
+
+
+    <!-- SPLIT & LOCK MODAL -->
+    <div id="split-modal" class="modal-backdrop" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(5px);">
+        <div class="glass-panel" style="width: 90%; max-width: 450px; padding: 2rem; position: relative; text-align: center; box-shadow: 0 10px 30px rgba(229,9,20,0.2); border: 1px solid rgba(229,9,20,0.3);">
+            <i class="fas fa-times" id="close-split-modal" style="position: absolute; top: 1rem; right: 1rem; cursor: pointer; font-size: 1.25rem; color: var(--text-muted); transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--text-muted)'"></i>
+            
+            <div style="width: 60px; height: 60px; border-radius: 50%; background: rgba(229, 9, 20, 0.1); border: 1px solid rgba(229, 9, 20, 0.4); color: var(--primary-red); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin: 0 auto 1.25rem;">
+                <i class="fas fa-link"></i>
+            </div>
+            
+            <h2 style="font-family: 'Oswald', sans-serif; font-size: 1.75rem; margin-bottom: 0.5rem; letter-spacing: 1px; color: #fff;">CHIA SẺ THANH TOÁN</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem; line-height: 1.5;">
+                Gửi link này cho bạn bè. Ghế của bạn sẽ được giữ trong vòng <strong style="color: var(--primary-red);">15 phút</strong> để mọi người tự thanh toán phần của mình.
+            </p>
+            
+            <div style="display: flex; align-items: center; background: rgba(0,0,0,0.6); padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); margin-bottom: 1.5rem;">
+                <input type="text" id="split-link-input" readonly value="" style="background: transparent; border: none; color: #fff; width: 100%; outline: none; font-size: 0.9rem; font-family: 'Inter', monospace;">
+                <button id="btn-copy-link" style="background: transparent; border: none; color: var(--primary-red); cursor: pointer; padding: 0.25rem 0.5rem; font-size: 1.1rem; transition: transform 0.2s;" title="Sao chép Link">
+                    <i class="fas fa-copy"></i>
+                </button>
+            </div>
+            
+            <a href="split-pay.html" class="btn btn-primary" style="width: 100%; display: block; padding: 0.8rem; font-size: 1rem; text-decoration: none;">MỞ TRANG THEO DÕI</a>
+        </div>
+    </div>
 
     <div id="footer-placeholder"></div>
 

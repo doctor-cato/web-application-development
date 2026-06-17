@@ -1,190 +1,81 @@
-/**
- * pages/profile.js — Trang hồ sơ người dùng
- * ─────────────────────────────────────────────────────────────
- * Trách nhiệm:
- *   - Guard: redirect về login.html nếu chưa đăng nhập
- *   - Render thông tin tài khoản (tên, email, phone, ngày sinh)
- *   - Xử lý đổi ảnh đại diện (FileReader → LocalStorage)
- *   - Nút "Đăng xuất" → authService.logout() → redirect về index.html
- * ─────────────────────────────────────────────────────────────
- */
+import { getBookings } from '../../shared/utils/storage.js';
 
-import { getSession, logout, updateProfile } from '/auth/auth-services/authService.js';
-import { renderNavbar } from '/shared/components/navbar.js';
-import { setupProfileUI } from './profile-ui.js';
-
-// --- INIT ---
-document.addEventListener('DOMContentLoaded', () => {
-    // 1. Guard check
-    const session = getSession();
-    if (!session) {
-        window.location.href = '/auth/user-login/login.html';
-        return;
-    }
-
-    // 2. Render Profile Info
-    renderProfile(session);
-
-    // 3. Setup event listeners
-    setupEventListeners(session);
-    
-    // 4. Setup UI (Modals, accordions, etc)
-    setupProfileUI();
-});
-
-// --- RENDER ---
-function renderProfile(user) {
-    // Sidebar
-    document.getElementById('sidebar-name').textContent = user.name || 'Khách';
-    document.getElementById('sidebar-avatar').src = user.avatar || '/shared/images/avatar.jpg';
-    
-    // Form
-    document.getElementById('fullname').value = user.name || '';
-    document.getElementById('email').value = user.email || '';
-    document.getElementById('phone').value = user.phone || '';
-    document.getElementById('dob').value = user.dob || '';
-
-    // Render navbar dropdown details if needed (navbar component handles most of this)
-    // Update localstorage so that navbar can pickup avatar changes
-    localStorage.setItem('userAvatar', user.avatar || '/shared/images/avatar.jpg');
-    localStorage.setItem('userName', user.name || 'Khách');
+function formatPrice(amount) {
+    if (!amount) return '0 đ';
+    return amount.toLocaleString('vi-VN') + 'đ';
 }
 
-// --- EVENT LISTENERS ---
-function setupEventListeners(session) {
-    // 1. Avatar upload
-    const avatarInput = document.getElementById('avatar-input');
-    if (avatarInput) {
-        let newAvatarData = session.avatar;
-        avatarInput.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(evt) {
-                    const img = new Image();
-                    img.onload = function() {
-                        const canvas = document.createElement('canvas');
-                        const MAX_WIDTH = 150;
-                        const MAX_HEIGHT = 150;
-                        let width = img.width;
-                        let height = img.height;
-
-                        if (width > height) {
-                            if (width > MAX_WIDTH) {
-                                height *= MAX_WIDTH / width;
-                                width = MAX_WIDTH;
-                            }
-                        } else {
-                            if (height > MAX_HEIGHT) {
-                                width *= MAX_HEIGHT / height;
-                                height = MAX_HEIGHT;
-                            }
-                        }
-                        canvas.width = width;
-                        canvas.height = height;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, width, height);
-                        
-                        newAvatarData = canvas.toDataURL('image/jpeg', 0.7);
-                        
-                        // Update UI immediately
-                        document.getElementById('sidebar-avatar').src = newAvatarData;
-                        
-                        const navbarAvatar = document.querySelector('.user-btn .user-avatar');
-                        if (navbarAvatar) navbarAvatar.src = newAvatarData;
-                        
-                        const dropdownAvatar = document.querySelector('.user-header-avatar');
-                        if (dropdownAvatar) dropdownAvatar.src = newAvatarData;
-                        
-                        // Save to session immediately
-                        updateProfile({ avatar: newAvatarData });
-                    };
-                    img.src = evt.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-    }
-
-    // 2. Save profile form
-    const profileForm = document.getElementById('profile-form');
-    if (profileForm) {
-        profileForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const newName = document.getElementById('fullname').value.trim();
-            const newPhone = document.getElementById('phone').value.trim();
-            const newDob = document.getElementById('dob').value;
-            
-            // Only name, phone, dob can be updated from this form, avatar is updated instantly
-            const result = updateProfile({ 
-                fullname: newName, 
-                phone: newPhone, 
-                dob: newDob 
-            });
-
-            if(result.ok){
-                document.getElementById('sidebar-name').textContent = newName;
-                const userNameEl = document.querySelector('.dropdown-user-info h4');
-                if (userNameEl) userNameEl.textContent = newName;
-                alert('Cập nhật thông tin thành công!');
-            } else {
-                 alert('Lỗi cập nhật: ' + result.error);
-            }
-        });
-    }
-
-    // 3. Logout
-    const logoutBtn = document.getElementById('sidebar-logout');
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            logout();
-        });
-    }
-
-    // 4. Tabs handling
-    setupTabs();
-}
-
-function setupTabs() {
-    const menuItems = document.querySelectorAll('.sidebar-menu .menu-item[data-tab]');
-    const tabContents = document.querySelectorAll('.tab-content');
-
-    function switchTab(tabId) {
-        history.replaceState(null, null, '#' + tabId);
-
-        menuItems.forEach(i => i.classList.remove('active'));
-        tabContents.forEach(tc => tc.classList.remove('active'));
+function renderRealHistory() {
+    const container = document.getElementById('real-history-container');
+    if (!container) return;
+    
+    // Get all bookings from localStorage
+    const bookings = getBookings();
+    
+    // Reverse so newest is at the top
+    bookings.reverse();
+    
+    let html = '';
+    
+    bookings.forEach((booking, index) => {
+        const isGroup = booking.seats && booking.seats.length > 2;
+        const seatStr = booking.seats ? booking.seats.join(', ') : 'N/A';
+        const typeBadge = isGroup 
+            ? `<div style="margin-top: 0.5rem;"><span style="background: rgba(16,185,129,0.2); color: #10b981; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; border: 1px solid rgba(16,185,129,0.4);">Vé Nhóm (Split & Lock)</span></div>` 
+            : `<div style="margin-top: 0.5rem;"><span style="background: rgba(229, 9, 20, 0.2); color: #ff4b4b; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; border: 1px solid rgba(229, 9, 20, 0.3);">Vé Tiêu Chuẩn</span></div>`;
         
-        const activeItem = document.querySelector(`.sidebar-menu .menu-item[data-tab="${tabId}"]`);
-        if (activeItem) activeItem.classList.add('active');
-        
-        const targetTab = document.getElementById('tab-' + tabId);
-        if (targetTab) {
-            targetTab.classList.add('active');
+        // Assume poster based on title, fallback to default if not exact
+        let poster = '/shared/images/f1_movie.jpg';
+        if (booking.movieTitle && booking.movieTitle.toLowerCase().includes('war machine')) {
+            poster = 'https://images.unsplash.com/photo-1534809027769-62466286b595?auto=format&fit=crop&w=400&q=80';
+        } else if (booking.movieTitle && booking.movieTitle.toLowerCase().includes('interstellar')) {
+            poster = 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=400&q=80';
         }
-    }
 
-    menuItems.forEach(item => {
-        item.addEventListener('click', function(e) {
-            e.preventDefault();
-            switchTab(this.getAttribute('data-tab'));
-        });
+        const dateStr = booking.createdAt ? new Date(booking.createdAt).toLocaleDateString('vi-VN') : 'N/A';
+        const timeStr = booking.showtimeText || 'N/A';
+        const typeStr = isGroup ? 'group' : 'single';
+        const idStr = booking.id;
+        const totalStr = formatPrice(booking.total);
+
+        // Escape quotes in strings for onclick
+        const titleSafe = booking.movieTitle ? booking.movieTitle.replace(/'/g, "\\'") : 'Phim';
+        const roomSafe = booking.room ? booking.room.replace(/'/g, "\\'") : 'Rạp';
+        
+        const actionHtml = `
+            <div class="history-action">
+                <span class="status status-upcoming" id="real-status-${index}">Sắp chiếu</span>
+                <div class="history-price">${totalStr}</div>
+                <div style="display: flex; gap: 0.75rem; margin-top: 1rem; justify-content: flex-end; width: 100%;">
+                    <button id="real-cancel-btn-${index}" onclick="openCancelModal('${titleSafe}', '${timeStr}', '${seatStr}', '${totalStr}')" style="padding: 0.35rem 1rem; font-size: 0.8rem; font-family: 'Inter', sans-serif; font-weight: 500; border-radius: 30px; background: transparent; border: 1px solid rgba(229,9,20,0.5); color: #e50914; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(229,9,20,0.1)'; this.style.borderColor='#e50914'" onmouseout="this.style.background='transparent'; this.style.borderColor='rgba(229,9,20,0.5)'">Huỷ vé</button>
+                    <button id="real-view-btn-${index}" onclick="openTicketModal('${typeStr}', '${titleSafe}', '${dateStr}', '${timeStr}', '${roomSafe}', '${seatStr}', '3HD2K Vincom Đồng Khởi', '${poster}', '${idStr}')" style="padding: 0.35rem 1rem; font-size: 0.8rem; font-family: 'Inter', sans-serif; font-weight: 500; border-radius: 30px; background: #e50914; color: #fff; border: 1px solid #e50914; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 10px rgba(229,9,20,0.3);" onmouseover="this.style.background='#ff4b4b'; this.style.boxShadow='0 6px 15px rgba(229,9,20,0.5)'" onmouseout="this.style.background='#e50914'; this.style.boxShadow='0 4px 10px rgba(229,9,20,0.3)'">Xem mã vé</button>
+                </div>
+            </div>
+        `;
+
+        html += `
+            <div class="history-card" style="border: 1px solid rgba(16, 185, 129, 0.4) !important; box-shadow: 0 0 15px rgba(16, 185, 129, 0.1) !important;">
+                <!-- Highlight border to show it's a real active booking -->
+                <div class="history-img">
+                    <img src="${poster}" alt="${titleSafe}">
+                </div>
+                <div class="history-info">
+                    <h3>${titleSafe}</h3>
+                    <p><i class="fas fa-map-marker-alt"></i> 3HD2K Vincom Đồng Khởi - ${roomSafe}</p>
+                    <p><i class="fas fa-clock"></i> ${timeStr}</p>
+                    <p><i class="fas fa-couch"></i> Ghế: ${seatStr}</p>
+                    ${typeBadge}
+                </div>
+                ${actionHtml}
+            </div>
+        `;
     });
+    
+    container.innerHTML = html;
+}
 
-    function handleHashChange() {
-        if (window.location.hash) {
-            const hashTab = window.location.hash.substring(1);
-            const validTabs = ['info', 'history', 'offers', 'settings'];
-            if (validTabs.includes(hashTab)) {
-                switchTab(hashTab);
-            }
-        }
-    }
-
-    // Initial check on load
-    handleHashChange();
-
-    // Listen for hash changes when navigating from navbar while already on the page
-    window.addEventListener('hashchange', handleHashChange);
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', renderRealHistory);
+} else {
+    renderRealHistory();
 }

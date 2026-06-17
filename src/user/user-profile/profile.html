@@ -12,6 +12,192 @@
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
     <!-- FontAwesome for Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+<style>
+    /* Cinematic History UI Upgrades */
+    .history-card {
+        background: linear-gradient(145deg, rgba(30,30,30,0.6), rgba(15,15,15,0.8)) !important;
+        border: 1px solid rgba(255,255,255,0.05) !important;
+        border-radius: 12px !important;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+        position: relative;
+    }
+    .history-card:hover {
+        transform: translateY(-5px) !important;
+        box-shadow: 0 10px 20px rgba(229, 9, 20, 0.2) !important;
+        border-color: rgba(229, 9, 20, 0.3) !important;
+    }
+    .history-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; bottom: 0;
+        width: 4px;
+        background: var(--primary-red);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    .history-card:hover::before {
+        opacity: 1;
+    }
+    .history-info h3 {
+        color: #fff;
+        font-family: 'Oswald', sans-serif;
+        letter-spacing: 1px;
+        font-size: 1.5rem !important;
+        text-shadow: 0 0 10px rgba(0,0,0,0.8);
+    }
+    .status-upcoming {
+        background: rgba(229, 9, 20, 0.2) !important;
+        color: #ff4b4b !important;
+        border: 1px solid rgba(229, 9, 20, 0.5) !important;
+        box-shadow: 0 0 10px rgba(229,9,20,0.3);
+    }
+    .status-completed {
+        background: rgba(16, 185, 129, 0.1) !important;
+        color: #10b981 !important;
+        border: 1px solid rgba(16, 185, 129, 0.3) !important;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: scale(0.95); }
+        to { opacity: 1; transform: scale(1); }
+    }
+
+
+    /* E-Ticket Styles */
+    .ticket-wrapper {
+        width: 320px;
+        filter: drop-shadow(0 20px 40px rgba(0,0,0,0.8));
+        animation: slideUpTicket 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        transform: translateY(150px);
+        opacity: 0;
+    }
+    @keyframes slideUpTicket {
+        to { transform: translateY(0); opacity: 1; }
+    }
+    .ticket-top {
+        background: linear-gradient(145deg, rgba(30,30,30,0.9), rgba(15,15,15,0.95));
+        border-radius: 16px 16px 0 0;
+        position: relative;
+        overflow: hidden;
+        padding: 2rem 1.5rem 1.5rem 1.5rem;
+        border: 1px solid rgba(255,255,255,0.1);
+        border-bottom: none;
+    }
+    .ticket-bg-blur {
+        position: absolute;
+        top: -20%; left: -20%; width: 140%; height: 140%;
+        object-fit: cover;
+        filter: blur(25px) opacity(0.2);
+        z-index: 0;
+    }
+    .ticket-content {
+        position: relative;
+        z-index: 1;
+    }
+    .ticket-badge {
+        background: rgba(229, 9, 20, 0.2);
+        color: #ff4b4b;
+        border: 1px solid rgba(229, 9, 20, 0.3);
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+    }
+    .ticket-title {
+        font-family: 'Oswald', sans-serif;
+        font-size: 2.2rem;
+        margin: 1rem 0;
+        color: #fff;
+        line-height: 1.1;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+        text-transform: uppercase;
+    }
+    .ticket-details-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+    .detail-item {
+        display: flex;
+        flex-direction: column;
+    }
+    .detail-label {
+        font-size: 0.75rem;
+        color: #aaa;
+        text-transform: uppercase;
+        margin-bottom: 0.2rem;
+    }
+    .detail-value {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #fff;
+        font-family: 'Bebas Neue', sans-serif;
+        letter-spacing: 1px;
+    }
+    .ticket-divider {
+        height: 30px;
+        background: linear-gradient(145deg, rgba(30,30,30,0.9), rgba(15,15,15,0.95));
+        position: relative;
+        display: flex;
+        align-items: center;
+        border-left: 1px solid rgba(255,255,255,0.1);
+        border-right: 1px solid rgba(255,255,255,0.1);
+    }
+    .notch {
+        width: 30px;
+        height: 30px;
+        background: #111; /* roughly matches modal backdrop over dark bg */
+        border-radius: 50%;
+        position: absolute;
+        z-index: 2;
+        box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+    }
+    .left-notch { left: -16px; border-right: 1px solid rgba(255,255,255,0.1); }
+    .right-notch { right: -16px; border-left: 1px solid rgba(255,255,255,0.1); }
+    
+    .dashed-line {
+        width: 100%;
+        height: 0;
+        border-bottom: 2px dashed rgba(255,255,255,0.2);
+        margin: 0 20px;
+    }
+    
+    .ticket-bottom {
+        background: linear-gradient(145deg, rgba(30,30,30,0.9), rgba(15,15,15,0.95));
+        border-radius: 0 0 16px 16px;
+        padding: 1.5rem 1.5rem 2rem 1.5rem;
+        border: 1px solid rgba(255,255,255,0.1);
+        border-top: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .qr-container {
+        background: #fff;
+        padding: 10px;
+        border-radius: 12px;
+        margin-bottom: 1rem;
+        box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+    .qr-container img {
+        display: block;
+        width: 140px;
+        height: 140px;
+    }
+    .booking-id {
+        font-family: 'Inter', monospace;
+        font-weight: 700;
+        font-size: 1.2rem;
+        color: #fff;
+        letter-spacing: 2px;
+        margin: 0;
+    }
+
+</style>
+
 </head>
 <body>
     <!-- NAVBAR -->
@@ -131,6 +317,30 @@
                     </div>
                     <div class="content-body">
                         <div class="history-list">
+                            <div id="real-history-container"></div>
+
+                            <!-- Ticket 2: Group Ticket -->
+                            <div class="history-card">
+                                <div class="history-img">
+                                    <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=400&q=80" alt="Avenger">
+                                </div>
+                                <div class="history-info">
+                                    <h3>Interstellar</h3>
+                                    <p><i class="fas fa-map-marker-alt"></i> 3HD2K Vincom Đồng Khởi - IMAX</p>
+                                    <p><i class="fas fa-clock"></i> 19:30 - 20/06/2026</p>
+                                    <p><i class="fas fa-couch"></i> Ghế: G1, G2, G3, G4</p>
+                                    <div style="margin-top: 0.5rem;"><span style="background: rgba(16,185,129,0.2); color: #10b981; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; border: 1px solid rgba(16,185,129,0.4);">Vé Nhóm (Split & Lock)</span></div>
+                                </div>
+                                <div class="history-action">
+                                    <span class="status status-upcoming" id="f2-status">Sắp chiếu</span>
+                                    <div class="history-price">500.000đ</div>
+                                    <div style="display: flex; gap: 0.75rem; margin-top: 1rem; justify-content: flex-end; width: 100%;">
+                                        <button id="f2-cancel-btn" onclick="openCancelModal('Interstellar', '19:30 - 20/06/2026', 'G1, G2, G3, G4', '500.000đ')" style="padding: 0.35rem 1rem; font-size: 0.8rem; font-family: 'Inter', sans-serif; font-weight: 500; border-radius: 30px; background: transparent; border: 1px solid rgba(229,9,20,0.5); color: #e50914; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(229,9,20,0.1)'; this.style.borderColor='#e50914'" onmouseout="this.style.background='transparent'; this.style.borderColor='rgba(229,9,20,0.5)'">Huỷ vé</button>
+                                        <button id="f2-view-btn" onclick="openTicketModal('group', 'Interstellar', '20/06/2026', '19:30', 'IMAX', 'G1, G2, G3, G4', '3HD2K Vincom Đồng Khởi', 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=400&q=80', '3HD2K-GROUP4')" style="padding: 0.35rem 1rem; font-size: 0.8rem; font-family: 'Inter', sans-serif; font-weight: 500; border-radius: 30px; background: #e50914; color: #fff; border: 1px solid #e50914; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 10px rgba(229,9,20,0.3);" onmouseover="this.style.background='#ff4b4b'; this.style.boxShadow='0 6px 15px rgba(229,9,20,0.5)'" onmouseout="this.style.background='#e50914'; this.style.boxShadow='0 4px 10px rgba(229,9,20,0.3)'">Xem mã vé</button>
+                                    </div>
+                                </div>
+                            </div>
+
                             <!-- Ticket 1 -->
                             <div class="history-card">
                                 <div class="history-img">
@@ -143,9 +353,12 @@
                                     <p><i class="fas fa-couch"></i> Ghế: E5, E6</p>
                                 </div>
                                 <div class="history-action">
-                                    <span class="status status-upcoming">Sắp chiếu</span>
+                                    <span class="status status-upcoming" id="f1-status">Sắp chiếu</span>
                                     <div class="history-price">250.000đ</div>
-                                    <button class="btn-ticket">Xem mã vé</button>
+                                    <div style="display: flex; gap: 0.75rem; margin-top: 1rem; justify-content: flex-end; width: 100%;">
+                                        <button id="f1-cancel-btn" onclick="openCancelModal('F1: The Movie', '20:00 - 15/06/2026', 'E5, E6', '250.000đ')" style="padding: 0.35rem 1rem; font-size: 0.8rem; font-family: 'Inter', sans-serif; font-weight: 500; border-radius: 30px; background: transparent; border: 1px solid rgba(229,9,20,0.5); color: #e50914; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(229,9,20,0.1)'; this.style.borderColor='#e50914'" onmouseout="this.style.background='transparent'; this.style.borderColor='rgba(229,9,20,0.5)'">Huỷ vé</button>
+                                        <button id="f1-view-btn" onclick="openTicketModal('single', 'F1: The Movie', '15/06/2026', '20:00', 'Rạp 1', 'E5, E6', '3HD2K Vincom Đồng Khởi', '/shared/images/f1_movie.jpg', '3HD2K-9X8K2M')" style="padding: 0.35rem 1rem; font-size: 0.8rem; font-family: 'Inter', sans-serif; font-weight: 500; border-radius: 30px; background: #e50914; color: #fff; border: 1px solid #e50914; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 10px rgba(229,9,20,0.3);" onmouseover="this.style.background='#ff4b4b'; this.style.boxShadow='0 6px 15px rgba(229,9,20,0.5)'" onmouseout="this.style.background='#e50914'; this.style.boxShadow='0 4px 10px rgba(229,9,20,0.3)'">Xem mã vé</button>
+                                    </div>
                                 </div>
                             </div>
                             
@@ -163,7 +376,8 @@
                                 <div class="history-action">
                                     <span class="status status-completed">Đã xem</span>
                                     <div class="history-price">375.000đ</div>
-                                    <button class="btn-ticket btn-outline">Mua lại</button>
+                                    <button class="btn-ticket btn-outline" style="display: none;">Mua lại</button>
+                                    <div style="font-size: 0.85rem; color: #10b981; margin-top: 0.5rem; text-align: right;"><i class="fas fa-check-circle"></i> Đã hoàn tất</div>
                                 </div>
                             </div>
                         </div>
@@ -462,5 +676,202 @@
     <script type="module" src="/shared/components/navbar.js"></script>
     <script type="module" src="/shared/components/footer.js"></script>
     <script type="module" src="/user/user-profile/profile.js"></script>
+
+    <!-- Cancel Ticket Modal -->
+    <div id="cancel-modal" class="modal-backdrop" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(8px);">
+        <div class="glass-panel" style="width: 90%; max-width: 450px; padding: 2rem; position: relative; border: 1px solid rgba(229,9,20,0.3); border-radius: 16px; background: linear-gradient(145deg, rgba(20,20,20,0.9), rgba(10,10,10,0.95)); box-shadow: 0 10px 40px rgba(229,9,20,0.2);">
+            <div style="text-align: center; margin-bottom: 1.5rem;">
+                <div style="width: 60px; height: 60px; border-radius: 50%; background: rgba(229,9,20,0.1); color: #e50914; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 1rem; border: 1px solid rgba(229,9,20,0.3); box-shadow: 0 0 20px rgba(229,9,20,0.4);">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <h3 style="font-family: 'Oswald', sans-serif; font-size: 1.75rem; color: #fff; margin: 0; letter-spacing: 1px;">XÁC NHẬN HUỶ VÉ</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.5rem;">Bạn có chắc chắn muốn huỷ vé này không?</p>
+            </div>
+            
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+                <p style="margin: 0 0 0.5rem 0; font-size: 1.1rem; color: #fff; font-weight: 600;" id="cancel-movie-name">Phim</p>
+                <p style="margin: 0 0 0.25rem 0; font-size: 0.85rem; color: #aaa;"><i class="fas fa-clock"></i> <span id="cancel-movie-time">Thời gian</span></p>
+                <p style="margin: 0 0 0.25rem 0; font-size: 0.85rem; color: #aaa;"><i class="fas fa-couch"></i> <span id="cancel-movie-seats">Ghế</span></p>
+                <div style="border-top: 1px dashed rgba(255,255,255,0.1); margin: 0.5rem 0; padding-top: 0.5rem; display: flex; justify-content: space-between;">
+                    <span style="color: #aaa; font-size: 0.9rem;">Số tiền hoàn lại (80%):</span>
+                    <span style="color: #10b981; font-weight: 700; font-size: 1.1rem;" id="cancel-refund-amount">0đ</span>
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 1rem;">
+                <button onclick="closeCancelModal()" class="btn-ticket" style="flex: 1; background: transparent; border: 1px solid rgba(255,255,255,0.2); color: #fff;">GIỮ LẠI VÉ</button>
+                <button onclick="confirmCancel()" class="btn-ticket" style="flex: 1; background: #e50914; border: none; color: #fff; font-weight: 700; box-shadow: 0 0 15px rgba(229,9,20,0.5);">XÁC NHẬN HUỶ</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        function openCancelModal(name, time, seats, price) {
+            document.getElementById('cancel-movie-name').innerText = name;
+            document.getElementById('cancel-movie-time').innerText = time;
+            document.getElementById('cancel-movie-seats').innerText = seats;
+            
+            // Calculate 80% refund
+            let priceNum = parseInt(price.replace(/\./g, '').replace('đ', ''));
+            let refundNum = priceNum * 0.8;
+            document.getElementById('cancel-refund-amount').innerText = refundNum.toLocaleString('vi-VN') + 'đ';
+            
+            const modal = document.getElementById('cancel-modal');
+            modal.style.display = 'flex';
+            modal.style.animation = 'fadeIn 0.3s ease';
+        }
+
+        function closeCancelModal() {
+            const modal = document.getElementById('cancel-modal');
+            modal.style.display = 'none';
+        }
+
+        function confirmCancel() {
+            // Show loading state
+            const btn = document.querySelector('#cancel-modal button:last-child');
+            const originalText = btn.innerText;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ĐANG XỬ LÝ...';
+            btn.style.pointerEvents = 'none';
+            
+            setTimeout(() => {
+                closeCancelModal();
+                btn.innerHTML = originalText;
+                btn.style.pointerEvents = 'auto';
+                
+                // Update UI to Cancelled state
+                const statusBadge = document.getElementById('f1-status');
+                statusBadge.className = 'status';
+                statusBadge.style.background = 'rgba(255, 255, 255, 0.1)';
+                statusBadge.style.color = '#aaa';
+                statusBadge.style.border = '1px solid rgba(255, 255, 255, 0.2)';
+                statusBadge.innerText = 'Đã huỷ';
+                
+                document.getElementById('f1-view-btn').style.display = 'none';
+                document.getElementById('f1-cancel-btn').style.display = 'none';
+                
+                // Add a text indicating cancellation
+                const actionDiv = document.getElementById('f1-status').parentElement;
+                const cancelledText = document.createElement('div');
+                cancelledText.innerHTML = '<div style="font-size: 0.85rem; color: #e50914; margin-top: 0.5rem; text-align: right;"><i class="fas fa-times-circle"></i> Đã hoàn tiền 80%</div>';
+                actionDiv.appendChild(cancelledText);
+                
+                // Disable card visually
+                const card = actionDiv.parentElement;
+                card.style.opacity = '0.6';
+                card.style.filter = 'grayscale(100%)';
+                
+                alert('Huỷ vé thành công! Số tiền hoàn lại sẽ được chuyển vào tài khoản của bạn trong 3-5 ngày làm việc.');
+            }, 1500);
+        }
+    </script>
+
+
+    <!-- E-Ticket Modal -->
+    <div id="eticket-modal" class="modal-backdrop" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 9999; align-items: center; justify-content: center; flex-direction: column; backdrop-filter: blur(10px);">
+        
+        <div style="position: absolute; top: 1.5rem; right: 1.5rem; color: #fff; font-size: 2rem; cursor: pointer; transition: transform 0.2s;" onclick="closeTicketModal()" onmouseover="this.style.transform='rotate(90deg)'" onmouseout="this.style.transform='rotate(0deg)'">
+            <i class="fas fa-times"></i>
+        </div>
+
+        <div class="ticket-wrapper">
+            <div class="ticket-top">
+                <img id="t-modal-bg" src="/shared/images/f1_movie.jpg" class="ticket-bg-blur" alt="blur" onerror="this.src='https://images.unsplash.com/photo-1440404653325-ab127d49abc1?auto=format&fit=crop&w=400&q=80'">
+                <div class="ticket-content">
+                    <span id="t-modal-badge" class="ticket-badge">VÉ ĐIỆN TỬ</span>
+                    <h2 id="t-modal-title" class="ticket-title">F1: The Movie</h2>
+                    
+                    <div class="ticket-details-grid">
+                        <div class="detail-item">
+                            <span class="detail-label">Ngày</span>
+                            <span id="t-modal-date" class="detail-value">15/06/2026</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Giờ chiếu</span>
+                            <span id="t-modal-time" class="detail-value">20:00</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Rạp</span>
+                            <span id="t-modal-room" class="detail-value">Rạp 1</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Ghế</span>
+                            <span id="t-modal-seats" class="detail-value" style="color: var(--primary-red);">E5, E6</span>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-item" style="margin-top: 1rem;">
+                        <span class="detail-label">Địa điểm</span>
+                        <span id="t-modal-location" class="detail-value" style="font-size: 0.9rem; font-family: 'Inter', sans-serif;">3HD2K Vincom Đồng Khởi</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="ticket-divider">
+                <div class="notch left-notch"></div>
+                <div class="dashed-line"></div>
+                <div class="notch right-notch"></div>
+            </div>
+            
+            <div class="ticket-bottom">
+                <div class="qr-container">
+                    <img id="t-modal-qr" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=F1-E5-E6-2026-3HD2K" alt="QR Code">
+                </div>
+                <p class="booking-id">MÃ ĐƠN: <span id="t-modal-id">3HD2K-9X8K2M</span></p>
+                <p id="t-modal-note" style="font-size: 0.75rem; color: #888; text-align: center; margin-top: 0.5rem; padding: 0 1rem; line-height: 1.4;">Đưa mã này cho nhân viên soát vé</p>
+            </div>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div style="display: flex; gap: 1rem; margin-top: 2rem; animation: fadeIn 1s ease forwards; opacity: 0; z-index: 10;">
+            <button class="btn-ticket" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 30px; padding: 0.75rem 1.5rem; color: #fff; cursor: pointer; backdrop-filter: blur(5px);"><i class="fas fa-download"></i> Tải vé về</button>
+            <button class="btn-ticket" style="background: var(--primary-red); border: 1px solid var(--primary-red); border-radius: 30px; padding: 0.75rem 1.5rem; color: #fff; box-shadow: 0 0 15px rgba(229,9,20,0.4); cursor: pointer;"><i class="fas fa-share-alt"></i> Chia sẻ</button>
+        </div>
+    </div>
+
+
+    <script>
+        function openTicketModal(type, title, date, time, room, seats, location, poster, bookingId) {
+            document.getElementById('t-modal-title').innerText = title;
+            document.getElementById('t-modal-date').innerText = date;
+            document.getElementById('t-modal-time').innerText = time;
+            document.getElementById('t-modal-room').innerText = room;
+            document.getElementById('t-modal-seats').innerText = seats;
+            document.getElementById('t-modal-location').innerText = location;
+            document.getElementById('t-modal-bg').src = poster;
+            document.getElementById('t-modal-qr').src = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' + bookingId;
+            document.getElementById('t-modal-id').innerText = bookingId;
+            
+            const badge = document.getElementById('t-modal-badge');
+            const note = document.getElementById('t-modal-note');
+            
+            if (type === 'group') {
+                const count = seats.split(',').length;
+                badge.innerText = 'VÉ NHÓM (' + count + ' NGƯỜI)';
+                badge.style.background = 'rgba(16, 185, 129, 0.2)';
+                badge.style.color = '#10b981';
+                badge.style.borderColor = 'rgba(16, 185, 129, 0.3)';
+                note.innerHTML = 'Mã QR này áp dụng cho toàn bộ ' + count + ' thành viên. Hãy nhấn <b>Chia sẻ</b> để gửi cho bạn bè đến sau quét vé nhé!';
+                note.style.color = '#fff';
+            } else {
+                badge.innerText = 'VÉ ĐIỆN TỬ';
+                badge.style.background = 'rgba(229, 9, 20, 0.2)';
+                badge.style.color = '#ff4b4b';
+                badge.style.borderColor = 'rgba(229, 9, 20, 0.3)';
+                note.innerText = 'Đưa mã này cho nhân viên soát vé';
+                note.style.color = '#888';
+            }
+
+            const modal = document.getElementById('eticket-modal');
+            modal.style.display = 'flex';
+        }
+
+        function closeTicketModal() {
+            const modal = document.getElementById('eticket-modal');
+            modal.style.display = 'none';
+        }
+    </script>
+
+<script type="module" src="./profile.js"></script>
 </body>
 </html>

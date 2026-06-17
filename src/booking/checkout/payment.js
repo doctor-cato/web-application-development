@@ -17,9 +17,16 @@ async function handleSuccess(txId) {
   const btn = qs('.btn-success');
   if (btn) btn.innerText = 'Đang xử lý...';
   
+  const params = new URLSearchParams(window.location.search);
+  const returnUrl = params.get('returnUrl');
+  
   simulatePayment(txId, (result) => {
     if (result.status === 'success') {
       try {
+        if (returnUrl) {
+            window.location.href = returnUrl;
+            return;
+        }
         const checkoutData = getCheckout();
         checkoutData.transactionId = txId;
         const booking = confirmBooking(checkoutData);
@@ -72,10 +79,15 @@ function init() {
     document.getElementById('sim-btn')?.classList.add('vnpay');
   }
 
+  const amountParam = params.get('amount');
   const checkoutData = getCheckout() || {};
   const amountEl = document.getElementById('sim-amount');
   if (amountEl) {
-    amountEl.innerText = (checkoutData.total || 0).toLocaleString('vi-VN') + ' đ';
+    if (amountParam) {
+        amountEl.innerText = parseInt(amountParam).toLocaleString('vi-VN') + ' đ';
+    } else {
+        amountEl.innerText = (checkoutData.total || 0).toLocaleString('vi-VN') + ' đ';
+    }
   }
 
   const simBtn = document.getElementById('sim-btn');

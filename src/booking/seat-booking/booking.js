@@ -3,7 +3,7 @@
  */
 
 import { getSeatMap, lockSeat, unlockSeat, subscribeSeatUpdates } from './bookingService.js';
-import { renderSeatGrid, updateSeat, getSelectedSeats, getSeatType } from '/shared/components/seatGrid.js';
+import { renderSeatGrid, updateSeat, getSelectedSeats, getSeatType, setGroupSize } from '/shared/components/seatGrid.js';
 import { saveCheckout } from '/shared/utils/storage.js';
 
 const PRICING = {
@@ -22,6 +22,56 @@ let movieData = {
 };
 
 function init() {
+  // Group Seat Logic
+  const btnMinus = document.getElementById('btn-group-minus');
+  const btnPlus = document.getElementById('btn-group-plus');
+  const sizeDisplay = document.getElementById('group-size-display');
+  const toggleGroup = document.getElementById('toggle-group-booking');
+  const counterUi = document.getElementById('group-counter-ui');
+  let currentGroupSize = 1;
+  
+  if (toggleGroup && counterUi) {
+      toggleGroup.addEventListener('change', (e) => {
+          if (e.target.checked) {
+              counterUi.style.display = 'flex';
+              // Default to 2 when turned on
+              currentGroupSize = 2;
+              if(sizeDisplay) sizeDisplay.innerText = currentGroupSize;
+              setGroupSize(currentGroupSize);
+              if(btnMinus) btnMinus.disabled = false;
+              if(btnPlus) btnPlus.disabled = false;
+          } else {
+              counterUi.style.display = 'none';
+              currentGroupSize = 1;
+              if(sizeDisplay) sizeDisplay.innerText = currentGroupSize;
+              setGroupSize(currentGroupSize);
+              if(btnMinus) btnMinus.disabled = true;
+          }
+      });
+  }
+  
+  if (btnMinus && btnPlus && sizeDisplay) {
+      btnMinus.addEventListener('click', () => {
+          if (currentGroupSize > 1) {
+              currentGroupSize--;
+              sizeDisplay.innerText = currentGroupSize;
+              setGroupSize(currentGroupSize);
+              btnPlus.disabled = false;
+              if (currentGroupSize === 1) btnMinus.disabled = true;
+          }
+      });
+      
+      btnPlus.addEventListener('click', () => {
+          if (currentGroupSize < 6) {
+              currentGroupSize++;
+              sizeDisplay.innerText = currentGroupSize;
+              setGroupSize(currentGroupSize);
+              btnMinus.disabled = false;
+              if (currentGroupSize === 6) btnPlus.disabled = true;
+          }
+      });
+  }
+
   const urlParams = new URLSearchParams(window.location.search);
   const movieId = urlParams.get('id');
   currentShowtimeId = urlParams.get('showtimeId') || 'st_200';
@@ -213,6 +263,7 @@ function handleContinue() {
     selectedSeats: seats,
     seats: seats, // for checkout.js
     seatTotal: calculateTotal(),
+    isGroupBooking: document.getElementById('toggle-group-booking')?.checked || false,
     seatAmount: calculateTotal(), // for checkout.js
     total: calculateTotal(), // for checkout.js
     expiresAt: Date.now() + 5 * 60 * 1000 // 5 mins
