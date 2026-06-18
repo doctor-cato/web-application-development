@@ -256,9 +256,15 @@ function init() {
                 orderId: orderId,
                 checkoutData: checkoutSessionData,
                 customFood: localStorage.getItem('selectedFood'),
-                status: 'PENDING'
+                status: 'PENDING',
+                paidSeats: [] // Khởi tạo trống để không bị lỗi người đầu tiên đã thanh toán
             };
             localStorage.setItem('splitOrder_' + orderId, JSON.stringify(splitData));
+            
+            // Tự động gán ghế đầu tiên cho Host (người tạo link)
+            if (checkoutSessionData.seats && checkoutSessionData.seats.length > 0) {
+                localStorage.setItem('mySeatForOrder_' + orderId, checkoutSessionData.seats[0]);
+            }
             
             splitModal.style.display = 'flex';
         });

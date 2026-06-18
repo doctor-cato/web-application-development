@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>3HD2K | Split & Lock Lobby</title>
+    <title>3HD2K | Phòng Chờ Chốt Ghế</title>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/shared/css/main.css">
@@ -23,7 +23,7 @@
         <div class="hero-content">
             <div class="hero-title-area">
                 <span class="exclusive-tag"><i class="fa-solid fa-gamepad"></i> LOBBY ĐANG MỞ</span>
-                <h1 class="hero-title">Split & Lock</h1>
+                <h1 class="hero-title">PHÒNG CHỜ CHỐT GHẾ</h1>
                 <p class="hero-desc">Mời bạn bè vào phòng chờ. Ai thanh toán trước, người đó chọn ghế! Vé sẽ được xuất ngay khi tất cả hoàn tất.</p>
             </div>
             
@@ -67,14 +67,14 @@
         <div class="right-col">
             <div class="panel-section">
                 <h3 class="panel-title"><i class="fa-solid fa-map-location-dot"></i> RADAR GHẾ (TRỰC TIẾP)</h3>
-                <p style="color: var(--neon-red); margin-bottom: 1rem; font-size: 0.9rem; font-weight: 600;"><i class="fa-solid fa-circle-exclamation"></i> Bấm vào ghế đang nhấp nháy để thanh toán phần của bạn!</p>
+                <p style="color: var(--neon-red); margin-bottom: 1rem; font-size: 0.9rem; font-weight: 600;"><i class="fa-solid fa-circle-exclamation"></i> Bấm vào ghế đang nhấp nháy để thanh toán hoặc hủy ghế!</p>
                 <div class="seat-map-container">
                     <div class="screen-line">
                         <span class="screen-label">MÀN HÌNH CHÍNH</span>
                     </div>
                     
                     <!-- Dynamic Seat Row -->
-                    <div class="seat-row" id="dynamic-seat-map" style="display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center;">
+                    <div class="seat-row" id="dynamic-seat-map" style="display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: center; z-index: 2;">
                         <!-- JS will inject seats here -->
                     </div>
                 </div>
@@ -114,7 +114,7 @@
             </label>
         </div>
         
-        <button class="btn-pay" id="btn-confirm-pay">XÁC NHẬN THANH TOÁN</button>
+        <button class="btn-pay" id="btn-confirm-pay" style="margin-top: 1rem;">XÁC NHẬN THANH TOÁN</button>
     </div>
 </div>
 
@@ -126,10 +126,12 @@
 
 <script type="module">
     import { formatPrice } from '/explore/home-page/movieService.js';
+    import { confirmBooking } from '../seat-booking/bookingService.js';
+    import { lsSet, KEYS } from '/shared/utils/storage.js';
 
     // --- State Management ---
     const urlParams = new URLSearchParams(window.location.search);
-    const orderId = urlParams.get('order');
+    const orderId = urlParams.get('order') || 'DEMO-123';
     let groupData = null;
     let pricePerSeat = 0;
     
@@ -137,17 +139,15 @@
     const friendsNames = ["Anh Dũng", "Phương Thảo", "Hoàng Nam", "Tuấn Tú", "Minh Hằng", "Bảo Châu"];
 
     function loadOrderData() {
-        if (orderId) {
-            const rawData = localStorage.getItem('splitOrder_' + orderId);
-            if (rawData) {
-                groupData = JSON.parse(rawData);
-            }
+        const rawData = localStorage.getItem('splitOrder_' + orderId);
+        if (rawData) {
+            groupData = JSON.parse(rawData);
         }
 
         // Fallback for demo/development if no order exists
         if (!groupData) {
             groupData = {
-                orderId: orderId || 'DEMO-123',
+                orderId: orderId,
                 checkoutData: {
                     movieTitle: "JOKER: FOLIE À DEUX (DEMO)",
                     showtimeText: "Hôm nay, 19:30",
@@ -155,28 +155,60 @@
                     seats: ["H12", "H13", "H14", "H15"],
                     total: 340000
                 },
-                paidSeats: ["H12"] // Host always pays first seat by default in this demo
+                paidSeats: [],
+                cancelledSeats: []
             };
         } else {
-            // Initialize paidSeats array if it doesn't exist
-            if (!groupData.paidSeats) {
-                if (groupData.checkoutData.seats && groupData.checkoutData.seats.length > 0) {
-                    groupData.paidSeats = [groupData.checkoutData.seats[0]]; // Host paid first seat
-                } else {
-                    groupData.paidSeats = [];
-                }
-            }
+            if (!groupData.paidSeats) groupData.paidSeats = [];
+            if (!groupData.cancelledSeats) groupData.cancelledSeats = [];
         }
 
-        // Calculate price per seat
-        const seatsCount = groupData.checkoutData.seats.length || 1;
-        pricePerSeat = Math.floor(groupData.checkoutData.total / seatsCount);
+        // ---------------------------------
+        // Capture Return from Payment Gateway
+        // ---------------------------------
+        const paidSeatFromUrl = urlParams.get('paidSeat');
+        if (paidSeatFromUrl && !groupData.paidSeats.includes(paidSeatFromUrl)) {
+            groupData.paidSeats.push(paidSeatFromUrl);
+            if (orderId) {
+                localStorage.setItem('splitOrder_' + orderId, JSON.stringify(groupData));
+            }
+            // Clean URL
+            const cleanUrl = new URL(window.location.href);
+            cleanUrl.searchParams.delete('paidSeat');
+            window.history.replaceState({}, '', cleanUrl.toString());
+        }
+
+        // Calculate price per seat (fixed price logic based on active seats initially)
+        const activeSeatsCount = groupData.checkoutData.seats.length - groupData.cancelledSeats.length;
+        if (activeSeatsCount > 0) {
+            pricePerSeat = Math.floor(groupData.checkoutData.total / activeSeatsCount);
+        } else {
+            pricePerSeat = 0;
+        }
+
+        // ---------------------------------
+        // Xác định "Ghế Của Tôi" (My Seat)
+        // ---------------------------------
+        let mySeat = localStorage.getItem('mySeatForOrder_' + orderId);
+        
+        // Nếu ghế của tôi không tồn tại, hoặc đã bị hủy, hoặc đã bị ai đó thanh toán mất
+        // -> Tìm 1 ghế trống mới gán cho user
+        if (!mySeat || !groupData.checkoutData.seats.includes(mySeat) || groupData.cancelledSeats.includes(mySeat)) {
+            const activeUnpaidSeats = groupData.checkoutData.seats.filter(s => 
+                !groupData.cancelledSeats.includes(s) && !groupData.paidSeats.includes(s)
+            );
+            if (activeUnpaidSeats.length > 0) {
+                mySeat = activeUnpaidSeats[0];
+                localStorage.setItem('mySeatForOrder_' + orderId, mySeat);
+            } else {
+                mySeat = null; // Hết ghế
+            }
+        }
+        window.mySeat = mySeat;
     }
 
     function saveOrderData() {
-        if (orderId) {
-            localStorage.setItem('splitOrder_' + orderId, JSON.stringify(groupData));
-        }
+        localStorage.setItem('splitOrder_' + orderId, JSON.stringify(groupData));
     }
 
     // --- Dynamic Rendering ---
@@ -193,43 +225,66 @@
 
         // 3. Render Avatar Squad Grid
         const membersGrid = document.getElementById('dynamic-members-grid');
-        membersGrid.innerHTML = ''; // Clear
+        membersGrid.innerHTML = '';
         
-        const totalSeats = groupData.checkoutData.seats.length;
+        const activeSeats = groupData.checkoutData.seats.filter(s => !groupData.cancelledSeats.includes(s));
         
-        for (let i = 0; i < totalSeats; i++) {
-            const seatName = groupData.checkoutData.seats[i];
+        let friendNameIndex = 0;
+
+        activeSeats.forEach((seatName) => {
             const isPaid = groupData.paidSeats.includes(seatName);
+            const isMySeat = (seatName === window.mySeat);
             
             const card = document.createElement('div');
-            if (i === 0) {
-                // Host
-                card.className = 'member-card paid';
-                card.innerHTML = `
-                    <div class="avatar-circle"><i class="fa-solid fa-crown"></i></div>
-                    <span class="member-name">Bạn (Host)</span>
-                    <span class="member-status">ĐÃ THANH TOÁN</span>
-                `;
-            } else if (isPaid) {
-                // Paid friend
-                const friendName = friendsNames[(i - 1) % friendsNames.length];
-                card.className = 'member-card paid';
-                card.innerHTML = `
-                    <div class="avatar-circle"><i class="fa-solid fa-user-astronaut"></i></div>
-                    <span class="member-name">${friendName}</span>
-                    <span class="member-status">ĐÃ THANH TOÁN</span>
-                `;
+            
+            if (isPaid) {
+                // ĐÃ THANH TOÁN
+                if (isMySeat) {
+                    card.className = 'member-card paid';
+                    card.innerHTML = `
+                        <div class="avatar-circle"><i class="fa-solid fa-crown"></i></div>
+                        <span class="member-name">Bạn</span>
+                        <span class="member-status" style="color: rgba(255,255,255,0.4); margin-bottom: 0.25rem;">Ghế ${seatName}</span>
+                        <span class="member-status" style="color: var(--neon-green);">ĐÃ THANH TOÁN</span>
+                    `;
+                } else {
+                    const friendName = friendsNames[friendNameIndex % friendsNames.length];
+                    friendNameIndex++;
+                    card.className = 'member-card paid';
+                    card.innerHTML = `
+                        <div class="avatar-circle"><i class="fa-solid fa-user-astronaut"></i></div>
+                        <span class="member-name">${friendName}</span>
+                        <span class="member-status" style="color: rgba(255,255,255,0.4); margin-bottom: 0.25rem;">Ghế ${seatName}</span>
+                        <span class="member-status" style="color: var(--neon-green);">ĐÃ THANH TOÁN</span>
+                    `;
+                }
             } else {
-                // Empty slot waiting
-                card.className = 'member-card empty';
-                card.innerHTML = `
-                    <div class="avatar-circle"><i class="fa-solid fa-user-plus"></i></div>
-                    <span class="member-name">Đang đợi...</span>
-                    <span class="member-status" style="color:rgba(255,255,255,0.3)">CHƯA THAM GIA</span>
-                `;
+                // CHƯA THANH TOÁN
+                if (isMySeat) {
+                    card.className = 'member-card empty';
+                    card.style.borderColor = 'var(--neon-blue)';
+                    card.style.boxShadow = 'inset 0 0 10px rgba(0, 243, 255, 0.1)';
+                    card.innerHTML = `
+                        <div class="avatar-circle" style="color: var(--neon-blue); border-color: var(--neon-blue);"><i class="fa-solid fa-user-tie"></i></div>
+                        <span class="member-name" style="color: var(--neon-blue);">Phần của bạn</span>
+                        <span class="member-status" style="color: rgba(255,255,255,0.4); margin-top: 0.25rem;">Ghế ${seatName}</span>
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.75rem; width: 100%; padding: 0 1rem;">
+                            <button class="btn-pay-avatar" onclick="openPaymentModal('${seatName}')">THANH TOÁN</button>
+                            <button class="btn-cancel-avatar" onclick="cancelSeat('${seatName}')">HỦY GHẾ</button>
+                        </div>
+                    `;
+                } else {
+                    card.className = 'member-card empty';
+                    card.innerHTML = `
+                        <div class="avatar-circle"><i class="fa-solid fa-user-plus"></i></div>
+                        <span class="member-name">Đang đợi...</span>
+                        <span class="member-status" style="color: rgba(255,255,255,0.4); margin-top: 0.25rem;">Ghế ${seatName}</span>
+                        <div style="margin-top: 1rem; color: var(--neon-red); font-size: 0.7rem; font-weight: 600; font-style: italic;">Chờ người khác thanh toán...</div>
+                    `;
+                }
             }
             membersGrid.appendChild(card);
-        }
+        });
 
         // 4. Render Seat Map Radar
         const seatMap = document.getElementById('dynamic-seat-map');
@@ -237,18 +292,32 @@
         
         groupData.checkoutData.seats.forEach(seat => {
             const isPaid = groupData.paidSeats.includes(seat);
+            const isCancelled = groupData.cancelledSeats.includes(seat);
+            const isMySeat = (seat === window.mySeat);
+
             const seatEl = document.createElement('div');
             
-            if (isPaid) {
+            if (isCancelled) {
+                seatEl.className = 'seat cancelled';
+                seatEl.title = `Ghế ${seat} - Đã hủy`;
+            } else if (isPaid) {
                 seatEl.className = 'seat paid';
                 seatEl.title = `Ghế ${seat} - Đã thanh toán`;
             } else {
                 seatEl.className = 'seat locked';
-                seatEl.title = `Click để thanh toán ghế ${seat}`;
                 seatEl.setAttribute('data-seat', seat);
                 
-                // Add click listener
-                seatEl.addEventListener('click', () => openPaymentModal(seat));
+                if (isMySeat) {
+                    seatEl.title = `Ghế ${seat} - Click để thanh toán phần của bạn`;
+                    seatEl.style.cursor = 'pointer';
+                    seatEl.style.borderColor = 'var(--neon-blue)'; // Highlight my seat specifically
+                    seatEl.addEventListener('click', () => openPaymentModal(seat));
+                } else {
+                    seatEl.title = `Ghế ${seat} - Chờ người khác thanh toán`;
+                    seatEl.style.cursor = 'not-allowed';
+                    seatEl.style.opacity = '0.7'; // Làm mờ nhẹ ghế của người khác
+                    seatEl.addEventListener('click', () => alert('Ghế này dành cho người khác. Vui lòng chỉ thanh toán phần ghế của bạn!'));
+                }
             }
             seatMap.appendChild(seatEl);
         });
@@ -261,7 +330,12 @@
     const modalSeatId = document.getElementById('modal-seat-id');
     let currentlyPayingSeat = null;
 
-    function openPaymentModal(seat) {
+    window.openPaymentModal = function(seat) {
+        if (!seat || typeof seat !== 'string') {
+            seat = window.mySeat;
+        }
+        if (!seat || seat !== window.mySeat) return; // Chỉ được thanh toán ghế của mình
+        
         currentlyPayingSeat = seat;
         modalSeatId.textContent = seat;
         modalBackdrop.classList.add('active');
@@ -278,8 +352,34 @@
         el.querySelector('input').checked = true;
     }
 
+    function checkCompletion() {
+        const activeSeats = groupData.checkoutData.seats.filter(s => !groupData.cancelledSeats.includes(s));
+        const allPaid = activeSeats.every(s => groupData.paidSeats.includes(s));
+        
+        if (activeSeats.length > 0 && allPaid) {
+            // LƯU VÉ VÀO LỊCH SỬ
+            const finalCheckoutData = { ...groupData.checkoutData };
+            finalCheckoutData.seats = activeSeats; // Chỉ lấy các ghế chưa bị hủy
+            finalCheckoutData.transactionId = 'GROUP-' + orderId;
+            const booking = confirmBooking(finalCheckoutData);
+            
+            // Lưu Session ID để qua trang Chi tiết vé (Booking Success) có thể lấy được
+            lsSet(KEYS.LAST_BOOKING, booking);
+
+            setTimeout(() => {
+                alert("Tất cả thành viên đã thanh toán! Vé của bạn đang được xuất.");
+                window.location.href = "/booking/booking-success/index.html";
+            }, 1000);
+        } else if (activeSeats.length === 0) {
+            setTimeout(() => {
+                alert("Tất cả các ghế đã bị hủy. Đơn hàng kết thúc.");
+                window.location.href = "/explore/home-page/index.html";
+            }, 1000);
+        }
+    }
+
     btnConfirmPay.addEventListener('click', () => {
-        if (!currentlyPayingSeat) return;
+        if (!currentlyPayingSeat || currentlyPayingSeat !== window.mySeat) return;
         
         const originalBtnText = btnConfirmPay.textContent;
         btnConfirmPay.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ĐANG XỬ LÝ...';
@@ -290,44 +390,40 @@
             btnConfirmPay.textContent = originalBtnText;
             btnConfirmPay.style.pointerEvents = 'auto';
 
-            // Mark seat as paid in data
-            groupData.paidSeats.push(currentlyPayingSeat);
-            saveOrderData();
+            // Lấy phương thức thanh toán đang chọn
+            const selectedMethod = document.querySelector('.payment-method.selected input')?.value || 'momo';
             
-            // 1. Turn seat to paid in UI
-            const seatEl = document.querySelector(`.seat[data-seat="${currentlyPayingSeat}"]`);
-            if (seatEl) {
-                seatEl.className = 'seat paid';
-                seatEl.title = `Ghế ${currentlyPayingSeat} - Đã thanh toán`;
-                // Remove click listener by cloning
-                const newSeatEl = seatEl.cloneNode(true);
-                seatEl.parentNode.replaceChild(newSeatEl, seatEl);
-            }
+            // Tạo Return URL có chứa tham số ghế vừa thanh toán
+            const currentUrl = new URL(window.location.href);
+            currentUrl.searchParams.set('paidSeat', currentlyPayingSeat);
+            const returnUrl = encodeURIComponent(currentUrl.toString());
 
-            // 2. Pop a new avatar in the members grid
-            const firstEmptyCard = document.querySelector('.member-card.empty');
-            if (firstEmptyCard) {
-                const paidCount = groupData.paidSeats.length - 1; // excluding host
-                const friendName = friendsNames[(paidCount - 1) % friendsNames.length];
-                
-                firstEmptyCard.className = 'member-card paid';
-                firstEmptyCard.innerHTML = `
-                    <div class="avatar-circle"><i class="fa-solid fa-user-astronaut"></i></div>
-                    <span class="member-name">${friendName}</span>
-                    <span class="member-status">ĐÃ THANH TOÁN</span>
-                `;
-            }
-
-            // 3. Check if everyone paid
-            if (groupData.paidSeats.length >= groupData.checkoutData.seats.length) {
-                setTimeout(() => {
-                    alert("Tất cả thành viên đã thanh toán! Vé của bạn đang được xuất.");
-                    window.location.href = "/booking/booking-success/index.html";
-                }, 1000);
-            }
-        }, 1500); // Simulate network delay
+            // Chuyển hướng sang trang VNPay / Momo ảo
+            const txId = 'TX-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+            window.location.href = `../checkout/payment_simulation.html?provider=${encodeURIComponent(selectedMethod)}&txId=${txId}&amount=${pricePerSeat}&returnUrl=${returnUrl}`;
+            
+        }, 500); // Simulate short delay before redirect
     });
 
+    window.cancelSeat = function(seatToCancel) {
+        if (!seatToCancel || seatToCancel !== window.mySeat) return;
+        
+        if (confirm(`Bạn có chắc chắn muốn hủy phần ghế ${seatToCancel} của mình?`)) {
+            // Mark as cancelled
+            groupData.cancelledSeats.push(seatToCancel);
+            // Giảm tổng tiền
+            groupData.checkoutData.total -= pricePerSeat;
+            saveOrderData();
+            
+            // Xóa MySeat khỏi session để tự động chỉ định ghế khác nếu user vẫn nán lại
+            localStorage.removeItem('mySeatForOrder_' + orderId);
+            
+            loadOrderData(); // Tải lại để update mySeat (nếu còn ghế trống)
+            renderLobby(); // Render lại
+            
+            checkCompletion();
+        }
+    };
 
     // --- Countdown Timer Logic ---
     let timeLeft = 14 * 60 + 59;
@@ -379,7 +475,9 @@
     // Init
     loadOrderData();
     renderLobby();
-
+    
+    // Check if returning from a successful payment caused the order to complete
+    checkCompletion();
 </script>
 </body>
 </html>
