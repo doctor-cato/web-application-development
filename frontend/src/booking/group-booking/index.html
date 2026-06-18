@@ -3,8 +3,8 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>3HD2K | Đặt vé nhóm & Giữ chỗ</title>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>3HD2K | Split & Lock Lobby</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/shared/css/main.css">
     <link rel="stylesheet" href="/booking/group-booking/group-booking.css">
@@ -15,79 +15,49 @@
 <nav id="navbar-placeholder"></nav>
 
 <main class="page-wrapper pt-20">
-    <!-- Hero Section -->
     <section class="hero-section">
         <div class="hero-bg">
-            <img alt="Đặt vé nhóm điện ảnh" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGLcDu8pm8SWXhUMWRRPjOCKwLxh8BHFzWZFx6GfllhNown4jgUkxZQxvQTQZXkruLwDM0hPzbClLuYPAESVMwP9REVJHBHTXRfYUxegXe_uWtHd4bo1bb5y7e7gYXKzyGGlaFaIkhVYRiDJ3B-rQMaSCf9EhlIbGVGeQlRLtMPnxS8JX6KJrioQf_ngrCq1mcRRldeZnQN82OKxgx4fN-igNpOlcqJDyWnGwMKfTuNyxT2e9hg7-uxMl8qK1UxyDYrQKfno-mHr9v">
+            <img alt="Phòng chờ đặt vé" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGLcDu8pm8SWXhUMWRRPjOCKwLxh8BHFzWZFx6GfllhNown4jgUkxZQxvQTQZXkruLwDM0hPzbClLuYPAESVMwP9REVJHBHTXRfYUxegXe_uWtHd4bo1bb5y7e7gYXKzyGGlaFaIkhVYRiDJ3B-rQMaSCf9EhlIbGVGeQlRLtMPnxS8JX6KJrioQf_ngrCq1mcRRldeZnQN82OKxgx4fN-igNpOlcqJDyWnGwMKfTuNyxT2e9hg7-uxMl8qK1UxyDYrQKfno-mHr9v">
             <div class="cinematic-gradient"></div>
         </div>
         <div class="hero-content">
             <div class="hero-title-area">
-                <span class="exclusive-tag">TÍNH NĂNG ĐỘC QUYỀN</span>
-                <h1 class="hero-title">Chia sẻ & Giữ chỗ</h1>
-                <p class="hero-desc">Giữ trước một dãy ghế cho nhóm của bạn. Mọi người tự thanh toán phần của mình. Không còn phải đòi tiền từng người.</p>
+                <span class="exclusive-tag"><i class="fa-solid fa-gamepad"></i> LOBBY ĐANG MỞ</span>
+                <h1 class="hero-title">Split & Lock</h1>
+                <p class="hero-desc">Mời bạn bè vào phòng chờ. Ai thanh toán trước, người đó chọn ghế! Vé sẽ được xuất ngay khi tất cả hoàn tất.</p>
             </div>
             
-            <!-- Countdown Timer -->
             <div class="timer-box">
-                <span class="timer-label">Ghế được giữ trong</span>
-                <span class="timer-value" id="countdown">12:13</span>
+                <span class="timer-label">PHÒNG CHỜ ĐÓNG SAU</span>
+                <span class="timer-value" id="countdown">14:59</span>
                 <div class="progress-container">
-                    <div class="progress-bar" id="progress-bar" style="width: 81%;"></div>
+                    <div class="progress-bar" id="progress-bar" style="width: 100%;"></div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Giao diện đặt vé nhóm -->
     <section class="main-grid">
         <!-- Cột trái: Quản lý nhóm & Chia sẻ -->
         <div class="left-col">
-            <!-- Quản lý thành viên nhóm -->
             <div class="panel-section">
-                <h3 class="panel-title"><i class="fa-solid fa-users"></i> Thành viên nhóm</h3>
-                <div class="members-grid">
-                    <!-- Trưởng nhóm -->
-                    <div class="member-card">
-                        <div class="avatar-circle">
-                            <i class="fa-solid fa-user text-white text-2xl"></i>
-                        </div>
-                        <span class="member-name">Bạn (Trưởng nhóm)</span>
-                        <span class="member-status">ĐÃ THANH TOÁN</span>
-                    </div>
-                    <!-- Các ô chờ thành viên -->
-                    <div class="member-card empty">
-                        <div class="avatar-circle">
-                            <i class="fa-solid fa-user-plus text-white text-xl"></i>
-                        </div>
-                        <span class="member-name">Đang chờ...</span>
-                    </div>
-                    <div class="member-card empty">
-                        <div class="avatar-circle">
-                            <i class="fa-solid fa-user-plus text-white text-xl"></i>
-                        </div>
-                        <span class="member-name">Đang chờ...</span>
-                    </div>
-                    <div class="member-card empty">
-                        <div class="avatar-circle">
-                            <i class="fa-solid fa-user-plus text-white text-xl"></i>
-                        </div>
-                        <span class="member-name">Đang chờ...</span>
-                    </div>
+                <h3 class="panel-title"><i class="fa-solid fa-users-rays"></i> SQUAD CỦA BẠN</h3>
+                <!-- Dynamic Members Grid -->
+                <div class="members-grid" id="dynamic-members-grid">
+                    <!-- JS will inject members here -->
                 </div>
             </div>
             
-            <!-- Chia sẻ liên kết mời bạn bè -->
             <div class="panel-section">
-                <h3 class="panel-title"><i class="fa-solid fa-share-nodes"></i> Mời bạn bè</h3>
+                <h3 class="panel-title"><i class="fa-solid fa-satellite-dish"></i> PHÁT TÍN HIỆU</h3>
                 <div>
                     <div class="share-input-group">
-                        <input class="share-input" readonly type="text" value="https://3hd2k.com/split/8K2L-99XP-Z1">
-                        <button class="btn-copy" onclick="copyLink(event)">SAO CHÉP</button>
+                        <input class="share-input" id="dynamic-share-link" readonly type="text" value="">
+                        <button class="btn-copy" onclick="copyLink(event)">COPY LINK</button>
                     </div>
                     <div class="share-buttons">
-                        <button class="btn-share whatsapp"><i class="fa-brands fa-whatsapp"></i> WhatsApp</button>
-                        <button class="btn-share messenger"><i class="fa-brands fa-facebook-messenger"></i> Messenger</button>
+                        <button class="btn-share whatsapp" onclick="shareSocial('whatsapp')"><i class="fa-brands fa-whatsapp"></i> Gửi WhatsApp</button>
+                        <button class="btn-share messenger" onclick="shareSocial('messenger')"><i class="fa-brands fa-facebook-messenger"></i> Gửi Messenger</button>
                     </div>
                 </div>
             </div>
@@ -95,76 +65,28 @@
 
         <!-- Cột phải: Xem trước ghế và thông tin -->
         <div class="right-col">
-            <!-- Sơ đồ ghế thời gian thực -->
             <div class="panel-section">
-                <h3 class="panel-title">Dãy ghế của bạn</h3>
+                <h3 class="panel-title"><i class="fa-solid fa-map-location-dot"></i> RADAR GHẾ (TRỰC TIẾP)</h3>
+                <p style="color: var(--neon-red); margin-bottom: 1rem; font-size: 0.9rem; font-weight: 600;"><i class="fa-solid fa-circle-exclamation"></i> Bấm vào ghế đang nhấp nháy để thanh toán phần của bạn!</p>
                 <div class="seat-map-container">
                     <div class="screen-line">
-                        <span class="screen-label">MÀN HÌNH</span>
+                        <span class="screen-label">MÀN HÌNH CHÍNH</span>
                     </div>
                     
-                    <!-- Mô phỏng ghế -->
-                    <div class="seat-row dimmed">
-                        <div class="seat"></div><div class="seat"></div><div class="seat"></div>
-                        <div class="seat"></div><div class="seat"></div><div class="seat"></div>
-                    </div>
-                    <div class="seat-row">
-                        <div class="seat dimmed"></div>
-                        <div class="seat selected"><i class="fa-solid fa-lock" style="position:absolute; top:-8px; right:-8px; color:white; font-size:10px;"></i></div>
-                        <div class="seat selected"></div>
-                        <div class="seat selected"></div>
-                        <div class="seat selected"></div>
-                        <div class="seat dimmed"></div>
-                    </div>
-                    <div class="seat-row dimmed">
-                        <div class="seat"></div><div class="seat"></div><div class="seat"></div>
-                        <div class="seat"></div><div class="seat"></div><div class="seat"></div>
+                    <!-- Dynamic Seat Row -->
+                    <div class="seat-row" id="dynamic-seat-map" style="display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center;">
+                        <!-- JS will inject seats here -->
                     </div>
                 </div>
                 
                 <div class="movie-info-row">
                     <div>
-                        <p class="movie-title">JOKER: FOLIE À DEUX</p>
-                        <p class="movie-meta">2D Tiêu chuẩn • Hàng H 12-15</p>
+                        <p class="movie-title" id="dynamic-movie-title">Đang tải...</p>
+                        <p class="movie-meta" id="dynamic-movie-meta">Đang tải...</p>
                     </div>
                     <div>
-                        <p class="price-value">$18.50</p>
-                        <p class="price-label">MỖI NGƯỜI</p>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Các bước hướng dẫn -->
-            <div class="panel-section">
-                <h3 class="panel-title">Cách thức hoạt động</h3>
-                <div class="steps-list">
-                    <div class="step-item">
-                        <div class="step-number">1</div>
-                        <div>
-                            <p class="step-title">Giữ ghế của bạn</p>
-                            <p class="step-desc">Các ghế đã chọn được giữ riêng cho nhóm của bạn trong 15 phút.</p>
-                        </div>
-                    </div>
-                    <div class="step-item">
-                        <div class="step-number">2</div>
-                        <div>
-                            <p class="step-title">Chia sẻ liên kết</p>
-                            <p class="step-desc">Gửi URL duy nhất cho bạn bè của bạn qua ứng dụng tin nhắn yêu thích.</p>
-                        </div>
-                    </div>
-                    <div class="step-item">
-                        <div class="step-number">3</div>
-                        <div>
-                            <p class="step-title">Bạn bè tự thanh toán</p>
-                            <p class="step-desc">Họ mở liên kết, chọn ghế trong dãy của bạn và thanh toán phần của họ.</p>
-                        </div>
-                    </div>
-                    <div class="step-item">
-                        <div class="step-number">4</div>
-                        <div>
-                            <p class="step-title">Đặt vé xác nhận</p>
-                            <p class="step-desc">Sau khi mọi người đã thanh toán, việc đặt vé hoàn tất và vé sẽ được xuất.</p>
-                        </div>
+                        <p class="price-value" id="dynamic-price-value">0₫</p>
+                        <p class="price-label">MỖI GHẾ</p>
                     </div>
                 </div>
             </div>
@@ -172,9 +94,242 @@
     </section>
 </main>
 
-<script src="/shared/components/navbar.js" type="module"></script>
-<script>
-    // Đồng hồ đếm ngược giữ ghế
+<!-- Modal Thanh Toán -->
+<div class="modal-backdrop" id="payment-modal-backdrop">
+    <div class="payment-modal">
+        <button class="modal-close" id="btn-close-modal"><i class="fa-solid fa-xmark"></i></button>
+        <h3 class="modal-title">CHỐT GHẾ <span id="modal-seat-id" style="color: var(--neon-red);">--</span></h3>
+        <p class="modal-subtitle">Thanh toán ngay để khóa vị trí này cho bạn!</p>
+        
+        <div class="payment-methods">
+            <label class="payment-method selected" onclick="selectPaymentMethod(this)">
+                <input type="radio" name="payment" value="momo" checked style="display:none;">
+                <img src="https://img.mservice.io/momo-payment/icon/images/logo512.png" alt="MoMo">
+                <span>Ví MoMo</span>
+            </label>
+            <label class="payment-method" onclick="selectPaymentMethod(this)">
+                <input type="radio" name="payment" value="vnpay" style="display:none;">
+                <img src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-VNPAY-QR-1.png" alt="VNPAY">
+                <span>VNPAY</span>
+            </label>
+        </div>
+        
+        <button class="btn-pay" id="btn-confirm-pay">XÁC NHẬN THANH TOÁN</button>
+    </div>
+</div>
+
+<div id="footer-placeholder"></div>
+
+<script type="module" src="/shared/components/navbar.js"></script>
+<script type="module" src="/shared/components/footer.js"></script>
+<script type="module" src="/explore/home-page/movieService.js"></script>
+
+<script type="module">
+    import { formatPrice } from '/explore/home-page/movieService.js';
+
+    // --- State Management ---
+    const urlParams = new URLSearchParams(window.location.search);
+    const orderId = urlParams.get('order');
+    let groupData = null;
+    let pricePerSeat = 0;
+    
+    // Fake names for gamification when people "join"
+    const friendsNames = ["Anh Dũng", "Phương Thảo", "Hoàng Nam", "Tuấn Tú", "Minh Hằng", "Bảo Châu"];
+
+    function loadOrderData() {
+        if (orderId) {
+            const rawData = localStorage.getItem('splitOrder_' + orderId);
+            if (rawData) {
+                groupData = JSON.parse(rawData);
+            }
+        }
+
+        // Fallback for demo/development if no order exists
+        if (!groupData) {
+            groupData = {
+                orderId: orderId || 'DEMO-123',
+                checkoutData: {
+                    movieTitle: "JOKER: FOLIE À DEUX (DEMO)",
+                    showtimeText: "Hôm nay, 19:30",
+                    room: "IMAX 2D",
+                    seats: ["H12", "H13", "H14", "H15"],
+                    total: 340000
+                },
+                paidSeats: ["H12"] // Host always pays first seat by default in this demo
+            };
+        } else {
+            // Initialize paidSeats array if it doesn't exist
+            if (!groupData.paidSeats) {
+                if (groupData.checkoutData.seats && groupData.checkoutData.seats.length > 0) {
+                    groupData.paidSeats = [groupData.checkoutData.seats[0]]; // Host paid first seat
+                } else {
+                    groupData.paidSeats = [];
+                }
+            }
+        }
+
+        // Calculate price per seat
+        const seatsCount = groupData.checkoutData.seats.length || 1;
+        pricePerSeat = Math.floor(groupData.checkoutData.total / seatsCount);
+    }
+
+    function saveOrderData() {
+        if (orderId) {
+            localStorage.setItem('splitOrder_' + orderId, JSON.stringify(groupData));
+        }
+    }
+
+    // --- Dynamic Rendering ---
+    function renderLobby() {
+        // 1. Share Link
+        const shareInput = document.getElementById('dynamic-share-link');
+        shareInput.value = window.location.href;
+
+        // 2. Movie Info
+        document.getElementById('dynamic-movie-title').textContent = groupData.checkoutData.movieTitle;
+        document.getElementById('dynamic-movie-meta').textContent = `${groupData.checkoutData.room} • ${groupData.checkoutData.showtimeText}`;
+        document.getElementById('dynamic-price-value').textContent = formatPrice(pricePerSeat);
+        document.getElementById('btn-confirm-pay').textContent = `XÁC NHẬN THANH TOÁN (${formatPrice(pricePerSeat)})`;
+
+        // 3. Render Avatar Squad Grid
+        const membersGrid = document.getElementById('dynamic-members-grid');
+        membersGrid.innerHTML = ''; // Clear
+        
+        const totalSeats = groupData.checkoutData.seats.length;
+        
+        for (let i = 0; i < totalSeats; i++) {
+            const seatName = groupData.checkoutData.seats[i];
+            const isPaid = groupData.paidSeats.includes(seatName);
+            
+            const card = document.createElement('div');
+            if (i === 0) {
+                // Host
+                card.className = 'member-card paid';
+                card.innerHTML = `
+                    <div class="avatar-circle"><i class="fa-solid fa-crown"></i></div>
+                    <span class="member-name">Bạn (Host)</span>
+                    <span class="member-status">ĐÃ THANH TOÁN</span>
+                `;
+            } else if (isPaid) {
+                // Paid friend
+                const friendName = friendsNames[(i - 1) % friendsNames.length];
+                card.className = 'member-card paid';
+                card.innerHTML = `
+                    <div class="avatar-circle"><i class="fa-solid fa-user-astronaut"></i></div>
+                    <span class="member-name">${friendName}</span>
+                    <span class="member-status">ĐÃ THANH TOÁN</span>
+                `;
+            } else {
+                // Empty slot waiting
+                card.className = 'member-card empty';
+                card.innerHTML = `
+                    <div class="avatar-circle"><i class="fa-solid fa-user-plus"></i></div>
+                    <span class="member-name">Đang đợi...</span>
+                    <span class="member-status" style="color:rgba(255,255,255,0.3)">CHƯA THAM GIA</span>
+                `;
+            }
+            membersGrid.appendChild(card);
+        }
+
+        // 4. Render Seat Map Radar
+        const seatMap = document.getElementById('dynamic-seat-map');
+        seatMap.innerHTML = '';
+        
+        groupData.checkoutData.seats.forEach(seat => {
+            const isPaid = groupData.paidSeats.includes(seat);
+            const seatEl = document.createElement('div');
+            
+            if (isPaid) {
+                seatEl.className = 'seat paid';
+                seatEl.title = `Ghế ${seat} - Đã thanh toán`;
+            } else {
+                seatEl.className = 'seat locked';
+                seatEl.title = `Click để thanh toán ghế ${seat}`;
+                seatEl.setAttribute('data-seat', seat);
+                
+                // Add click listener
+                seatEl.addEventListener('click', () => openPaymentModal(seat));
+            }
+            seatMap.appendChild(seatEl);
+        });
+    }
+
+    // --- Modal & Payment Gamification Logic ---
+    const modalBackdrop = document.getElementById('payment-modal-backdrop');
+    const btnCloseModal = document.getElementById('btn-close-modal');
+    const btnConfirmPay = document.getElementById('btn-confirm-pay');
+    const modalSeatId = document.getElementById('modal-seat-id');
+    let currentlyPayingSeat = null;
+
+    function openPaymentModal(seat) {
+        currentlyPayingSeat = seat;
+        modalSeatId.textContent = seat;
+        modalBackdrop.classList.add('active');
+    }
+
+    btnCloseModal.addEventListener('click', () => modalBackdrop.classList.remove('active'));
+    modalBackdrop.addEventListener('click', (e) => {
+        if (e.target === modalBackdrop) modalBackdrop.classList.remove('active');
+    });
+
+    window.selectPaymentMethod = function(el) {
+        document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('selected'));
+        el.classList.add('selected');
+        el.querySelector('input').checked = true;
+    }
+
+    btnConfirmPay.addEventListener('click', () => {
+        if (!currentlyPayingSeat) return;
+        
+        const originalBtnText = btnConfirmPay.textContent;
+        btnConfirmPay.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ĐANG XỬ LÝ...';
+        btnConfirmPay.style.pointerEvents = 'none';
+
+        setTimeout(() => {
+            modalBackdrop.classList.remove('active');
+            btnConfirmPay.textContent = originalBtnText;
+            btnConfirmPay.style.pointerEvents = 'auto';
+
+            // Mark seat as paid in data
+            groupData.paidSeats.push(currentlyPayingSeat);
+            saveOrderData();
+            
+            // 1. Turn seat to paid in UI
+            const seatEl = document.querySelector(`.seat[data-seat="${currentlyPayingSeat}"]`);
+            if (seatEl) {
+                seatEl.className = 'seat paid';
+                seatEl.title = `Ghế ${currentlyPayingSeat} - Đã thanh toán`;
+                // Remove click listener by cloning
+                const newSeatEl = seatEl.cloneNode(true);
+                seatEl.parentNode.replaceChild(newSeatEl, seatEl);
+            }
+
+            // 2. Pop a new avatar in the members grid
+            const firstEmptyCard = document.querySelector('.member-card.empty');
+            if (firstEmptyCard) {
+                const paidCount = groupData.paidSeats.length - 1; // excluding host
+                const friendName = friendsNames[(paidCount - 1) % friendsNames.length];
+                
+                firstEmptyCard.className = 'member-card paid';
+                firstEmptyCard.innerHTML = `
+                    <div class="avatar-circle"><i class="fa-solid fa-user-astronaut"></i></div>
+                    <span class="member-name">${friendName}</span>
+                    <span class="member-status">ĐÃ THANH TOÁN</span>
+                `;
+            }
+
+            // 3. Check if everyone paid
+            if (groupData.paidSeats.length >= groupData.checkoutData.seats.length) {
+                setTimeout(() => {
+                    alert("Tất cả thành viên đã thanh toán! Vé của bạn đang được xuất.");
+                    window.location.href = "/booking/booking-success/index.html";
+                }, 1000);
+            }
+        }, 1500); // Simulate network delay
+    });
+
+
+    // --- Countdown Timer Logic ---
     let timeLeft = 14 * 60 + 59;
     const countdownEl = document.getElementById('countdown');
     const progressBar = document.getElementById('progress-bar');
@@ -192,30 +347,39 @@
             timeLeft--;
         } else {
             clearInterval(timerInterval);
-            alert('Phiên đã hết hạn. Ghế đã được giải phóng.');
+            countdownEl.textContent = "HẾT GIỜ";
+            countdownEl.style.color = "var(--neon-red)";
+            alert('Phòng chờ đã đóng. Vé chưa thanh toán sẽ được trả lại hệ thống!');
+            window.location.href = "/explore/home-page/index.html"; // Kick them out
         }
     };
-
     const timerInterval = setInterval(updateTimer, 1000);
 
-    // Hàm sao chép liên kết mời
-    function copyLink(event) {
+    // --- Share Link Logic ---
+    window.copyLink = function(event) {
         const input = document.querySelector('.share-input');
         input.select();
         document.execCommand('copy');
         const btn = event.currentTarget;
         const originalText = btn.textContent;
-        btn.textContent = 'ĐÃ SAO CHÉP!';
-        btn.style.backgroundColor = '#15803d'; // Green color
+        btn.textContent = 'ĐÃ COPY!';
+        btn.style.backgroundColor = 'var(--neon-green)';
+        btn.style.color = '#000';
         setTimeout(() => {
             btn.textContent = originalText;
             btn.style.backgroundColor = '';
+            btn.style.color = '';
         }, 2000);
     }
+    
+    window.shareSocial = function(platform) {
+        alert(`Đã mở giao diện chia sẻ qua ${platform} với link: ${window.location.href}`);
+    }
+
+    // Init
+    loadOrderData();
+    renderLobby();
+
 </script>
-    <div id="footer-placeholder"></div>
-    <!-- Nhúng components -->
-    <script type="module" src="/shared/components/navbar.js"></script>
-    <script type="module" src="/shared/components/footer.js"></script>
 </body>
 </html>
