@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>3HD2K | Phòng Chờ Chốt Ghế</title>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Bebas+Neue&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/shared/css/main.css">
     <link rel="stylesheet" href="/booking/group-booking/group-booking.css">
@@ -118,6 +118,23 @@
     </div>
 </div>
 
+<!-- Modal Xác nhận Hủy -->
+<div class="modal-backdrop" id="cancel-modal-backdrop">
+    <div class="payment-modal" style="text-align: center; max-width: 400px; padding: 2.5rem 2rem;">
+        <div style="font-size: 3rem; color: var(--neon-red); margin-bottom: 1rem;"><i class="fa-solid fa-triangle-exclamation"></i></div>
+        <h3 class="modal-title" style="color: var(--neon-red); margin-bottom: 0.5rem; font-size: 2rem;">XÁC NHẬN HỦY</h3>
+        <p class="modal-subtitle" style="margin-bottom: 2rem;">Bạn có chắc chắn muốn hủy phần ghế <strong id="cancel-modal-seat-id" style="color: var(--neon-red);"></strong> của mình? Thao tác này không thể hoàn tác.</p>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <button class="btn-cancel-avatar" id="btn-abort-cancel" style="padding: 1rem;">KHÔNG</button>
+            <button class="btn-pay-avatar" id="btn-proceed-cancel" style="background: var(--neon-red); border-color: var(--neon-red); box-shadow: 0 0 15px var(--neon-red-glow); color: #fff; padding: 1rem;">CÓ, HỦY GHẾ</button>
+        </div>
+    </div>
+</div>
+
+<!-- Container cho Toast Notifications -->
+<div id="toast-container" style="position: fixed; top: 80px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px;"></div>
+
 <div id="footer-placeholder"></div>
 
 <script type="module" src="/shared/components/navbar.js"></script>
@@ -191,20 +208,25 @@
         // ---------------------------------
         let mySeat = localStorage.getItem('mySeatForOrder_' + orderId);
         
-        // Nếu ghế của tôi không tồn tại, hoặc đã bị hủy, hoặc đã bị ai đó thanh toán mất
-        // -> Tìm 1 ghế trống mới gán cho user
-        if (!mySeat || !groupData.checkoutData.seats.includes(mySeat) || groupData.cancelledSeats.includes(mySeat)) {
-            const activeUnpaidSeats = groupData.checkoutData.seats.filter(s => 
-                !groupData.cancelledSeats.includes(s) && !groupData.paidSeats.includes(s)
-            );
-            if (activeUnpaidSeats.length > 0) {
-                mySeat = activeUnpaidSeats[0];
-                localStorage.setItem('mySeatForOrder_' + orderId, mySeat);
-            } else {
-                mySeat = null; // Hết ghế
+        // Nếu người dùng đã chủ động hủy ghế của họ, họ sẽ trở thành người xem (Observer)
+        if (mySeat === 'CANCELLED') {
+            window.mySeat = null;
+        } else {
+            // Nếu ghế của tôi không tồn tại, hoặc đã bị hủy từ nguồn khác, hoặc đã bị ai đó thanh toán mất
+            // -> Tìm 1 ghế trống mới gán cho user
+            if (!mySeat || !groupData.checkoutData.seats.includes(mySeat) || groupData.cancelledSeats.includes(mySeat)) {
+                const activeUnpaidSeats = groupData.checkoutData.seats.filter(s => 
+                    !groupData.cancelledSeats.includes(s) && !groupData.paidSeats.includes(s)
+                );
+                if (activeUnpaidSeats.length > 0) {
+                    mySeat = activeUnpaidSeats[0];
+                    localStorage.setItem('mySeatForOrder_' + orderId, mySeat);
+                } else {
+                    mySeat = null; // Hết ghế
+                }
             }
+            window.mySeat = mySeat;
         }
-        window.mySeat = mySeat;
     }
 
     function saveOrderData() {
@@ -405,25 +427,80 @@
         }, 500); // Simulate short delay before redirect
     });
 
+    // --- Toast Logic ---
+    function showToast(message, type = 'success') {
+        const toast = document.createElement('div');
+        toast.style.background = type === 'success' ? 'var(--bg-panel)' : 'rgba(255, 42, 42, 0.9)';
+        toast.style.borderLeft = `4px solid ${type === 'success' ? 'var(--neon-green)' : '#fff'}`;
+        toast.style.padding = '1rem 1.5rem';
+        toast.style.borderRadius = '8px';
+        toast.style.boxShadow = '0 10px 30px rgba(0,0,0,0.5)';
+        toast.style.color = '#fff';
+        toast.style.fontWeight = '600';
+        toast.style.fontFamily = "'Inter', sans-serif";
+        toast.style.display = 'flex';
+        toast.style.alignItems = 'center';
+        toast.style.gap = '0.75rem';
+        toast.style.transition = 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)';
+        toast.style.transform = 'translateX(120%)';
+        toast.style.opacity = '0';
+        
+        const icon = type === 'success' ? '<i class="fas fa-check-circle" style="color: var(--neon-green); font-size: 1.25rem;"></i>' : '<i class="fas fa-info-circle" style="color: #fff; font-size: 1.25rem;"></i>';
+        toast.innerHTML = `${icon} <span>${message}</span>`;
+        
+        document.getElementById('toast-container').appendChild(toast);
+        
+        // Trigger reflow
+        toast.offsetHeight;
+        toast.style.transform = 'translateX(0)';
+        toast.style.opacity = '1';
+        
+        setTimeout(() => {
+            toast.style.transform = 'translateX(120%)';
+            toast.style.opacity = '0';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+
+    const cancelModalBackdrop = document.getElementById('cancel-modal-backdrop');
+    const btnAbortCancel = document.getElementById('btn-abort-cancel');
+    const btnProceedCancel = document.getElementById('btn-proceed-cancel');
+    const cancelModalSeatId = document.getElementById('cancel-modal-seat-id');
+    let pendingCancelSeat = null;
+
     window.cancelSeat = function(seatToCancel) {
         if (!seatToCancel || seatToCancel !== window.mySeat) return;
-        
-        if (confirm(`Bạn có chắc chắn muốn hủy phần ghế ${seatToCancel} của mình?`)) {
-            // Mark as cancelled
-            groupData.cancelledSeats.push(seatToCancel);
-            // Giảm tổng tiền
-            groupData.checkoutData.total -= pricePerSeat;
-            saveOrderData();
-            
-            // Xóa MySeat khỏi session để tự động chỉ định ghế khác nếu user vẫn nán lại
-            localStorage.removeItem('mySeatForOrder_' + orderId);
-            
-            loadOrderData(); // Tải lại để update mySeat (nếu còn ghế trống)
-            renderLobby(); // Render lại
-            
-            checkCompletion();
-        }
+        pendingCancelSeat = seatToCancel;
+        cancelModalSeatId.textContent = seatToCancel;
+        cancelModalBackdrop.classList.add('active');
     };
+
+    btnAbortCancel.addEventListener('click', () => {
+        cancelModalBackdrop.classList.remove('active');
+        pendingCancelSeat = null;
+    });
+
+    btnProceedCancel.addEventListener('click', () => {
+        if (!pendingCancelSeat) return;
+        
+        const seatToCancel = pendingCancelSeat;
+        cancelModalBackdrop.classList.remove('active');
+        
+        // Mark as cancelled
+        groupData.cancelledSeats.push(seatToCancel);
+        groupData.checkoutData.total -= pricePerSeat;
+        saveOrderData();
+        
+        // Chuyển người dùng thành Observer
+        localStorage.setItem('mySeatForOrder_' + orderId, 'CANCELLED');
+        
+        loadOrderData(); 
+        renderLobby(); 
+        
+        showToast(`Đã hủy ghế ${seatToCancel} thành công!`, 'success');
+        
+        checkCompletion();
+    });
 
     // --- Countdown Timer Logic ---
     let timeLeft = 14 * 60 + 59;

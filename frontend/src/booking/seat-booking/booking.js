@@ -252,6 +252,8 @@ function handleContinue() {
     return;
   }
   
+  const isGroup = seats.length > 1 || (document.getElementById('toggle-group-booking')?.checked || false);
+
   const checkoutData = {
     showtimeId: currentShowtimeId,
     movieTitle: movieData.title,
@@ -263,14 +265,36 @@ function handleContinue() {
     selectedSeats: seats,
     seats: seats, // for checkout.js
     seatTotal: calculateTotal(),
-    isGroupBooking: document.getElementById('toggle-group-booking')?.checked || false,
+    isGroupBooking: isGroup,
     seatAmount: calculateTotal(), // for checkout.js
     total: calculateTotal(), // for checkout.js
     expiresAt: Date.now() + 5 * 60 * 1000 // 5 mins
   };
   
   saveCheckout(checkoutData);
-  window.location.href = '../checkout/checkout.html';
+
+  if (isGroup) {
+      // Tự động khởi tạo phiên Split Pay và bay thẳng vào Lobby
+      const orderId = 'SPLIT-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+      const splitData = {
+          orderId: orderId,
+          checkoutData: checkoutData,
+          customFood: '[]', // Tạm thời bỏ qua Bắp Nước khi đi thẳng vào Lobby
+          status: 'PENDING',
+          paidSeats: [],
+          cancelledSeats: []
+      };
+      localStorage.setItem('splitOrder_' + orderId, JSON.stringify(splitData));
+      
+      // Gán ghế đầu tiên cho Host
+      localStorage.setItem('mySeatForOrder_' + orderId, seats[0]);
+      
+      // Chuyển hướng thẳng vào phòng chờ
+      window.location.href = '../group-booking/index.html?order=' + orderId;
+  } else {
+      // Mua 1 ghế bình thường thì đi qua Checkout để chọn Bắp nước
+      window.location.href = '../checkout/checkout.html';
+  }
 }
 
 document.addEventListener('DOMContentLoaded', init);

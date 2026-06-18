@@ -67,7 +67,7 @@ body {
     letter-spacing: 2px;
 }
 .hero-title {
-    font-family: 'Bebas Neue', sans-serif;
+    font-family: 'Barlow Condensed', sans-serif;
     font-size: 5rem;
     line-height: 1;
     text-transform: uppercase;
@@ -102,7 +102,7 @@ body {
     font-weight: 700;
 }
 .timer-value {
-    font-family: 'Bebas Neue', sans-serif;
+    font-family: 'Barlow Condensed', sans-serif;
     font-size: 4rem;
     color: #fff;
     text-shadow: 0 0 15px var(--neon-red);
@@ -143,7 +143,7 @@ body {
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 .panel-title {
-    font-family: 'Bebas Neue', sans-serif;
+    font-family: 'Barlow Condensed', sans-serif;
     font-size: 2.5rem;
     text-transform: uppercase;
     margin-bottom: 2rem;
@@ -472,7 +472,7 @@ body {
     margin-top: 0.25rem;
 }
 .price-value {
-    font-family: 'Bebas Neue', sans-serif;
+    font-family: 'Barlow Condensed', sans-serif;
     font-size: 2.5rem;
     color: var(--neon-blue);
     text-shadow: 0 0 10px var(--neon-blue-glow);
@@ -508,7 +508,7 @@ body {
     justify-content: center;
     font-weight: bold;
     font-size: 1rem;
-    font-family: 'Bebas Neue', sans-serif;
+    font-family: 'Barlow Condensed', sans-serif;
 }
 .step-title {
     font-weight: 700;
@@ -571,7 +571,7 @@ body {
     text-shadow: 0 0 10px var(--neon-red);
 }
 .modal-title {
-    font-family: 'Bebas Neue', sans-serif;
+    font-family: 'Barlow Condensed', sans-serif;
     font-size: 2.5rem;
     text-align: center;
     color: white;
@@ -623,7 +623,7 @@ body {
     background: transparent;
     border: 2px solid var(--neon-green);
     color: var(--neon-green);
-    font-family: 'Bebas Neue', sans-serif;
+    font-family: 'Barlow Condensed', sans-serif;
     font-size: 1.5rem;
     letter-spacing: 2px;
     border-radius: 1rem;
@@ -655,11 +655,10 @@ body {
 
 .seat.cancelled {
     background-color: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: none;
+    border: 1px solid rgba(255, 42, 42, 0.3);
+    box-shadow: inset 0 0 10px rgba(255, 42, 42, 0.1);
     animation: none;
     cursor: not-allowed;
-    opacity: 0.4;
 }
 .seat.cancelled::before { display: none; }
 .seat.cancelled::after {
@@ -669,8 +668,9 @@ body {
     position: absolute;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 1.2rem;
-    color: rgba(255, 255, 255, 0.3);
+    font-size: 1.5rem;
+    color: var(--neon-red);
+    text-shadow: 0 0 10px var(--neon-red);
 }
 
 .btn-pay-avatar {
