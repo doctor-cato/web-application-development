@@ -1,0 +1,632 @@
+/* --- VIP REGISTRATION STYLES --- */
+:root {
+    --primary-red: #e50914;
+    --primary-red-hover: #b20710;
+    --gold: #ffd700;
+    --gold-hover: #e6c200;
+    --bg-dark: #0a0c0c;
+    --surface-glass: rgba(26, 28, 28, 0.65);
+    --border-glass: rgba(255, 255, 255, 0.08);
+    --text-primary: #ffffff;
+    --text-secondary: #c8c6c5;
+}
+
+body {
+    background-color: var(--bg-dark);
+    font-family: 'Inter', sans-serif;
+    color: var(--text-primary);
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+.vip-main {
+    padding: 100px var(--page-padding) 4rem;
+    position: relative;
+    z-index: 1;
+}
+
+/* Hero Header */
+.vip-hero {
+    position: relative;
+    margin-bottom: 4rem;
+}
+
+.glow-orb {
+    position: absolute;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(229, 9, 20, 0.15) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+.vip-badge-top {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(229, 9, 20, 0.1);
+    border: 1px solid rgba(229, 9, 20, 0.3);
+    color: var(--primary-red);
+    padding: 6px 16px;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+}
+
+.vip-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: 3rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #ffffff 30%, #ffd700 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.vip-subtitle {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* Plans Grid */
+.vip-plans-section {
+    margin-bottom: 4rem;
+}
+
+.plans-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+}
+
+@media (min-width: 768px) {
+    .plans-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.plan-card {
+    background: var(--surface-glass);
+    border: 1px solid var(--border-glass);
+    border-radius: 16px;
+    padding: 2.5rem 2rem;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    cursor: pointer;
+}
+
+.plan-card:hover {
+    transform: translateY(-8px);
+    border-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+}
+
+.plan-card.featured {
+    border-color: rgba(229, 9, 20, 0.4);
+    background: linear-gradient(180deg, rgba(26, 28, 28, 0.8) 0%, rgba(18, 20, 20, 0.8) 100%);
+    box-shadow: 0 10px 30px rgba(229, 9, 20, 0.1);
+}
+
+.plan-card.featured:hover {
+    border-color: var(--primary-red);
+    box-shadow: 0 20px 40px rgba(229, 9, 20, 0.2);
+}
+
+.plan-badge {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 4px 10px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.plan-card.featured .plan-badge {
+    background: var(--primary-red);
+    color: white;
+}
+
+.plan-name {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.plan-price {
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    color: white;
+}
+
+.plan-price span {
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: var(--text-secondary);
+}
+
+.plan-desc {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 2rem;
+    flex-grow: 0;
+}
+
+.plan-features {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 2.5rem 0;
+    flex-grow: 1;
+}
+
+.plan-features li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+.plan-features li i {
+    color: var(--primary-red);
+    margin-top: 3px;
+    font-size: 0.9rem;
+}
+
+.plan-card.featured .plan-features li i {
+    color: var(--gold);
+}
+
+.btn-select-plan {
+    width: 100%;
+    padding: 14px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: transparent;
+    color: white;
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-select-plan:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.btn-select-plan.active {
+    background: var(--primary-red);
+    border-color: var(--primary-red);
+}
+
+.btn-select-plan.active:hover {
+    background: var(--primary-red-hover);
+}
+
+.plan-card.featured .btn-select-plan.active {
+    background: linear-gradient(135deg, var(--primary-red) 0%, #a80000 100%);
+    box-shadow: 0 4px 15px rgba(229, 9, 20, 0.3);
+}
+
+.plan-card.featured .btn-select-plan.active:hover {
+    transform: scale(1.02);
+}
+
+/* Selected plan outline on card click */
+.plan-card.selected-plan-border {
+    border-color: var(--primary-red);
+    box-shadow: 0 0 20px rgba(229, 9, 20, 0.15);
+}
+
+.plan-card[data-plan="silver"].selected-plan-border {
+    border-color: #a0a0a0;
+}
+
+.plan-card[data-plan="platinum"].selected-plan-border {
+    border-color: #3b82f6;
+}
+
+/* Form Styles */
+.vip-form-section {
+    background: var(--surface-glass);
+    border: 1px solid var(--border-glass);
+    border-radius: 16px;
+    padding: 3rem;
+    max-width: 800px;
+    margin: 0 auto;
+    backdrop-filter: blur(10px);
+}
+
+.form-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: 2.2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.form-subtitle {
+    color: var(--text-secondary);
+    margin-bottom: 2.5rem;
+    font-size: 1.05rem;
+}
+
+.form-subtitle strong {
+    color: var(--gold);
+}
+
+.vip-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+}
+
+@media (min-width: 640px) {
+    .form-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.input-icon-wrapper {
+    position: relative;
+}
+
+.input-icon-wrapper i {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+    font-size: 1rem;
+}
+
+.vip-form input {
+    width: 100%;
+    background-color: rgba(10, 12, 12, 0.8);
+    border: 1px solid var(--border-glass);
+    border-radius: 8px;
+    padding: 14px 16px 14px 44px;
+    color: white;
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.vip-form input:focus {
+    border-color: var(--primary-red);
+    box-shadow: 0 0 0 1px var(--primary-red);
+}
+
+/* Payment Selector */
+.payment-method-selector {
+    margin-top: 1rem;
+}
+
+.section-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: block;
+    margin-bottom: 0.75rem;
+}
+
+.payment-options {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+
+@media (min-width: 640px) {
+    .payment-options {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.pay-option {
+    background: rgba(10, 12, 12, 0.6);
+    border: 1px solid var(--border-glass);
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    user-select: none;
+}
+
+.pay-option input[type="radio"] {
+    width: auto;
+    margin: 0;
+    padding: 0;
+    display: none; /* Hide standard radio */
+}
+
+.pay-option img {
+    height: 24px;
+    width: auto;
+    object-fit: contain;
+}
+
+.pay-option span {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.pay-option.active {
+    border-color: var(--primary-red);
+    background: rgba(229, 9, 20, 0.05);
+}
+
+.pay-option.active span {
+    color: white;
+}
+
+/* Credit Card Input Subform */
+.credit-card-details {
+    background: rgba(10, 12, 12, 0.5);
+    border: 1px solid var(--border-glass);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-top: 0.5rem;
+    animation: slideDown 0.3s ease-out;
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+}
+
+.span-2 {
+    grid-column: span 2;
+}
+
+.credit-card-details input {
+    padding-left: 44px;
+}
+
+.credit-card-details .form-group:not(.span-2) input {
+    padding-left: 16px;
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Submit Button */
+.btn-vip-submit {
+    width: 100%;
+    background: linear-gradient(135deg, var(--primary-red) 0%, #b80711 100%);
+    color: white;
+    padding: 16px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    cursor: pointer;
+    margin-top: 1rem;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(229, 9, 20, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.btn-vip-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(229, 9, 20, 0.6);
+}
+
+.btn-vip-submit:active {
+    transform: translateY(0);
+}
+
+/* Spinner */
+.spinner {
+    width: 24px;
+    height: 24px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Modal Overlay */
+.vip-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    padding: 1rem;
+}
+
+.vip-modal-overlay.show {
+    display: flex;
+}
+
+.vip-modal {
+    background: #121414;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    width: 100%;
+    max-width: 480px;
+    padding: 3rem 2rem;
+    text-align: center;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+    animation: modalPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes modalPop {
+    from { opacity: 0; transform: scale(0.85); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.success-icon {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: rgba(16, 185, 129, 0.1);
+    border: 2px solid #10b981;
+    color: #10b981;
+    font-size: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+}
+
+.vip-modal h2 {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.5px;
+}
+
+.vip-modal p {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 2rem;
+}
+
+/* Modal Card Graphic */
+.modal-card {
+    background: linear-gradient(135deg, #1f1f2e 0%, #0c0c14 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 1.5rem;
+    height: 180px;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+.modal-card::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 180px;
+    height: 180px;
+    background: radial-gradient(circle, rgba(255, 215, 0, 0.08) 0%, transparent 70%);
+    transform: rotate(-30deg);
+}
+
+.modal-card-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.modal-card-tier {
+    color: var(--gold);
+    text-shadow: 0 0 8px rgba(255, 215, 0, 0.3);
+}
+
+.modal-card-user {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.25rem;
+    color: white;
+}
+
+.modal-card-dots {
+    font-family: monospace;
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    letter-spacing: 2px;
+}
+
+.modal-hint {
+    font-size: 0.85rem !important;
+    margin-bottom: 2.5rem !important;
+}
+
+.btn-modal-close {
+    width: 100%;
+    background: white;
+    color: #000;
+    border: none;
+    padding: 14px;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
+    transition: all 0.2s;
+}
+
+.btn-modal-close:hover {
+    background: #e6e6e6;
+    transform: scale(1.02);
+}

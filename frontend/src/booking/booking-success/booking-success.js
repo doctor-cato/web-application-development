@@ -2,6 +2,65 @@ import { getLastBooking } from '../../shared/utils/storage.js';
 
 function qs(sel) { return document.querySelector(sel); }
 
+// ── Tích điểm tự động khi đặt vé thành công ────────────────
+function awardLoyaltyPoints(booking) {
+    if (!booking || !booking.id) return;
+
+    const REWARDS_KEY = '3hd2k_rewards';
+    const PROCESSED_KEY = '3hd2k_rewards_processed';
+
+    // Kiểm tra xem booking này đã được tích điểm chưa (tránh trùng lặp khi reload)
+    let processed = [];
+    try {
+        processed = JSON.parse(localStorage.getItem(PROCESSED_KEY) || '[]');
+    } catch (_) { processed = []; }
+
+    if (processed.includes(booking.id)) return; // Đã tích điểm rồi
+
+    // Tính điểm: 50-150 PTS mỗi vé, tùy số ghế
+    const seatCount = Array.isArray(booking.seats) ? booking.seats.length : 1;
+    const ptsPerSeat = Math.floor(Math.random() * 101) + 50; // 50~150
+    const totalPts = ptsPerSeat * seatCount;
+
+    // Đọc state rewards hiện tại
+    let rewardsState = { points: 0, history: [] };
+    try {
+        const raw = localStorage.getItem(REWARDS_KEY);
+        if (raw) {
+            const parsed = JSON.parse(raw);
+            rewardsState.points = parsed.points || 0;
+            rewardsState.history = parsed.history || [];
+        }
+    } catch (_) { /* first time */ }
+
+    // Cộng điểm
+    rewardsState.points += totalPts;
+    rewardsState.history.push({
+        id: Date.now(),
+        actionId: 'ticket',
+        label: `Mua vé: ${booking.movieTitle || 'Phim'} (${seatCount} vé)`,
+        icon: '🎬',
+        pts: totalPts,
+        date: new Date().toISOString(),
+        color: '#e55d65',
+        colorDark: '#3a1a1d'
+    });
+
+    // Lưu lại
+    localStorage.setItem(REWARDS_KEY, JSON.stringify(rewardsState));
+
+    // Đánh dấu booking đã được xử lý
+    processed.push(booking.id);
+    localStorage.setItem(PROCESSED_KEY, JSON.stringify(processed));
+
+    // Hiển thị thông báo tích điểm trên giao diện (nếu có element)
+    const pointsBadge = document.getElementById('bs-points-earned');
+    if (pointsBadge) {
+        pointsBadge.textContent = `+${totalPts} PTS`;
+        pointsBadge.style.display = 'inline-block';
+    }
+}
+
 function init() {
     const booking = getLastBooking();
 
@@ -71,6 +130,10 @@ function init() {
         }
         codeEl.textContent = displayCode;
     }
+
+    // Tích điểm tự động sau khi hiển thị thông tin booking
+    awardLoyaltyPoints(booking);
 }
 
 document.addEventListener('DOMContentLoaded', init);
+

@@ -31,13 +31,14 @@ function verifyPassword(password, hash) {
 
 function buildPayload(user) {
     return {
-        name:   user.fullname || user.name || 'Khách',
-        email:  user.email,
-        phone:  user.phone,
-        dob:    user.dob,
-        avatar: user.avatar,
-        role:   user.role || 'user',
-        exp:    Date.now() + 24 * 60 * 60 * 1000, // 24 giờ
+        name:     user.fullname || user.name || 'Khách',
+        email:    user.email,
+        phone:    user.phone,
+        dob:      user.dob,
+        avatar:   user.avatar,
+        role:     user.role || 'user',
+        vip_plan: user.vip_plan || '',
+        exp:      Date.now() + 24 * 60 * 60 * 1000, // 24 giờ
     };
 }
 
@@ -101,6 +102,16 @@ export function login(email, password) {
     }
 
     setCurrentUser(buildPayload(user));
+
+    // Khôi phục trạng thái VIP vào localStorage nếu user đã đăng ký VIP
+    if (user.role === 'vip') {
+        localStorage.setItem('is_vip', 'true');
+        localStorage.setItem('vip_plan', user.vip_plan || '');
+    } else {
+        localStorage.removeItem('is_vip');
+        localStorage.removeItem('vip_plan');
+    }
+
     return { ok: true };
 }
 

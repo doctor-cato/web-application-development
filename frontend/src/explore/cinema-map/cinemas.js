@@ -162,4 +162,15 @@ if (btnLoc) btnLoc.addEventListener('click', () => {
 document.addEventListener('DOMContentLoaded', () => {
     renderCinemas();
     initMap();
+
+    // Parse URL parameter to auto-select cinema
+    const urlParams = new URLSearchParams(window.location.search);
+    const targetCinemaId = urlParams.get('cinema');
+    
+    if (targetCinemaId) {
+        // Wait briefly for map and list to fully settle, then trigger active state
+        setTimeout(() => {
+            setActiveCinema(targetCinemaId);
+        }, 300);
+    }
 });

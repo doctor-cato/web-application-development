@@ -144,7 +144,7 @@ function handleSeatSelect(seatId) {
     updateSeat(seatId, 'locked');
   } else {
     updateSummary();
-    if (!countdownTimer) startCountdown(5 * 60);
+    if (!countdownTimer) startCountdown(15 * 60);
   }
 }
 
@@ -268,7 +268,7 @@ function handleContinue() {
     isGroupBooking: isGroup,
     seatAmount: calculateTotal(), // for checkout.js
     total: calculateTotal(), // for checkout.js
-    expiresAt: Date.now() + 5 * 60 * 1000 // 5 mins
+    expiresAt: Date.now() + 15 * 60 * 1000 // 15 mins
   };
   
   saveCheckout(checkoutData);

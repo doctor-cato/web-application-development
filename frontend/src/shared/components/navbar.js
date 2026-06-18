@@ -52,7 +52,7 @@ export function renderNavbar() {
                         </div>
                         <div class="qb-step">
                             <label>4. Chọn Suất</label>
-                            <select id="qb-time" disabled>
+                            <select id="qb-showtime" disabled>
                                 <option value="" disabled selected>-- Chọn Suất Chiếu --</option>
                             </select>
                         </div>
@@ -108,7 +108,7 @@ export function renderNavbar() {
                         <li><a href="${srcPrefix}/booking/group-booking/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-users" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Đặt & Giữ ghế nhóm</a></li>
                         <li><a href="${srcPrefix}/user/loyalty-points/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-star" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Điểm thưởng</a></li>
                         <li><a href="${srcPrefix}/user/user-notifications/index.html?tab=promo" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-ticket-alt" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Khuyến mãi</a></li>
-                        <li><a href="${srcPrefix}/wip.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-crown" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Gói hội viên <span style="font-size:10px; background:#e50914; padding:2px 6px; border-radius:4px; margin-left:5px;">WIP</span></a></li>
+                        <li><a href="${srcPrefix}/user/loyalty-points/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-crown" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Gói hội viên</a></li>
                     </ul>
                 </div>
             </div>
@@ -948,12 +948,10 @@ export function renderNavbar() {
             qbToggle.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                qbDropdown.classList.toggle('active');
                 qbToggle.classList.toggle('active');
+                qbDropdown.classList.toggle('active');
             });
-            qbDropdown.addEventListener('click', (e) => {
-                e.stopPropagation();
-            });
+
             document.addEventListener('click', (e) => {
                 if (!qbDropdown.contains(e.target) && e.target !== qbToggle) {
                     qbDropdown.classList.remove('active');
@@ -963,7 +961,7 @@ export function renderNavbar() {
 
             const qbCinema = document.getElementById('qb-cinema');
             const qbDate = document.getElementById('qb-date');
-            const qbTime = document.getElementById('qb-time');
+            const qbShowtime = document.getElementById('qb-showtime');
             const qbSubmit = document.getElementById('qb-submit');
 
             // Custom Select Elements
@@ -1068,46 +1066,54 @@ export function renderNavbar() {
                 }
                 qbCinema.disabled = false;
                 qbDate.disabled = true;
-                qbTime.disabled = true;
-                qbSubmit.disabled = true;
                 qbDate.innerHTML = '<option value="" disabled selected>-- Chọn Ngày --</option>';
-                qbTime.innerHTML = '<option value="" disabled selected>-- Chọn Suất Chiếu --</option>';
+                qbShowtime.disabled = true;
+                qbShowtime.innerHTML = '<option value="" disabled selected>-- Chọn Suất Chiếu --</option>';
+                qbSubmit.disabled = true;
             }
 
             qbCinema.addEventListener('change', () => {
-                qbDate.innerHTML = '<option value="" disabled selected>-- Chọn Ngày --</option>';
-                const dates = ["Hôm nay", "Ngày mai", "Ngày mốt"];
-                dates.forEach((d, i) => {
-                    const opt = document.createElement('option');
-                    opt.value = i;
-                    opt.textContent = d;
-                    qbDate.appendChild(opt);
-                });
                 qbDate.disabled = false;
-                qbTime.disabled = true;
+                qbDate.innerHTML = '<option value="" disabled selected>-- Chọn Ngày --</option>';
+                // Populate dummy dates based on today
+                const today = new Date();
+                for(let i=0; i<3; i++) {
+                    const d = new Date(today);
+                    d.setDate(today.getDate() + i);
+                    const dateStr = d.toLocaleDateString('vi-VN');
+                    const opt = document.createElement('option');
+                    opt.value = dateStr;
+                    opt.textContent = dateStr;
+                    qbDate.appendChild(opt);
+                }
+                qbShowtime.disabled = true;
+                qbShowtime.innerHTML = '<option value="" disabled selected>-- Chọn Suất Chiếu --</option>';
                 qbSubmit.disabled = true;
-                qbTime.innerHTML = '<option value="" disabled selected>-- Chọn Suất Chiếu --</option>';
             });
 
             qbDate.addEventListener('change', () => {
-                qbTime.innerHTML = '<option value="" disabled selected>-- Chọn Suất Chiếu --</option>';
-                const times = ["09:00", "12:30", "15:00", "18:45", "20:30"];
+                qbShowtime.disabled = false;
+                qbShowtime.innerHTML = '<option value="" disabled selected>-- Chọn Suất Chiếu --</option>';
+                // Populate dummy showtimes
+                const times = ['09:00', '10:30', '13:00', '15:30', '18:00', '19:30', '21:00'];
                 times.forEach(t => {
                     const opt = document.createElement('option');
                     opt.value = t;
                     opt.textContent = t;
-                    qbTime.appendChild(opt);
+                    qbShowtime.appendChild(opt);
                 });
-                qbTime.disabled = false;
                 qbSubmit.disabled = true;
             });
 
-            qbTime.addEventListener('change', () => {
+            qbShowtime.addEventListener('change', () => {
                 qbSubmit.disabled = false;
             });
 
             qbSubmit.addEventListener('click', () => {
-                window.location.href = `${srcPrefix}/booking/seat-booking/booking.html`; 
+                const showtime = qbShowtime.value;
+                if (selectedMovieId && showtime) {
+                    window.location.href = `${srcPrefix}/booking/seat-booking/booking.html?id=${selectedMovieId}&showtimeId=${showtime}`; 
+                }
             });
         }
 
@@ -1144,6 +1150,18 @@ export function renderNavbar() {
                 const userName = session.name || 'Khách';
                 const defaultAvatar = `${srcPrefix}/shared/images/avatar.jpg`;
                 const userAvatar = session.avatar || defaultAvatar;
+                
+                const isVip = localStorage.getItem('is_vip') === 'true' || session.role === 'vip';
+                const vipPlan = localStorage.getItem('vip_plan') || session.vip_plan || '';
+                let rewardsPoints = 0;
+                try {
+                    const rewardsData = JSON.parse(localStorage.getItem('3hd2k_rewards') || '{}');
+                    rewardsPoints = rewardsData.points || 0;
+                } catch(_) {}
+                const pointsDisplay = rewardsPoints.toLocaleString('vi-VN');
+                const userPointsHtml = isVip 
+                    ? `<span class="user-points"><i class="fas fa-crown" style="color: #ffc107;"></i> VIP ${vipPlan ? vipPlan.charAt(0).toUpperCase() + vipPlan.slice(1) : ''} - ${pointsDisplay} điểm</span>`
+                    : `<span class="user-points">Hạng thường - ${pointsDisplay} điểm</span>`;
 
                 const loggedInHtml = `
                     <div class="notif-btn" id="notif-btn">
@@ -1198,7 +1216,7 @@ export function renderNavbar() {
                                 <img src="${userAvatar}" alt="User Avatar" class="user-header-avatar" onerror="this.onerror=null; this.src='${defaultAvatar}';" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px;">
                                 <div class="user-info">
                                     <span class="user-name">${userName}</span>
-                                    <span class="user-points"><i class="fas fa-crown" style="color: #ffc107;"></i> VIP - 1,250 điểm</span>
+                                    ${userPointsHtml}
                                 </div>
                             </div>
                             <ul class="user-menu-list">
