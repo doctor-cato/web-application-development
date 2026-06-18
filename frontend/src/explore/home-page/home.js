@@ -202,5 +202,4 @@ if (filterCinema) filterCinema.addEventListener('change', applyFilters);
 // Initial render
 document.addEventListener('DOMContentLoaded', () => {
     renderNowShowing(nowShowingMovies);
-
 });
