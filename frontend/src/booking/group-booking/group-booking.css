@@ -1,13 +1,13 @@
-/* Vanilla CSS for Group Booking - Neon/Gamified Theme */
+/* Vanilla CSS for Group Booking - Cinematic/Gamified Theme */
 :root {
-    --neon-red: #ff2a2a;
-    --neon-red-glow: rgba(255, 42, 42, 0.6);
-    --neon-green: #00ff88;
-    --neon-green-glow: rgba(0, 255, 136, 0.6);
-    --neon-blue: #00e5ff;
-    --neon-blue-glow: rgba(0, 229, 255, 0.6);
-    --bg-dark: #0a0a0a;
-    --bg-panel: rgba(20, 20, 22, 0.85);
+    --neon-red: #E50914;
+    --neon-red-glow: rgba(229, 9, 20, 0.4);
+    --neon-green: #10B981;
+    --neon-green-glow: rgba(16, 185, 129, 0.3);
+    --neon-blue: #E2E8F0;
+    --neon-blue-glow: rgba(255, 255, 255, 0.3);
+    --bg-dark: #0c0c0c;
+    --bg-panel: rgba(255, 255, 255, 0.04);
 }
 
 body {
@@ -53,18 +53,27 @@ body {
     max-width: 42rem;
 }
 .exclusive-tag {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
     padding: 0.5rem 1.5rem;
-    background: transparent;
-    color: var(--neon-blue);
-    font-weight: 700;
+    background: rgba(229, 9, 20, 0.05);
+    color: #fff;
+    font-weight: 800;
     font-size: 0.875rem;
     border-radius: 9999px;
     margin-bottom: 1rem;
-    border: 2px solid var(--neon-blue);
-    box-shadow: 0 0 10px var(--neon-blue-glow), inset 0 0 10px var(--neon-blue-glow);
+    border: 1px solid var(--neon-red);
+    box-shadow: 0 0 10px var(--neon-red-glow);
     text-transform: uppercase;
     letter-spacing: 2px;
+    animation: livePulse 2s infinite cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes livePulse {
+    0% { box-shadow: 0 0 10px var(--neon-red-glow), inset 0 0 5px var(--neon-red-glow); border-color: rgba(229, 9, 20, 0.5); }
+    50% { box-shadow: 0 0 25px rgba(229, 9, 20, 0.8), inset 0 0 15px var(--neon-red-glow); border-color: rgba(229, 9, 20, 1); }
+    100% { box-shadow: 0 0 10px var(--neon-red-glow), inset 0 0 5px var(--neon-red-glow); border-color: rgba(229, 9, 20, 0.5); }
 }
 .hero-title {
     font-family: 'Barlow Condensed', sans-serif;
@@ -177,8 +186,8 @@ body {
 }
 .member-card.paid {
     border-color: var(--neon-green);
-    background: rgba(0, 255, 136, 0.05);
-    box-shadow: inset 0 0 20px rgba(0, 255, 136, 0.1), 0 0 15px rgba(0, 255, 136, 0.2);
+    background: rgba(16, 185, 129, 0.05);
+    box-shadow: inset 0 0 20px rgba(16, 185, 129, 0.1), 0 0 15px rgba(16, 185, 129, 0.2);
     animation: memberPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 .member-card.empty {
@@ -237,11 +246,11 @@ body {
     color: var(--neon-blue);
     font-size: 1.1rem;
     font-family: monospace;
-    box-shadow: inset 0 0 10px rgba(0, 229, 255, 0.2);
+    box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.2);
 }
 .share-input:focus {
     outline: none;
-    box-shadow: 0 0 15px var(--neon-blue-glow), inset 0 0 10px rgba(0, 229, 255, 0.2);
+    box-shadow: 0 0 15px var(--neon-blue-glow), inset 0 0 10px rgba(255, 255, 255, 0.2);
 }
 .btn-copy {
     position: absolute;
@@ -307,13 +316,13 @@ body {
     aspect-ratio: 16/9;
     background-color: rgba(0, 5, 20, 0.8);
     border-radius: 1rem;
-    border: 1px solid rgba(0, 229, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     padding: 2rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    box-shadow: inset 0 0 60px rgba(0, 229, 255, 0.1), 0 0 30px rgba(0, 229, 255, 0.05);
+    box-shadow: inset 0 0 60px rgba(255, 255, 255, 0.1), 0 0 30px rgba(255, 255, 255, 0.05);
     position: relative;
     overflow: hidden;
 }
@@ -321,19 +330,20 @@ body {
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: linear-gradient(rgba(0, 229, 255, 0.03) 50%, transparent 50%);
+    background: linear-gradient(rgba(255, 255, 255, 0.03) 50%, transparent 50%);
     background-size: 100% 4px;
     pointer-events: none;
     z-index: 1;
 }
 .screen-line {
     width: 80%;
-    height: 4px;
-    background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);
-    border-radius: 9999px;
+    height: 40px;
+    background: transparent;
+    border-top: 4px solid var(--neon-blue);
+    border-radius: 50% 50% 0 0 / 100% 100% 0 0;
     margin-bottom: 4rem;
     position: relative;
-    box-shadow: 0 5px 20px var(--neon-blue-glow);
+    box-shadow: inset 0 15px 20px -10px var(--neon-blue-glow), 0 -5px 15px -5px var(--neon-blue-glow);
     z-index: 2;
 }
 .screen-label {
@@ -341,12 +351,11 @@ body {
     bottom: -2rem;
     left: 50%;
     transform: translateX(-50%);
-    font-size: 0.85rem;
-    letter-spacing: 0.4em;
-    text-transform: uppercase;
     color: var(--neon-blue);
-    font-weight: 800;
-    text-shadow: 0 0 10px var(--neon-blue-glow);
+    text-shadow: 0 0 15px var(--neon-blue-glow);
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 .seat-row {
     display: flex;
@@ -358,11 +367,11 @@ body {
     width: 2.8rem;
     height: 2.8rem;
     border-radius: 0.25rem;
-    background-color: rgba(0, 229, 255, 0.05);
+    background-color: rgba(255, 255, 255, 0.05);
     border: 1px solid var(--neon-blue);
     position: relative;
     transition: all 0.3s;
-    box-shadow: 0 0 10px rgba(0, 229, 255, 0.2), inset 0 0 10px rgba(0, 229, 255, 0.2);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2), inset 0 0 10px rgba(255, 255, 255, 0.2);
     overflow: hidden;
 }
 /* Scanline effect inside seats */
@@ -370,7 +379,7 @@ body {
     content: '';
     position: absolute;
     top: -100%; left: 0; right: 0; height: 100%;
-    background: linear-gradient(to bottom, transparent, rgba(0, 229, 255, 0.8), transparent);
+    background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.8), transparent);
     animation: hologramScan 2s infinite linear;
     opacity: 0.6;
 }
@@ -407,7 +416,7 @@ body {
 }
 
 .seat.paid {
-    background-color: rgba(0, 229, 255, 0.2);
+    background-color: rgba(255, 255, 255, 0.2);
     border: 2px solid var(--neon-blue);
     box-shadow: 0 0 20px var(--neon-blue-glow), inset 0 0 20px var(--neon-blue-glow);
     animation: none;
@@ -606,8 +615,8 @@ body {
 }
 .payment-method.selected {
     border-color: var(--neon-blue);
-    background: rgba(0, 229, 255, 0.05);
-    box-shadow: inset 0 0 15px rgba(0, 229, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.1);
 }
 .payment-method img {
     height: 30px;
@@ -629,8 +638,8 @@ body {
     border-radius: 1rem;
     cursor: pointer;
     transition: all 0.3s;
-    text-shadow: 0 0 5px rgba(0, 255, 136, 0.5);
-    box-shadow: 0 0 15px rgba(0, 255, 136, 0.2), inset 0 0 10px rgba(0, 255, 136, 0.1);
+    text-shadow: 0 0 5px rgba(16, 185, 129, 0.5);
+    box-shadow: 0 0 15px rgba(16, 185, 129, 0.2), inset 0 0 10px rgba(16, 185, 129, 0.1);
 }
 .btn-pay:hover {
     background: var(--neon-green);
@@ -645,8 +654,8 @@ body {
     50% { opacity: 0.7; text-shadow: 0 0 5px var(--neon-red); }
 }
 @keyframes neonBlink {
-    0%, 100% { border-color: rgba(255, 42, 42, 1); box-shadow: 0 0 15px var(--neon-red-glow); }
-    50% { border-color: rgba(255, 42, 42, 0.4); box-shadow: 0 0 5px var(--neon-red-glow); }
+    0%, 100% { border-color: rgba(229, 9, 20, 1); box-shadow: 0 0 15px var(--neon-red-glow); }
+    50% { border-color: rgba(229, 9, 20, 0.4); box-shadow: 0 0 5px var(--neon-red-glow); }
 }
 @keyframes memberPop {
     0% { transform: scale(1); }
@@ -655,8 +664,8 @@ body {
 
 .seat.cancelled {
     background-color: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 42, 42, 0.3);
-    box-shadow: inset 0 0 10px rgba(255, 42, 42, 0.1);
+    border: 1px solid rgba(229, 9, 20, 0.3);
+    box-shadow: inset 0 0 10px rgba(229, 9, 20, 0.1);
     animation: none;
     cursor: not-allowed;
 }
@@ -710,7 +719,7 @@ body {
 
 .btn-cancel-avatar {
     background: transparent;
-    border: 1px dashed rgba(255, 42, 42, 0.5);
+    border: 1px dashed rgba(229, 9, 20, 0.5);
     color: var(--neon-red);
     border-radius: 4px;
     padding: 0.4rem 1rem;
@@ -722,11 +731,11 @@ body {
     width: 100%;
 }
 .btn-cancel-avatar:hover {
-    background: rgba(255, 42, 42, 0.1);
+    background: rgba(229, 9, 20, 0.1);
     border: 1px solid var(--neon-red);
     color: #fff;
     text-shadow: 0 0 5px var(--neon-red);
-    box-shadow: 0 0 10px rgba(255, 42, 42, 0.4);
+    box-shadow: 0 0 10px rgba(229, 9, 20, 0.4);
 }
 
 @media (max-width: 1024px) {

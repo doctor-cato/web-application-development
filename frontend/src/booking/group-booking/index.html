@@ -5,6 +5,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>3HD2K | Phòng Chờ Chốt Ghế</title>
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Bebas+Neue&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/shared/css/main.css">
     <link rel="stylesheet" href="/booking/group-booking/group-booking.css">
@@ -22,7 +23,7 @@
         </div>
         <div class="hero-content">
             <div class="hero-title-area">
-                <span class="exclusive-tag"><i class="fa-solid fa-gamepad"></i> LOBBY ĐANG MỞ</span>
+                <span class="exclusive-tag"><span class="material-symbols-outlined" style="vertical-align: middle; font-size: 1.1rem; margin-top: -2px;">radio_button_checked</span> LOBBY ĐANG MỞ</span>
                 <h1 class="hero-title">PHÒNG CHỜ CHỐT GHẾ</h1>
                 <p class="hero-desc">Mời bạn bè vào phòng chờ. Ai thanh toán trước, người đó chọn ghế! Vé sẽ được xuất ngay khi tất cả hoàn tất.</p>
             </div>
@@ -41,7 +42,7 @@
         <!-- Cột trái: Quản lý nhóm & Chia sẻ -->
         <div class="left-col">
             <div class="panel-section">
-                <h3 class="panel-title"><i class="fa-solid fa-users-rays"></i> SQUAD CỦA BẠN</h3>
+                <h3 class="panel-title"><span class="material-symbols-outlined" style="margin-right: 12px; font-size: 2.2rem; color: var(--primary-red);">group</span> SQUAD CỦA BẠN</h3>
                 <!-- Dynamic Members Grid -->
                 <div class="members-grid" id="dynamic-members-grid">
                     <!-- JS will inject members here -->
@@ -49,7 +50,7 @@
             </div>
             
             <div class="panel-section">
-                <h3 class="panel-title"><i class="fa-solid fa-satellite-dish"></i> PHÁT TÍN HIỆU</h3>
+                <h3 class="panel-title"><span class="material-symbols-outlined" style="margin-right: 12px; font-size: 2.2rem; color: var(--primary-red);">cast</span> PHÁT TÍN HIỆU</h3>
                 <div>
                     <div class="share-input-group">
                         <input class="share-input" id="dynamic-share-link" readonly type="text" value="">
@@ -66,11 +67,11 @@
         <!-- Cột phải: Xem trước ghế và thông tin -->
         <div class="right-col">
             <div class="panel-section">
-                <h3 class="panel-title"><i class="fa-solid fa-map-location-dot"></i> RADAR GHẾ (TRỰC TIẾP)</h3>
-                <p style="color: var(--neon-red); margin-bottom: 1rem; font-size: 0.9rem; font-weight: 600;"><i class="fa-solid fa-circle-exclamation"></i> Bấm vào ghế đang nhấp nháy để thanh toán hoặc hủy ghế!</p>
+                <h3 class="panel-title"><span class="material-symbols-outlined" style="margin-right: 12px; font-size: 2.2rem; color: var(--primary-red);">radar</span> RADAR GHẾ (TRỰC TIẾP)</h3>
+                <p style="color: var(--neon-red); margin-bottom: 1rem; font-size: 0.9rem; font-weight: 600;"><span class="material-symbols-outlined" style="vertical-align: middle; font-size: 1.1rem; margin-top: -2px;">info</span> Bấm vào ghế đang nhấp nháy để thanh toán hoặc hủy ghế!</p>
                 <div class="seat-map-container">
-                    <div class="screen-line">
-                        <span class="screen-label">MÀN HÌNH CHÍNH</span>
+                    <div class="screen-line curved">
+                        <!-- Removed screen label completely for minimalist cinematic look -->
                     </div>
                     
                     <!-- Dynamic Seat Row -->
@@ -80,13 +81,23 @@
                 </div>
                 
                 <div class="movie-info-row">
-                    <div>
-                        <p class="movie-title" id="dynamic-movie-title">Đang tải...</p>
-                        <p class="movie-meta" id="dynamic-movie-meta">Đang tải...</p>
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                        <img id="dynamic-movie-poster" src="" alt="Poster" style="width: 70px; height: 100px; border-radius: 8px; object-fit: cover; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: none; border: 1px solid rgba(255,255,255,0.1);">
+                        <div>
+                            <p class="movie-title" id="dynamic-movie-title" style="margin-bottom: 0.4rem; line-height: 1.2;">Đang tải...</p>
+                            <div id="dynamic-movie-tags" style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap;"></div>
+                            <p class="movie-meta" id="dynamic-movie-meta" style="margin-top: 0; font-weight: 500;">Đang tải...</p>
+                        </div>
                     </div>
-                    <div>
-                        <p class="price-value" id="dynamic-price-value">0₫</p>
-                        <p class="price-label">MỖI GHẾ</p>
+                    <div style="display: flex; gap: 2rem; border-left: 1px solid rgba(255,255,255,0.1); padding-left: 1.5rem; min-width: max-content;">
+                        <div style="text-align: right;">
+                            <p class="price-value" id="dynamic-price-value" style="font-size: 2rem; color: rgba(255,255,255,0.8); text-shadow: none;">0₫</p>
+                            <p class="price-label">MỖI GHẾ</p>
+                        </div>
+                        <div style="text-align: right; border-left: 1px dashed rgba(255,255,255,0.15); padding-left: 1.5rem;">
+                            <p class="price-value" id="dynamic-total-value">0₫</p>
+                            <p class="price-label">TỔNG CỘNG</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -121,7 +132,7 @@
 <!-- Modal Xác nhận Hủy -->
 <div class="modal-backdrop" id="cancel-modal-backdrop">
     <div class="payment-modal" style="text-align: center; max-width: 400px; padding: 2.5rem 2rem;">
-        <div style="font-size: 3rem; color: var(--neon-red); margin-bottom: 1rem;"><i class="fa-solid fa-triangle-exclamation"></i></div>
+        <div style="font-size: 3rem; color: var(--neon-red); margin-bottom: 1rem;"><span class="material-symbols-outlined" style="font-size: 4rem;">warning</span></div>
         <h3 class="modal-title" style="color: var(--neon-red); margin-bottom: 0.5rem; font-size: 2rem;">XÁC NHẬN HỦY</h3>
         <p class="modal-subtitle" style="margin-bottom: 2rem;">Bạn có chắc chắn muốn hủy phần ghế <strong id="cancel-modal-seat-id" style="color: var(--neon-red);"></strong> của mình? Thao tác này không thể hoàn tác.</p>
         
@@ -243,6 +254,29 @@
         document.getElementById('dynamic-movie-title').textContent = groupData.checkoutData.movieTitle;
         document.getElementById('dynamic-movie-meta').textContent = `${groupData.checkoutData.room} • ${groupData.checkoutData.showtimeText}`;
         document.getElementById('dynamic-price-value').textContent = formatPrice(pricePerSeat);
+        
+        // Tính và hiển thị Tổng Tiền
+        const totalSeats = groupData.checkoutData.seats ? groupData.checkoutData.seats.length : 1;
+        document.getElementById('dynamic-total-value').textContent = formatPrice(pricePerSeat * totalSeats);
+        
+        // Hiển thị Poster
+        if (groupData.checkoutData.poster) {
+            const posterImg = document.getElementById('dynamic-movie-poster');
+            posterImg.src = groupData.checkoutData.poster;
+            posterImg.style.display = 'block';
+        }
+        
+        // Hiển thị Tags (Ví dụ: 18+, Vietsub)
+        if (groupData.checkoutData.tags) {
+            const tagsContainer = document.getElementById('dynamic-movie-tags');
+            tagsContainer.innerHTML = '';
+            groupData.checkoutData.tags.forEach(tag => {
+                const tagSpan = document.createElement('span');
+                tagSpan.style.cssText = 'font-size: 0.65rem; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; color: rgba(255,255,255,0.8); text-transform: uppercase; font-weight: 600; background: rgba(255,255,255,0.05);';
+                tagSpan.textContent = tag;
+                tagsContainer.appendChild(tagSpan);
+            });
+        }
         document.getElementById('btn-confirm-pay').textContent = `XÁC NHẬN THANH TOÁN (${formatPrice(pricePerSeat)})`;
 
         // 3. Render Avatar Squad Grid
@@ -264,7 +298,7 @@
                 if (isMySeat) {
                     card.className = 'member-card paid';
                     card.innerHTML = `
-                        <div class="avatar-circle"><i class="fa-solid fa-crown"></i></div>
+                        <div class="avatar-circle"><span class="material-symbols-outlined" style="font-size: 2rem;">stars</span></div>
                         <span class="member-name">Bạn</span>
                         <span class="member-status" style="color: rgba(255,255,255,0.4); margin-bottom: 0.25rem;">Ghế ${seatName}</span>
                         <span class="member-status" style="color: var(--neon-green);">ĐÃ THANH TOÁN</span>
@@ -274,7 +308,7 @@
                     friendNameIndex++;
                     card.className = 'member-card paid';
                     card.innerHTML = `
-                        <div class="avatar-circle"><i class="fa-solid fa-user-astronaut"></i></div>
+                        <div class="avatar-circle"><span class="material-symbols-outlined" style="font-size: 2rem;">person</span></div>
                         <span class="member-name">${friendName}</span>
                         <span class="member-status" style="color: rgba(255,255,255,0.4); margin-bottom: 0.25rem;">Ghế ${seatName}</span>
                         <span class="member-status" style="color: var(--neon-green);">ĐÃ THANH TOÁN</span>
@@ -287,7 +321,7 @@
                     card.style.borderColor = 'var(--neon-blue)';
                     card.style.boxShadow = 'inset 0 0 10px rgba(0, 243, 255, 0.1)';
                     card.innerHTML = `
-                        <div class="avatar-circle" style="color: var(--neon-blue); border-color: var(--neon-blue);"><i class="fa-solid fa-user-tie"></i></div>
+                        <div class="avatar-circle" style="color: var(--neon-blue); border-color: var(--neon-blue);"><span class="material-symbols-outlined" style="font-size: 2rem;">person_check</span></div>
                         <span class="member-name" style="color: var(--neon-blue);">Phần của bạn</span>
                         <span class="member-status" style="color: rgba(255,255,255,0.4); margin-top: 0.25rem;">Ghế ${seatName}</span>
                         <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.75rem; width: 100%; padding: 0 1rem;">
@@ -298,7 +332,7 @@
                 } else {
                     card.className = 'member-card empty';
                     card.innerHTML = `
-                        <div class="avatar-circle"><i class="fa-solid fa-user-plus"></i></div>
+                        <div class="avatar-circle"><span class="material-symbols-outlined" style="font-size: 2rem;">person_add</span></div>
                         <span class="member-name">Đang đợi...</span>
                         <span class="member-status" style="color: rgba(255,255,255,0.4); margin-top: 0.25rem;">Ghế ${seatName}</span>
                         <div style="margin-top: 1rem; color: var(--neon-red); font-size: 0.7rem; font-weight: 600; font-style: italic;">Chờ người khác thanh toán...</div>
