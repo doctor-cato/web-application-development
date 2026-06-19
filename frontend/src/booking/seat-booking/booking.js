@@ -251,8 +251,15 @@ function handleContinue() {
     alert('Vui lòng chọn ít nhất 1 ghế để tiếp tục.');
     return;
   }
+
+  const isGroupToggleOn = document.getElementById('toggle-group-booking')?.checked || false;
   
-  const isGroup = seats.length > 1 || (document.getElementById('toggle-group-booking')?.checked || false);
+  if (isGroupToggleOn && seats.length < 2) {
+    alert('Vui lòng chọn ít nhất 2 ghế để sử dụng đặt vé nhóm.');
+    return;
+  }
+  
+  const isGroup = isGroupToggleOn && seats.length >= 2;
 
   const checkoutData = {
     showtimeId: currentShowtimeId,
