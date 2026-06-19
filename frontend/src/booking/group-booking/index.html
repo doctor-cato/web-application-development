@@ -50,6 +50,12 @@
             </div>
             
             <div class="panel-section">
+                <h3 class="panel-title"><span class="material-symbols-outlined" style="margin-right: 12px; font-size: 2.2rem; color: var(--primary-red);">fastfood</span> ĐỒ ĂN THỨC UỐNG</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem; line-height: 1.4;">Nhâm nhi bắp nước trong lúc xem phim? Tự chọn phần cho riêng mình, không chung đụng với ai!</p>
+                <button class="btn-outline" id="btn-go-food" style="width: 100%; border: 1px solid var(--neon-blue); color: var(--neon-blue); padding: 0.75rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s; background: transparent;"><i class="fas fa-popcorn"></i> XEM MENU BẮP NƯỚC</button>
+            </div>
+
+            <div class="panel-section">
                 <h3 class="panel-title"><span class="material-symbols-outlined" style="margin-right: 12px; font-size: 2.2rem; color: var(--primary-red);">cast</span> PHÁT TÍN HIỆU</h3>
                 <div>
                     <div class="share-input-group">
@@ -162,6 +168,8 @@
     const orderId = urlParams.get('order') || 'DEMO-123';
     let groupData = null;
     let pricePerSeat = 0;
+    let myFoodTotal = 0;
+    let myFoodText = '';
     
     // Fake names for gamification when people "join"
     const friendsNames = ["Anh Dũng", "Phương Thảo", "Hoàng Nam", "Tuấn Tú", "Minh Hằng", "Bảo Châu"];
@@ -195,6 +203,7 @@
         // Capture Return from Payment Gateway
         // ---------------------------------
         const paidSeatFromUrl = urlParams.get('paidSeat');
+        const clearFood = urlParams.get('clearFood');
         if (paidSeatFromUrl && !groupData.paidSeats.includes(paidSeatFromUrl)) {
             groupData.paidSeats.push(paidSeatFromUrl);
             if (orderId) {
@@ -203,7 +212,23 @@
             // Clean URL
             const cleanUrl = new URL(window.location.href);
             cleanUrl.searchParams.delete('paidSeat');
+            if (clearFood) {
+                localStorage.removeItem('selectedFood');
+                cleanUrl.searchParams.delete('clearFood');
+            }
             window.history.replaceState({}, '', cleanUrl.toString());
+        }
+
+        // Load food data
+        const foodStr = localStorage.getItem('selectedFood');
+        myFoodTotal = 0;
+        myFoodText = '';
+        if (foodStr) {
+            try {
+                const items = JSON.parse(foodStr);
+                myFoodTotal = items.reduce((sum, item) => sum + (item.price * item.qty), 0);
+                myFoodText = items.map(f => `${f.qty}x ${f.name}`).join(', ');
+            } catch(e) {}
         }
 
         // Calculate price per seat (fixed price logic based on active seats initially)
@@ -320,10 +345,12 @@
                     card.className = 'member-card empty';
                     card.style.borderColor = 'var(--neon-blue)';
                     card.style.boxShadow = 'inset 0 0 10px rgba(0, 243, 255, 0.1)';
+                    const foodHtml = myFoodTotal > 0 ? `<div style="font-size: 0.7rem; color: #10b981; margin-top: 0.25rem; font-weight: 600; text-align: center;">+ ${myFoodText}</div>` : '';
                     card.innerHTML = `
                         <div class="avatar-circle" style="color: var(--neon-blue); border-color: var(--neon-blue);"><span class="material-symbols-outlined" style="font-size: 2rem;">person_check</span></div>
                         <span class="member-name" style="color: var(--neon-blue);">Phần của bạn</span>
                         <span class="member-status" style="color: rgba(255,255,255,0.4); margin-top: 0.25rem;">Ghế ${seatName}</span>
+                        ${foodHtml}
                         <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.75rem; width: 100%; padding: 0 1rem;">
                             <button class="btn-pay-avatar" onclick="openPaymentModal('${seatName}')">THANH TOÁN</button>
                             <button class="btn-cancel-avatar" onclick="cancelSeat('${seatName}')">HỦY GHẾ</button>
@@ -394,6 +421,13 @@
         
         currentlyPayingSeat = seat;
         modalSeatId.textContent = seat;
+        
+        if (myFoodTotal > 0) {
+            document.getElementById('btn-confirm-pay').textContent = `THANH TOÁN (${formatPrice(pricePerSeat + myFoodTotal)})`;
+        } else {
+            document.getElementById('btn-confirm-pay').textContent = `XÁC NHẬN THANH TOÁN (${formatPrice(pricePerSeat)})`;
+        }
+        
         modalBackdrop.classList.add('active');
     }
 
@@ -452,11 +486,13 @@
             // Tạo Return URL có chứa tham số ghế vừa thanh toán
             const currentUrl = new URL(window.location.href);
             currentUrl.searchParams.set('paidSeat', currentlyPayingSeat);
+            currentUrl.searchParams.set('clearFood', 'true');
             const returnUrl = encodeURIComponent(currentUrl.toString());
 
             // Chuyển hướng sang trang VNPay / Momo ảo
             const txId = 'TX-' + Math.random().toString(36).substr(2, 9).toUpperCase();
-            window.location.href = `../checkout/payment_simulation.html?provider=${encodeURIComponent(selectedMethod)}&txId=${txId}&amount=${pricePerSeat}&returnUrl=${returnUrl}`;
+            const totalPay = pricePerSeat + myFoodTotal;
+            window.location.href = `../checkout/payment_simulation.html?provider=${encodeURIComponent(selectedMethod)}&txId=${txId}&amount=${totalPay}&returnUrl=${returnUrl}`;
             
         }, 500); // Simulate short delay before redirect
     });
@@ -586,6 +622,10 @@
     // Init
     loadOrderData();
     renderLobby();
+    
+    document.getElementById('btn-go-food')?.addEventListener('click', () => {
+        window.location.href = `/booking/booking-food/index.html?returnToLobby=${orderId}`;
+    });
     
     // Check if returning from a successful payment caused the order to complete
     checkCompletion();

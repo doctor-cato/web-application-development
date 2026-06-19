@@ -302,5 +302,21 @@
     });
   });
 
+  // Handle returnToLobby
+  const urlParams = new URLSearchParams(window.location.search);
+  const returnToLobby = urlParams.get('returnToLobby');
+  if (returnToLobby) {
+    const btnContinue = document.querySelector('.summary a.btn.primary');
+    if (btnContinue) {
+      btnContinue.textContent = "QUAY LẠI PHÒNG CHỜ";
+      btnContinue.href = `../group-booking/index.html?order=${returnToLobby}`;
+    }
+    const btnBack = document.querySelector('.summary a.btn.ghost');
+    if (btnBack) {
+      btnBack.textContent = "Quay lại phòng chờ";
+      btnBack.href = `../group-booking/index.html?order=${returnToLobby}`;
+    }
+  }
+
   renderAll();
 })();
