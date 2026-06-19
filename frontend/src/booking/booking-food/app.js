@@ -75,7 +75,7 @@
     }
   } else {
     // From Single Booking (checkout flow)
-    const sessionRaw = sessionStorage.getItem('checkoutSessionData');
+    const sessionRaw = sessionStorage.getItem('cinema_checkout');
     if (sessionRaw) {
       try {
         const sd = JSON.parse(sessionRaw);
