@@ -171,33 +171,20 @@
     let myFoodTotal = 0;
     let myFoodText = '';
     
-    // Fake names for gamification when people "join"
-    const friendsNames = ["Anh Dũng", "Phương Thảo", "Hoàng Nam", "Tuấn Tú", "Minh Hằng", "Bảo Châu"];
-
     function loadOrderData() {
         const rawData = localStorage.getItem('splitOrder_' + orderId);
         if (rawData) {
             groupData = JSON.parse(rawData);
         }
 
-        // Fallback for demo/development if no order exists
         if (!groupData) {
-            groupData = {
-                orderId: orderId,
-                checkoutData: {
-                    movieTitle: "JOKER: FOLIE À DEUX (DEMO)",
-                    showtimeText: "Hôm nay, 19:30",
-                    room: "IMAX 2D",
-                    seats: ["H12", "H13", "H14", "H15"],
-                    total: 340000
-                },
-                paidSeats: [],
-                cancelledSeats: []
-            };
-        } else {
-            if (!groupData.paidSeats) groupData.paidSeats = [];
-            if (!groupData.cancelledSeats) groupData.cancelledSeats = [];
+            alert('Phiên giao dịch không tồn tại hoặc đã hết hạn.');
+            window.location.href = "/explore/home-page/index.html";
+            return false;
         }
+        
+        if (!groupData.paidSeats) groupData.paidSeats = [];
+        if (!groupData.cancelledSeats) groupData.cancelledSeats = [];
 
         // ---------------------------------
         // Capture Return from Payment Gateway
@@ -263,6 +250,7 @@
             }
             window.mySeat = mySeat;
         }
+        return true;
     }
 
     function saveOrderData() {
@@ -329,7 +317,7 @@
                         <span class="member-status" style="color: var(--neon-green);">ĐÃ THANH TOÁN</span>
                     `;
                 } else {
-                    const friendName = friendsNames[friendNameIndex % friendsNames.length];
+                    const friendName = "Người chờ " + (friendNameIndex + 1);
                     friendNameIndex++;
                     card.className = 'member-card paid';
                     card.innerHTML = `
@@ -620,15 +608,16 @@
     }
 
     // Init
-    loadOrderData();
-    renderLobby();
-    
-    document.getElementById('btn-go-food')?.addEventListener('click', () => {
-        window.location.href = `/booking/booking-food/index.html?returnToLobby=${orderId}`;
-    });
-    
-    // Check if returning from a successful payment caused the order to complete
-    checkCompletion();
+    if (loadOrderData()) {
+        renderLobby();
+        
+        document.getElementById('btn-go-food')?.addEventListener('click', () => {
+            window.location.href = `/booking/booking-food/index.html?returnToLobby=${orderId}`;
+        });
+        
+        // Check if returning from a successful payment caused the order to complete
+        checkCompletion();
+    }
 </script>
 </body>
 </html>

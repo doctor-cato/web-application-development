@@ -47,13 +47,50 @@
     },
   };
 
-  const order = {
-    movie: 'Dune: Part Two',
-    format: 'IMAX 2D',
-    seats: 'G12, G13, G14',
-    ticketLabel: '3x Vé người lớn',
-    ticketPrice: 450000,
-  };
+  // Load order data dynamically from session
+  const urlParams = new URLSearchParams(window.location.search);
+  const returnToLobby = urlParams.get('returnToLobby');
+
+  let order = { movie: '', format: '', seats: '', ticketLabel: '', ticketPrice: 0 };
+
+  if (returnToLobby) {
+    // From Group Booking Lobby
+    const raw = localStorage.getItem('splitOrder_' + returnToLobby);
+    if (raw) {
+      try {
+        const groupData = JSON.parse(raw);
+        const cd = groupData.checkoutData || {};
+        const mySeat = localStorage.getItem('mySeatForOrder_' + returnToLobby);
+        const activeSeats = (cd.seats || []).filter(s => !(groupData.cancelledSeats || []).includes(s));
+        const activeCount = activeSeats.length || 1;
+        const perSeat = Math.floor((cd.total || 0) / activeCount);
+        order = {
+          movie: cd.movieTitle || '',
+          format: cd.room || '',
+          seats: mySeat || activeSeats[0] || '',
+          ticketLabel: `1x Vé (Ghế ${mySeat || activeSeats[0] || '?'})`,
+          ticketPrice: perSeat,
+        };
+      } catch(e) {}
+    }
+  } else {
+    // From Single Booking (checkout flow)
+    const sessionRaw = sessionStorage.getItem('checkoutSessionData');
+    if (sessionRaw) {
+      try {
+        const sd = JSON.parse(sessionRaw);
+        const seatNames = (sd.seats || []).join(', ');
+        const seatCount = (sd.seats || []).length || 1;
+        order = {
+          movie: sd.movieTitle || '',
+          format: sd.room || '',
+          seats: seatNames,
+          ticketLabel: `${seatCount}x Vé người lớn`,
+          ticketPrice: sd.total || 0,
+        };
+      } catch(e) {}
+    }
+  }
 
   const productIds = Object.keys(products);
   const state = Object.fromEntries(
@@ -302,19 +339,16 @@
     });
   });
 
-  // Handle returnToLobby
-  const urlParams = new URLSearchParams(window.location.search);
-  const returnToLobby = urlParams.get('returnToLobby');
+  // Handle returnToLobby UI changes
   if (returnToLobby) {
     const btnContinue = document.querySelector('.summary a.btn.primary');
     if (btnContinue) {
-      btnContinue.textContent = "QUAY LẠI PHÒNG CHỜ";
+      btnContinue.innerHTML = '<i class="fas fa-check"></i> XÁC NHẬN & VỀ PHÒNG CHỜ';
       btnContinue.href = `../group-booking/index.html?order=${returnToLobby}`;
     }
     const btnBack = document.querySelector('.summary a.btn.ghost');
     if (btnBack) {
-      btnBack.textContent = "Quay lại phòng chờ";
-      btnBack.href = `../group-booking/index.html?order=${returnToLobby}`;
+      btnBack.style.display = 'none';
     }
   }
 
