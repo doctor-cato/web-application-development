@@ -5,6 +5,16 @@
 import { getSeatMap, lockSeat, unlockSeat, subscribeSeatUpdates } from './bookingService.js';
 import { renderSeatGrid, updateSeat, getSelectedSeats, getSeatType, setGroupSize } from '/shared/components/seatGrid.js';
 import { saveCheckout } from '/shared/utils/storage.js';
+import { requireAuth } from '/shared/utils/authGuard.js';
+
+// Kiểm tra đăng nhập ngay khi tải trang chọn ghế
+if (!requireAuth('Bạn cần đăng nhập để đặt vé xem phim. Hãy đăng nhập hoặc tạo tài khoản để tiếp tục.')) {
+    // Chặn toàn bộ giao diện, user sẽ thấy modal
+    document.addEventListener('DOMContentLoaded', () => {
+        const main = document.querySelector('main');
+        if (main) main.style.filter = 'blur(5px)';
+    });
+}
 
 const PRICING = {
   weekday: { regular: 50000, vip: 65000, couple: 100000 },

@@ -47,6 +47,7 @@
     },
   };
 
+<<<<<<< HEAD
   // Load order data dynamically from session
   const urlParams = new URLSearchParams(window.location.search);
   const returnToLobby = urlParams.get('returnToLobby');
@@ -92,10 +93,48 @@
     }
   }
 
+=======
+>>>>>>> 166847a (Update frontend features (booking, explore, user notifications) and add auth guards)
   const productIds = Object.keys(products);
   const state = Object.fromEntries(
     productIds.map((id) => [id, { added: false, qty: 1 }]),
   );
+
+  let order = {
+    movie: 'Chưa chọn phim',
+    format: '',
+    seats: '',
+    ticketLabel: '0x Vé',
+    ticketPrice: 0,
+  };
+
+  try {
+    const checkoutDataStr = sessionStorage.getItem('cinema_checkout');
+    if (checkoutDataStr) {
+      const checkoutData = JSON.parse(checkoutDataStr);
+      const seatsCount = checkoutData.seats ? checkoutData.seats.length : 0;
+      order = {
+        movie: checkoutData.movieTitle || 'Chưa chọn phim',
+        format: checkoutData.room || '',
+        seats: checkoutData.seats ? checkoutData.seats.join(', ') : '',
+        ticketLabel: `${seatsCount}x Vé`,
+        ticketPrice: checkoutData.seatTotal || checkoutData.seatAmount || checkoutData.total || 0,
+      };
+    }
+    
+    const checkoutFoodStr = localStorage.getItem('checkoutFood');
+    if (checkoutFoodStr) {
+        const foodArr = JSON.parse(checkoutFoodStr);
+        foodArr.forEach(item => {
+            if (state[item.id]) {
+                state[item.id].added = true;
+                state[item.id].qty = item.qty;
+            }
+        });
+    }
+  } catch (e) {
+    console.error('Lỗi khi tải dữ liệu từ localStorage', e);
+  }
 
   const money = (value) => `${new Intl.NumberFormat('vi-VN').format(value)}đ`;
 
@@ -339,6 +378,7 @@
     });
   });
 
+<<<<<<< HEAD
   // Handle returnToLobby UI changes
   if (returnToLobby) {
     const btnContinue = document.querySelector('.summary a.btn.primary');
@@ -350,6 +390,26 @@
     if (btnBack) {
       btnBack.style.display = 'none';
     }
+=======
+  const checkoutBtn = document.querySelector('.btn.primary');
+  if (checkoutBtn) {
+    checkoutBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const cart = [];
+      productIds.forEach(id => {
+          if (state[id].added) {
+              cart.push({
+                  id: id,
+                  name: products[id].name,
+                  price: products[id].price,
+                  qty: state[id].qty
+              });
+          }
+      });
+      localStorage.setItem('checkoutFood', JSON.stringify(cart));
+      window.location.href = checkoutBtn.getAttribute('href');
+    });
+>>>>>>> 166847a (Update frontend features (booking, explore, user notifications) and add auth guards)
   }
 
   renderAll();

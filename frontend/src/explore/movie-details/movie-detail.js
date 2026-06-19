@@ -300,8 +300,10 @@ function renderCinemaShowtimes() {
 
 function handleBooking(event, cinemaName, format, time) {
     event.preventDefault();
+    if (!window.requireAuth('Bạn cần đăng nhập để đặt vé xem phim. Hãy đăng nhập hoặc tạo tài khoản để tiếp tục.')) return;
     showToast(`🎬 Đang chuyển đến trang đặt vé: ${cinemaName} — ${format} lúc ${time}`);
     setTimeout(() => {
+        localStorage.removeItem('checkoutFood');
         window.location.href = `/booking/seat-booking/booking.html?id=${currentMovie.id}&showtimeId=${time}`;
     }, 1500);
 }

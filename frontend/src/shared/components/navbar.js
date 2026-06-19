@@ -1112,6 +1112,8 @@ export function renderNavbar() {
             qbSubmit.addEventListener('click', () => {
                 const showtime = qbShowtime.value;
                 if (selectedMovieId && showtime) {
+                    if (window.requireAuth && !window.requireAuth('Bạn cần đăng nhập để đặt vé xem phim. Hãy đăng nhập hoặc tạo tài khoản để tiếp tục.')) return;
+                    localStorage.removeItem('checkoutFood'); // Clear custom food state for new booking
                     window.location.href = `${srcPrefix}/booking/seat-booking/booking.html?id=${selectedMovieId}&showtimeId=${showtime}`; 
                 }
             });
@@ -1166,43 +1168,20 @@ export function renderNavbar() {
                 const loggedInHtml = `
                     <div class="notif-btn" id="notif-btn">
                         <i class="fas fa-bell"></i>
-                        <span class="notif-dot" id="notif-dot"></span>
+                        <span class="notif-dot" id="notif-dot" style="display: none;"></span>
                         <!-- Dropdown -->
                         <div class="notif-dropdown" id="notif-dropdown">
                             <div class="notif-header">
                                 <span class="notif-title">Thông báo</span>
                                 <button class="notif-mark-all" id="notif-mark-all">Đánh dấu tất cả đã đọc</button>
                             </div>
-                            <ul class="notif-list">
-                                <li class="notif-item unread">
-                                    <div class="notif-icon-wrap red"><i class="fas fa-ticket-alt"></i></div>
-                                    <div class="notif-body">
-                                        <p class="notif-text"><strong>Đặt vé thành công!</strong> F1: The Movie – Suất 20:00, 15/06/2026</p>
-                                        <span class="notif-time">2 phút trước</span>
-                                    </div>
-                                </li>
-                                <li class="notif-item unread">
-                                    <div class="notif-icon-wrap yellow"><i class="fas fa-star"></i></div>
-                                    <div class="notif-body">
-                                        <p class="notif-text"><strong>Phim mới ra mắt!</strong> War Machine (2026) đang chiếu tại 3HD2K</p>
-                                        <span class="notif-time">1 giờ trước</span>
-                                    </div>
-                                </li>
-                                <li class="notif-item">
-                                    <div class="notif-icon-wrap blue"><i class="fas fa-tag"></i></div>
-                                    <div class="notif-body">
-                                        <p class="notif-text"><strong>Khuyến mãi:</strong> Mua 2 tặng 1 vé bắp mỗi thứ 4 hàng tuần</p>
-                                        <span class="notif-time">Hôm qua</span>
-                                    </div>
-                                </li>
-                                <li class="notif-item">
-                                    <div class="notif-icon-wrap red"><i class="fas fa-film"></i></div>
-                                    <div class="notif-body">
-                                        <p class="notif-text"><strong>Nhắc nhở:</strong> Phim bạn quan tâm – Gran Turismo sắp chiếu vào 20/06</p>
-                                        <span class="notif-time">2 ngày trước</span>
-                                    </div>
-                                </li>
+                            <ul class="notif-list" id="nav-notif-list">
+                                <!-- Dynamic items rendered here -->
                             </ul>
+                            <div class="notif-empty" id="nav-notif-empty" style="display: none; flex-direction: column; align-items: center; padding: 30px 20px; color: rgba(255,255,255,0.4); text-align: center;">
+                                <i class="far fa-bell-slash" style="font-size: 2rem; margin-bottom: 10px; color: rgba(255,255,255,0.2);"></i>
+                                <p style="font-size: 0.9rem; margin: 0;">Không có thông báo mới</p>
+                            </div>
                             <a href="${srcPrefix}/user/user-notifications/index.html" class="notif-view-all">Xem tất cả thông báo <i class="fas fa-chevron-right"></i></a>
                         </div>
                     </div>
@@ -1408,19 +1387,104 @@ export function renderNavbar() {
             }
         });
 
-        // --- MARK ALL AS READ ---
-        const markAllBtnNav = document.getElementById('notif-mark-all');
+        // --- DYNAMIC NOTIFICATIONS LOGIC ---
+        function formatRelativeTime(timestamp) {
+            const diffMs = Date.now() - timestamp;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+            const diffDays = Math.floor(diffMs / 86400000);
+
+            if (diffMins < 1) return 'Vừa xong';
+            if (diffMins < 60) return `${diffMins} phút trước`;
+            if (diffHours < 24) return `${diffHours} giờ trước`;
+            if (diffDays === 1) return 'Hôm qua';
+            if (diffDays < 7) return `${diffDays} ngày trước`;
+            
+            const d = new Date(timestamp);
+            return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+        }
+
+        function getNotifIcon(category) {
+            if (category === 'booking') return { wrap: 'red', icon: 'fas fa-ticket-alt' };
+            if (category === 'movie') return { wrap: 'yellow', icon: 'fas fa-star' };
+            if (category === 'promo') return { wrap: 'blue', icon: 'fas fa-tag' };
+            return { wrap: 'gray', icon: 'fas fa-bell' };
+        }
+
+        const navNotifList = document.getElementById('nav-notif-list');
+        const navNotifEmpty = document.getElementById('nav-notif-empty');
         const notifDot = document.getElementById('notif-dot');
-        const notifItems = document.querySelectorAll('.notif-item');
+        const markAllBtnNav = document.getElementById('notif-mark-all');
+
+        function updateNavNotifications() {
+            if (!navNotifList) return;
+            
+            // Initialize if not present
+            let notifsStr = localStorage.getItem('3hd2k_notifications');
+            if (!notifsStr) {
+                // To meet user requirement: start completely empty. 
+                // Only populated via purchases or external triggers.
+                localStorage.setItem('3hd2k_notifications', JSON.stringify([]));
+                notifsStr = '[]';
+            }
+
+            let notifs = [];
+            try {
+                notifs = JSON.parse(notifsStr);
+            } catch (e) {
+                notifs = [];
+            }
+
+            // Sort by timestamp desc
+            notifs.sort((a, b) => b.timestamp - a.timestamp);
+
+            const unreadCount = notifs.filter(n => n.unread).length;
+            if (notifDot) {
+                notifDot.style.display = unreadCount > 0 ? 'block' : 'none';
+            }
+
+            if (notifs.length === 0) {
+                navNotifList.style.display = 'none';
+                if (navNotifEmpty) navNotifEmpty.style.display = 'flex';
+            } else {
+                navNotifList.style.display = 'block';
+                if (navNotifEmpty) navNotifEmpty.style.display = 'none';
+
+                navNotifList.innerHTML = notifs.map(n => {
+                    const iconInfo = getNotifIcon(n.category);
+                    return `
+                        <li class="notif-item ${n.unread ? 'unread' : ''}" data-id="${n.id}">
+                            <div class="notif-icon-wrap ${iconInfo.wrap}"><i class="${iconInfo.icon}"></i></div>
+                            <div class="notif-body">
+                                <p class="notif-text"><strong>${n.title}</strong> ${n.text}</p>
+                                <span class="notif-time">${formatRelativeTime(n.timestamp)}</span>
+                            </div>
+                        </li>
+                    `;
+                }).join('');
+            }
+        }
+
+        // Initial render
+        updateNavNotifications();
+        window.updateNavNotifications = updateNavNotifications;
 
         if (markAllBtnNav) {
             markAllBtnNav.addEventListener('click', (e) => {
                 e.preventDefault(); 
                 e.stopPropagation(); 
-                notifItems.forEach(item => item.classList.remove('unread'));
-                if (notifDot) notifDot.style.display = 'none';
+                
+                try {
+                    let notifs = JSON.parse(localStorage.getItem('3hd2k_notifications') || '[]');
+                    notifs.forEach(n => n.unread = false);
+                    localStorage.setItem('3hd2k_notifications', JSON.stringify(notifs));
+                    updateNavNotifications();
+                } catch (e) {
+                    console.error('Error marking all as read', e);
+                }
             });
         }
+
 
     }, 0);
 }
