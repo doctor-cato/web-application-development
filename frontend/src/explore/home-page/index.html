@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3HD2K - Premium Cinematic Experience</title>
     <link rel="stylesheet" href="/shared/css/main.css">
-    <link rel="stylesheet" href="/explore/home-page/home.css">
+    <link rel="stylesheet" href="/explore/home-page/home.css?v=5">
     <!-- Load custom fonts: Bebas Neue for Headings, Inter for Body -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,6 +19,12 @@
     <main>
         <!-- HERO SECTION -->
         <section class="hero" id="hero-section">
+            <div class="hero-hover-zone left-zone" id="hero-prev">
+                <i class="fas fa-chevron-left hero-nav-icon"></i>
+            </div>
+            <div class="hero-hover-zone right-zone" id="hero-next">
+                <i class="fas fa-chevron-right hero-nav-icon"></i>
+            </div>
             <div class="hero-content" id="hero-content" style="transition: opacity 0.5s ease;">
                 <span class="age-rating" id="hero-age">T13</span>
                 <h1 class="movie-title" id="hero-title">YOUR NAME - TÊN CẬU LÀ GÌ?</h1>
@@ -215,15 +221,6 @@
 
         <!-- FEATURE ZONES -->
         <section class="features-section">
-            <!-- After-Credit Lounge -->
-            <div class="feature-card aftercredit glass-panel">
-                <div class="feature-content">
-                    <i class="far fa-comments feature-icon"></i>
-                    <h2 class="feature-title">AFTER-CREDIT LOUNGE</h2>
-                    <p>Thảo luận về những cú twist, giả thuyết và easter eggs sau khi xem phim.</p>
-                    <a href="/engagement/aftercredit-lounge/index.html" class="btn btn-outline-small">Tham gia ngay</a>
-                </div>
-            </div>
             <!-- Cine Predict -->
             <div class="feature-card cinepredict glass-panel" style="background: linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0.2)), url('/engagement/minigame/images/cine_predict_hero_2.png') center/cover no-repeat;">
                 <div class="feature-content">
@@ -287,6 +284,6 @@
     <script src="/shared/js/data.js"></script>
     <script src="/shared/js/main.js"></script>
     <script src="/shared/utils/authGuard-global.js"></script>
-    <script src="/explore/home-page/home.js"></script>
+    <script src="/explore/home-page/home.js?v=5"></script>
 </body>
 </html>

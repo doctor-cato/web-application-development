@@ -20,9 +20,7 @@ export function renderFooter() {
                 <div class="link-column">
                     <h4 style="font-family: 'Inter', sans-serif; font-size: 0.75rem; font-weight: bold; letter-spacing: 1px; margin-bottom: 20px;">KHÁM PHÁ</h4>
                     <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px;">
-                        <li><a href="/engagement/dating/index.html" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s; font-family: 'Inter', sans-serif;">Cine Match</a></li>
-                        <li><a href="/engagement/minigame/index.html" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s; font-family: 'Inter', sans-serif;">Cine Bet</a></li>
-                        <li><a href="/engagement/aftercredit-lounge/index.html" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s; font-family: 'Inter', sans-serif;">Thảo luận đánh giá phim</a></li>
+                        <li><a href="/engagement/minigame/index.html" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s; font-family: 'Inter', sans-serif;">CINE PREDICT</a></li>
                         <li><a href="/booking/group-booking/index.html" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s; font-family: 'Inter', sans-serif;">Đặt ghế nhóm</a></li>
                         <li><a href="/wip.html" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s; font-family: 'Inter', sans-serif;">Khuyến mãi</a></li>
                     </ul>

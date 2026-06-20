@@ -49,10 +49,55 @@
                 </div>
             </div>
             
-            <div class="panel-section">
-                <h3 class="panel-title"><span class="material-symbols-outlined" style="margin-right: 12px; font-size: 2.2rem; color: var(--primary-red);">fastfood</span> ĐỒ ĂN THỨC UỐNG</h3>
-                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem; line-height: 1.4;">Nhâm nhi bắp nước trong lúc xem phim? Tự chọn phần cho riêng mình, không chung đụng với ai!</p>
-                <button class="btn-outline" id="btn-go-food" style="width: 100%; border: 1px solid var(--neon-blue); color: var(--neon-blue); padding: 0.75rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s; background: transparent;"><i class="fas fa-popcorn"></i> XEM MENU BẮP NƯỚC</button>
+            <div class="panel-section food-beverage-panel">
+                <!-- Decorative element -->
+                <div class="fb-decor-circle"></div>
+                
+                <h3 class="panel-title fb-panel-title">
+                    <span style="display: flex; align-items: center;">
+                        <span class="material-symbols-outlined fb-icon">fastfood</span> 
+                        <span style="font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 1px;">ĐỒ ĂN THỨC UỐNG</span>
+                    </span>
+                    <span class="fb-hot-deal">HOT DEAL</span>
+                </h3>
+                
+                <p class="fb-subtitle">Tiết kiệm hơn 20% khi đặt trước Combo. Phục vụ tận ghế, không lo xếp hàng!</p>
+                
+                <!-- Quick Combo Cards -->
+                <div class="quick-combos-container">
+                    
+                    <!-- Combo 1 -->
+                    <div class="combo-card">
+                        <div class="combo-image-wrapper">
+                            <img src="/shared/images/combo_single.png" alt="Combo Single" onerror="this.src='/shared/images/food_popcorn.png'">
+                        </div>
+                        <h4>Combo Một Mình</h4>
+                        <p>1 Bắp lớn + 1 Nước ngọt</p>
+                        <div class="combo-action">
+                            <span class="combo-price">85.000₫</span>
+                            <button class="btn-add-combo" onclick="addQuickCombo('combo_single', 'Combo Một Mình', 85000, 1)"><i class="fas fa-plus"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Combo 2 -->
+                    <div class="combo-card combo-featured">
+                        <div class="combo-badge">BÁN CHẠY</div>
+                        <div class="combo-image-wrapper">
+                            <img src="/shared/images/combo_double.png" alt="Combo Double" onerror="this.src='/shared/images/food_popcorn.png'" style="transform: scale(1.15);">
+                        </div>
+                        <h4>Combo Cặp Đôi</h4>
+                        <p>1 Bắp cực đại + 2 Nước</p>
+                        <div class="combo-action">
+                            <span class="combo-price">110.000₫</span>
+                            <button class="btn-add-combo featured-btn" onclick="addQuickCombo('combo_double', 'Combo Cặp Đôi', 110000, 1)"><i class="fas fa-plus"></i></button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <button class="btn-outline" id="btn-go-food" style="width: 100%; border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.8); padding: 0.8rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s; background: rgba(0,0,0,0.3); font-size: 0.9rem;">
+                    <i class="fas fa-list" style="margin-right: 5px;"></i> XEM MENU ĐẦY ĐỦ
+                </button>
             </div>
 
             <div class="panel-section">
@@ -519,6 +564,32 @@
             setTimeout(() => toast.remove(), 300);
         }, 3000);
     }
+    
+    // Expose showToast to window for inline onclick handlers
+    window.showToast = showToast;
+
+    window.addQuickCombo = function(id, name, price, qty) {
+        let foodStr = localStorage.getItem('selectedFood');
+        let items = [];
+        if (foodStr) {
+            try { items = JSON.parse(foodStr); } catch(e) {}
+        }
+        
+        let existing = items.find(i => i.id === id);
+        if (existing) {
+            existing.qty += qty;
+        } else {
+            items.push({ id, name, price, qty, image: '' });
+        }
+        
+        localStorage.setItem('selectedFood', JSON.stringify(items));
+        
+        showToast('Đã thêm ' + name, 'success');
+        
+        // Reload data to update UI
+        loadOrderData();
+        renderLobby();
+    };
 
     const cancelModalBackdrop = document.getElementById('cancel-modal-backdrop');
     const btnAbortCancel = document.getElementById('btn-abort-cancel');

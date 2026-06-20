@@ -62,6 +62,50 @@
     gap: 14px;
 }
 
+/* --- INVISIBLE HOVER ZONES (NETFLIX STYLE) --- */
+.hero-hover-zone {
+    position: absolute;
+    top: 0;
+    bottom: 80px; /* Tránh đè lên phần padding dưới và filter */
+    width: 15%;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.hero-hover-zone.left-zone {
+    left: 0;
+    background: linear-gradient(to right, rgba(0,0,0,0.6), transparent);
+}
+
+.hero-hover-zone.right-zone {
+    right: 0;
+    background: linear-gradient(to left, rgba(0,0,0,0.6), transparent);
+}
+
+.hero-hover-zone:hover {
+    opacity: 1;
+}
+
+.hero-nav-icon {
+    color: white;
+    font-size: 3.5rem;
+    opacity: 0.6;
+    transition: transform 0.3s ease, opacity 0.3s;
+}
+
+.hero-hover-zone:hover .hero-nav-icon {
+    transform: scale(1.2);
+    opacity: 1;
+}
+
+
+
+
 /* --- FILTER BAR --- */
 .filters-container {
     padding: 0 var(--page-padding);

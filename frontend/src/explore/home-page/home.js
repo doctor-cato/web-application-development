@@ -34,8 +34,8 @@ if (btnBookNow) {
     });
 }
 
-function changeHeroSlide() {
-    currentHeroIndex = (currentHeroIndex + 1) % heroMovies.length;
+function changeHeroSlide(direction = 1) {
+    currentHeroIndex = (currentHeroIndex + direction + heroMovies.length) % heroMovies.length;
     const movie = heroMovies[currentHeroIndex];
 
     // Fade out
@@ -67,11 +67,32 @@ function changeHeroSlide() {
 
         // Fade in
         heroContent.style.opacity = 1;
+        heroContent.style.transform = 'translateX(0)';
     }, 500);
 }
 
 // Auto rotate every 5 seconds
-let slideInterval = setInterval(changeHeroSlide, 5000);
+let slideInterval = setInterval(() => changeHeroSlide(1), 5000);
+
+function resetSlideInterval() {
+    clearInterval(slideInterval);
+    slideInterval = setInterval(() => changeHeroSlide(1), 5000);
+}
+
+// --- MANUAL SLIDE LOGIC (HOVER ZONES) ---
+const btnPrev = document.getElementById('hero-prev');
+const btnNext = document.getElementById('hero-next');
+
+if (btnPrev && btnNext) {
+    btnPrev.addEventListener('click', () => {
+        changeHeroSlide(-1);
+        resetSlideInterval();
+    });
+    btnNext.addEventListener('click', () => {
+        changeHeroSlide(1);
+        resetSlideInterval();
+    });
+}
 
 // --- TRAILER MODAL LOGIC ---
 

@@ -642,3 +642,4 @@ if (typeof comingSoonMovies !== 'undefined') comingSoonMovies.forEach(m => { m.p
 if (typeof heroMovies !== 'undefined') window.heroMovies = heroMovies;
 if (typeof nowShowingMovies !== 'undefined') window.nowShowingMovies = nowShowingMovies;
 if (typeof comingSoonMovies !== 'undefined') window.comingSoonMovies = comingSoonMovies;
+if (typeof allMoviesData !== 'undefined') window.allMoviesData = allMoviesData;

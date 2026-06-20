@@ -746,3 +746,164 @@ body {
     .members-grid { grid-template-columns: repeat(2, 1fr); }
     .hero-title { font-size: 3.5rem; }
 }
+
+/* --- Ð? ÃN TH?C U?NG PANEL UPGRADE --- */
+.food-beverage-panel {
+    background: linear-gradient(135deg, rgba(20,20,30,0.8), rgba(10,10,15,0.9));
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 12px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+}
+.fb-decor-circle {
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 150px;
+    height: 150px;
+    background: radial-gradient(circle, rgba(229, 9, 20, 0.2) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+}
+.fb-panel-title {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.fb-icon {
+    color: #ffb400;
+    text-shadow: 0 0 10px rgba(255,180,0,0.5);
+    margin-right: 12px;
+    font-size: 2.2rem;
+}
+.fb-hot-deal {
+    font-size: 0.75rem;
+    background: rgba(255,180,0,0.2);
+    color: #ffb400;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+.fb-subtitle {
+    color: rgba(255,255,255,0.6);
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.4;
+}
+.quick-combos-container {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+.combo-card {
+    flex: 1;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    padding: 12px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+}
+.combo-card:hover {
+    background: rgba(255,255,255,0.05);
+    border-color: rgba(255,255,255,0.2);
+    transform: translateY(-3px);
+}
+.combo-featured {
+    background: rgba(229,9,20,0.05);
+    border: 1px solid rgba(229,9,20,0.3);
+}
+.combo-featured:hover {
+    background: rgba(229,9,20,0.08);
+    border-color: rgba(229,9,20,0.5);
+    box-shadow: 0 5px 15px rgba(229,9,20,0.2);
+}
+.combo-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: var(--primary-red);
+    color: white;
+    font-size: 0.65rem;
+    font-weight: bold;
+    padding: 3px 8px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+.combo-image-wrapper {
+    height: 80px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+.combo-image-wrapper img {
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 5px 10px rgba(0,0,0,0.5));
+    transition: transform 0.3s ease;
+}
+.combo-card:hover .combo-image-wrapper img {
+    transform: scale(1.1) !important;
+}
+.combo-card h4 {
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+    color: #fff;
+    font-weight: 600;
+}
+.combo-card p {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+}
+.combo-action {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: auto;
+}
+.combo-price {
+    font-weight: 700;
+    color: #ffb400;
+    font-size: 1.1rem;
+}
+.btn-add-combo {
+    background: rgba(229, 9, 20, 0.1);
+    color: var(--primary-red);
+    border: 1px solid var(--primary-red);
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.btn-add-combo:hover {
+    background: var(--primary-red);
+    color: white;
+    box-shadow: 0 0 10px rgba(229,9,20,0.4);
+}
+.featured-btn {
+    background: var(--primary-red);
+    color: white;
+    border: none;
+    box-shadow: 0 0 10px rgba(229,9,20,0.4);
+}
+.featured-btn:hover {
+    background: white;
+    color: var(--primary-red);
+}
+

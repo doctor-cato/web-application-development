@@ -78,8 +78,7 @@
         'Giảm 20% combo',
         'Suất chiếu riêng',
         'Quà sinh nhật đặc biệt',
-        'Vé IMAX miễn phí',
-        'Trải nghiệm After-Credit Lounge VIP'
+        'Vé IMAX miễn phí'
       ]
     }
   ];

@@ -82,8 +82,7 @@ npm run dev
 | 16| ✅ Hoàn thành | Hệ thống tích điểm & cấp bậc thành viên | `frontend/src/user/loyalty-points/` |
 | 17| ✅ Hoàn thành | Đăng ký thành viên VIP | `frontend/src/user/vip-registration/` |
 | 18| ✅ Hoàn thành | Trung tâm thông báo | `frontend/src/user/user-notifications/` |
-| 19| ✅ Hoàn thành | After-Credit Lounge (thảo luận phim) | `frontend/src/engagement/aftercredit-lounge/` |
-| 20| ✅ Hoàn thành | Cinebet Minigame | `frontend/src/engagement/minigame/` |
+| 19| ✅ Hoàn thành | Cinebet Minigame | `frontend/src/engagement/minigame/` |
 
 ## Tài liệu Dự Án
 
