@@ -5,6 +5,16 @@
 import { getSeatMap, lockSeat, unlockSeat, subscribeSeatUpdates } from './bookingService.js';
 import { renderSeatGrid, updateSeat, getSelectedSeats, getSeatType, setGroupSize } from '/shared/components/seatGrid.js';
 import { saveCheckout } from '/shared/utils/storage.js';
+import { requireAuth } from '/shared/utils/authGuard.js';
+
+// Kiểm tra đăng nhập ngay khi tải trang chọn ghế
+if (!requireAuth('Bạn cần đăng nhập để đặt vé xem phim. Hãy đăng nhập hoặc tạo tài khoản để tiếp tục.')) {
+    // Chặn toàn bộ giao diện, user sẽ thấy modal
+    document.addEventListener('DOMContentLoaded', () => {
+        const main = document.querySelector('main');
+        if (main) main.style.filter = 'blur(5px)';
+    });
+}
 
 const PRICING = {
   weekday: { regular: 50000, vip: 65000, couple: 100000 },
@@ -144,7 +154,7 @@ function handleSeatSelect(seatId) {
     updateSeat(seatId, 'locked');
   } else {
     updateSummary();
-    if (!countdownTimer) startCountdown(5 * 60);
+    if (!countdownTimer) startCountdown(15 * 60);
   }
 }
 
@@ -251,7 +261,16 @@ function handleContinue() {
     alert('Vui lòng chọn ít nhất 1 ghế để tiếp tục.');
     return;
   }
+
+  const isGroupToggleOn = document.getElementById('toggle-group-booking')?.checked || false;
   
+  if (isGroupToggleOn && seats.length < 2) {
+    alert('Vui lòng chọn ít nhất 2 ghế để sử dụng đặt vé nhóm.');
+    return;
+  }
+  
+  const isGroup = isGroupToggleOn && seats.length >= 2;
+
   const checkoutData = {
     showtimeId: currentShowtimeId,
     movieTitle: movieData.title,
@@ -263,14 +282,36 @@ function handleContinue() {
     selectedSeats: seats,
     seats: seats, // for checkout.js
     seatTotal: calculateTotal(),
-    isGroupBooking: document.getElementById('toggle-group-booking')?.checked || false,
+    isGroupBooking: isGroup,
     seatAmount: calculateTotal(), // for checkout.js
     total: calculateTotal(), // for checkout.js
-    expiresAt: Date.now() + 5 * 60 * 1000 // 5 mins
+    expiresAt: Date.now() + 15 * 60 * 1000 // 15 mins
   };
   
   saveCheckout(checkoutData);
-  window.location.href = '../checkout/checkout.html';
+
+  if (isGroup) {
+      // Tự động khởi tạo phiên Split Pay và bay thẳng vào Lobby
+      const orderId = 'SPLIT-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+      const splitData = {
+          orderId: orderId,
+          checkoutData: checkoutData,
+          customFood: '[]', // Tạm thời bỏ qua Bắp Nước khi đi thẳng vào Lobby
+          status: 'PENDING',
+          paidSeats: [],
+          cancelledSeats: []
+      };
+      localStorage.setItem('splitOrder_' + orderId, JSON.stringify(splitData));
+      
+      // Gán ghế đầu tiên cho Host
+      localStorage.setItem('mySeatForOrder_' + orderId, seats[0]);
+      
+      // Chuyển hướng thẳng vào phòng chờ
+      window.location.href = '../group-booking/index.html?order=' + orderId;
+  } else {
+      // Mua 1 ghế bình thường thì đi qua Checkout để chọn Bắp nước
+      window.location.href = '../checkout/checkout.html';
+  }
 }
 
 document.addEventListener('DOMContentLoaded', init);

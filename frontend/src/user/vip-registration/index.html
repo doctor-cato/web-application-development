@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng ký Thành viên VIP - 3HD2K Cinema</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="../../shared/css/main.css">
+    <link rel="stylesheet" href="styles.css">
+    <!-- Scripts -->
+    <script type="module" src="app.js" defer></script>
+</head>
+<body>
+    <div class="app">
+        <!-- Navbar placeholder -->
+        <div id="navbar-placeholder"></div>
+
+        <main class="vip-main">
+            <!-- HERO HEADER -->
+            <section class="vip-hero text-center">
+                <div class="glow-orb"></div>
+                <span class="vip-badge-top"><i class="fas fa-crown"></i> 3HD2K PREMIUM</span>
+                <h1 class="vip-title">NÂNG CẤP THÀNH VIÊN VIP</h1>
+                <p class="vip-subtitle">Mở khóa các đặc quyền độc bản, nhân đôi điểm thưởng và tận hưởng dịch vụ rạp phim đẳng cấp hàng đầu.</p>
+            </section>
+
+            <!-- TIER CARDS GRID -->
+            <section class="vip-plans-section">
+                <div class="plans-grid">
+                    <!-- Silver Card -->
+                    <div class="plan-card" data-plan="silver">
+                        <div class="plan-badge">HẠNG BẠC</div>
+                        <h2 class="plan-name">VIP Silver</h2>
+                        <div class="plan-price">Miễn phí <span>/ nâng cấp từ 100 PTS</span></div>
+                        <p class="plan-desc">Hoàn hảo cho khán giả xem phim phổ thông muốn bắt đầu tích lũy điểm thưởng nhiều hơn.</p>
+                        <ul class="plan-features">
+                            <li><i class="fas fa-check"></i> Tích điểm 1.2x cho mỗi giao dịch</li>
+                            <li><i class="fas fa-check"></i> Nhận thông báo sớm các chương trình ưu đãi</li>
+                            <li><i class="fas fa-check"></i> Quà tặng sinh nhật thành viên</li>
+                        </ul>
+                        <button class="btn-select-plan select-silver" type="button">CHỌN GÓI BẠC</button>
+                    </div>
+
+                    <!-- Gold Card (Featured) -->
+                    <div class="plan-card featured" data-plan="gold">
+                        <div class="plan-badge">PHỔ BIẾN NHẤT</div>
+                        <h2 class="plan-name"><i class="fas fa-crown" style="color: #ffd700;"></i> VIP Gold</h2>
+                        <div class="plan-price">99.000đ <span>/ tháng</span></div>
+                        <p class="plan-desc">Dành cho những người yêu điện ảnh thực thụ, muốn có trải nghiệm trọn vẹn nhất.</p>
+                        <ul class="plan-features">
+                            <li><i class="fas fa-check"></i> Tích điểm 1.5x cho mỗi giao dịch</li>
+                            <li><i class="fas fa-check"></i> 1 Phần bắp + nước miễn phí mỗi tháng</li>
+                            <li><i class="fas fa-check"></i> Giảm 5% giá vé khi mua trực tuyến</li>
+                            <li><i class="fas fa-check"></i> Lối đi ưu tiên tại quầy vé & bắp nước</li>
+                        </ul>
+                        <button class="btn-select-plan select-gold active" type="button">CHỌN GÓI VÀNG</button>
+                    </div>
+
+                    <!-- Platinum Card -->
+                    <div class="plan-card" data-plan="platinum">
+                        <div class="plan-badge">THƯỢNG HẠNG</div>
+                        <h2 class="plan-name">VIP Platinum</h2>
+                        <div class="plan-price">199.000đ <span>/ tháng</span></div>
+                        <p class="plan-desc">Đặc quyền tối thượng dành cho khách hàng VIP muốn trải nghiệm dịch vụ sang trọng bậc nhất.</p>
+                        <ul class="plan-features">
+                            <li><i class="fas fa-check"></i> Tích điểm 2.0x cho mỗi giao dịch</li>
+                            <li><i class="fas fa-check"></i> 2 Vé xem phim miễn phí (2D/3D/IMAX) mỗi tháng</li>
+                            <li><i class="fas fa-check"></i> Giảm 10% giá vé và toàn bộ dịch vụ đi kèm</li>
+                            <li><i class="fas fa-check"></i> Miễn phí sử dụng phòng chờ VIP Lounge</li>
+                            <li><i class="fas fa-check"></i> Đặt trước ghế đẹp không tính thêm phí</li>
+                        </ul>
+                        <button class="btn-select-plan select-platinum" type="button">CHỌN GÓI BẠCH KIM</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- REGISTRATION FORM SECTION -->
+            <section class="vip-form-section glass-panel" id="checkout-section">
+                <h2 class="form-title text-center">THÔNG TIN ĐĂNG KÝ</h2>
+                <p class="form-subtitle text-center">Gói đã chọn: <strong id="selected-plan-display">VIP Gold (99.000đ/tháng)</strong></p>
+
+                <form id="vipRegisterForm" class="vip-form">
+                    <!-- Form Grid -->
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="fullname">Họ và tên</label>
+                            <div class="input-icon-wrapper">
+                                <i class="fas fa-user"></i>
+                                <input type="text" id="fullname" placeholder="Nguyễn Văn A" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Địa chỉ Email</label>
+                            <div class="input-icon-wrapper">
+                                <i class="fas fa-envelope"></i>
+                                <input type="email" id="email" placeholder="example@email.com" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone">Số điện thoại</label>
+                            <div class="input-icon-wrapper">
+                                <i class="fas fa-phone"></i>
+                                <input type="tel" id="phone" placeholder="0987654321" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="membership-id">Mã thành viên (nếu có)</label>
+                            <div class="input-icon-wrapper">
+                                <i class="fas fa-id-card"></i>
+                                <input type="text" id="membership-id" placeholder="3HD2K-XXXXXX">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Selector -->
+                    <div class="payment-method-selector">
+                        <label class="section-label">Phương thức thanh toán</label>
+                        <div class="payment-options">
+                            <label class="pay-option active">
+                                <input type="radio" name="payment" value="momo" checked>
+                                <img src="https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png" alt="MoMo">
+                                <span>Ví MoMo</span>
+                            </label>
+                            <label class="pay-option">
+                                <input type="radio" name="payment" value="zalopay">
+                                <img src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-ZaloPay-Square.png" alt="ZaloPay">
+                                <span>Ví ZaloPay</span>
+                            </label>
+                            <label class="pay-option">
+                                <input type="radio" name="payment" value="card">
+                                <i class="fas fa-credit-card" style="color: #0077ff; font-size: 1.5rem;"></i>
+                                <span>Thẻ Visa/Master</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Credit Card Details (Conditional) -->
+                    <div class="credit-card-details" id="card-details" style="display: none;">
+                        <div class="card-grid">
+                            <div class="form-group span-2">
+                                <label for="card-number">Số thẻ</label>
+                                <div class="input-icon-wrapper">
+                                    <i class="fas fa-credit-card"></i>
+                                    <input type="text" id="card-number" placeholder="4111 2222 3333 4444">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="card-expiry">Ngày hết hạn</label>
+                                <input type="text" id="card-expiry" placeholder="MM/YY">
+                            </div>
+                            <div class="form-group">
+                                <label for="card-cvv">Mã CVV</label>
+                                <input type="password" id="card-cvv" placeholder="•••">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn-vip-submit">
+                        <span id="btn-text">NÂNG CẤP NGAY</span>
+                        <div class="spinner" id="btn-spinner" style="display: none;"></div>
+                    </button>
+                </form>
+            </section>
+        </main>
+
+        <!-- SUCCESS MODAL -->
+        <div class="vip-modal-overlay" id="success-modal">
+            <div class="vip-modal">
+                <div class="success-icon"><i class="fas fa-check"></i></div>
+                <h2>ĐĂNG KÝ VIP THÀNH CÔNG!</h2>
+                <p>Chúc mừng <strong id="success-user-name">Khách hàng</strong>! Tài khoản của bạn đã được nâng cấp lên hạng <strong id="success-plan-name" style="color: #ffd700;">VIP Gold</strong>.</p>
+                <div class="modal-card">
+                    <div class="modal-card-header">
+                        <span>3HD2K CARD</span>
+                        <span class="modal-card-tier" id="card-tier-label">VIP GOLD</span>
+                    </div>
+                    <div class="modal-card-user" id="card-user-label">NGUYỄN VĂN A</div>
+                    <div class="modal-card-dots">•••• •••• •••• 2026</div>
+                </div>
+                <p class="modal-hint">Bạn có thể sử dụng các đặc quyền của mình ngay lập tức khi mua vé trực tuyến và tại rạp.</p>
+                <button class="btn-modal-close" id="btn-close-modal">VỀ TRANG CHỦ</button>
+            </div>
+        </div>
+
+        <!-- Footer placeholder -->
+        <div id="footer-placeholder"></div>
+    </div>
+
+    <!-- Components Loading -->
+    <script type="module" src="../../shared/components/navbar.js"></script>
+    <script type="module" src="../../shared/components/footer.js"></script>
+</body>
+</html>

@@ -27,10 +27,27 @@ export function subscribeSeatUpdates(callback) {
 
 export function getSeatMap(showtimeId) {
   const map = _getLocksMap();
-  return (map[showtimeId] && { ...map[showtimeId] }) || {};
+  const result = (map[showtimeId] && { ...map[showtimeId] }) || {};
+  
+  // Lấy các ghế đã đặt từ bookings
+  const bookings = getBookings();
+  bookings.forEach(b => {
+    if (b.showtimeId === showtimeId) {
+      (b.seats || []).forEach(seatId => {
+        result[seatId] = { seatId, status: 'booked', bookingId: b.id };
+      });
+    }
+  });
+  
+  return result;
 }
 
 export function lockSeat(showtimeId, seatId, userId) {
+  // Kiểm tra ghế đã được thanh toán chưa
+  const bookings = getBookings();
+  const isBooked = bookings.some(b => b.showtimeId === showtimeId && (b.seats || []).includes(seatId));
+  if (isBooked) return false;
+
   const map = _getLocksMap();
   map[showtimeId] = map[showtimeId] || {};
   if (map[showtimeId][seatId]) return false; // already locked/booked

@@ -242,10 +242,19 @@
                 <p>Tích điểm đổi vé, nhận bắp nước miễn phí và nhiều đặc quyền VIP.</p>
             </div>
             <div class="rewards-action">
-                <div class="points">Điểm của bạn<br><strong>0 PTS</strong></div>
-                <a href="/user/loyalty-points/index.html" class="btn btn-primary">ĐĂNG KÝ THÀNH VIÊN VIP</a>
+                <div class="points">Điểm của bạn<br><strong id="home-rewards-pts">0 PTS</strong></div>
+                <a href="/user/vip-registration/index.html" class="btn btn-primary">ĐĂNG KÝ THÀNH VIÊN VIP</a>
             </div>
         </section>
+        <script>
+            // Sync home page rewards points with localStorage
+            try {
+                const rd = JSON.parse(localStorage.getItem('3hd2k_rewards') || '{}');
+                const pts = rd.points || 0;
+                const el = document.getElementById('home-rewards-pts');
+                if (el) el.textContent = pts + ' PTS';
+            } catch(_) {}
+        </script>
         <!-- FOOTER: Rendered via footer.js -->
     </main>
 
@@ -277,6 +286,7 @@
     <script type="module" src="/shared/components/footer.js"></script>
     <script src="/shared/js/data.js"></script>
     <script src="/shared/js/main.js"></script>
+    <script src="/shared/utils/authGuard-global.js"></script>
     <script src="/explore/home-page/home.js"></script>
 </body>
 </html>

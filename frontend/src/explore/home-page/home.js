@@ -26,6 +26,14 @@ if (btnBookNow && heroMovies[0] && heroMovies[0].id) {
     btnBookNow.href = `/explore/movie-details/index.html?id=${heroMovies[0].id}`;
 }
 
+if (btnBookNow) {
+    btnBookNow.addEventListener('click', (e) => {
+        if (window.requireAuth && !window.requireAuth('Bạn cần đăng nhập để đặt vé xem phim. Hãy đăng nhập hoặc tạo tài khoản để tiếp tục.')) {
+            e.preventDefault();
+        }
+    });
+}
+
 function changeHeroSlide() {
     currentHeroIndex = (currentHeroIndex + 1) % heroMovies.length;
     const movie = heroMovies[currentHeroIndex];
@@ -150,7 +158,7 @@ function renderNowShowing(movies) {
                 <a href="${detailUrl}" class="poster" style="background-image: url('${movie.poster}')" aria-label="Xem chi tiết ${movie.title}">
                     <div class="poster-overlay">
                         <span class="overlay-text">Xem thêm</span>
-                        <span class="btn-book" onclick="event.preventDefault(); window.location.href='${detailUrl}'">Đặt vé ngay</span>
+                        <span class="btn-book" onclick="event.preventDefault(); event.stopPropagation(); if(window.requireAuth && !window.requireAuth('Bạn cần đăng nhập để đặt vé xem phim. Hãy đăng nhập hoặc tạo tài khoản để tiếp tục.')) return; window.location.href='${detailUrl}'">Đặt vé ngay</span>
                     </div>
                 </a>
                 <div class="info">
@@ -202,5 +210,4 @@ if (filterCinema) filterCinema.addEventListener('change', applyFilters);
 // Initial render
 document.addEventListener('DOMContentLoaded', () => {
     renderNowShowing(nowShowingMovies);
-
 });

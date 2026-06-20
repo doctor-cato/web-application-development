@@ -1,6 +1,15 @@
 import { getCheckout, saveCheckout } from '../../shared/utils/storage.js';
 import { createTransaction } from '../../shared/utils/paymentService.js';
 import { formatPrice } from '../../explore/home-page/movieService.js';
+import { requireAuth } from '../../shared/utils/authGuard.js';
+
+// Kiểm tra đăng nhập ngay khi tải trang thanh toán
+if (!requireAuth('Bạn cần đăng nhập để thanh toán vé. Hãy đăng nhập hoặc tạo tài khoản để tiếp tục.')) {
+    document.addEventListener('DOMContentLoaded', () => {
+        const main = document.querySelector('main');
+        if (main) main.style.filter = 'blur(5px)';
+    });
+}
 
 const COMBOS = { none: 0, single: 65000, double: 95000 };
 
@@ -73,17 +82,62 @@ function updateTotal() {
   // Update Combo Row
   const comboRow = document.getElementById('order-summary-combo-row');
   const comboAmountEl = document.getElementById('order-summary-combo-amount');
+  const foodListContainer = document.getElementById('order-summary-food-list');
+  
+  // Custom food from booking-food
+  let customFoodPrice = 0;
+  let customFoodArr = [];
+  try {
+      const checkoutFoodStr = localStorage.getItem('checkoutFood');
+      if (checkoutFoodStr) {
+          customFoodArr = JSON.parse(checkoutFoodStr);
+          customFoodPrice = customFoodArr.reduce((sum, item) => sum + (item.price * item.qty), 0);
+      }
+  } catch(e) {}
+
+  let totalComboPrice = combo.price;
+  
+  if (customFoodArr.length > 0) {
+      // If custom food is selected, override quick combos
+      totalComboPrice = customFoodPrice;
+      
+      // Also uncheck radio buttons visually
+      document.querySelectorAll('label.combo-card').forEach(x => x.classList.remove('selected'));
+      document.querySelector('input[name="combo"][value="none"]').checked = true; // reset underlying radio
+      
+      const upsellPanel = document.getElementById('food-upsell-panel');
+      if (upsellPanel) {
+          upsellPanel.innerHTML = `
+              <div class="glass-panel" style="width: 100%; padding: 1rem; border: 1px solid var(--primary-color);">
+                  <div style="color: var(--primary-color); font-weight: bold; margin-bottom: 0.5rem;"><i class="fas fa-check-circle"></i> Đã chọn món trong Menu Đầy Đủ</div>
+                  <div style="font-size: 0.9rem; color: var(--text-muted);">
+                      ${customFoodArr.map(item => `${item.qty}x ${item.name}`).join('<br>')}
+                  </div>
+              </div>
+          `;
+      }
+  }
+
   if (comboRow && comboAmountEl) {
-    if (combo.price > 0) {
+    if (totalComboPrice > 0) {
       comboRow.style.display = 'flex';
-      comboAmountEl.innerText = formatPrice(combo.price);
+      comboAmountEl.innerText = formatPrice(totalComboPrice);
+      if (foodListContainer) {
+          if (customFoodArr.length > 0) {
+              foodListContainer.innerHTML = customFoodArr.map(item => `<div style="font-size: 0.8rem; color: var(--text-muted); display: flex; justify-content: space-between;"><span>${item.qty}x ${item.name}</span><span>${formatPrice(item.price * item.qty)}</span></div>`).join('');
+          } else {
+              const comboName = combo.id === 'single' ? 'Combo 1 Người' : (combo.id === 'double' ? 'Combo 2 Người' : '');
+              foodListContainer.innerHTML = `<div style="font-size: 0.8rem; color: var(--text-muted); display: flex; justify-content: space-between;"><span>1x ${comboName}</span><span>${formatPrice(combo.price)}</span></div>`;
+          }
+      }
     } else {
       comboRow.style.display = 'none';
       comboAmountEl.innerText = '0 đ';
+      if (foodListContainer) foodListContainer.innerHTML = '';
     }
   }
 
-  let total = seatsAmount + combo.price;
+  let total = seatsAmount + totalComboPrice;
   
   // Calculate discount
   let discountAmount = 0;
@@ -169,6 +223,7 @@ function init() {
       document.querySelectorAll('label.combo-card').forEach(x => x.classList.remove('selected'));
       const card = e.target.closest('.combo-card');
       if (card) card.classList.add('selected');
+      localStorage.removeItem('checkoutFood'); // Clear custom food if they pick a quick combo
       updateTotal();
     });
   });
@@ -244,7 +299,7 @@ function init() {
         btnSplitPay.addEventListener('click', () => {
             const orderId = 'SPLIT-' + Math.random().toString(36).substring(2, 8).toUpperCase();
             
-            const baseUrl = window.location.href.split('?')[0].replace('checkout.html', 'split-pay.html');
+            const baseUrl = window.location.href.split('?')[0].replace('checkout/checkout.html', 'group-booking/index.html');
             const splitLink = baseUrl + '?order=' + orderId;
             splitLinkInput.value = splitLink;
             
@@ -256,9 +311,15 @@ function init() {
                 orderId: orderId,
                 checkoutData: checkoutSessionData,
                 customFood: localStorage.getItem('selectedFood'),
-                status: 'PENDING'
+                status: 'PENDING',
+                paidSeats: [] // Khởi tạo trống để không bị lỗi người đầu tiên đã thanh toán
             };
             localStorage.setItem('splitOrder_' + orderId, JSON.stringify(splitData));
+            
+            // Tự động gán ghế đầu tiên cho Host (người tạo link)
+            if (checkoutSessionData.seats && checkoutSessionData.seats.length > 0) {
+                localStorage.setItem('mySeatForOrder_' + orderId, checkoutSessionData.seats[0]);
+            }
             
             splitModal.style.display = 'flex';
         });
@@ -308,6 +369,9 @@ function handlePayClick(e) {
   const total = parseDataAmount(totalEl);
   const combo = getSelectedCombo();
 
+  let customFoodStr = localStorage.getItem('checkoutFood');
+  let customFood = customFoodStr ? JSON.parse(customFoodStr) : [];
+
   const checkoutData = {
     // minimal fields used by payment/booking
     movieTitle: document.querySelector('#order-summary-movie')?.innerText || 'Unknown',
@@ -315,6 +379,7 @@ function handlePayClick(e) {
     room: document.querySelector('#order-summary-room')?.innerText || '',
     seats: Array.from(document.querySelectorAll('#order-summary-seats .seat-badge')).map(s => s.innerText) || [],
     combo: combo.id,
+    customFood: customFood,
     total,
     provider: getSelectedPayment()
   };

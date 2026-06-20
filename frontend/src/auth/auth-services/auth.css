@@ -240,7 +240,7 @@ body {
     position: relative;
 }
 
-.input-wrapper .material-symbols-outlined {
+.input-wrapper .material-symbols-outlined:not(.password-toggle) {
     position: absolute;
     left: 12px;
     top: 50%;

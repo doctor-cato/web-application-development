@@ -885,3 +885,100 @@ footer {
     animation: ringBell 0.6s ease-in-out;
     color: var(--primary-red);
 }
+
+/* --- PREMIUM CUSTOM DROPDOWNS (GLOBAL) --- */
+.custom-select-wrapper {
+    position: relative;
+    width: 100%;
+    user-select: none;
+    font-family: 'Inter', sans-serif;
+}
+
+.custom-select-selected {
+    display: flex;
+    align-items: center;
+    color: white;
+    font-size: 0.875rem;
+    cursor: pointer;
+    background: transparent;
+    transition: all 0.3s ease;
+    padding: 0;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.custom-select-selected i.fa-chevron-down {
+    margin-left: 8px; 
+    font-size: 0.75rem; 
+    color: var(--text-muted); 
+    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.custom-select-selected.active i.fa-chevron-down {
+    transform: rotate(180deg);
+    color: white;
+}
+
+.custom-select-options {
+    position: absolute;
+    top: calc(100% + 15px);
+    left: 0;
+    background: rgba(18, 18, 18, 0.95);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    z-index: 100;
+    min-width: 200px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+/* Home page specific offset since .filter-item has large padding */
+.filter-item .custom-select-options {
+    left: -35px;
+    margin-top: 5px; /* Adjust top space */
+}
+
+/* Movies page specific offset */
+.filter-pill .custom-select-options,
+.sort-pill .custom-select-options {
+    left: 0;
+    top: calc(100% + 5px);
+}
+
+.custom-select-options.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.custom-select-option {
+    padding: 12px 20px;
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.75);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.custom-select-option:last-child {
+    border-bottom: none;
+}
+
+.custom-select-option:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+    padding-left: 26px; /* Slick indent effect on hover */
+}
+
+.custom-select-option.selected {
+    color: white;
+    background: var(--primary-red);
+    font-weight: 600;
+}

@@ -638,4 +638,7 @@ if (typeof heroMovies !== 'undefined') heroMovies.forEach(m => { m.bg = _normali
 if (typeof nowShowingMovies !== 'undefined') nowShowingMovies.forEach(m => { m.poster = _normalizePath(m.poster); m.bg = _normalizePath(m.bg); });
 if (typeof comingSoonMovies !== 'undefined') comingSoonMovies.forEach(m => { m.poster = _normalizePath(m.poster); m.bg = _normalizePath(m.bg); });
 
-
+// Export to window so ES module scripts can access movie data
+if (typeof heroMovies !== 'undefined') window.heroMovies = heroMovies;
+if (typeof nowShowingMovies !== 'undefined') window.nowShowingMovies = nowShowingMovies;
+if (typeof comingSoonMovies !== 'undefined') window.comingSoonMovies = comingSoonMovies;

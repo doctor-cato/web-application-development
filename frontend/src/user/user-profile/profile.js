@@ -173,7 +173,24 @@ function loadUserInfo() {
         if (avatarEl && avatar) avatarEl.src = avatar;
         
         const pointsEl = document.getElementById('sidebar-points');
-        if (pointsEl) pointsEl.innerText = '120'; // dummy points
+        let rewardsPoints = 0;
+        try {
+            const rewardsData = JSON.parse(localStorage.getItem('3hd2k_rewards') || '{}');
+            rewardsPoints = rewardsData.points || 0;
+        } catch(_) {}
+        if (pointsEl) pointsEl.innerText = rewardsPoints;
+
+        // Update VIP / Hạng thường display
+        const vipEl = document.querySelector('.sidebar-vip');
+        if (vipEl) {
+            const isVip = localStorage.getItem('is_vip') === 'true';
+            const vipPlan = localStorage.getItem('vip_plan') || '';
+            if (isVip) {
+                vipEl.innerHTML = `<i class="fas fa-crown"></i> VIP ${vipPlan ? vipPlan.charAt(0).toUpperCase() + vipPlan.slice(1) : ''} - <span id="sidebar-points">${rewardsPoints}</span> điểm`;
+            } else {
+                vipEl.innerHTML = `Hạng thường - <span id="sidebar-points">${rewardsPoints}</span> điểm`;
+            }
+        }
 
         // Update Form Inputs (if they exist in tab-info)
         const fullnameInput = document.getElementById('fullname');

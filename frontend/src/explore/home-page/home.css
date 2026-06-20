@@ -84,32 +84,22 @@
     gap: 12px;
     flex: 1;
     border-right: 1px solid var(--glass-border);
+    position: relative; /* Added for absolute positioning of dropdown options */
 }
 
 .filter-item:last-of-type {
     border-right: none;
 }
 
-.filter-item i {
+.filter-item > i {
     color: var(--text-muted);
 }
 
 .filter-item select {
-    background: transparent;
-    border: none;
-    color: white;
-    font-family: 'Inter', sans-serif;
-    font-size: 0.875rem;
-    width: 100%;
-    outline: none;
-    cursor: pointer;
-    appearance: none;
+    display: none; /* Hide default select */
 }
 
-.filter-item select option {
-    background: var(--bg-elevated);
-    color: white;
-}
+
 
 .filter-btn {
     background: var(--glass-bg);

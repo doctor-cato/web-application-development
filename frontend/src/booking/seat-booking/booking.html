@@ -89,14 +89,22 @@
                     <div class="legend-grid">
                         <div class="legend-item"><span class="seat seat--available" style="width: 20px; height: 20px; border-radius: 4px; cursor: default;"></span> Ghế trống</div>
                         <div class="legend-item"><span class="seat seat--selected" style="width: 20px; height: 20px; border-radius: 4px; cursor: default;"></span> Đang chọn</div>
+                        <div class="legend-item"><span class="seat seat--vip seat--available" style="width: 20px; height: 20px; border-radius: 4px; cursor: default;"></span> VIP trống</div>
                         <div class="legend-item"><span class="seat seat--locked" style="width: 20px; height: 20px; border-radius: 4px; cursor: default;"></span> Ghế đang được chọn</div>
+                        <div class="legend-item"><span class="seat seat--couple seat--available" style="width: 40px !important; height: 20px; border-radius: 4px; cursor: default;"></span> Đôi trống</div>
                         <div class="legend-item"><span class="seat seat--booked" style="width: 20px; height: 20px; border-radius: 4px; cursor: default;"></span> Đã đặt</div>
                     </div>
                 </div>
 
                 <!-- Selected summary (sticky) -->
                 <div id="selection-summary" class="glass-panel booking-card">
-                    <h2 class="booking-section-title">Ghế Đã Chọn</h2>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h2 class="booking-section-title" style="margin-bottom: 0;">Ghế Đã Chọn</h2>
+                        <div style="color: var(--primary-red); font-weight: bold; font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 2px;">
+                            <i class="fa-regular fa-clock" style="font-size: 1.2rem; margin-right: 4px;"></i>
+                            <span id="countdown-header">15:00</span>
+                        </div>
+                    </div>
                     <div id="selected-seats-list" class="selected-seats-list">
                         <p style="color: var(--text-muted); font-size: 0.75rem; font-style: italic;">Chưa chọn ghế nào.</p>
                     </div>

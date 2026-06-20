@@ -70,7 +70,7 @@ function renderMoviesGrid(movies) {
                 <div class="poster ${movie.poster ? '' : 'placeholder'}" ${movie.poster ? `style="background-image: url('${movie.poster}')"` : ''}>
                     <div class="poster-overlay">
                         <span class="overlay-text">Xem thêm</span>
-                        <a href="${detailUrl}" class="btn-book" onclick="event.stopPropagation()">
+                        <a href="${detailUrl}" class="btn-book" onclick="event.stopPropagation(); if(window.requireAuth && !window.requireAuth('Bạn cần đăng nhập để đặt vé. Hãy đăng nhập hoặc tạo tài khoản để tiếp tục.')) { event.preventDefault(); return false; }">
                             ${currentTab === 'now-showing' ? 'Đặt vé ngay' : 'Đặt trước vé'}
                         </a>
                     </div>

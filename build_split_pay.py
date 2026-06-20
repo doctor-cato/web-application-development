@@ -1,6 +1,222 @@
-import { lsSet, KEYS } from '../../shared/utils/storage.js';
-import { confirmBooking } from '../seat-booking/bookingService.js';
-import { createTransaction } from '../../shared/utils/paymentService.js';
+import os
+
+html_path = 'src/booking/checkout/split-pay.html'
+js_path = 'src/booking/checkout/split-pay.js'
+
+html_content = """<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chia Sẻ Thanh Toán | CGV Cinemas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../../shared/css/variables.css">
+    <link rel="stylesheet" href="../../shared/css/global.css">
+    <link rel="stylesheet" href="../css/booking.css">
+    <link rel="stylesheet" href="../css/checkout.css">
+    <style>
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+        }
+        .split-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        .header-title {
+            font-family: 'Oswald', sans-serif;
+            text-align: center;
+            font-size: 2rem;
+            color: var(--primary-red);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+        .subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+        }
+        .movie-info-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1rem;
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .movie-poster {
+            width: 80px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+        .movie-details h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.25rem;
+        }
+        .movie-details p {
+            margin: 0 0 0.25rem 0;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+        
+        /* Seat Grid */
+        .split-seat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .split-seat-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+        .split-seat-card:hover:not(.paid) {
+            background: rgba(229, 9, 20, 0.1);
+            border-color: var(--primary-red);
+        }
+        .split-seat-card.selected {
+            background: rgba(229, 9, 20, 0.2);
+            border-color: var(--primary-red);
+            box-shadow: 0 0 15px rgba(229,9,20,0.4);
+        }
+        .split-seat-card.paid {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: #10b981;
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+        .split-seat-id {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .split-seat-price {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        .paid-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #10b981;
+            color: #fff;
+            font-size: 0.6rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+        
+        /* Add-ons */
+        .addon-section {
+            margin-top: 2rem;
+            background: rgba(255,255,255,0.02);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px dashed rgba(255,255,255,0.1);
+        }
+        .addon-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .addon-item:last-child {
+            border-bottom: none;
+        }
+        
+        /* Total Section */
+        .total-section {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .total-price {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary-red);
+        }
+        
+        /* Progress */
+        .progress-bar-container {
+            width: 100%;
+            height: 10px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--primary-red);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .progress-text {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="split-container" id="split-app">
+        <!-- Will be populated by JS -->
+        <div style="text-align:center; padding: 3rem;">
+            <i class="fas fa-spinner fa-spin fa-2x"></i>
+            <p>Đang tải dữ liệu đơn hàng...</p>
+        </div>
+    </div>
+
+    <!-- Payment Provider Selection Modal -->
+    <div id="payment-modal" class="modal-backdrop" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(5px);">
+        <div class="glass-panel" style="width: 90%; max-width: 400px; padding: 2rem; position: relative; border: 1px solid rgba(255,255,255,0.2); border-radius: 12px;">
+            <i class="fas fa-times" id="close-payment-modal" style="position: absolute; top: 1rem; right: 1rem; cursor: pointer; font-size: 1.25rem;"></i>
+            <h3 style="margin-top: 0; text-align: center; font-family: 'Oswald'; font-size: 1.5rem;">Chọn Cổng Thanh Toán</h3>
+            
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem;">
+                <label class="payment-card selected-momo" style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; cursor: pointer;">
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <input type="radio" name="payment-method" value="momo" checked style="display: none;">
+                        <img src="https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png" alt="MoMo" style="height: 30px; object-fit: contain;">
+                        <span>Ví MoMo</span>
+                    </div>
+                </label>
+                <label class="payment-card" style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; cursor: pointer;">
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <input type="radio" name="payment-method" value="vnpay" style="display: none;">
+                        <img src="https://vnpay.vn/s1/statics.vnpay.vn/2023/9/06ncktiwd6dc1694418189687.png" alt="VNPay" style="height: 30px; object-fit: contain;">
+                        <span>VNPAY</span>
+                    </div>
+                </label>
+            </div>
+            
+            <button id="btn-confirm-pay" class="btn btn-primary" style="width: 100%; margin-top: 1.5rem;">XÁC NHẬN THANH TOÁN</button>
+        </div>
+    </div>
+
+    <script type="module" src="split-pay.js"></script>
+</body>
+</html>
+"""
+
+js_content = """import { createTransaction } from '../../shared/utils/paymentService.js';
 import { formatPrice } from '../../explore/home-page/movieService.js';
 
 let orderData = null;
@@ -73,38 +289,10 @@ function renderApp() {
     });
     
     const isFullyPaid = paidCount >= allSeats.length;
-    const hasPaidMyPart = sessionStorage.getItem('my_split_payment_' + orderId) === 'true';
-    const hasCanceledMyPart = sessionStorage.getItem('my_split_canceled_' + orderId) === 'true';
-    
-    if (isFullyPaid) {
-        if (orderData.status !== 'COMPLETED') {
-            orderData.status = 'COMPLETED';
-            localStorage.setItem('splitOrder_' + orderId, JSON.stringify(orderData));
-            
-            const checkoutData = orderData.checkoutData;
-            // Fake a transactionId since we simulated it
-            checkoutData.transactionId = 'SPLIT-TX-' + Date.now();
-            const booking = confirmBooking(checkoutData);
-            lsSet(KEYS.LAST_BOOKING, booking);
-        }
-        // Redirect immediately to success page
-        window.location.href = '../booking-success/index.html';
-        return;
-    }
     
     const appHtml = `
-        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
-            <div>
-                <h1 class="header-title" style="text-align: left; margin-bottom: 0;">SPLIT & LOCK</h1>
-                <p class="subtitle" style="text-align: left; margin-bottom: 0; display: flex; align-items: center; gap: 0.5rem;">
-                    <img src="https://i.pravatar.cc/100?img=3" style="width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--primary-red);"> 
-                    <span>Trưởng nhóm đã tạo đơn: <span style="color:var(--primary-red); font-weight:700;">#${orderId}</span></span>
-                </p>
-            </div>
-            <div class="timer-badge">
-                <i class="fas fa-hourglass-half"></i> <span id="split-timer">--:--</span>
-            </div>
-        </div>
+        <h1 class="header-title">CHIA SẺ THANH TOÁN</h1>
+        <p class="subtitle">Đơn hàng: #${orderId}</p>
         
         <!-- Progress -->
         <div style="margin-bottom: 2rem;">
@@ -137,15 +325,10 @@ function renderApp() {
         
         <!-- Addons -->
         <div class="addon-section">
-            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
-                <div style="width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle, rgba(251,191,36,0.3) 0%, transparent 70%);">
-                    <img src="../../shared/images/food_popcorn.png" alt="Bắp Nước" style="width: 36px; height: 36px; object-fit: contain; filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.8));">
-                </div>
-                <h3 style="font-family: 'Oswald'; margin: 0; font-size: 1.5rem; letter-spacing: 1px;">2. BẮP NƯỚC CÁ NHÂN</h3>
-            </div>
-            <p style="color: var(--text-muted); font-size: 0.9rem; margin-left: 3.5rem;">Combo này sẽ được giao riêng cho bạn tại quầy, không dính dáng đến trưởng nhóm.</p>
+            <h3 style="font-family: 'Oswald'; margin-top: 0; margin-bottom: 0.5rem;"><i class="fas fa-popcorn" style="color: #FBBF24;"></i> 2. MUA THÊM BẮP NƯỚC (TUỲ CHỌN)</h3>
+            <p style="color: var(--text-muted); font-size: 0.85rem;">Phần này chỉ mua riêng cho bạn, không ảnh hưởng đến người khác.</p>
             
-            <div class="addon-item" style="margin-top: 1.5rem;">
+            <div class="addon-item" style="margin-top: 1rem;">
                 <div>
                     <div style="font-weight: 500;">Combo 1 Bắp + 1 Nước</div>
                     <div style="font-size: 0.8rem; color: var(--text-muted);">${formatPrice(65000)}</div>
@@ -170,15 +353,7 @@ function renderApp() {
             <div class="total-price" id="total-display">0 đ</div>
         </div>
         
-        ${hasCanceledMyPart 
-            ? `<button id="btn-pay-my-part" class="btn btn-primary" style="width: 100%; margin-top: 1.5rem; padding: 1rem; font-size: 1.1rem; background: #666; border-color: #666; color: #ccc;" disabled><i class="fas fa-ban"></i> ĐÃ HỦY CHỖ NGỒI</button>`
-            : (hasPaidMyPart 
-                ? `<button id="btn-pay-my-part" class="btn btn-primary" style="width: 100%; margin-top: 1.5rem; padding: 1rem; font-size: 1.1rem; background: #10b981; border-color: #10b981;" disabled><i class="fas fa-check"></i> ĐÃ THANH TOÁN. ĐANG CHỜ NHÓM CỦA BẠN...</button>`
-                : `<button id="btn-pay-my-part" class="btn btn-primary" style="width: 100%; margin-top: 1.5rem; padding: 1rem; font-size: 1.1rem;" disabled>THANH TOÁN PHẦN CỦA TÔI</button>
-                   <div style="text-align: center; margin-top: 1rem;">
-                       <button id="btn-cancel-my-part" class="btn btn-outline" style="border: none; padding: 0.5rem; font-size: 0.95rem; color: #ff4b4b; background: transparent; cursor: pointer; opacity: 0.8; transition: all 0.3s;"><i class="fas fa-times-circle"></i> Hủy chỗ ngồi của tôi</button>
-                   </div>`)
-        }
+        <button id="btn-pay-my-part" class="btn btn-primary" style="width: 100%; margin-top: 1.5rem; padding: 1rem; font-size: 1.1rem;" disabled>THANH TOÁN PHẦN CỦA TÔI</button>
         ` : `
         <div style="text-align: center; margin-top: 3rem; padding: 2rem; background: rgba(16, 185, 129, 0.1); border: 1px solid #10b981; border-radius: 12px;">
             <i class="fas fa-ticket-alt" style="font-size: 3rem; color: #10b981; margin-bottom: 1rem;"></i>
@@ -194,37 +369,11 @@ function renderApp() {
         attachEvents();
         updateTotal();
     }
-
-    // Start Timer
-    const expiresAt = checkoutData.expiresAt || (Date.now() + 15 * 60 * 1000);
-    const timerInterval = setInterval(() => {
-        const now = Date.now();
-        const remain = Math.max(0, Math.floor((expiresAt - now) / 1000));
-        
-        const m = Math.floor(remain / 60).toString().padStart(2, '0');
-        const s = (remain % 60).toString().padStart(2, '0');
-        const timerEl = document.getElementById('split-timer');
-        if(timerEl) timerEl.innerText = `${m}:${s}`;
-        
-        if (remain <= 0 && !isFullyPaid) {
-            clearInterval(timerInterval);
-            showError("Thời gian giữ ghế (15 phút) đã kết thúc. Đơn hàng đã bị huỷ.");
-        }
-    }, 1000);
-
 }
 
 function attachEvents() {
-    const hasPaidMyPart = sessionStorage.getItem('my_split_payment_' + orderId) === 'true';
-    const hasCanceledMyPart = sessionStorage.getItem('my_split_canceled_' + orderId) === 'true';
-    
     // Seat selection
     document.querySelectorAll('.split-seat-card:not(.paid)').forEach(card => {
-        if (hasPaidMyPart || hasCanceledMyPart) {
-            card.style.cursor = 'not-allowed';
-            card.style.opacity = '0.7';
-            return; // Don't attach click event if already paid or canceled
-        }
         card.addEventListener('click', () => {
             const seat = card.getAttribute('data-seat');
             if (selectedSeats.includes(seat)) {
@@ -291,51 +440,6 @@ function attachEvents() {
     
     // Confirm Pay
     document.getElementById('btn-confirm-pay').addEventListener('click', handleConfirmPayment);
-
-    // Cancel seat logic
-    const btnCancel = document.getElementById('btn-cancel-my-part');
-    if (btnCancel) {
-        btnCancel.addEventListener('mouseover', () => { btnCancel.style.opacity = '1'; });
-        btnCancel.addEventListener('mouseout', () => { btnCancel.style.opacity = '0.8'; });
-        
-        btnCancel.addEventListener('click', () => {
-            let seatsToCancel = [...selectedSeats];
-            
-            // If no seat selected, automatically pick one unpaid seat
-            if (seatsToCancel.length === 0) {
-                const unpaidSeats = orderData.checkoutData.seats.filter(s => !orderData.paidSeats.includes(s));
-                if (unpaidSeats.length > 0) {
-                    seatsToCancel = [unpaidSeats[unpaidSeats.length - 1]]; // Pick the last one
-                } else {
-                    alert("Không còn ghế trống nào để hủy!");
-                    return;
-                }
-            }
-
-            if (confirm("Bạn có chắc chắn muốn hủy " + seatsToCancel.length + " ghế (" + seatsToCancel.join(', ') + ")? Chỗ ngồi này sẽ được giải phóng để người khác có thể đặt.")) {
-                // Remove the selected seats from the order
-                orderData.checkoutData.seats = orderData.checkoutData.seats.filter(s => !seatsToCancel.includes(s));
-                
-                // Save updated order back
-                localStorage.setItem('splitOrder_' + orderId, JSON.stringify(orderData));
-                
-                // Mark this user's session as canceled
-                sessionStorage.setItem('my_split_canceled_' + orderId, 'true');
-                
-                alert("Đã hủy ghế thành công!");
-                
-                // If no seats left in the whole order, maybe redirect to home or cancel completely
-                if (orderData.checkoutData.seats.length === 0) {
-                    localStorage.removeItem('splitOrder_' + orderId);
-                    window.location.href = '../../index.html';
-                } else {
-                    // Reset selection and reload
-                    selectedSeats = [];
-                    window.location.reload();
-                }
-            }
-        });
-    }
 }
 
 function updateTotal() {
@@ -365,13 +469,19 @@ function handleConfirmPayment() {
     // Save back to localStorage
     localStorage.setItem('splitOrder_' + orderId, JSON.stringify(orderData));
     
-    // Mark this user as having paid their part
-    sessionStorage.setItem('my_split_payment_' + orderId, 'true');
-    
     // Redirect to simulator
     // Pass a returnUrl so simulator knows where to come back to
     const returnUrl = encodeURIComponent(window.location.href);
-    window.location.href = `payment_simulation.html?provider=${encodeURIComponent(provider)}&amount=${total}&txId=${encodeURIComponent(transaction.transactionId)}&returnUrl=${returnUrl}`;
+    window.location.href = `payment_simulation.html?provider=${encodeURIComponent(provider)}&txId=${encodeURIComponent(transaction.transactionId)}&returnUrl=${returnUrl}`;
 }
 
 document.addEventListener('DOMContentLoaded', init);
+"""
+
+with open(html_path, 'w', encoding='utf-8') as f:
+    f.write(html_content)
+
+with open(js_path, 'w', encoding='utf-8') as f:
+    f.write(js_content)
+
+print("split-pay.html and split-pay.js created.")

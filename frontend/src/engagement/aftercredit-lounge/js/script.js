@@ -1,308 +1,135 @@
-// ==========================================
-// 3HD2K Post-Movie Lounge - Interactive Logic
-// ==========================================
+import { getLastBooking } from '/shared/utils/storage.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-    // DOM Elements
-    const chatInput = document.getElementById('chat-input-element');
-    const chatSendBtn = document.getElementById('chat-send-btn');
-    const messagesContainer = document.getElementById('chat-messages-container');
+    // Views
+    const ratingView = document.getElementById('rating-card-view');
+    const noMovieView = document.getElementById('no-movie-view');
+    const successView = document.getElementById('success-view');
     
-    // Movie Details Elements
-    const movieDetailsWidget = document.getElementById('movie-details-widget');
-    const playTrailerBtn = document.getElementById('btn-play-trailer-inside');
-    const trailerModal = document.getElementById('trailer-modal');
-    const modalCloseBtn = document.getElementById('modal-close-btn');
-    const trailerIframe = document.getElementById('trailer-video-frame');
+    // Elements
+    const immersiveBg = document.getElementById('immersive-bg');
+    const movieTitleDisplay = document.getElementById('movie-title-display');
+    const moviePosterDisplay = document.getElementById('movie-poster-display');
+    const stars = document.querySelectorAll('.star');
+    const ratingText = document.getElementById('rating-text');
+    const submitBtn = document.getElementById('btn-submit-rating');
+    const reviewInput = document.getElementById('review-input');
     
-    // Booking Elements
-    const cinemaSelect = document.getElementById('cinema-select');
-    const showtimeChips = document.querySelectorAll('.showtime-chip');
-    const submitBookingBtn = document.getElementById('btn-submit-booking');
+    let currentRating = 0;
     
-    // Utility Elements
-    const bellBtn = document.getElementById('bell-btn');
-    const bellBadge = document.getElementById('bell-badge');
-
-    // Responsive elements
-    const sidebarMenuItems = document.querySelectorAll('.sidebar-menu .menu-item');
-    const mobileTabBtns = document.querySelectorAll('.mobile-nav-tabs .mobile-tab-btn');
-    const chatSection = document.getElementById('chat-section');
-    const rightPanelSection = document.getElementById('right-panel-section');
-
-    // User details
-    const currentUserID = "3HD2K-449";
-    const currentUserName = "Thành viên 3HD2K-449";
-
-    // Auto scroll chat to bottom
-    const scrollToBottom = () => {
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    };
-    
-    // Initial scroll
-    scrollToBottom();
-
-    // ==========================================
-    // CHAT SYSTEM
-    // ==========================================
-    
-    // Send a message function
-    const sendMessage = () => {
-        const text = chatInput.value.trim();
-        if (!text) return;
-
-        // Get current system time formatted HH:MM
-        const now = new Date();
-        const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-
-        // Create user chat bubble
-        const messageBubble = document.createElement('div');
-        messageBubble.className = 'chat-bubble-wrapper msg-self';
-        messageBubble.innerHTML = `
-            <span class="bubble-meta-top">${currentUserName}</span>
-            <div class="chat-bubble">
-                ${escapeHTML(text)}
-                <div class="bubble-meta-bottom">${timeStr}</div>
-            </div>
-        `;
-
-        messagesContainer.appendChild(messageBubble);
-        chatInput.value = '';
-        scrollToBottom();
-
-        // Trigger a simulated reply after a delay
-        simulateReply(text);
+    const ratingLabels = {
+        0: 'Chưa đánh giá',
+        1: 'Rất tệ',
+        2: 'Tạm được',
+        3: 'Cũng hay',
+        4: 'Rất tuyệt vời',
+        5: 'Siêu phẩm xuất sắc'
     };
 
-    // Helper to prevent HTML injection in chat
-    const escapeHTML = (str) => {
-        return str.replace(/[&<>'"]/g, 
-            tag => ({
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                "'": '&#39;',
-                '"': '&quot;'
-            }[tag] || tag)
-        );
-    };
-
-    // Simulated responses related to Dune 2
-    const simulatedAnswers = [
-        {
-            name: "Cinephile_Alpha",
-            msg: "Phần 2 này Denis làm quá tay luôn! Cách dựng cảnh sa mạc hoành tráng kết hợp tông nhạc nền hùng vĩ đúng nghĩa là bữa tiệc nghe nhìn.",
-            isPro: false
-        },
-        {
-            name: "Director_X",
-            msg: "Chính xác, ống kính anamorphic đặc tả được chiều sâu không gian Arrakis siêu thực. Việc tương phản sắc độ giữa Arrakis ấm áp và Giedi Prime hồng ngoại đen trắng là thiên tài.",
-            isPro: false
-        },
-        {
-            name: "3HD2K_PRO",
-            msg: "Đề nghị mọi người không thảo luận những chi tiết quá quan trọng (spoilers) bên ngoài phòng chờ này để tôn trọng người xem sau nhé.",
-            isPro: true
-        },
-        {
-            name: "LENS_FLARE_99",
-            msg: "Hans Zimmer vẫn đỉnh như mọi khi. Nhạc phim nghe nổi cả da gà, đặc biệt là đoạn Paul thử cưỡi sâu cát khổng lồ lần đầu tiên.",
-            isPro: false
-        }
-    ];
-
-    let answerIndex = 0;
-
-    const simulateReply = (userText) => {
-        // Show typing indicator or just reply after 3 seconds
-        setTimeout(() => {
-            const replyData = simulatedAnswers[answerIndex];
-            answerIndex = (answerIndex + 1) % simulatedAnswers.length;
-
-            const now = new Date();
-            const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-
-            const replyBubble = document.createElement('div');
-            replyBubble.className = 'chat-bubble-wrapper';
-            
-            if (replyData.isPro) {
-                replyBubble.innerHTML = `
-                    <span class="bubble-meta-top pro-author">${replyData.name} <span class="tag-author-badge">Mod</span></span>
-                    <div class="chat-bubble bubble-pro">
-                        ${replyData.msg}
-                        <div class="bubble-meta-bottom">${timeStr}</div>
-                    </div>
-                `;
-            } else {
-                replyBubble.innerHTML = `
-                    <span class="bubble-meta-top">${replyData.name}</span>
-                    <div class="chat-bubble">
-                        ${replyData.msg}
-                        <div class="bubble-meta-bottom">${timeStr}</div>
-                    </div>
-                `;
-            }
-
-            messagesContainer.appendChild(replyBubble);
-            scrollToBottom();
-        }, 3000);
-    };
-
-    // Chat Event Listeners
-    chatSendBtn.addEventListener('click', sendMessage);
-    chatInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            sendMessage();
-        }
-    });
-
-    // ==========================================
-    // BOOKING SYSTEM INTERACTIVITY
-    // ==========================================
+    // 1. Fetch data and set UI
+    const lastBooking = getLastBooking();
     
-    // Showtime selection toggle
-    showtimeChips.forEach(chip => {
-        chip.addEventListener('click', () => {
-            showtimeChips.forEach(c => c.classList.remove('active'));
-            chip.classList.add('active');
-        });
-    });
-
-    // Submit booking action
-    submitBookingBtn.addEventListener('click', (e) => {
-        e.stopPropagation(); // Stop click from triggering parent modal
+    if (lastBooking && lastBooking.movieTitle) {
+        // Populate real data
+        movieTitleDisplay.textContent = lastBooking.movieTitle;
         
-        const selectedCinemaText = cinemaSelect.options[cinemaSelect.selectedIndex].text;
-        const activeShowtimeChip = document.querySelector('.showtime-chip.active');
-        const selectedShowtime = activeShowtimeChip ? activeShowtimeChip.textContent : "18:30";
-
-        showToast(`Vé đã được đặt thành công tại ${selectedCinemaText} lúc ${selectedShowtime}!`);
-    });
-
-    // ==========================================
-    // TRAILER MODAL
-    // ==========================================
-    const trailerUrl = "https://www.youtube.com/embed/Way9Dexny3w?autoplay=1";
-
-    const openTrailerModal = (e) => {
-        e.stopPropagation(); // Avoid event collision
-        trailerModal.classList.add('active');
-        trailerIframe.src = trailerUrl;
-    };
-
-    // Clicking either poster or explicit play button opens trailer
-    playTrailerBtn.addEventListener('click', openTrailerModal);
-    movieDetailsWidget.addEventListener('click', openTrailerModal);
-
-    const closeModal = () => {
-        trailerModal.classList.remove('active');
-        trailerIframe.src = ""; // Stop video playback
-    };
-
-    modalCloseBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        closeModal();
-    });
-    
-    // Close modal when clicking outside content
-    trailerModal.addEventListener('click', (e) => {
-        if (e.target === trailerModal) {
-            closeModal();
-        }
-    });
-
-    // Escape key press closes modal
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && trailerModal.classList.contains('active')) {
-            closeModal();
-        }
-    });
-
-    // ==========================================
-    // NOTIFICATION BELL
-    // ==========================================
-    bellBtn.addEventListener('click', () => {
-        // Toggle notification alert
-        if (bellBadge.style.display !== 'none') {
-            bellBadge.style.display = 'none';
-            showToast("Hộp thư thông báo đã được đọc.");
+        if (lastBooking.poster) {
+            moviePosterDisplay.style.backgroundImage = `url('${lastBooking.poster}')`;
+            immersiveBg.style.backgroundImage = `url('${lastBooking.poster}')`;
         } else {
-            bellBadge.style.display = 'block';
-            showToast("Có thông báo mới trong phòng chờ.");
+            // Fallback poster if missing in data
+            immersiveBg.classList.add('fallback');
         }
-    });
+    } else {
+        // No recent booking
+        ratingView.style.display = 'none';
+        noMovieView.style.display = 'flex';
+        immersiveBg.classList.add('fallback');
+    }
 
-    // Simple Toast alert helper
-    const showToast = (message) => {
-        const toast = document.createElement('div');
-        toast.style.position = 'fixed';
-        toast.style.bottom = '24px';
-        toast.style.left = '50%';
-        toast.style.transform = 'translateX(-50%)';
-        toast.style.background = 'rgba(20, 20, 25, 0.9)';
-        toast.style.border = '1px solid var(--primary-red)';
-        toast.style.color = '#fff';
-        toast.style.padding = '12px 24px';
-        toast.style.borderRadius = '8px';
-        toast.style.fontSize = '0.9rem';
-        toast.style.boxShadow = '0 5px 25px rgba(229, 9, 20, 0.2)';
-        toast.style.zIndex = '1000';
-        toast.style.fontFamily = "'Inter', sans-serif";
-        toast.textContent = message;
-        
-        document.body.appendChild(toast);
-        
-        // Anim entrance
-        toast.style.opacity = '0';
-        toast.style.transition = 'opacity 0.3s ease';
-        setTimeout(() => toast.style.opacity = '1', 50);
-
-        // Close after 3 seconds
-        setTimeout(() => {
-            toast.style.opacity = '0';
-            setTimeout(() => toast.remove(), 300);
-        }, 3000);
-    };
-
-    // ==========================================
-    // SIDEBAR & MOBILE TABS NAVIGATION
-    // ==========================================
-    
-    // Desktop Sidebar Links
-    sidebarMenuItems.forEach(item => {
-        item.addEventListener('click', () => {
-            sidebarMenuItems.forEach(mi => mi.classList.remove('active'));
-            item.classList.add('active');
-
-            const targetSection = item.getAttribute('data-target');
-            if (targetSection === 'chat-section') {
-                chatSection.classList.add('active');
-                chatInput.focus();
+    // 2. Star Interactions
+    const updateStars = (hoverValue) => {
+        const val = hoverValue || currentRating;
+        stars.forEach(star => {
+            if (parseInt(star.dataset.value) <= val) {
+                star.classList.add('active');
+            } else {
+                star.classList.remove('active');
+                star.classList.remove('pop'); // Reset pop animation
             }
         });
-    });
+        
+        ratingText.textContent = ratingLabels[val];
+        
+        // Dynamic color for text based on rating
+        if (val === 0) {
+            ratingText.style.color = 'rgba(255, 255, 255, 0.4)';
+            ratingText.style.textShadow = 'none';
+        } else if (val <= 2) {
+            ratingText.style.color = '#f87171'; // Red-ish for bad
+            ratingText.style.textShadow = '0 0 10px rgba(248, 113, 113, 0.5)';
+        } else if (val === 3) {
+            ratingText.style.color = '#fbbf24'; // Yellow for okay
+            ratingText.style.textShadow = '0 0 10px rgba(251, 191, 36, 0.5)';
+        } else {
+            ratingText.style.color = '#fbbf24'; // Gold for good
+            ratingText.style.textShadow = '0 0 15px rgba(251, 191, 36, 0.6)';
+        }
+    };
 
-    // Mobile Bottom Tab Buttons
-    mobileTabBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            mobileTabBtns.forEach(tb => tb.classList.remove('active'));
-            btn.classList.add('active');
-
-            const targetSection = btn.getAttribute('data-target');
-            showSectionMobile(targetSection);
+    stars.forEach(star => {
+        star.addEventListener('mouseenter', (e) => {
+            updateStars(parseInt(e.target.dataset.value));
+        });
+        
+        star.addEventListener('mouseleave', () => {
+            updateStars(currentRating);
+        });
+        
+        star.addEventListener('click', (e) => {
+            const val = parseInt(e.target.dataset.value);
+            currentRating = val;
+            updateStars(currentRating);
+            
+            // Add pop animation to all active stars
+            stars.forEach(s => {
+                if (parseInt(s.dataset.value) <= currentRating) {
+                    s.classList.remove('pop');
+                    void s.offsetWidth; // Trigger reflow
+                    s.classList.add('pop');
+                }
+            });
         });
     });
 
-    // Show mobile responsive navigation section
-    const showSectionMobile = (target) => {
-        // Hide all major areas
-        chatSection.classList.remove('active');
-        rightPanelSection.classList.remove('active');
-
-        if (target === 'chat-section') {
-            chatSection.classList.add('active');
-        } else if (target === 'movie-details-widget') {
-            rightPanelSection.classList.add('active');
+    // 3. Submit Logic
+    submitBtn.addEventListener('click', () => {
+        if (currentRating === 0) {
+            // Shake animation on button to indicate error
+            submitBtn.style.transform = 'translateX(-5px)';
+            setTimeout(() => submitBtn.style.transform = 'translateX(5px)', 100);
+            setTimeout(() => submitBtn.style.transform = 'translateX(-5px)', 200);
+            setTimeout(() => submitBtn.style.transform = 'translateX(0)', 300);
+            return;
         }
-    };
+
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ĐANG XỬ LÝ...';
+
+        // Simulate API call
+        setTimeout(() => {
+            // Hide rating card, show success view
+            ratingView.style.display = 'none';
+            successView.style.display = 'flex';
+            
+            // Optional: Remove last booking if we only want 1 review per ticket
+            // localStorage.removeItem('cinema_last_booking');
+
+            // Redirect after showing success for 2.5 seconds
+            setTimeout(() => {
+                window.location.href = '/explore/home-page/index.html';
+            }, 2500);
+
+        }, 1200);
+    });
 });

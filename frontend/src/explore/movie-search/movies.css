@@ -126,15 +126,7 @@
 }
 
 .filter-pill select {
-    background: transparent;
-    border: none;
-    color: white;
-    font-family: 'Inter', sans-serif;
-    font-size: 0.875rem;
-    outline: none;
-    cursor: pointer;
-    appearance: none;
-    padding-right: 5px;
+    display: none;
 }
 
 .filter-pill select option {
@@ -168,14 +160,7 @@
 }
 
 .sort-pill select {
-    background: transparent;
-    border: none;
-    color: white;
-    font-family: 'Inter', sans-serif;
-    font-size: 0.875rem;
-    outline: none;
-    cursor: pointer;
-    appearance: none;
+    display: none;
 }
 
 .sort-pill select option {

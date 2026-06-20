@@ -418,8 +418,20 @@
     // Keep existing static items, prepend dynamic ones
     const dynamicItems = state.history.slice().reverse(); // newest first
 
-    // Remove old dynamic items
+    // Remove old dynamic items and empty message
     $$('.history-item:not([data-static])', list).forEach(el => el.remove());
+    $$('.empty-history', list).forEach(el => el.remove());
+
+    if (dynamicItems.length === 0 && $$('.history-item[data-static]', list).length === 0) {
+      const emptyMsg = document.createElement('div');
+      emptyMsg.className = 'empty-history';
+      emptyMsg.style.textAlign = 'center';
+      emptyMsg.style.color = '#888';
+      emptyMsg.style.padding = '40px 20px';
+      emptyMsg.textContent = 'Chưa có lịch sử giao dịch nào.';
+      list.appendChild(emptyMsg);
+      return;
+    }
 
     dynamicItems.forEach(entry => {
       const item = document.createElement('article');
@@ -589,6 +601,9 @@
   }
 
   // ── Build Earn Section ────────────────────────────────────
+  // Hiển thị thông tin hướng dẫn cách tích điểm (chỉ đọc).
+  // Điểm chỉ được cộng khi thực hiện giao dịch thực tế
+  // (mua vé, mua combo, check-in, đánh giá, chia sẻ).
   function buildEarnSection() {
     const section = document.createElement('section');
     section.className = 'earn-section';
@@ -598,16 +613,17 @@
           <span class="earn-icon">
             <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm0-4h-2V7h2v8z"/></svg>
           </span>
-          TÍCH ĐIỂM
+          CÁCH TÍCH ĐIỂM
         </div>
       </div>
+      <p class="earn-info-text">Điểm thưởng sẽ được cộng tự động khi bạn thực hiện các hoạt động sau tại 3HD2K:</p>
       <div class="earn-grid">
         ${EARN_ACTIONS.map(action => `
-          <button class="earn-btn" data-action="${action.id}">
-            <span class="earn-btn-icon">${action.icon}</span>
-            <span class="earn-btn-label">${action.label}</span>
-            <span class="earn-btn-pts">+${action.minPts === action.maxPts ? action.minPts : action.minPts + '~' + action.maxPts} PTS</span>
-          </button>
+          <div class="earn-card" data-action="${action.id}">
+            <span class="earn-card-icon">${action.icon}</span>
+            <span class="earn-card-label">${action.label}</span>
+            <span class="earn-card-pts">+${action.minPts === action.maxPts ? action.minPts : action.minPts + '~' + action.maxPts} PTS</span>
+          </div>
         `).join('')}
       </div>
     `;
@@ -615,20 +631,6 @@
     // Insert before gifts section
     const giftsSection = $('.gifts-section');
     giftsSection.parentNode.insertBefore(section, giftsSection);
-
-    // Event listeners
-    $$('.earn-btn', section).forEach(btn => {
-      btn.addEventListener('click', () => {
-        const actionId = btn.dataset.action;
-        const action = EARN_ACTIONS.find(a => a.id === actionId);
-        if (action) {
-          // Button pulse animation
-          btn.classList.add('earn-btn--active');
-          setTimeout(() => btn.classList.remove('earn-btn--active'), 500);
-          earnPoints(action);
-        }
-      });
-    });
   }
 
   // ── Mark Static History Items ─────────────────────────────
