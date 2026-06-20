@@ -1,174 +1,54 @@
-# Mô phỏng Lưu trữ Dữ liệu — 3HD2Kcinema
+# Cấu trúc Lưu trữ Dữ liệu — 3HD2Kcinema
 
-Vì 3HD2Kcinema không có backend, toàn bộ trạng thái ứng dụng được lưu trong trình duyệt qua 2 cơ chế:
-
-1. **`LocalStorage`** — Dữ liệu vĩnh viễn (tồn tại sau khi đóng/mở lại tab).
-2. **`SessionStorage`** — Dữ liệu phiên (tự xóa khi đóng tab).
-
-Tất cả thao tác dữ liệu đi qua file `shared/utils/storage.js` — **không được** gọi `localStorage`/`sessionStorage` trực tiếp trong controller hay view.
+Ứng dụng 3HD2Kcinema sử dụng mô hình kết hợp giữa cơ sở dữ liệu quan hệ phía Backend (SQL Server) cho việc lưu trữ bền vững và Storage của trình duyệt (Frontend) cho các trạng thái giao diện tạm thời.
 
 ---
 
-## API của storage.js
+## 1. Cơ sở Dữ liệu Quan hệ (Backend - SQL Server)
 
-```js
-// LocalStorage
-lsGet(key, defaultValue)   // đọc + parse JSON
-lsSet(key, value)          // stringify + ghi
-lsRemove(key)              // xóa key
+Hệ thống sử dụng **SQL Server** làm nguồn dữ liệu chính (Single Source of Truth). Entity Framework Core (`ApplicationDbContext`) đóng vai trò quản lý schema và thao tác dữ liệu.
 
-// SessionStorage
-ssGet(key, defaultValue)
-ssSet(key, value)
-ssRemove(key)
+Tên Database mặc định: `movie_booking_db`
 
-// Domain helpers
-getBookings() / saveBookings(bookings)
-getCheckout() / saveCheckout(data)       // SessionStorage
-getLastBooking() / saveLastBooking(b)
-getUsers() / saveUsers(users)
-getCurrentUser() / setCurrentUser(u)     // SessionStorage
-clearCurrentUser()
-getPendingPayments() / savePendingPayments(map)
-```
+### Sơ đồ các bảng (Tables / Entities)
 
----
+| Tên bảng | Lớp Model (C#) | Chức năng chính |
+|---|---|---|
+| `users` | `User` | Lưu thông tin tài khoản người dùng, mật khẩu, vai trò (Role). |
+| `movies` | `Movie` | Lưu thông tin phim (tên, đạo diễn, mô tả, ảnh poster). |
+| `cinemas` | `Cinema` | Quản lý danh sách các cụm rạp chiếu phim. |
+| `rooms` | `Room` | Danh sách các phòng chiếu, liên kết với rạp (CinemaId). |
+| `seats` | `Seat` | Trạng thái và vị trí ghế tĩnh, liên kết với phòng (RoomId). |
+| `showtimes` | `Showtime` | Quản lý suất chiếu (thời gian bắt đầu, kết thúc), liên kết `Movie` và `Room`. |
+| `bookings` | `Booking` | Hóa đơn đặt vé tổng hợp, liên kết `User` và `Showtime`. |
+| `booking_details`| `BookingDetail`| Chi tiết mỗi ghế trong một hóa đơn, liên kết `Booking` và `Seat`. |
 
-## Storage Keys thực tế
-
-```js
-KEYS = {
-  USERS:            'cinema_users',           // LocalStorage
-  CURRENT_USER:     'cinema_current_user',    // SessionStorage
-  MOVIES:           'cinema_movies',          // LocalStorage
-  BOOKINGS:         'cinema_bookings',        // LocalStorage
-  SEAT_LOCKS:       'cinema_seat_locks',      // LocalStorage
-  CHECKOUT:         'cinema_checkout',        // SessionStorage
-  LAST_BOOKING:     'cinema_last_booking',    // LocalStorage
-  PENDING_PAYMENTS: 'cinema_pending_payments' // LocalStorage
-}
-```
-
-> **Lưu ý:** Key thực tế trong code là `cinema_*`, **không phải** `users_db`, `movies_db` như docs cũ ghi.
+### Một số quan hệ chính (Relationships)
+- Một `User` có nhiều `Bookings`.
+- Một `Showtime` có nhiều `Bookings`.
+- Một `Booking` có nhiều `BookingDetails`.
+- Một `Room` có nhiều `Seats` và `Showtimes`.
+- Bảng `booking_details` có index Unique cho cặp `{ ShowtimeId, SeatId }` để ngăn chặn double-booking (2 người mua cùng 1 ghế trong cùng 1 suất chiếu) ở cấp độ cơ sở dữ liệu.
 
 ---
 
-## Schema LocalStorage
+## 2. Lưu trữ phía Trình duyệt (Frontend Storage)
 
-### `cinema_users` (Array)
-```json
-[
-  {
-    "userId": "usr_1717891200",
-    "name": "Nguyen Van A",
-    "email": "a@example.com",
-    "password": "base64_encoded_password",
-    "role": "user"
-  }
-]
-```
+Dù đã có Backend, Frontend vẫn tận dụng trình duyệt để lưu trạng thái phiên làm việc (Session) và giỏ hàng tạm thời, giúp giao diện phản hồi nhanh và giảm tải cho Server.
 
-### `cinema_movies` (Array — tùy chọn)
-Nếu có sẽ override `data.js`. Nếu không có, dữ liệu lấy từ `shared/js/data.js` (hardcoded).
-```json
-[
-  {
-    "id": "your-name",
-    "title": "YOUR NAME - TÊN CẬU LÀ GÌ?",
-    "showtimes": [
-      { "id": "st_200", "date": "2026-06-20", "time": "19:30", "room": "Phòng 3" }
-    ]
-  }
-]
-```
+### `SessionStorage` — Dữ liệu phiên (Mất khi đóng tab)
 
-### `cinema_bookings` (Array)
-```json
-[
-  {
-    "id": "bk_m5k2abc1XY",
-    "movieTitle": "YOUR NAME",
-    "showtimeId": "st_200",
-    "showtimeText": "19:30",
-    "room": "Phòng 3",
-    "seats": ["A1", "A2"],
-    "combo": "double",
-    "total": 255000,
-    "userId": "usr_1717891200",
-    "transactionId": "TXN_20260616_482931",
-    "paymentMethod": "momo",
-    "createdAt": "2026-06-16T12:30:00.000Z"
-  }
-]
-```
+- `cinema_checkout`: Lưu thông tin giỏ hàng tạm thời trong lúc user chuyển qua các bước (chọn phim -> chọn ghế -> chọn combo -> thanh toán).
+  *Lý do:* Giảm tải lưu trữ rác trên server khi user chưa quyết định hoàn tất thanh toán mua hàng.
 
-### `cinema_seat_locks` (Object — Dictionary theo showtimeId)
-```json
-{
-  "st_200": {
-    "A1": {
-      "seatId": "A1",
-      "userId": "usr_1717891200",
-      "expiresAt": 1718540400000
-    },
-    "B4": {
-      "seatId": "B4",
-      "userId": "other_user_0.91234",
-      "expiresAt": 1718540200000
-    }
-  }
-}
-```
+### `LocalStorage` — Dữ liệu UI (Không bắt buộc tồn tại lâu dài)
 
-> Ghế đã thanh toán sẽ bị **xóa khỏi** `cinema_seat_locks` (không còn tồn tại trong map). Trạng thái "booked" chỉ được xác định qua `cinema_bookings`.
-
-### `cinema_last_booking` (Object)
-Lưu booking gần nhất để hiển thị ở trang hóa đơn.
-
-### `cinema_pending_payments` (Object)
-Map `transactionId → paymentData`, dùng cho flow xác nhận thanh toán.
+- Trạng thái khóa ghế tạm: Frontend có thể ghi tạm danh sách ghế đang được "lock" để kết hợp với `BroadcastChannel API` đồng bộ hiển thị màu trạng thái đang chọn giữa các tab, trước khi giao dịch thực sự thành công ở Database.
 
 ---
 
-## Schema SessionStorage
+## 3. Quá trình Khởi tạo Dữ liệu (Data Seeding)
 
-### `cinema_current_user`
-```json
-{
-  "userId": "usr_1717891200",
-  "name": "Nguyen Van A",
-  "email": "a@example.com",
-  "role": "user"
-}
-```
-
-### `cinema_checkout`
-```json
-{
-  "showtimeId": "st_200",
-  "movieTitle": "YOUR NAME - TÊN CẬU LÀ GÌ?",
-  "poster": "https://...",
-  "room": "Phòng 3",
-  "showtimeText": "19:30",
-  "seats": ["A1", "A2"],
-  "selectedSeats": ["A1", "A2"],
-  "seatAmount": 100000,
-  "seatTotal": 100000,
-  "total": 100000,
-  "expiresAt": 1718540700000
-}
-```
-
-> `seats` và `selectedSeats` tồn tại song song — `seats` dùng cho `checkout.js`, `selectedSeats` là alias tương thích.
-
----
-
-## Mock Data (data.js)
-
-File `shared/js/data.js` (35.8KB) chứa toàn bộ dữ liệu hardcoded:
-- `heroMovies[]` — 5 phim cho Hero Slider
-- `nowShowingMovies[]` — Phim đang chiếu
-- `comingSoonMovies[]` — Phim sắp chiếu
-- Dữ liệu rạp/cụm rạp cho cinema map
-
-Dữ liệu này được load bằng `<script src="...">` (non-module) nên expose ra global scope, các trang khác access trực tiếp qua `window.heroMovies`, `window.nowShowingMovies`, etc.
+Thay vì dùng file `shared/js/data.js` hardcode như trước, hệ thống nay dùng class `DbInitializer` ở Backend.
+- File JSON chứa dữ liệu gốc: `backend/DataSeeding/movies.json`
+- Khi ứng dụng backend chạy (`dotnet run`), hệ thống sẽ gọi `context.Database.EnsureCreated()`. Nếu bảng `movies` rỗng, hệ thống sẽ tự động đọc file JSON và insert (seed) danh sách phim ban đầu vào SQL Server.

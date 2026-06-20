@@ -1,89 +1,83 @@
-# 3HD2Kcinema — Mô phỏng Đặt Vé Rạp Chiếu Phim (Vanilla JS)
+# 3HD2Kcinema — Hệ thống Đặt Vé Rạp Chiếu Phim
 
-Ứng dụng web tĩnh mô phỏng toàn bộ luồng đặt vé rạp chiếu phim, từ xem phim, chọn ghế thời gian thực, thanh toán đến hóa đơn QR. Thuần Frontend — không có Backend server.
+Ứng dụng web mô phỏng toàn bộ luồng đặt vé rạp chiếu phim, từ xem phim, chọn ghế, thanh toán đến hóa đơn QR. Định hướng của dự án là một hệ thống full-stack hoàn chỉnh (có Frontend, Backend và Cơ sở dữ liệu), tuy nhiên **hiện tại dự án đang trong giai đoạn hoàn thiện Frontend** (vẫn sử dụng giả lập LocalStorage/SessionStorage), trong khi thư mục Backend đã được khởi tạo nhưng chưa tích hợp.
 
 ## Công nghệ sử dụng
 
-| Công nghệ | Mô tả |
-|---|---|
-| **HTML5** | Cấu trúc trang, semantic markup |
-| **Vanilla CSS3** | Cinematic Noir theme, Glassmorphism, CSS Custom Properties |
-| **JavaScript ES6 Modules** | `<script type="module">`, không dùng framework |
-| **LocalStorage** | Giả lập database: users, bookings, seat locks |
-| **SessionStorage** | Phiên đăng nhập (`cinema_current_user`), giỏ hàng (`cinema_checkout`) |
-| **BroadcastChannel API** | Đồng bộ ghế thời gian thực giữa nhiều tab |
+### Frontend (Thư mục `/frontend`) - Trọng tâm hiện tại
+- **HTML5 & Vanilla CSS3**: Cấu trúc trang và style (Cinematic Noir theme, Glassmorphism).
+- **JavaScript ES6 Modules**: Logic xử lý giao diện (`<script type="module">`).
+- **Tailwind CSS**: Utility-first CSS framework.
+- **Trạng thái tạm thời**: Sử dụng `SessionStorage` và `LocalStorage` để giả lập database (giỏ hàng, danh sách phim, tài khoản) và BroadcastChannel để đồng bộ đa tab.
 
-## Cách chạy (Local)
+### Backend & Database (Thư mục `/backend`) - Chưa tích hợp
+- **ASP.NET Core (C#)**: Kiến trúc MVC & Web API.
+- **Entity Framework Core & SQL Server**: Lớp truy cập dữ liệu và lưu trữ.
+- *(Lưu ý: Phần backend hiện tại đã có khung mã nguồn nhưng đang "để trưng", chưa được gọi từ frontend).*
 
-> **Bắt buộc** phải chạy qua HTTP server (do chính sách CORS với `file://` và ES6 Modules).
+## Cách chạy ứng dụng (Local)
 
-### Cách 1 — `npm run dev` (Khuyến nghị)
+Hiện tại bạn **chỉ cần chạy Frontend** để kiểm tra và phát triển UI.
+
+### Khởi chạy Frontend (Giao diện)
+
+Mở terminal, trỏ đến thư mục frontend và chạy:
 
 ```bash
+cd frontend
 npm install
 npm run dev
-# Mở trình duyệt: http://localhost:3000
 ```
 
-### Cách 2 — Python HTTP Server
+> Mở trình duyệt tại: `http://localhost:3000`. Toàn bộ luồng đặt vé và tính năng sẽ hoạt động hoàn toàn dựa vào LocalStorage.
 
-```bash
-cd src/
-python -m http.server 8000
-# Mở trình duyệt: http://localhost:8000/index.html
-```
-
-### Cách 3 — VSCode Live Server
-
-Click phải vào `src/index.html` → **Open with Live Server**
+*(Tùy chọn) Để theo dõi và tự động build lại Tailwind CSS khi code giao diện thay đổi, mở thêm 1 terminal và chạy:* `npm run tailwind:watch`
 
 ## Cấu trúc thư mục
 
 ```text
 / (repo root)
-├── Docs/                      # Tài liệu kiến trúc & nghiệp vụ
-├── src/                       # Source code chính
-│   ├── index.html             # Redirect → explore/home-page/
-│   ├── auth/                  # Domain: Xác thực (login, register)
-│   ├── booking/               # Domain: Đặt vé (seat, food, checkout, cancel)
-│   ├── user/                  # Domain: Người dùng (profile, loyalty, notifications)
-│   ├── explore/               # Domain: Khám phá (home, movie-details, search, cinema-map)
-│   ├── engagement/            # Domain: Tương tác (aftercredit-lounge, minigame)
-│   └── shared/                # Dùng chung (navbar, footer, storage, data, CSS)
-└── package.json               # npm scripts: dev (serve), build (tailwind)
+├── backend/                   # Khung Source code Backend (ASP.NET Core C#) - Chưa tích hợp
+│   ├── Controllers/           # Các API/MVC Controllers
+│   ├── Models/                # Entity Framework Models (Schema DB)
+│   ├── Infrastructure/        # Cấu hình DbContext
+│   ├── Services/              # Business Logic Services
+│   └── appsettings.json       # Cấu hình kết nối SQL Server
+├── frontend/                  # Source code Frontend (Đang phát triển chính)
+│   ├── src/                   # Mã nguồn chính
+│   │   ├── index.html         # Điểm vào, redirect → explore/home-page/
+│   │   ├── auth/              # Giao diện: Xác thực (Login, Register)
+│   │   ├── booking/           # Giao diện: Đặt vé (Chọn ghế, Thanh toán)
+│   │   ├── user/              # Giao diện: Người dùng (Hồ sơ, Điểm)
+│   │   ├── explore/           # Giao diện: Khám phá (Trang chủ, Phim, Rạp)
+│   │   ├── engagement/        # Giao diện: Tương tác (Minigame, Lounge)
+│   │   └── shared/            # Dùng chung (CSS, Components, Utilities)
+│   ├── package.json           # npm scripts (`dev`, `build`)
+│   └── tailwind.config.js     # Cấu hình TailwindCSS
+├── Docs/                      # Tài liệu hệ thống chi tiết
+└── README.md                  # Tổng quan dự án (file này)
 ```
 
-## Bảng Theo Dõi Tiến Độ Tính Năng
+## Bảng Theo Dõi Tiến Độ Tính Năng (Frontend)
 
-| Trạng thái | Tính năng | Vị trí |
+| Trạng thái | Tính năng | Vị trí (Frontend) |
 |---|---|---|
-| ✅ Hoàn thành | Trang đăng nhập | `src/auth/user-login/login.html` |
-| ✅ Hoàn thành | Trang đăng ký | `src/auth/user-register/register.html` |
-| ✅ Hoàn thành | Trang chủ (Hero + Now Showing + Coming Soon) | `src/explore/home-page/` |
-| ✅ Hoàn thành | Chi tiết phim (Trailer, Suất chiếu, Đặt vé) | `src/explore/movie-details/` |
-| ✅ Hoàn thành | Tìm kiếm & lọc phim nâng cao | `src/explore/movie-search/` |
-| ✅ Hoàn thành | Bản đồ & định vị cụm rạp | `src/explore/cinema-map/` |
-| ✅ Hoàn thành | Đặt ghế thời gian thực (BroadcastChannel) | `src/booking/seat-booking/` |
-| ✅ Hoàn thành | Chọn combo Bắp Nước | `src/booking/booking-food/` |
-| ✅ Hoàn thành | Thanh toán & Cổng thanh toán giả lập | `src/booking/checkout/` |
-| ✅ Hoàn thành | Hóa đơn điện tử (QR Code) | `src/booking/checkout/booking_invoice.html` |
-| ✅ Hoàn thành | Trang Đặt Vé Thành Công | `src/booking/booking-success/` |
-| ✅ Hoàn thành | Hủy vé & Đổi suất chiếu + Lịch sử | `src/booking/cancel-booking/` |
-| ✅ Hoàn thành | Hồ sơ cá nhân | `src/user/user-profile/` |
-| ✅ Hoàn thành | Hệ thống tích điểm & hạng thành viên | `src/user/loyalty-points/` |
-| ✅ Hoàn thành | Trung tâm thông báo | `src/user/user-notifications/` |
-| ✅ Hoàn thành | After-Credit Lounge (thảo luận phim) | `src/engagement/aftercredit-lounge/` |
-| ✅ Hoàn thành | Cinebet Minigame | `src/engagement/minigame/` |
-| 🔄 Mockup UI | Đặt & giữ ghế theo nhóm (không có JS) | `src/booking/group-booking/` |
-| ❌ Chưa triển khai | Quên mật khẩu & Xác thực OTP | `src/auth/forgot-password/` |
-| ❌ Chưa triển khai | Chia tiền nhóm trong Profile | — |
+| ✅ Hoàn thành | Trang đăng nhập & Đăng ký | `frontend/src/auth/` |
+| ✅ Hoàn thành | Trang chủ (Hero, Phim đang chiếu) | `frontend/src/explore/home-page/` |
+| ✅ Hoàn thành | Chi tiết phim (Trailer, Đặt vé) | `frontend/src/explore/movie-details/` |
+| ✅ Hoàn thành | Bản đồ & định vị cụm rạp | `frontend/src/explore/cinema-map/` |
+| ✅ Hoàn thành | Đặt ghế & Chọn bắp nước | `frontend/src/booking/seat-booking/` |
+| ✅ Hoàn thành | Thanh toán giả lập & QR Hóa đơn | `frontend/src/booking/checkout/` |
+| ✅ Hoàn thành | Hủy vé & Lịch sử giao dịch | `frontend/src/booking/cancel-booking/` |
+| ✅ Hoàn thành | Hồ sơ & Tích điểm thành viên | `frontend/src/user/` |
+| 🔄 Đang hoàn thiện | Đặt & giữ ghế theo nhóm | `frontend/src/booking/group-booking/` |
 
-## Tài liệu
+## Tài liệu Dự Án
 
-Xem thư mục [`Docs/`](./Docs/) để hiểu sâu hơn về kiến trúc, storage schema và quy trình phát triển:
+Hãy tham khảo thư mục [`Docs/`](./Docs/) để hiểu sâu hơn về kiến trúc và quy trình làm việc. (*Lưu ý: Một số tài liệu trong thư mục Docs đang mô tả định hướng tích hợp Full-stack cho tương lai*):
 
-- [`Docs/overview.md`](./Docs/overview.md) — Tổng quan dự án
-- [`Docs/architecture.md`](./Docs/architecture.md) — Kiến trúc Feature-Based
-- [`Docs/features.md`](./Docs/features.md) — Tính năng & luồng nghiệp vụ
-- [`Docs/data-storage.md`](./Docs/data-storage.md) — Schema LocalStorage & SessionStorage
-- [`Docs/workflows.md`](./Docs/workflows.md) — Git flow & quy tắc code
+- [`Docs/overview.md`](./Docs/overview.md) — Tổng quan dự án & Cấu trúc.
+- [`Docs/architecture.md`](./Docs/architecture.md) — Kiến trúc phân tầng Client-Server.
+- [`Docs/features.md`](./Docs/features.md) — Tính năng & luồng nghiệp vụ.
+- [`Docs/data-storage.md`](./Docs/data-storage.md) — Cấu trúc SQL Server Database & Data Models.
+- [`Docs/workflows.md`](./Docs/workflows.md) — Quy tắc code & Git flow.
