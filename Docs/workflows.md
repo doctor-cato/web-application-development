@@ -1,53 +1,31 @@
-# Quy trình Phát triển & Git — 3HD2Kcinema
+# Quy trình Phát triển Frontend & Git — 3HD2Kcinema
 
-## Quy tắc Code
+Hiện tại dự án đang tập trung hoàn thiện tầng **Frontend** (giao diện và logic người dùng trên trình duyệt). Backend chưa được tích hợp chính thức. Vì vậy, mọi quy trình làm việc đều xoay quanh việc phát triển thư mục `/frontend`.
 
-Khi làm việc với codebase này, cần chia rạch ròi quy tắc cho Frontend và Backend:
+## Quy tắc Code Frontend
 
-### Frontend
-1. **Không bao giờ** import module Node.js bên ngoài hay dùng bundler (trừ công cụ Tailwind CLI) — tuân thủ định dạng Vanilla ES6 `<script type="module">`.
-2. **Không bao giờ** viết logic thay đổi giao diện (DOM manipulation) trực tiếp vào các file service xử lý dữ liệu.
-3. Các yêu cầu (requests) gửi về Backend cần sử dụng `fetch()` API tiêu chuẩn của trình duyệt.
-4. Trong nhánh `dev`, hệ thống sử dụng Tailwind CSS để dựng UI.
-
-### Backend
-1. **Cấu trúc ASP.NET Core**: Tuân thủ Repository Pattern và Dependency Injection. Các controller chỉ tiếp nhận và điều phối request, logic xử lý phức tạp phải đặt trong thư mục `Services/`.
-2. **Entity Framework Core**:
-   - Khi thay đổi schema Database (thêm bảng, sửa cột trong các file `Models/`), phải tạo Migration (`dotnet ef migrations add <Name>`) và cập nhật DB (`dotnet ef database update`).
-3. **Bảo mật**: Các endpoint yêu cầu người dùng đăng nhập phải có attribute `[Authorize]`.
+1. **Không sử dụng bundler phức tạp**: Tuân thủ định dạng Vanilla ES6 `<script type="module">`.
+2. **Quản lý dữ liệu (Mock DB)**: Mọi tương tác dữ liệu hiện tại đều lưu thông qua `LocalStorage` và `SessionStorage` (được cấu hình trong `shared/utils/storage.js`). **Không gọi `fetch()` đến backend** ở thời điểm hiện tại.
+3. **Tailwind CSS**: Cho phép sử dụng Tailwind CSS để dựng giao diện nhanh. Lệnh build tailwind sẽ giám sát và biên dịch file `input.css`.
+4. **BroadcastChannel API**: Sử dụng API này để đồng bộ hóa trạng thái giao diện theo thời gian thực (real-time) giữa các tab, đặc biệt trong tính năng khóa ghế (`seat_sync`).
 
 ---
 
-## Chạy Local (Full-stack)
+## Chạy Local (Frontend)
 
-Để chạy toàn bộ hệ thống, bạn cần khởi chạy cả Backend và Frontend ở hai terminal riêng biệt.
-
-### 1. Backend Server (API & MVC)
-
-```bash
-cd backend
-# Khôi phục các package NuGet (chỉ cần chạy lần đầu hoặc khi có thay đổi package)
-dotnet restore
-
-# (Tùy chọn) Chạy migration cập nhật DB nếu chưa có hoặc có thay đổi Models
-# dotnet ef database update
-
-# Khởi chạy server
-dotnet run
-```
-
-### 2. Frontend (Static Web Server)
+Mở terminal và trỏ vào thư mục `/frontend`:
 
 ```bash
 cd frontend
-# Cài dependencies (chỉ cần chạy 1 lần)
+
+# Cài đặt dependencies (Tailwind CLI, Serve) - Chạy 1 lần duy nhất
 npm install
 
-# Khởi chạy dev server phục vụ thư mục mã nguồn frontend/src
+# Khởi chạy server tĩnh (phục vụ frontend/src) ở cổng 3000
 npm run dev
-# → Truy cập ứng dụng tại: http://localhost:3000
+# → Mở trình duyệt: http://localhost:3000
 
-# (Tùy chọn) Chạy watch-mode để tự động build Tailwind CSS khi thay đổi class trong mã nguồn
+# (Tùy chọn) Bật chế độ tự động build Tailwind CSS khi bạn sửa code HTML
 npm run tailwind:watch
 ```
 
@@ -56,31 +34,31 @@ npm run tailwind:watch
 ## Luồng Git (Git Flow)
 
 ```text
-main ──────────────────────────────── (stable, production-ready)
+main ──────────────────────────────── (stable)
   └── develop ──────────────────────── (integration branch)
-        └── feature/payment-gateway    (feature branches)
-        └── fix/db-migration-error
+        └── feature/payment-ui         (feature branches)
+        └── fix/button-alignment
 ```
 
-- **`main`**: Code ổn định, API Backend và Frontend giao tiếp với nhau mượt mà.
+- **`main`**: Code frontend ổn định, giao diện hoàn thiện.
 - **`develop`**: Branch hội nhập chính.
-- **`feature/*`**: Tạo từ `develop`, merge vào `develop` sau khi hoàn thành.
+- **`feature/*`**: Tạo từ `develop`, merge vào `develop` sau khi hoàn thành một màn hình/tính năng UI.
 
 ### Commit Convention
 
 | Prefix | Dùng khi |
 |---|---|
-| `feat:` | Thêm tính năng mới (UI Frontend hoặc API Backend) |
-| `fix:` | Sửa lỗi (bug) ở client hoặc server |
-| `refactor:` | Tái cấu trúc code (chỉnh sửa thiết kế class, tách file...) mà không đổi behavior |
+| `feat:` | Thêm tính năng UI mới hoặc logic JS mới |
+| `fix:` | Sửa lỗi (bug) hiển thị hoặc lỗi logic JS |
+| `refactor:` | Tái cấu trúc code (tách component, tổ chức lại CSS/JS) |
 | `docs:` | Chỉ chỉnh sửa file markdown tài liệu |
-| `chore:` | Thiết lập cấu hình, công cụ (package.json, file .csproj, appsettings.json...) |
-| `style:` | Chỉ chỉnh sửa CSS/Tailwind, không đổi logic |
+| `chore:` | Thiết lập cấu hình (package.json, tailwind.config.js...) |
+| `style:` | Tinh chỉnh CSS/Tailwind, căn chỉnh lại pixel, đổi màu sắc |
 
 ---
 
 ## Quy trình làm việc cùng AI (Cursor / Copilot / Antigravity)
 
-1. **Đọc tài liệu (Docs) trước**: Hướng AI đọc các file `.md` trong thư mục `Docs/` để nắm vững context.
-2. **Phân biệt rạch ròi Frontend & Backend**: Khi sửa UI, nhắc AI thao tác trong thư mục `/frontend`. Khi thêm tính năng API hoặc chỉnh sửa Database, nhắc AI thao tác trong `/backend`. Không để AI tạo lẫn lộn logic (như tự ý thêm Node.js express server vào Frontend).
-3. **Đồng bộ docs**: Sau mỗi thay đổi kiến trúc, Database schema hoặc Endpoint API mới, yêu cầu AI cập nhật các file `Docs/features.md` và `Docs/data-storage.md`.
+1. **Phạm vi làm việc**: Yêu cầu AI chỉ được phép đọc, tạo và chỉnh sửa code bên trong thư mục `/frontend/src`. Không động đến `/backend` ở thời điểm hiện tại.
+2. **Không Over-Engineering**: Tuyệt đối không cho AI tự ý cài thêm React, Vue, Webpack, Babel hay Express. Đây là dự án Vanilla JS thuần.
+3. **Mô phỏng dữ liệu**: Nhắc nhở AI luôn dùng file `storage.js` để đọc/ghi dữ liệu tạm thời thay vì gọi API.
