@@ -25,7 +25,7 @@ function getFormatClass(fmt) {
     return map[fmt] || '';
 }
 
-function renderStars(rating, total = 10, starCount = 5) {
+function renderStars(rating, total = 5, starCount = 5) {
     const normalized = (rating / total) * starCount;
     let html = '';
     for (let i = 1; i <= starCount; i++) {
@@ -308,6 +308,9 @@ function handleBooking(event, cinemaName, format, time) {
     }, 1500);
 }
 
+let currentReviews = [];
+let currentRatingSelection = 5;
+
 // ── RENDER RATINGS ───────────────────────────────────────────
 function renderRatings(movie) {
     document.getElementById('rating-value').textContent = movie.rating.toFixed(1);
@@ -320,16 +323,22 @@ function renderRatings(movie) {
     }
 
     // External scores (mock values derived from our rating)
-    const imdbScore = (movie.rating * 1.0).toFixed(1);
-    const rtScore = Math.round(movie.rating * 10);
+    const imdbScore = (movie.rating * 2.0).toFixed(1);
+    const rtScore = Math.round(movie.rating * 20);
     document.getElementById('imdb-score').textContent = `${imdbScore}/10`;
     document.getElementById('rt-score').textContent = `${rtScore}%`;
 
-    // Reviews
+    if (currentReviews.length === 0 && typeof mockReviews !== 'undefined') {
+        currentReviews = [...mockReviews];
+    }
+    renderReviews();
+}
+
+function renderReviews() {
     const reviewsPanel = document.getElementById('reviews-panel');
     if (reviewsPanel) {
-        reviewsPanel.innerHTML = mockReviews.map((rev, idx) => {
-            const stars = Array.from({length: 10}, (_, i) =>
+        reviewsPanel.innerHTML = currentReviews.map((rev, idx) => {
+            const stars = Array.from({length: 5}, (_, i) =>
                 `<i class="${i < rev.rating ? 'fas' : 'far'} fa-star star ${i < rev.rating ? 'filled' : ''}"></i>`
             ).join('');
             return `
@@ -347,6 +356,43 @@ function renderRatings(movie) {
             `;
         }).join('');
     }
+}
+
+function submitComment() {
+    if (!window.requireAuth('Bạn cần đăng nhập để viết bình luận. Hãy đăng nhập hoặc tạo tài khoản để tiếp tục.')) return;
+    
+    const input = document.getElementById('comment-input');
+    const text = input.value.trim();
+    if (!text) {
+        showToast('Vui lòng nhập nội dung bình luận!');
+        return;
+    }
+    
+    const userName = localStorage.getItem('userName') || 'Người dùng';
+    const userAvatar = localStorage.getItem('userAvatar') || 'https://i.pravatar.cc/150?img=11';
+    
+    const now = new Date();
+    const dateStr = `${now.getDate().toString().padStart(2, '0')}/${(now.getMonth() + 1).toString().padStart(2, '0')}/${now.getFullYear()}`;
+    
+    const newComment = {
+        user: userName,
+        date: dateStr,
+        rating: currentRatingSelection,
+        text: text,
+        avatar: userAvatar
+    };
+    
+    currentReviews.unshift(newComment);
+    input.value = '';
+    
+    // Update average rating
+    const sum = currentReviews.reduce((acc, rev) => acc + rev.rating, 0);
+    currentMovie.rating = sum / currentReviews.length;
+    currentMovie.ratingCount = currentReviews.length;
+    
+    renderHero(currentMovie);
+    renderRatings(currentMovie);
+    showToast('Bình luận của bạn đã được gửi!');
 }
 
 
@@ -543,6 +589,16 @@ document.addEventListener('DOMContentLoaded', () => {
         currentMovie = allMoviesData.find(m => m.id === movieId) || allMoviesData[0];
     }
 
+    if (typeof mockReviews !== 'undefined') {
+        currentReviews = [...mockReviews];
+    }
+    
+    if (currentReviews.length > 0 && currentMovie) {
+        const sum = currentReviews.reduce((acc, rev) => acc + rev.rating, 0);
+        currentMovie.rating = sum / currentReviews.length;
+        currentMovie.ratingCount = currentReviews.length;
+    }
+
     if (!currentMovie) {
         document.title = '3HD2K - Không tìm thấy phim';
         document.querySelector('.detail-main').innerHTML = `
@@ -573,5 +629,26 @@ document.addEventListener('DOMContentLoaded', () => {
     if (backdrop) {
         backdrop.style.transform = 'scale(1.08)';
         setTimeout(() => { backdrop.style.transition = 'transform 1.5s ease'; backdrop.style.transform = 'scale(1.0)'; }, 100);
+    }
+
+    // Comment Rating Selection
+    const stars = document.querySelectorAll('#rating-stars-input i');
+    const display = document.getElementById('rating-value-display');
+    if (stars.length > 0 && display) {
+        stars.forEach(star => {
+            star.addEventListener('click', (e) => {
+                currentRatingSelection = parseInt(e.target.getAttribute('data-value'), 10);
+                display.textContent = `${currentRatingSelection}/5`;
+                stars.forEach(s => {
+                    if (parseInt(s.getAttribute('data-value'), 10) <= currentRatingSelection) {
+                        s.classList.add('active');
+                        s.classList.replace('far', 'fas');
+                    } else {
+                        s.classList.remove('active');
+                        s.classList.replace('fas', 'far');
+                    }
+                });
+            });
+        });
     }
 });

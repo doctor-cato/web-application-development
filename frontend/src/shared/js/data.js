@@ -583,7 +583,7 @@ const mockReviews = [
     {
         user: "Minh Tuấn",
         avatar: "https://i.pravatar.cc/48?img=1",
-        rating: 9,
+        rating: 5,
         date: "10/06/2026",
         text: "Phim rất hay! Kỹ xảo đỉnh cao, cốt truyện hấp dẫn từ đầu đến cuối. Xem ở IMAX mới cảm nhận được hết độ hoành tráng.",
         hasSpoiler: false
@@ -591,7 +591,7 @@ const mockReviews = [
     {
         user: "Lan Anh",
         avatar: "https://i.pravatar.cc/48?img=20",
-        rating: 8,
+        rating: 4,
         date: "09/06/2026",
         text: "Diễn xuất của các diễn viên chính rất tốt. Tuy nhiên phần đầu hơi chậm, phải đến 30 phút sau phim mới thực sự bắt đầu cuốn hút.",
         hasSpoiler: false
@@ -599,7 +599,7 @@ const mockReviews = [
     {
         user: "Đức Khải",
         avatar: "https://i.pravatar.cc/48?img=3",
-        rating: 7,
+        rating: 3,
         date: "08/06/2026",
         text: "Cẩn thận spoiler! Kết thúc phim khá bất ngờ và cảm xúc. Nếu bạn đã xem phần trước thì sẽ hiểu hơn nhiều.",
         hasSpoiler: true
@@ -607,9 +607,33 @@ const mockReviews = [
     {
         user: "Thu Hà",
         avatar: "https://i.pravatar.cc/48?img=44",
-        rating: 10,
+        rating: 5,
         date: "07/06/2026",
         text: "Masterpiece! Không có gì để chê. Âm nhạc, hình ảnh, diễn xuất đều xuất sắc. Đây chắc chắn là một trong những bộ phim hay nhất năm nay.",
+        hasSpoiler: false
+    },
+    {
+        user: "Hoàng Long",
+        avatar: "https://i.pravatar.cc/48?img=11",
+        rating: 4,
+        date: "06/06/2026",
+        text: "Hình ảnh âm thanh làm cực kỳ ấn tượng, đáng đồng tiền bát gạo ra rạp.",
+        hasSpoiler: false
+    },
+    {
+        user: "Thảo Trang",
+        avatar: "https://i.pravatar.cc/48?img=5",
+        rating: 5,
+        date: "05/06/2026",
+        text: "Tuyệt vời! Ai chưa xem thì khuyên thật lòng nên đi xem ngay, không xem là phí.",
+        hasSpoiler: false
+    },
+    {
+        user: "Gia Bảo",
+        avatar: "https://i.pravatar.cc/48?img=8",
+        rating: 4,
+        date: "04/06/2026",
+        text: "Cốt truyện ok, diễn xuất tròn vai, kĩ xảo tạm ổn. Một bộ phim giải trí tốt dịp cuối tuần.",
         hasSpoiler: false
     }
 ];

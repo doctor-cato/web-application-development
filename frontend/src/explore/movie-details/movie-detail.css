@@ -939,6 +939,109 @@
 .interact-btn.liked i { color: #ff6b6b; }
 
 /* Comments */
+.reviews-container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.comment-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 20px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+
+.comment-rating-select {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.rating-label {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+}
+
+.rating-stars-input {
+    display: flex;
+    gap: 4px;
+    cursor: pointer;
+}
+
+.rating-stars-input i {
+    font-size: 1.1rem;
+    color: #444;
+    transition: color 0.2s, transform 0.1s;
+}
+
+.rating-stars-input i:hover {
+    transform: scale(1.2);
+}
+
+.rating-stars-input i.active {
+    color: #f5c518;
+}
+
+.rating-value-display {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #f5c518;
+    margin-left: 8px;
+}
+
+#comment-input {
+    width: 100%;
+    background: rgba(0,0,0,0.2);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: var(--text-main);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9375rem;
+    resize: vertical;
+    min-height: 80px;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+#comment-input:focus {
+    border-color: var(--primary-red);
+    background: rgba(0,0,0,0.4);
+}
+
+#comment-input::placeholder {
+    color: var(--text-muted);
+}
+
+.comment-form-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn-submit-comment {
+    padding: 10px 24px;
+    background: var(--primary-red);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-submit-comment:hover {
+    background: #c40610;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(229,9,20,0.4);
+}
+
 .reviews-panel {
     display: flex;
     flex-direction: column;

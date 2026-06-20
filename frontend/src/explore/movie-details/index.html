@@ -142,7 +142,7 @@
                     <div class="rating-score-panel">
                         <div>
                             <div class="rating-big-num" id="rating-big-num">
-                                <span id="rating-value">--</span><span class="rating-big-denom">/10</span>
+                                <span id="rating-value">--</span><span class="rating-big-denom">/5</span>
                             </div>
                         </div>
                         <div class="rating-stars-large" id="rating-stars-large">
@@ -177,9 +177,30 @@
                         </div>
                     </div>
 
-                    <!-- Reviews -->
-                    <div class="reviews-panel" id="reviews-panel">
-                        <!-- Rendered by JS -->
+                    <!-- Reviews & Comments -->
+                    <div class="reviews-container">
+                        <div class="comment-form">
+                            <div class="comment-rating-select" id="comment-rating-select">
+                                <span class="rating-label">Đánh giá của bạn: </span>
+                                <div class="rating-stars-input" id="rating-stars-input">
+                                    <i class="fas fa-star active" data-value="1"></i>
+                                    <i class="fas fa-star active" data-value="2"></i>
+                                    <i class="fas fa-star active" data-value="3"></i>
+                                    <i class="fas fa-star active" data-value="4"></i>
+                                    <i class="fas fa-star active" data-value="5"></i>
+                                </div>
+                                <span class="rating-value-display" id="rating-value-display">5/5</span>
+                            </div>
+                            <textarea id="comment-input" placeholder="Viết bình luận của bạn về bộ phim này..." rows="3"></textarea>
+                            <div class="comment-form-actions">
+                                <button id="btn-submit-comment" class="btn-submit-comment" onclick="submitComment()">Gửi Bình Luận</button>
+                            </div>
+                        </div>
+
+                        <!-- Reviews -->
+                        <div class="reviews-panel" id="reviews-panel">
+                            <!-- Rendered by JS -->
+                        </div>
                     </div>
                 </div>
             </section>
