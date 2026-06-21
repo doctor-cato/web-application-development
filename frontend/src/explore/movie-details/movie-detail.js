@@ -250,13 +250,17 @@ function renderCinemaShowtimes() {
             const showtimes = generateShowtimes(cinema.id, fmt);
             const btns = showtimes.map(st => {
                 let status = st.status;
-                if (typeof selectedDateIndex !== 'undefined' && selectedDateIndex === 0) {
+                if (typeof selectedDateIndex !== 'undefined') {
                     const [h, m] = st.time.split(':').map(Number);
-                    const showTotalMinutes = h * 60 + m;
                     const now = new Date();
-                    const currentTotalMinutes = now.getHours() * 60 + now.getMinutes();
-                    // Chỉ khóa (vô hiệu hóa) khi đã quá giờ chiếu 60 phút
-                    if (currentTotalMinutes >= showTotalMinutes + 60) {
+                    
+                    // Tính chính xác mốc thời gian của suất chiếu cho ngày được chọn
+                    const showDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), h, m, 0);
+                    showDate.setDate(showDate.getDate() + selectedDateIndex);
+                    
+                    // Chỉ khóa (vô hiệu hóa) khi thời gian thực tế vượt quá giờ chiếu 60 phút
+                    const lockTime = new Date(showDate.getTime() + 60 * 60000);
+                    if (now >= lockTime) {
                         status = 'past';
                     }
                 }

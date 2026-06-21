@@ -569,7 +569,7 @@ const cinemas = [
 // Returns mock showtime data for a given cinemaId and format
 function generateShowtimes(cinemaId, format) {
     const allTimes = ["09:00", "10:30", "11:45", "13:15", "14:30", "16:00", "17:20", "18:45", "20:10", "21:30", "22:50"];
-    const statuses = ["available", "available", "available", "almost-full", "available", "full", "available", "almost-full", "available", "available", "available"];
+    const statuses = ["available", "available", "available", "almost-full", "available", "available", "available", "almost-full", "available", "available", "available"];
     const count = 5 + Math.floor(Math.random() * 4);
     const startIdx = Math.floor(Math.random() * (allTimes.length - count));
     return allTimes.slice(startIdx, startIdx + count).map((time, i) => ({
