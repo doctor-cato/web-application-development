@@ -249,11 +249,24 @@ function renderCinemaShowtimes() {
         const formatRows = formatsToShow.map(fmt => {
             const showtimes = generateShowtimes(cinema.id, fmt);
             const btns = showtimes.map(st => {
-                if (st.status === 'full') {
-                    return `<span class="showtime-btn full">${st.time}</span>`;
+                let status = st.status;
+                if (typeof selectedDateIndex !== 'undefined' && selectedDateIndex === 0) {
+                    const [h, m] = st.time.split(':').map(Number);
+                    const showTotalMinutes = h * 60 + m;
+                    const now = new Date();
+                    const currentTotalMinutes = now.getHours() * 60 + now.getMinutes();
+                    // Chỉ khóa (vô hiệu hóa) khi đã quá giờ chiếu 60 phút
+                    if (currentTotalMinutes >= showTotalMinutes + 60) {
+                        status = 'past';
+                    }
                 }
-                return `<a href="#" class="showtime-btn ${st.status}" 
-                            title="${st.status === 'almost-full' ? 'Sắp hết vé' : 'Còn vé'}"
+
+                if (status === 'full' || status === 'past') {
+                    const title = status === 'full' ? 'Hết vé' : 'Đã chiếu';
+                    return `<span class="showtime-btn ${status}" title="${title}">${st.time}</span>`;
+                }
+                return `<a href="#" class="showtime-btn ${status}" 
+                            title="${status === 'almost-full' ? 'Sắp hết vé' : 'Còn vé'}"
                             onclick="handleBooking(event, '${cinema.name}', '${fmt}', '${st.time}')">
                             ${st.time}
                         </a>`;
