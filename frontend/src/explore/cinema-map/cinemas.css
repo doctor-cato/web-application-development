@@ -671,3 +671,26 @@
 .cinemas-page + footer {
     margin-top: 0;
 }
+
+/* --- RESPONSIVE ADJUSTMENTS --- */
+@media (max-width: 1024px) {
+    .cinemas-layout {
+        grid-template-columns: 350px 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .cinemas-layout {
+        grid-template-columns: 1fr;
+        display: flex;
+        flex-direction: column-reverse;
+    }
+    .cinemas-list-panel {
+        max-height: 50vh;
+        padding-right: var(--page-padding);
+    }
+    .map-panel {
+        height: 40vh;
+    }
+}
+

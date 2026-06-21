@@ -18,7 +18,7 @@ export function renderNavbar() {
                 <a href="${srcPrefix}/explore/home-page/index.html">Trang chủ</a>
                 <a href="${srcPrefix}/explore/movie-search/index.html?tab=now-showing">Phim Đang Chiếu</a>
                 <a href="${srcPrefix}/explore/cinema-map/index.html">Cụm Rạp</a>
-                <a href="${srcPrefix}/user/user-notifications/index.html?tab=promo">Khuyến Mãi</a>
+                <a href="${srcPrefix}/wip.html">Khuyến Mãi</a>
                 <div class="quick-book-wrapper">
                     <a href="#" class="quick-book-toggle" id="quick-book-toggle">Đặt vé <i class="fas fa-chevron-down" style="font-size:0.7rem; margin-left:4px;"></i></a>
                     <div class="quick-book-dropdown" id="quick-book-dropdown">
@@ -106,7 +106,7 @@ export function renderNavbar() {
                         <li><a href="${srcPrefix}/engagement/minigame/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-gamepad" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Cine Predict</a></li>
                         <li><a href="${srcPrefix}/booking/group-booking/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-users" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Đặt & Giữ ghế nhóm</a></li>
                         <li><a href="${srcPrefix}/user/loyalty-points/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-star" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Điểm thưởng</a></li>
-                        <li><a href="${srcPrefix}/user/user-notifications/index.html?tab=promo" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-ticket-alt" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Khuyến mãi</a></li>
+                        <li><a href="${srcPrefix}/wip.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-ticket-alt" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Khuyến mãi</a></li>
                         <li><a href="${srcPrefix}/user/loyalty-points/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-crown" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Gói hội viên</a></li>
                     </ul>
                 </div>
@@ -897,8 +897,22 @@ export function renderNavbar() {
 }
 
 .mobile-only { display: block; }
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
     .mobile-only { display: none !important; }
+    #hamburger-btn { display: none !important; }
+}
+@media (max-width: 1024px) {
+    .nav-links { display: none !important; }
+    .nav-left { gap: 15px; }
+    .logo { font-size: 1.8rem; }
+    .search-pill span { display: none; }
+    .search-pill { padding: 10px 14px; }
+}
+@media (max-width: 600px) {
+    .nav-actions { gap: 10px; }
+    .search-pill.active #search-input { width: 100px; }
+    .user-dropdown { right: -50px; }
+    .notif-dropdown { right: -50px; width: 300px; }
 }
     </style>
     `;
