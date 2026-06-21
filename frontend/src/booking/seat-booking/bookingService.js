@@ -109,8 +109,9 @@ export function confirmBooking(checkoutData) {
   const bookings = getBookings();
   const id = makeBookingId();
   const now = new Date();
+  const finalId = checkoutData.id || id;
   const booking = {
-    id,
+    id: finalId,
     movieTitle: checkoutData.movieTitle || 'Unknown Movie',
     showtimeId: checkoutData.showtimeId || null,
     showtimeText: checkoutData.showtimeText || '',
@@ -122,8 +123,7 @@ export function confirmBooking(checkoutData) {
     transactionId: checkoutData.transactionId || null,
     paymentMethod: checkoutData.paymentMethod || null,
     poster: checkoutData.poster || '',
-    createdAt: now.toISOString(),
-    id: checkoutData.id || ('3HD2K-' + Math.random().toString(36).substr(2, 9).toUpperCase())
+    createdAt: now.toISOString()
   };
 
   bookings.push(booking);

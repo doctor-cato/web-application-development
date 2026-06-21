@@ -12,6 +12,9 @@ function renderRealHistory() {
     const container = document.getElementById('real-history-container');
     if (!container) return;
 
+    // Expose globally so inline scripts can call it
+    window._renderRealHistory = renderRealHistory;
+
     let bookings = getBookings();
     if (!Array.isArray(bookings)) bookings = [];
 
@@ -384,24 +387,3 @@ if (document.readyState === 'loading') {
 } else {
     initProfile();
 }
-
-// Handle ticket cancellation event from the static HTML modal
-document.addEventListener('cancelTicket', (e) => {
-    const ticketId = e.detail;
-    if (!ticketId) return;
-
-    let bookings = getBookings();
-    if (!Array.isArray(bookings)) return;
-
-    const bookingIndex = bookings.findIndex(b => b.id === ticketId);
-    if (bookingIndex !== -1) {
-        // Mark as cancelled
-        bookings[bookingIndex].status = 'Cancelled';
-        saveBookings(bookings);
-        // Re-render
-        renderRealHistory();
-    }
-});
-
-
-

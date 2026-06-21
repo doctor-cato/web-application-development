@@ -834,7 +834,25 @@
                 btn.style.pointerEvents = 'auto';
                 
                 if (currentCancelId && currentCancelId.startsWith('3HD2K-')) {
-                    document.dispatchEvent(new CustomEvent('cancelTicket', { detail: currentCancelId }));
+                    // === Directly update localStorage for dynamic bookings ===
+                    try {
+                        const BOOKINGS_KEY = 'cinema_bookings';
+                        let bookings = JSON.parse(localStorage.getItem(BOOKINGS_KEY) || '[]');
+                        const idx = bookings.findIndex(b => b.id === currentCancelId);
+                        if (idx !== -1) {
+                            bookings[idx].status = 'Cancelled';
+                            localStorage.setItem(BOOKINGS_KEY, JSON.stringify(bookings));
+                        }
+                    } catch(e) {
+                        console.error('Cancel booking error:', e);
+                    }
+                    // Re-render the history list
+                    if (typeof window._renderRealHistory === 'function') {
+                        window._renderRealHistory();
+                    } else {
+                        // Fallback: reload the page to reflect changes
+                        location.reload();
+                    }
                 } else if (currentCancelId) {
                     // Fallback for static f1 or f2 status
                     const statusBadge = document.getElementById(currentCancelId + '-status');
@@ -862,7 +880,7 @@
                     if(document.getElementById(currentCancelId + '-view-btn')) document.getElementById(currentCancelId + '-view-btn').style.display = 'none';
                     if(document.getElementById(currentCancelId + '-cancel-btn')) document.getElementById(currentCancelId + '-cancel-btn').style.display = 'none';
                 }
-                document.activeElement.blur(); // Remove focus to prevent ghost clicks or scroll jumps
+                if (document.activeElement) document.activeElement.blur();
             }, 1000);
         }
     </script>
@@ -973,7 +991,6 @@
         }
     </script>
 
-<script type="module" src="./profile.js"></script>
 </body>
 </html>
 
