@@ -207,8 +207,10 @@
 
 .movie-card {
     min-width: 220px;
+    width: 220px;
     flex: 0 0 220px;
     cursor: pointer;
+    min-width: 0;
 }
 
 .poster {
@@ -491,7 +493,7 @@
     .hero-hover-zone { display: none; }
     .filter-item { flex-basis: 100%; border-bottom: 1px solid var(--glass-border); padding-bottom: 10px; }
     .filter-item:last-child { border-bottom: none; }
-    .movie-card { min-width: 180px; flex: 0 0 180px; }
+    .movie-card { width: 180px; flex: 0 0 180px; min-width: 0; }
     .poster { height: 260px; }
     .movie-grid { gap: 15px; }
 }
@@ -503,7 +505,7 @@
     .btn { width: 100%; text-align: center; }
     .rewards-action { flex-direction: column; align-items: flex-start; gap: 15px; }
     .section-header { flex-direction: column; align-items: flex-start; gap: 10px; }
-    .movie-card { min-width: 140px; flex: 0 0 140px; }
+    .movie-card { width: 140px; flex: 0 0 140px; min-width: 0; }
     .poster { height: 210px; }
     .movie-grid { gap: 12px; }
     .info h3 { font-size: 0.9rem; }

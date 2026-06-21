@@ -186,7 +186,7 @@
 
 /* --- MOVIE CARD (Movies Page variant) --- */
 .movies-grid .movie-card {
-    min-width: unset;
+    min-width: 0;
     flex: unset;
     cursor: pointer;
     transition: transform 0.3s ease;
