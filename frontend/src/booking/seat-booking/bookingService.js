@@ -122,7 +122,8 @@ export function confirmBooking(checkoutData) {
     transactionId: checkoutData.transactionId || null,
     paymentMethod: checkoutData.paymentMethod || null,
     poster: checkoutData.poster || '',
-    createdAt: now.toISOString()
+    createdAt: now.toISOString(),
+    id: checkoutData.id || ('3HD2K-' + Math.random().toString(36).substr(2, 9).toUpperCase())
   };
 
   bookings.push(booking);
@@ -146,3 +147,4 @@ export function getUserBookings(userId) {
   if (!userId) return bookings;
   return bookings.filter(b => b.userId === userId);
 }
+

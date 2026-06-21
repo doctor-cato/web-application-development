@@ -12,19 +12,29 @@ function renderRealHistory() {
     const container = document.getElementById('real-history-container');
     if (!container) return;
     
-    // Get all bookings from localStorage
+        // Get all bookings from localStorage
     let bookings = getBookings();
     
     if (!Array.isArray(bookings)) {
         bookings = [];
     }
     
-    // Reverse so newest is at the top
-    bookings.reverse();
+    // Assign missing IDs to legacy bookings and save back
+    let needsSave = false;
+    bookings.forEach(b => {
+        if (!b.id) {
+            b.id = '3HD2K-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+            needsSave = true;
+        }
+    });
+    if (needsSave) saveBookings(bookings);
+    
+    // Reverse so newest is at the top (use a copy!)
+    const displayBookings = [...bookings].reverse();
     
     let html = '';
     
-    bookings.forEach((booking, index) => {
+    displayBookings.forEach((booking, index) => {
         const isGroup = booking.seats && booking.seats.length > 2;
         const seatStr = booking.seats ? booking.seats.join(', ') : 'N/A';
         const typeBadge = isGroup 
@@ -393,5 +403,6 @@ document.addEventListener('cancelTicket', (e) => {
         renderRealHistory();
     }
 });
+
 
 
