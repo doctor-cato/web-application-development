@@ -163,6 +163,20 @@ function updateTotal() {
 
   currentDiscount = discountAmount;
   
+  // VIP Discount logic
+  const isVip = localStorage.getItem('is_vip') === 'true';
+  const vipPlan = localStorage.getItem('vip_plan') || '';
+  let vipDiscountPercent = 0;
+  if (isVip) {
+      if (vipPlan === 'gold') vipDiscountPercent = 0.05;
+      else if (vipPlan === 'platinum') vipDiscountPercent = 0.10;
+  }
+  
+  let vipDiscountAmount = 0;
+  if (vipDiscountPercent > 0) {
+      vipDiscountAmount = Math.floor(total * vipDiscountPercent);
+  }
+
   // Update Discount Row
   const discountRow = document.getElementById('order-summary-discount-row');
   const discountAmountEl = document.getElementById('order-summary-discount-amount');
@@ -176,7 +190,24 @@ function updateTotal() {
     }
   }
 
-  total = Math.max(0, total - discountAmount);
+  // Update VIP Discount Row
+  const vipDiscountRow = document.getElementById('order-summary-vip-discount-row');
+  const vipDiscountAmountEl = document.getElementById('order-summary-vip-discount-amount');
+  const vipDiscountLabelEl = document.getElementById('vip-discount-label');
+  if (vipDiscountRow && vipDiscountAmountEl) {
+    if (vipDiscountAmount > 0) {
+      vipDiscountRow.style.display = 'flex';
+      vipDiscountAmountEl.innerText = '-' + formatPrice(vipDiscountAmount);
+      if (vipDiscountLabelEl) {
+          vipDiscountLabelEl.innerText = `Ưu đãi VIP (${vipPlan === 'platinum' ? '10%' : '5%'})`;
+      }
+    } else {
+      vipDiscountRow.style.display = 'none';
+      vipDiscountAmountEl.innerText = '-0 đ';
+    }
+  }
+
+  total = Math.max(0, total - discountAmount - vipDiscountAmount);
 
   const totalEl = document.getElementById('order-total');
   if (totalEl) {
