@@ -9,7 +9,7 @@
     <!-- Load custom fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
     <!-- FontAwesome for Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
@@ -238,6 +238,23 @@
         border-color: rgba(255,215,0,0.4) !important;
         box-shadow: 0 5px 15px rgba(255,215,0,0.1);
     }
+    
+    @media (max-width: 600px) {
+        .ticket-wrapper {
+            width: 100%;
+            max-width: 320px;
+        }
+        .ticket-details-grid {
+            grid-template-columns: 1fr;
+            gap: 0.8rem;
+        }
+        .vip-benefits-container {
+            padding: 1.5rem !important;
+        }
+        .vip-perks-grid {
+            grid-template-columns: 1fr !important;
+        }
+    }
 </style>
 
 
@@ -252,8 +269,8 @@
             <aside class="profile-sidebar">
                 <div class="sidebar-user-info">
                     <div class="sidebar-avatar-wrapper">
-                        <img id="sidebar-avatar" src="/shared/images/avatar.jpg" alt="User Avatar" onerror="this.onerror=null; this.src='/shared/images/avatar.jpg';">
-                        <div class="avatar-upload-btn" onclick="document.getElementById('avatar-input').click()"><i class="fas fa-camera"></i></div>
+                        <img id="sidebar-avatar" src="/shared/images/avatar.jpg" alt="User Avatar" width="100" height="100" onerror="this.onerror=null; this.src='/shared/images/avatar.jpg';">
+                        <div class="avatar-upload-btn" onclick="document.getElementById('avatar-input').click()" aria-label="Thay đổi ảnh đại diện" role="button" tabindex="0"><i class="fas fa-camera" aria-hidden="true"></i></div>
                         <input type="file" id="avatar-input" accept="image/*" style="display: none;">
                     </div>
                     <h3 id="sidebar-name">Khách</h3>
@@ -298,19 +315,19 @@
                             <div class="form-row">
                                 <div class="form-group">
                                     <label for="fullname">Họ và Tên</label>
-                                    <input type="text" id="fullname" placeholder="Nhập họ tên của bạn">
+                                    <input type="text" id="fullname" placeholder="Nhập họ tên của bạn" autocomplete="name">
                                 </div>
                             </div>
 
                             <div class="form-row">
                                 <div class="form-group">
                                     <label for="email">Email</label>
-                                    <input type="email" id="email" readonly class="readonly-input">
+                                    <input type="email" id="email" readonly class="readonly-input" autocomplete="email">
                                     <span class="help-text">Email không thể thay đổi</span>
                                 </div>
                                 <div class="form-group">
                                     <label for="phone">Số điện thoại</label>
-                                    <input type="tel" id="phone" placeholder="Nhập số điện thoại">
+                                    <input type="tel" id="phone" placeholder="Nhập số điện thoại" autocomplete="tel">
                                 </div>
                             </div>
 
@@ -337,7 +354,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="dob">Ngày sinh</label>
-                                    <input type="date" id="dob">
+                                    <input type="date" id="dob" autocomplete="bday">
                                 </div>
                             </div>
 
@@ -430,7 +447,7 @@
                             <div class="history-card">
                                 <div class="ticket-select-wrapper"><input type="checkbox" class="ticket-cb" data-static="true"></div>
                                 <div class="history-img">
-                                    <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=400&q=80" alt="Avenger">
+                                    <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=400&q=80" alt="Interstellar Poster" loading="lazy" width="90" height="130">
                                 </div>
                                 <div class="history-info">
                                     <h3>Interstellar</h3>
@@ -443,8 +460,8 @@
                                     <span class="status status-upcoming" id="f2-status">Sắp chiếu</span>
                                     <div class="history-price">500.000đ</div>
                                     <div style="display: flex; gap: 0.75rem; margin-top: 1rem; justify-content: flex-end; width: 100%;">
-                                        <button id="f2-cancel-btn" onclick="openCancelModal('Interstellar', '19:30 - 20/06/2026', 'G1, G2, G3, G4', '500.000đ', 'f2')" style="padding: 0.35rem 1rem; font-size: 0.8rem; font-family: 'Inter', sans-serif; font-weight: 500; border-radius: 30px; background: transparent; border: 1px solid rgba(229,9,20,0.5); color: #e50914; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(229,9,20,0.1)'; this.style.borderColor='#e50914'" onmouseout="this.style.background='transparent'; this.style.borderColor='rgba(229,9,20,0.5)'">Huỷ vé</button>
-                                        <button id="f2-view-btn" onclick="openTicketModal('group', 'Interstellar', '20/06/2026', '19:30', 'IMAX', 'G1, G2, G3, G4', '3HD2K Vincom Đồng Khởi', 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=400&q=80', '3HD2K-GROUP4')" style="padding: 0.35rem 1rem; font-size: 0.8rem; font-family: 'Inter', sans-serif; font-weight: 500; border-radius: 30px; background: #e50914; color: #fff; border: 1px solid #e50914; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 10px rgba(229,9,20,0.3);" onmouseover="this.style.background='#ff4b4b'; this.style.boxShadow='0 6px 15px rgba(229,9,20,0.5)'" onmouseout="this.style.background='#e50914'; this.style.boxShadow='0 4px 10px rgba(229,9,20,0.3)'">Xem mã vé</button>
+                                        <button id="f2-cancel-btn" onclick="openCancelModal('Interstellar', '19:30 - 20/06/2026', 'G1, G2, G3, G4', '500.000đ', 'f2')" style="padding: 0.35rem 1rem; font-size: 0.8rem; font-family: 'Outfit', sans-serif; font-weight: 500; border-radius: 30px; background: transparent; border: 1px solid rgba(229,9,20,0.5); color: #e50914; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(229,9,20,0.1)'; this.style.borderColor='#e50914'" onmouseout="this.style.background='transparent'; this.style.borderColor='rgba(229,9,20,0.5)'">Huỷ vé</button>
+                                        <button id="f2-view-btn" onclick="openTicketModal('group', 'Interstellar', '20/06/2026', '19:30', 'IMAX', 'G1, G2, G3, G4', '3HD2K Vincom Đồng Khởi', 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=400&q=80', '3HD2K-GROUP4')" style="padding: 0.35rem 1rem; font-size: 0.8rem; font-family: 'Outfit', sans-serif; font-weight: 500; border-radius: 30px; background: #e50914; color: #fff; border: 1px solid #e50914; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 10px rgba(229,9,20,0.3);" onmouseover="this.style.background='#ff4b4b'; this.style.boxShadow='0 6px 15px rgba(229,9,20,0.5)'" onmouseout="this.style.background='#e50914'; this.style.boxShadow='0 4px 10px rgba(229,9,20,0.3)'">Xem mã vé</button>
                                     </div>
                                 </div>
                             </div>
@@ -453,7 +470,7 @@
                             <div class="history-card">
                                 <div class="ticket-select-wrapper"><input type="checkbox" class="ticket-cb" data-static="true"></div>
                                 <div class="history-img">
-                                    <img src="/shared/images/f1_movie.jpg" alt="F1 The Movie" onerror="this.src='https://images.unsplash.com/photo-1440404653325-ab127d49abc1?auto=format&fit=crop&w=400&q=80'">
+                                    <img src="/shared/images/f1_movie.jpg" alt="F1 The Movie" loading="lazy" width="90" height="130" onerror="this.src='https://images.unsplash.com/photo-1440404653325-ab127d49abc1?auto=format&fit=crop&w=400&q=80'">
                                 </div>
                                 <div class="history-info">
                                     <h3>F1: The Movie</h3>
@@ -465,8 +482,8 @@
                                     <span class="status status-upcoming" id="f1-status">Sắp chiếu</span>
                                     <div class="history-price">250.000đ</div>
                                     <div style="display: flex; gap: 0.75rem; margin-top: 1rem; justify-content: flex-end; width: 100%;">
-                                        <button id="f1-cancel-btn" onclick="openCancelModal('F1: The Movie', '20:00 - 15/06/2026', 'E5, E6', '250.000đ', 'f1')" style="padding: 0.35rem 1rem; font-size: 0.8rem; font-family: 'Inter', sans-serif; font-weight: 500; border-radius: 30px; background: transparent; border: 1px solid rgba(229,9,20,0.5); color: #e50914; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(229,9,20,0.1)'; this.style.borderColor='#e50914'" onmouseout="this.style.background='transparent'; this.style.borderColor='rgba(229,9,20,0.5)'">Huỷ vé</button>
-                                        <button id="f1-view-btn" onclick="openTicketModal('single', 'F1: The Movie', '15/06/2026', '20:00', 'Rạp 1', 'E5, E6', '3HD2K Vincom Đồng Khởi', '/shared/images/f1_movie.jpg', '3HD2K-9X8K2M')" style="padding: 0.35rem 1rem; font-size: 0.8rem; font-family: 'Inter', sans-serif; font-weight: 500; border-radius: 30px; background: #e50914; color: #fff; border: 1px solid #e50914; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 10px rgba(229,9,20,0.3);" onmouseover="this.style.background='#ff4b4b'; this.style.boxShadow='0 6px 15px rgba(229,9,20,0.5)'" onmouseout="this.style.background='#e50914'; this.style.boxShadow='0 4px 10px rgba(229,9,20,0.3)'">Xem mã vé</button>
+                                        <button id="f1-cancel-btn" onclick="openCancelModal('F1: The Movie', '20:00 - 15/06/2026', 'E5, E6', '250.000đ', 'f1')" style="padding: 0.35rem 1rem; font-size: 0.8rem; font-family: 'Outfit', sans-serif; font-weight: 500; border-radius: 30px; background: transparent; border: 1px solid rgba(229,9,20,0.5); color: #e50914; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(229,9,20,0.1)'; this.style.borderColor='#e50914'" onmouseout="this.style.background='transparent'; this.style.borderColor='rgba(229,9,20,0.5)'">Huỷ vé</button>
+                                        <button id="f1-view-btn" onclick="openTicketModal('single', 'F1: The Movie', '15/06/2026', '20:00', 'Rạp 1', 'E5, E6', '3HD2K Vincom Đồng Khởi', '/shared/images/f1_movie.jpg', '3HD2K-9X8K2M')" style="padding: 0.35rem 1rem; font-size: 0.8rem; font-family: 'Outfit', sans-serif; font-weight: 500; border-radius: 30px; background: #e50914; color: #fff; border: 1px solid #e50914; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 10px rgba(229,9,20,0.3);" onmouseover="this.style.background='#ff4b4b'; this.style.boxShadow='0 6px 15px rgba(229,9,20,0.5)'" onmouseout="this.style.background='#e50914'; this.style.boxShadow='0 4px 10px rgba(229,9,20,0.3)'">Xem mã vé</button>
                                     </div>
                                 </div>
                             </div>
@@ -475,7 +492,7 @@
                             <div class="history-card">
                                 <div class="ticket-select-wrapper"><input type="checkbox" class="ticket-cb" data-static="true"></div>
                                 <div class="history-img">
-                                    <img src="/shared/images/war_machine.jpg" alt="War Machine" onerror="this.src='https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=400&q=80'">
+                                    <img src="/shared/images/war_machine.jpg" alt="War Machine" loading="lazy" width="90" height="130" onerror="this.src='https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=400&q=80'">
                                 </div>
                                 <div class="history-info">
                                     <h3>War Machine</h3>

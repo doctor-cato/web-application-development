@@ -240,14 +240,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const vipPlan = localStorage.getItem('vip_plan'); // e.g., 'silver', 'gold', 'platinum'
         
         if (isLogged && isVip) {
-            if (vipPlan === 'platinum') {
-                // Highest plan logic
-                btnVip.textContent = 'XEM QUYỀN LỢI VIP';
-                btnVip.href = '../../user/user-profile/profile.html?tab=offers'; 
-            } else {
-                // Lower plans logic
-                btnVip.textContent = 'NÂNG CẤP LÊN GÓI CAO HƠN';
-            }
+            btnVip.textContent = 'XEM QUYỀN LỢI VIP';
+            btnVip.href = '../../user/loyalty-points/index.html'; 
         } else {
             // Default logic if not logged in or not VIP
             btnVip.textContent = 'ĐĂNG KÝ THÀNH VIÊN VIP';
