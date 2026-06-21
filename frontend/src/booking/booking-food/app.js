@@ -47,12 +47,15 @@
     },
   };
 
-<<<<<<< HEAD
-  // Load order data dynamically from session
+  const productIds = Object.keys(products);
+  const state = Object.fromEntries(
+    productIds.map((id) => [id, { added: false, qty: 1 }]),
+  );
+
   const urlParams = new URLSearchParams(window.location.search);
   const returnToLobby = urlParams.get('returnToLobby');
 
-  let order = { movie: '', format: '', seats: '', ticketLabel: '', ticketPrice: 0 };
+  let order = { movie: 'Chưa chọn phim', format: '', seats: '', ticketLabel: '0x Vé', ticketPrice: 0 };
 
   if (returnToLobby) {
     // From Group Booking Lobby
@@ -66,7 +69,7 @@
         const activeCount = activeSeats.length || 1;
         const perSeat = Math.floor((cd.total || 0) / activeCount);
         order = {
-          movie: cd.movieTitle || '',
+          movie: cd.movieTitle || 'Chưa chọn phim',
           format: cd.room || '',
           seats: mySeat || activeSeats[0] || '',
           ticketLabel: `1x Vé (Ghế ${mySeat || activeSeats[0] || '?'})`,
@@ -83,45 +86,17 @@
         const seatNames = (sd.seats || []).join(', ');
         const seatCount = (sd.seats || []).length || 1;
         order = {
-          movie: sd.movieTitle || '',
+          movie: sd.movieTitle || 'Chưa chọn phim',
           format: sd.room || '',
           seats: seatNames,
           ticketLabel: `${seatCount}x Vé người lớn`,
-          ticketPrice: sd.total || 0,
+          ticketPrice: sd.seatTotal || sd.seatAmount || sd.total || 0,
         };
       } catch(e) {}
     }
   }
 
-=======
->>>>>>> 166847a (Update frontend features (booking, explore, user notifications) and add auth guards)
-  const productIds = Object.keys(products);
-  const state = Object.fromEntries(
-    productIds.map((id) => [id, { added: false, qty: 1 }]),
-  );
-
-  let order = {
-    movie: 'Chưa chọn phim',
-    format: '',
-    seats: '',
-    ticketLabel: '0x Vé',
-    ticketPrice: 0,
-  };
-
   try {
-    const checkoutDataStr = sessionStorage.getItem('cinema_checkout');
-    if (checkoutDataStr) {
-      const checkoutData = JSON.parse(checkoutDataStr);
-      const seatsCount = checkoutData.seats ? checkoutData.seats.length : 0;
-      order = {
-        movie: checkoutData.movieTitle || 'Chưa chọn phim',
-        format: checkoutData.room || '',
-        seats: checkoutData.seats ? checkoutData.seats.join(', ') : '',
-        ticketLabel: `${seatsCount}x Vé`,
-        ticketPrice: checkoutData.seatTotal || checkoutData.seatAmount || checkoutData.total || 0,
-      };
-    }
-    
     const checkoutFoodStr = localStorage.getItem('checkoutFood');
     if (checkoutFoodStr) {
         const foodArr = JSON.parse(checkoutFoodStr);
@@ -378,20 +353,19 @@
     });
   });
 
-<<<<<<< HEAD
   // Handle returnToLobby UI changes
+  const checkoutBtn = document.querySelector('.summary a.btn.primary');
   if (returnToLobby) {
-    const btnContinue = document.querySelector('.summary a.btn.primary');
-    if (btnContinue) {
-      btnContinue.innerHTML = '<i class="fas fa-check"></i> XÁC NHẬN & VỀ PHÒNG CHỜ';
-      btnContinue.href = `../group-booking/index.html?order=${returnToLobby}`;
+    if (checkoutBtn) {
+      checkoutBtn.innerHTML = '<i class="fas fa-check"></i> XÁC NHẬN & VỀ PHÒNG CHỜ';
+      checkoutBtn.href = `../group-booking/index.html?order=${returnToLobby}`;
     }
     const btnBack = document.querySelector('.summary a.btn.ghost');
     if (btnBack) {
       btnBack.style.display = 'none';
     }
-=======
-  const checkoutBtn = document.querySelector('.btn.primary');
+  }
+
   if (checkoutBtn) {
     checkoutBtn.addEventListener('click', (e) => {
       e.preventDefault();
@@ -409,7 +383,6 @@
       localStorage.setItem('checkoutFood', JSON.stringify(cart));
       window.location.href = checkoutBtn.getAttribute('href');
     });
->>>>>>> 166847a (Update frontend features (booking, explore, user notifications) and add auth guards)
   }
 
   renderAll();
