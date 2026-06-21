@@ -711,3 +711,57 @@
     25% { transform: translateX(-2px); }
     75% { transform: translateX(2px); }
 }
+
+
+/* ==========================================================================
+   MOBILE RESPONSIVE TWEAKS FOR SEAT MAP
+   ========================================================================== */
+@media (max-width: 768px) {
+    /* Make the entire booking page fit the mobile screen better */
+    .booking-page-container { padding-left: 0.5rem !important; padding-right: 0.5rem !important; }
+    .booking-grid { gap: 1rem !important; }
+    .booking-card { padding: 1rem !important; }
+
+    /* Shrink the seats so a full row fits on mobile */
+    .seat { 
+        width: 20px !important; 
+        height: 20px !important; 
+        font-size: 7px !important; 
+        border-radius: 4px !important;
+        flex-shrink: 1 !important; 
+    }
+    .seat--couple { width: 44px !important; }
+
+    /* Force no wrap and shrink gaps */
+    .seat-row-seats { 
+        flex-wrap: nowrap !important; 
+        gap: 0.15rem !important; 
+        width: 100%;
+        justify-content: center;
+    }
+    .seat-row-wrapper { 
+        gap: 0.15rem !important; 
+        flex-wrap: nowrap !important;
+        width: 100%;
+    }
+    .seat-aisle { width: 0.5rem !important; }
+
+    /* Shrink labels */
+    .seat-row-label { 
+        width: 1rem !important; 
+        font-size: 0.65rem !important; 
+    }
+
+    /* Adjust screen glow width */
+    .screen-glow { border-top: 2px solid var(--primary-red) !important; }
+
+    /* Movie details header adjustments */
+    .movie-poster-sm { width: 60px !important; height: 85px !important; }
+    .movie-details-sm h1 { font-size: 1.1rem !important; }
+    .movie-details-sm p { font-size: 0.65rem !important; }
+    
+    /* Make total price bigger and centered */
+    .summary-total { flex-direction: column; gap: 0.5rem; text-align: center; }
+    .summary-total-price { font-size: 1.8rem !important; }
+    .btn-continue { font-size: 1rem !important; padding: 0.5rem !important; }
+}
