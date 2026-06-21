@@ -231,4 +231,26 @@ if (filterCinema) filterCinema.addEventListener('change', applyFilters);
 // Initial render
 document.addEventListener('DOMContentLoaded', () => {
     renderNowShowing(nowShowingMovies);
+
+    // --- VIP LOGIC FOR REWARDS BUTTON ---
+    const btnVip = document.getElementById('btn-home-vip');
+    if (btnVip) {
+        const isLogged = localStorage.getItem('isLoggedIn') === 'true';
+        const isVip = localStorage.getItem('is_vip') === 'true';
+        const vipPlan = localStorage.getItem('vip_plan'); // e.g., 'silver', 'gold', 'platinum'
+        
+        if (isLogged && isVip) {
+            if (vipPlan === 'platinum') {
+                // Highest plan logic
+                btnVip.textContent = 'XEM QUYỀN LỢI VIP';
+                btnVip.href = '../../user/user-profile/profile.html?tab=offers'; 
+            } else {
+                // Lower plans logic
+                btnVip.textContent = 'NÂNG CẤP LÊN GÓI CAO HƠN';
+            }
+        } else {
+            // Default logic if not logged in or not VIP
+            btnVip.textContent = 'ĐĂNG KÝ THÀNH VIÊN VIP';
+        }
+    }
 });

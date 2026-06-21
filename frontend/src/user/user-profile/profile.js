@@ -1,5 +1,5 @@
 import { getBookings } from '../../shared/utils/storage.js';
-import { getCurrentUser, clearCurrentUser } from '../../auth/auth-services/storage.js';
+import { getCurrentUser, clearCurrentUser, setCurrentUser } from '../../auth/auth-services/storage.js';
 import { setupProfileUI } from './profile-ui.js';
 
 function formatPrice(amount) {
@@ -221,6 +221,9 @@ function initLogout() {
                 localStorage.removeItem('userName');
                 localStorage.removeItem('userEmail');
                 localStorage.removeItem('userAvatar');
+                localStorage.removeItem('is_vip');
+                localStorage.removeItem('vip_plan');
+                localStorage.removeItem('userPhone');
                 window.location.href = '../../index.html';
             }
         });
@@ -254,12 +257,10 @@ function setupProfileForm() {
                 try { setCurrentUser(user); } catch(e) {}
             }
         }
+        
         if (phoneInput) {
             localStorage.setItem('userPhone', phoneInput.value.trim());
         }
-                // Not cleanly exporting setCurrentUser here, but localStorage is updated.
-                // Ideally we'd update token, but navbar uses localStorage fallback.
-            }
             
             // Show feedback
             const btn = form.querySelector('.btn-save');
