@@ -1058,6 +1058,12 @@ input:checked + .slider:before {
 
 /* --- RESPONSIVE ENHANCEMENTS FOR MOBILE --- */
 @media (max-width: 900px) {
+    .profile-container {
+        flex-direction: column;
+    }
+    .profile-sidebar {
+        width: 100%;
+    }
     .sidebar-menu {
         flex-direction: row;
         overflow-x: auto;
@@ -1119,19 +1125,30 @@ input:checked + .slider:before {
         gap: 15px;
     }
     .history-card {
-        padding: 12px;
+        padding: 16px;
+        flex-direction: column;
+        gap: 16px;
     }
     .history-img {
-        height: 220px;
+        width: 100%;
+        height: auto;
+        aspect-ratio: 16 / 9;
         border-radius: 8px;
     }
     .history-action {
         width: 100%;
+        flex-direction: row;
+        align-items: center;
         justify-content: space-between;
+        margin-top: 10px;
+        padding-top: 15px;
+        border-top: 1px solid rgba(255,255,255,0.1);
     }
     .history-action > div[style*="justify-content: flex-end"] {
         flex-direction: column;
         justify-content: stretch !important;
+        width: 100%;
+        gap: 10px;
     }
     .history-action button {
         width: 100%;

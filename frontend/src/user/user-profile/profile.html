@@ -723,7 +723,7 @@
 
     <!-- Cancel Ticket Modal -->
     <div id="cancel-modal" class="modal-backdrop" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(8px);">
-        <div class="glass-panel" style="width: 90%; max-width: 450px; padding: 2rem; position: relative; border: 1px solid rgba(229,9,20,0.3); border-radius: 16px; background: linear-gradient(145deg, rgba(20,20,20,0.9), rgba(10,10,10,0.95)); box-shadow: 0 10px 40px rgba(229,9,20,0.2);">
+        <div class="glass-panel" style="width: 90%; max-width: 450px; padding: 2rem; position: relative; border: 1px solid rgba(229,9,20,0.3); border-radius: 16px; background: linear-gradient(145deg, rgba(20,20,20,0.9), rgba(10,10,10,0.95)); box-shadow: 0 10px 40px rgba(229,9,20,0.2); max-height: 90vh; overflow-y: auto; display: flex; flex-direction: column;">
             <div style="text-align: center; margin-bottom: 1.5rem;">
                 <div style="width: 60px; height: 60px; border-radius: 50%; background: rgba(229,9,20,0.1); color: #e50914; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 1rem; border: 1px solid rgba(229,9,20,0.3); box-shadow: 0 0 20px rgba(229,9,20,0.4);">
                     <i class="fas fa-exclamation-triangle"></i>
@@ -780,22 +780,29 @@
                 grid.style.display = 'flex';
                 grid.style.gap = '0.5rem';
                 grid.style.flexWrap = 'wrap';
+                grid.style.maxHeight = '35vh';
+                grid.style.overflowY = 'auto';
+                grid.style.paddingRight = '5px';
+                grid.style.alignContent = 'flex-start';
                 
                 cancelSeatList.forEach(seat => {
                     const label = document.createElement('label');
                     label.style.display = 'flex';
                     label.style.alignItems = 'center';
-                    label.style.gap = '0.25rem';
+                    label.style.gap = '0.35rem';
                     label.style.cursor = 'pointer';
                     label.style.background = 'rgba(255,255,255,0.1)';
-                    label.style.padding = '0.25rem 0.5rem';
-                    label.style.borderRadius = '4px';
+                    label.style.padding = '0.4rem 0.8rem'; // Bigger touch target
+                    label.style.borderRadius = '6px';
                     
                     const cb = document.createElement('input');
                     cb.type = 'checkbox';
                     cb.value = seat;
                     cb.checked = true; // checked by default to cancel
                     cb.className = 'cancel-seat-cb';
+                    cb.style.width = '1.2rem'; // Bigger checkbox
+                    cb.style.height = '1.2rem';
+                    cb.style.accentColor = '#e50914';
                     cb.onchange = updateCancelRefund;
                     
                     label.appendChild(cb);
@@ -912,9 +919,51 @@
                     console.error('[CANCEL] error:', e);
                 }
                 
+                sessionStorage.setItem('profile_cancelled', 'true');
                 location.reload();
             }, 1000);
         }
+
+        // --- Toast Notification ---
+        function showProfileToast(message) {
+            const toast = document.createElement('div');
+            toast.style.position = 'fixed';
+            toast.style.top = '80px';
+            toast.style.right = '20px';
+            toast.style.background = '#166534'; // Green success
+            toast.style.color = '#fff';
+            toast.style.padding = '12px 20px';
+            toast.style.borderRadius = '8px';
+            toast.style.borderLeft = '4px solid #4ade80';
+            toast.style.boxShadow = '0 10px 30px rgba(0,0,0,0.5)';
+            toast.style.zIndex = '9999';
+            toast.style.transition = 'all 0.3s ease';
+            toast.style.transform = 'translateX(120%)';
+            toast.style.opacity = '0';
+            toast.style.fontWeight = '600';
+            toast.style.fontFamily = "'Inter', sans-serif";
+            toast.innerHTML = message;
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.transform = 'translateX(0)';
+                toast.style.opacity = '1';
+            }, 10);
+            
+            setTimeout(() => {
+                toast.style.transform = 'translateX(120%)';
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            if (sessionStorage.getItem('profile_cancelled')) {
+                showProfileToast('✅ Đã huỷ vé thành công!');
+                sessionStorage.removeItem('profile_cancelled');
+            }
+        });
     </script>
 
 
