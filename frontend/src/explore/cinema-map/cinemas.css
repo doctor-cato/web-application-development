@@ -248,7 +248,7 @@
 .hud-frame {
     position: absolute;
     inset: 0;
-    z-index: 1000;
+    z-index: 10;
     pointer-events: none;
 }
 
@@ -283,7 +283,7 @@
 .hud-scanlines {
     position: absolute;
     inset: 0;
-    z-index: 999;
+    z-index: 9;
     pointer-events: none;
     background:
         repeating-linear-gradient(
@@ -305,7 +305,7 @@
     align-items: center;
     gap: 18px;
     padding: 14px 18px;
-    z-index: 1001;
+    z-index: 11;
     pointer-events: none;
 }
 
@@ -344,7 +344,7 @@
     justify-content: space-between;
     align-items: flex-end;
     padding: 16px 20px;
-    z-index: 1001;
+    z-index: 11;
     pointer-events: none;
     background: linear-gradient(to top, rgba(0, 0, 0, 0.38), transparent);
 }
@@ -618,6 +618,8 @@
     border-radius: 3px !important;
     overflow: hidden;
     box-shadow: 0 0 18px rgba(229, 9, 20, 0.18) !important;
+    margin-left: 18px !important;
+    margin-bottom: 75px !important; /* Move above bottom HUD */
 }
 
 .leaflet-control-zoom a {
@@ -642,8 +644,10 @@
 /* ===== LOCATION BUTTON ===== */
 .btn-my-location {
     position: absolute;
-    top: 92px;
-    right: 18px;
+    bottom: 155px; /* Above the zoom control */
+    left: 18px;
+    top: auto;
+    right: auto;
     width: 36px;
     height: 36px;
     border-radius: 3px;
@@ -652,7 +656,7 @@
     color: rgba(255, 52, 56, 0.9);
     font-size: 1rem;
     cursor: pointer;
-    z-index: 1001;
+    z-index: 1000; /* Must be above leaflet map */
     transition: all 0.3s ease;
     box-shadow: 0 0 18px rgba(229, 9, 20, 0.18);
     display: flex;
@@ -680,17 +684,36 @@
 }
 
 @media (max-width: 768px) {
+    .cinemas-page {
+        padding-top: 80px;
+    }
     .cinemas-layout {
         grid-template-columns: 1fr;
         display: flex;
         flex-direction: column-reverse;
+        min-height: auto;
     }
     .cinemas-list-panel {
-        max-height: 50vh;
-        padding-right: var(--page-padding);
+        max-height: none;
+        padding: 20px;
+        overflow-y: visible;
     }
-    .map-panel {
-        height: 40vh;
+    .cinemas-map-panel {
+        height: 50vh;
+        min-height: 300px;
+        border-left: none;
+        border-bottom: 1px solid rgba(229, 9, 20, 0.15);
+    }
+    #leaflet-map {
+        min-height: 100%;
+    }
+    .hud-top-bar {
+        padding: 8px 12px;
+        font-size: 0.6rem;
+    }
+    .hud-bottom-bar {
+        padding: 8px 12px;
+        font-size: 0.5rem;
     }
 }
 

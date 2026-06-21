@@ -18,7 +18,7 @@ function initMap() {
         preferCanvas: true
     });
 
-    L.control.zoom({ position: 'topright' }).addTo(map);
+    L.control.zoom({ position: 'bottomleft' }).addTo(map);
 
     // Light map base, while keeping the existing radar/marker HUD unchanged.
     const basePane = map.createPane('tactical-base');
@@ -155,7 +155,21 @@ function setActiveCinema(cinemaId) {
 // --- MY LOCATION BTN ---
 const btnLoc = document.getElementById('btn-my-location');
 if (btnLoc) btnLoc.addEventListener('click', () => {
-    if (map) map.flyTo([21.005, 105.790], 13, { duration: 0.8 });
+    if (!map) return;
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const { latitude, longitude } = position.coords;
+                map.flyTo([latitude, longitude], 13, { duration: 0.8 });
+            },
+            (error) => {
+                console.error("Error getting location:", error);
+                map.flyTo([21.005, 105.790], 13, { duration: 0.8 });
+            }
+        );
+    } else {
+        map.flyTo([21.005, 105.790], 13, { duration: 0.8 });
+    }
 });
 
 // --- INIT ---
