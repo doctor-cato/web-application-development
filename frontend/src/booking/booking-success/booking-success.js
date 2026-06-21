@@ -211,17 +211,27 @@ function init() {
             // Apply slight styling to the generated canvas/img for aesthetics
             setTimeout(() => {
                 const qrEls = qrContainer.querySelectorAll('canvas, img');
+                let hasImg = false;
+                
                 qrEls.forEach(qrEl => {
                     qrEl.style.width = '180px';
                     qrEl.style.height = '180px';
                     qrEl.style.maxWidth = '180px';
                     qrEl.style.objectFit = 'contain';
                     qrEl.style.borderRadius = '8px';
-                    if (qrEl.tagName === 'IMG' && qrEl.style.display !== 'none') {
-                        qrEl.style.display = 'block';
-                    } else if (qrEl.tagName === 'CANVAS' && qrContainer.querySelector('img')) {
-                        // If both canvas and img are generated, hide canvas
-                        qrEl.style.display = 'none';
+                    if (qrEl.tagName === 'IMG') {
+                        if (qrEl.getAttribute('src')) {
+                            qrEl.style.display = 'block';
+                            hasImg = true;
+                        } else {
+                            qrEl.style.display = 'none';
+                        }
+                    }
+                });
+                
+                qrEls.forEach(qrEl => {
+                    if (qrEl.tagName === 'CANVAS') {
+                        qrEl.style.display = hasImg ? 'none' : 'block';
                     }
                 });
             }, 100);

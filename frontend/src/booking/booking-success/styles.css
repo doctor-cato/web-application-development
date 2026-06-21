@@ -644,3 +644,24 @@ a { color: inherit; text-decoration: none; }
     font-size: 42px;
   }
 }
+
+/* Mobile Hero Overrides */
+@media(max-width: 768px) {
+  .hero-content-overlay {
+    padding: 1.5rem 1rem !important;
+  }
+  .success-badge, .points-badge {
+    white-space: nowrap;
+    font-size: 0.75rem !important;
+    padding: 4px 8px !important;
+  }
+  .hero-content-overlay h1.movie-title {
+    font-size: 2.2rem !important;
+    line-height: 1.1;
+    letter-spacing: 1px !important;
+  }
+  .hero-content-overlay > div:first-child {
+    flex-wrap: wrap;
+    gap: 0.5rem !important;
+  }
+}
