@@ -2,78 +2,105 @@
 
 ## Tổng quan
 
-Kiến trúc của 3HD2Kcinema là mô hình **Client-Server (Full-stack)**, phân tách rõ ràng giữa giao diện hiển thị (Frontend) và logic nghiệp vụ, cơ sở dữ liệu (Backend).
+Hệ thống 3HD2Kcinema được thiết kế dựa trên sự phân tách rõ ràng giữa giao diện hiển thị (Frontend) và logic nghiệp vụ cơ sở dữ liệu (Backend). Tuy nhiên, để đảm bảo tính gọn nhẹ và khả năng chạy độc lập của bản demo, ứng dụng hiện tại triển khai theo mô hình **Song song hai tầng kiến trúc**:
+
+1. **Kiến trúc Client-Side Tự hành (Active Track)**: Hoạt động hoàn toàn trên trình duyệt của người dùng. Tầng dữ liệu được xử lý bởi LocalStorage/SessionStorage và đồng bộ hóa đa tab thông qua BroadcastChannel API. Đây là tầng chạy chính thức khi mở ứng dụng.
+2. **Kiến trúc Full-Stack Mục tiêu (Scaffold Track)**: Bản dựng sẵn của tầng Backend dùng ASP.NET Core MVC & Web API và SQL Server, sẵn sàng cho việc kết nối tích hợp sau này.
 
 ---
 
 ## 1. Sơ đồ Kiến trúc Tổng thể
 
+### Giai đoạn Chạy Hiện tại (Client-Side Mock)
 ```text
 ┌─────────────────────────────────────────────────────────────┐
 │                     CLIENT (Frontend)                       │
-│  - Vanilla HTML, CSS, JS, Tailwind CSS                      │
-│  - Storage: LocalStorage / SessionStorage                   │
-│  - Realtime: BroadcastChannel API (cho UI sync)             │
+│  - HTML5, CSS3, Vanilla JS (ES6 Modules), Tailwind CSS      │
+│  - DOM Controllers (DOM Events, UI Updates)                 │
+│  - Sync: BroadcastChannel API (seat_sync channel)           │
+│  - Map: HTML5 Geolocation API                               │
 └──────────────────────────┬──────────────────────────────────┘
-                           │ HTTP Requests (REST APIs / MVC)
+                           │ Đọc / Ghi dữ liệu cục bộ (Mock)
 ┌──────────────────────────▼──────────────────────────────────┐
-│                     SERVER (Backend)                        │
-│  - ASP.NET Core (C#)                                        │
-│  - API Controllers (Movie, Booking, Account,...)            │
-│  - Services (BookingService, FileService,...)               │
-│  - Swagger OpenAPI                                          │
+│                 MOCK STORAGE ENGINE (Browser)               │
+│  - storage.js (Wrapper đọc/ghi an toàn)                    │
+│  - SessionStorage: Phiên đăng nhập, giỏ hàng checkout tạm    │
+│  - LocalStorage: Danh sách tài khoản, hóa đơn, tích điểm    │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Kiến trúc Full-Stack Mục tiêu (Khi tích hợp Backend)
+```text
+┌─────────────────────────────────────────────────────────────┐
+│                     CLIENT (Frontend)                       │
+│  - UI Components & Page Controllers                         │
+│  - Trạng thái UI tạm thời (SessionStorage)                  │
 └──────────────────────────┬──────────────────────────────────┘
-                           │ Entity Framework Core
+                           │ HTTP Requests (REST API / Cookie Auth)
 ┌──────────────────────────▼──────────────────────────────────┐
-│                     DATABASE                                │
-│  - SQL Server                                               │
-│  - Tables: users, movies, bookings, seats, showtimes,...    │
+│                     SERVER (Backend scaffold)               │
+│  - ASP.NET Core Controllers (Movie, Booking, Account)       │
+│  - Services: Lớp xử lý logic nghiệp vụ (BookingService)     │
+│  - Repositories: Lớp truy cập DB (Repository Pattern)       │
+└──────────────────────────┬──────────────────────────────────┘
+                           │ Entity Framework Core (ORM)
+┌──────────────────────────▼──────────────────────────────────┐
+│                     DATABASE (SQL Server)                   │
+│  - movie_booking_db (Bảng: users, movies, bookings, seats)  │
 └─────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 2. Chi tiết Tầng Frontend (Client)
+## 2. Chi tiết Tầng Frontend (Client-Side)
 
-Frontend theo mô hình **Feature-Based (Domain-Based)**. Mỗi tính năng có thư mục riêng, chứa HTML, CSS, và JS Controller chuyên biệt.
+Thư mục `frontend/src/` được tổ chức theo hướng **Domain-Based / Feature-Based (Theo tính năng nghiệp vụ)** giúp dễ dàng bảo trì và mở rộng độc lập.
 
+### Cấu trúc Module của Frontend:
 ```text
 frontend/src/
-├── auth/                  ← Giao diện đăng nhập, đăng ký
-├── booking/               ← Giao diện đặt vé (chọn ghế, bắp nước, thanh toán)
-├── explore/               ← Khám phá phim (trang chủ, chi tiết, bản đồ)
-├── user/                  ← Quản lý hồ sơ và điểm thưởng
-└── shared/                ← Components (navbar, footer), Utilities (storage.js)
+├── auth/                  ← Đăng nhập, đăng ký, quên mật khẩu
+│   └── auth-services/     ← authService.js (Xử lý xác thực, session qua Mock Token)
+├── booking/               ← Luồng đặt vé (chọn ghế, chọn combo, thanh toán)
+│   ├── seat-booking/      ← booking.js & bookingService.js (Xử lý seat-locking & sync)
+│   └── group-booking/     ← Đặt vé nhóm (Giao diện phòng chờ chốt ghế - WIP)
+├── explore/               ← Khám phá phim (trang chủ, chi tiết, tìm kiếm, bản đồ rạp)
+├── user/                  ← Hồ sơ người dùng (Loyalty points, thông báo, lịch sử)
+└── shared/                ← Các component dùng chung (navbar, footer), CSS và tiện ích
+    ├── components/        ← navbar.js (xử lý dropdown tự đóng, thanh tìm kiếm), footer.js
+    └── utils/             ← storage.js (Single Source of Truth cho thao tác Storage)
 ```
 
-**Đặc điểm Frontend:**
-- Sử dụng **ES6 Modules** (`<script type="module">`).
-- **Controller Layer** trong Frontend chịu trách nhiệm xử lý sự kiện DOM và tương tác dữ liệu.
-- Vẫn giữ lại **BroadcastChannel API (`seat_sync`)** để đồng bộ UI hiển thị "ghế đang được chọn" giữa nhiều tab theo thời gian thực (phục vụ trải nghiệm UI trước khi Submit thanh toán về Backend).
+### Đặc điểm thiết kế của Frontend:
+- **ES6 Modules**: Toàn bộ mã nguồn JS được liên kết dưới dạng module (`<script type="module">`). Tránh việc khai báo biến toàn cục bừa bãi và giúp tách biệt các file controller/service.
+- **Controller & Service Layer**: Mỗi trang HTML đi kèm với một file JS Page Controller chuyên biệt (ví dụ: `profile.html` đi kèm với `profile-ui.js` và `profile.js`) để lắng nghe sự kiện DOM, tương tác với tầng Service (như `bookingService.js`, `authService.js`), và cập nhật lại giao diện.
+- **BroadcastChannel API**: Triển khai kênh `seat_sync` để đồng bộ UI hiển thị ghế "đang được chọn" giữa nhiều tab trình duyệt đang mở cùng lúc, nâng cao trải nghiệm real-time của người dùng trước khi gửi yêu cầu thanh toán.
 
 ---
 
-## 3. Chi tiết Tầng Backend (Server)
+## 3. Chi tiết Tầng Backend (Server Scaffold)
 
-Backend xây dựng bằng **ASP.NET Core (MVC & Web API)** và tuân thủ mô hình **Repository Pattern** nhằm tách biệt phần truy xuất dữ liệu với xử lý logic.
+Tầng Backend được thiết kế theo tiêu chuẩn của một ứng dụng ASP.NET Core MVC & Web API thương mại, tuân thủ chặt chẽ **Repository Pattern** nhằm tách biệt dữ liệu với logic nghiệp vụ.
 
+### Cấu trúc phân lớp của Backend:
 ```text
 backend/
-├── Controllers/           ← Xử lý HTTP Request, trả về View hoặc JSON
-│   ├── HomeController.cs/
-│   │   ├── AccountController.cs    (Xác thực qua Cookie)
-│   │   ├── MoviesController.cs     (API Quản lý Phim)
-│   │   ├── BookingsController.cs   (API Xử lý Đặt vé)
+├── Controllers/           ← Tiếp nhận HTTP requests, xử lý phân quyền và trả về JSON/Views
+│   ├── HomeController.cs/ ← (Thư mục chứa các controller chính của hệ thống)
+│   │   ├── AccountController.cs    (Xác thực Cookie, quản lý phiên làm việc)
+│   │   ├── MoviesController.cs     (API/View Quản lý phim)
+│   │   ├── BookingsController.cs   (API Quản lý đơn đặt vé và hóa đơn)
+│   │   ├── SeatsController.cs      (Quản lý vị trí ghế)
 │   │   └── ...
-├── Services/              ← Chứa Business logic (Ví dụ: OrderService, BookingService)
-├── Repositories/          ← Lớp truy cập dữ liệu (CRUD trên SQL Server qua EF Core)
-├── Models/                ← Lớp Entity đại diện cho bảng DB (User, Movie, Booking,...)
-├── Infrastructure/        ← Cấu hình DB (ApplicationDbContext, DbInitializer)
-└── appsettings.json       ← Chứa cấu hình môi trường và kết nối SQL Server
+│   └── UploadsController.cs (Xử lý lưu trữ và phân phối file hình ảnh)
+├── Services/              ← Lớp chứa Business logic (ví dụ: FileService quản lý upload ảnh)
+├── Repositories/          ← Data Access Layer (Các class CRUD tương tác SQL Server qua EF Core)
+├── Models/                ← Các lớp Entity đại diện cho thực thể CSDL (User, Movie, Booking,...)
+├── Infrastructure/        ← Cấu hình DB (ApplicationDbContext, DbInitializer nạp dữ liệu phim mẫu)
+└── appsettings.json       ← Cấu hình kết nối SQL Server và môi trường
 ```
 
-**Quy tắc phân tầng:**
-1. **Controllers**: Tiếp nhận request, kiểm tra xác thực (Authorization), gọi Repository/Service và trả về kết quả (JSON hoặc MVC View).
-2. **Services**: Xử lý logic nghiệp vụ phức tạp (ví dụ: xác minh hóa đơn, gen QR).
-3. **Repositories**: Tương tác với CSDL qua Entity Framework Core.
-4. **Database (SQL Server)**: Đóng vai trò là nguồn dữ liệu thực sự của toàn bộ ứng dụng (thay thế vai trò của LocalStorage trong phiên bản mockup tĩnh cũ).
+### Quy tắc hoạt động phân tầng:
+1. **Controllers**: Tiếp nhận request từ client, kiểm tra xác thực (Cookie Authentication), gọi Service/Repository tương ứng và trả về định dạng dữ liệu phù hợp (JSON cho API hoặc Razor Views cho MVC).
+2. **Services**: Giải quyết các nghiệp vụ đặc thù (như tính toán hóa đơn, kiểm tra hạn mức VIP, xử lý tệp tin).
+3. **Repositories**: Thực hiện truy vấn CSDL qua EF Core một cách an toàn và tập trung, che giấu chi tiết triển khai truy cập dữ liệu của EF Core khỏi tầng Controller.

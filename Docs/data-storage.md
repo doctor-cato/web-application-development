@@ -1,12 +1,39 @@
 # Cấu trúc Lưu trữ Dữ liệu — 3HD2Kcinema
 
-Ứng dụng 3HD2Kcinema sử dụng mô hình kết hợp giữa cơ sở dữ liệu quan hệ phía Backend (SQL Server) cho việc lưu trữ bền vững và Storage của trình duyệt (Frontend) cho các trạng thái giao diện tạm thời.
+Ứng dụng 3HD2Kcinema kết hợp song song hai giải pháp lưu trữ: lưu trữ thực tế phía trình duyệt (Client-side Storage) cho luồng chạy chính thức của Frontend, và thiết kế Cơ sở dữ liệu quan hệ (SQL Server) phía Backend phục vụ cho mô hình tích hợp sau này.
 
 ---
 
-## 1. Cơ sở Dữ liệu Quan hệ (Backend - SQL Server)
+## 1. Lưu trữ phía Trình duyệt (Frontend - Mock DB chính thức)
 
-Hệ thống sử dụng **SQL Server** làm nguồn dữ liệu chính (Single Source of Truth). Entity Framework Core (`ApplicationDbContext`) đóng vai trò quản lý schema và thao tác dữ liệu.
+Toàn bộ thông tin tài khoản, phim, vé đặt, tích điểm và thông báo được quản lý thông qua trình duyệt của người dùng để ứng dụng có thể chạy cục bộ độc lập.
+
+Tất cả các truy xuất được đóng gói an toàn trong file `frontend/src/shared/utils/storage.js` để đảm bảo tính nhất quán và tránh lỗi phân tích JSON (JSON.parse).
+
+### `SessionStorage` — Dữ liệu phiên (Mất khi đóng tab/trình duyệt)
+
+| Tên Key | Dữ liệu Lưu trữ | Mục đích |
+|---|---|---|
+| `cinema_current_user` | Đối tượng User đang đăng nhập | Xác định phiên làm việc, phân quyền UI và tích điểm. |
+| `cinema_checkout` | Đối tượng giỏ hàng tạm thời | Lưu trữ thông tin checkout (phim, rạp, suất chiếu, ghế, bắp nước, tổng tiền) trong quá trình chuyển bước. |
+
+### `LocalStorage` — Dữ liệu bền vững (Lưu lâu dài)
+
+| Tên Key | Dữ liệu Lưu trữ | Mục đích |
+|---|---|---|
+| `cinema_users` | Mảng chứa danh sách các tài khoản người dùng | Cơ sở dữ liệu tài khoản (Mật khẩu được mã hóa Base64 cho mục đích demo). |
+| `cinema_bookings` | Mảng danh sách hóa đơn đã mua thành công | Lưu trữ lịch sử đặt vé của toàn rạp. |
+| `cinema_seat_locks` | Bản đồ khóa ghế theo suất chiếu `{ showtimeId: { seatId: lockInfo } }` | Đồng bộ trạng thái khóa tạm thời giữa các tab qua BroadcastChannel API. |
+| `3hd2k_rewards` | Đối tượng `{ points: number, history: Array }` | Quản lý điểm tích lũy và lịch sử giao dịch đổi điểm/tặng điểm của tài khoản. |
+| `3hd2k_notifications` | Mảng các thông báo cá nhân | Lưu trữ các tin nhắn từ trung tâm thông báo (ví dụ: đặt vé thành công, hủy vé). |
+| `3hd2k_rewards_processed` | Mảng các ID Booking đã được tích điểm | Ngăn chặn việc cộng điểm trùng lặp khi người dùng reload trang thành công. |
+| `3hd2k_booking_notif_processed` | Mảng các ID Booking đã được gửi thông báo | Ngăn chặn việc gửi trùng lặp thông báo đặt vé thành công khi reload trang. |
+
+---
+
+## 2. Cơ sở Dữ liệu Quan hệ (Backend - SQL Server Scaffold)
+
+Lớp cơ sở dữ liệu backend được thiết kế sẵn để lưu trữ dữ liệu bền vững khi dự án được nâng cấp lên Full-stack thực thụ. Entity Framework Core (`ApplicationDbContext`) đóng vai trò quản lý schema và ánh xạ các Model C# xuống SQL Server.
 
 Tên Database mặc định: `movie_booking_db`
 
@@ -14,41 +41,27 @@ Tên Database mặc định: `movie_booking_db`
 
 | Tên bảng | Lớp Model (C#) | Chức năng chính |
 |---|---|---|
-| `users` | `User` | Lưu thông tin tài khoản người dùng, mật khẩu, vai trò (Role). |
-| `movies` | `Movie` | Lưu thông tin phim (tên, đạo diễn, mô tả, ảnh poster). |
-| `cinemas` | `Cinema` | Quản lý danh sách các cụm rạp chiếu phim. |
+| `users` | `User` | Lưu thông tin tài khoản người dùng, mật khẩu băm, vai trò (Admin/Customer). |
+| `movies` | `Movie` | Danh mục phim (tên phim, đạo diễn, mô tả, ảnh poster, thể loại). |
+| `cinemas` | `Cinema` | Quản lý danh sách các cụm rạp chiếu phim 3HD2K. |
 | `rooms` | `Room` | Danh sách các phòng chiếu, liên kết với rạp (CinemaId). |
-| `seats` | `Seat` | Trạng thái và vị trí ghế tĩnh, liên kết với phòng (RoomId). |
+| `seats` | `Seat` | Sơ đồ ghế tĩnh trong phòng chiếu, liên kết với phòng (RoomId). |
 | `showtimes` | `Showtime` | Quản lý suất chiếu (thời gian bắt đầu, kết thúc), liên kết `Movie` và `Room`. |
 | `bookings` | `Booking` | Hóa đơn đặt vé tổng hợp, liên kết `User` và `Showtime`. |
-| `booking_details`| `BookingDetail`| Chi tiết mỗi ghế trong một hóa đơn, liên kết `Booking` và `Seat`. |
+| `booking_details`| `BookingDetail`| Chi tiết mỗi ghế được đặt trong hóa đơn, liên kết `Booking` và `Seat`. |
 
 ### Một số quan hệ chính (Relationships)
-- Một `User` có nhiều `Bookings`.
-- Một `Showtime` có nhiều `Bookings`.
-- Một `Booking` có nhiều `BookingDetails`.
-- Một `Room` có nhiều `Seats` và `Showtimes`.
-- Bảng `booking_details` có index Unique cho cặp `{ ShowtimeId, SeatId }` để ngăn chặn double-booking (2 người mua cùng 1 ghế trong cùng 1 suất chiếu) ở cấp độ cơ sở dữ liệu.
+- **User - Booking**: Một `User` có thể thực hiện nhiều `Bookings` (1-n).
+- **Showtime - Booking**: Một suất chiếu `Showtime` có thể chứa nhiều hóa đơn đặt vé `Bookings` (1-n).
+- **Booking - BookingDetail**: Một hóa đơn `Booking` có nhiều chi tiết ghế `BookingDetails` (1-n).
+- **Room - Seat / Showtime**: Một phòng chiếu `Room` có nhiều ghế ngồi `Seats` cố định và nhiều suất chiếu `Showtimes` khác nhau.
+- **Ràng buộc duy nhất (Unique Constraint)**: Bảng `booking_details` có một chỉ mục Unique kép cho cặp khóa `{ ShowtimeId, SeatId }` ở mức cơ sở dữ liệu. Điều này ngăn chặn tuyệt đối tình trạng đặt trùng ghế (double-booking) tại cùng một thời điểm suất chiếu nếu có hai luồng thanh toán đồng thời gửi lên SQL Server.
 
 ---
 
-## 2. Lưu trữ phía Trình duyệt (Frontend Storage)
+## 3. Quá trình Khởi tạo dữ liệu (Data Seeding ở Backend)
 
-Dù đã có Backend, Frontend vẫn tận dụng trình duyệt để lưu trạng thái phiên làm việc (Session) và giỏ hàng tạm thời, giúp giao diện phản hồi nhanh và giảm tải cho Server.
-
-### `SessionStorage` — Dữ liệu phiên (Mất khi đóng tab)
-
-- `cinema_checkout`: Lưu thông tin giỏ hàng tạm thời trong lúc user chuyển qua các bước (chọn phim -> chọn ghế -> chọn combo -> thanh toán).
-  *Lý do:* Giảm tải lưu trữ rác trên server khi user chưa quyết định hoàn tất thanh toán mua hàng.
-
-### `LocalStorage` — Dữ liệu UI (Không bắt buộc tồn tại lâu dài)
-
-- Trạng thái khóa ghế tạm: Frontend có thể ghi tạm danh sách ghế đang được "lock" để kết hợp với `BroadcastChannel API` đồng bộ hiển thị màu trạng thái đang chọn giữa các tab, trước khi giao dịch thực sự thành công ở Database.
-
----
-
-## 3. Quá trình Khởi tạo Dữ liệu (Data Seeding)
-
-Thay vì dùng file `shared/js/data.js` hardcode như trước, hệ thống nay dùng class `DbInitializer` ở Backend.
-- File JSON chứa dữ liệu gốc: `backend/DataSeeding/movies.json`
-- Khi ứng dụng backend chạy (`dotnet run`), hệ thống sẽ gọi `context.Database.EnsureCreated()`. Nếu bảng `movies` rỗng, hệ thống sẽ tự động đọc file JSON và insert (seed) danh sách phim ban đầu vào SQL Server.
+Kiến trúc mẫu Backend tích hợp sẵn cơ chế nạp dữ liệu khởi tạo tự động thông qua class `DbInitializer`:
+- Dữ liệu phim gốc được khai báo dưới dạng file JSON tại thư mục: `backend/DataSeeding/movies.json`.
+- Khi máy chủ backend ASP.NET Core khởi chạy (`dotnet run`), hệ thống sẽ gọi phương thức `context.Database.EnsureCreated()`. 
+- Nếu phát hiện cơ sở dữ liệu SQL Server vừa được tạo mới hoặc bảng `movies` đang rỗng, `DbInitializer` sẽ tự động đọc file JSON phim mẫu, chuyển đổi và ghi đè danh sách phim ban đầu vào cơ sở dữ liệu.
