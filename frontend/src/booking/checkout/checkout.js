@@ -198,16 +198,8 @@ function updateTotal() {
 
   // Determine which discount is better (we take the maximum of VIP total discount vs Loyalty Combo discount)
   // or apply them separately? The user wants both or the best one. Since VIP applies to TOTAL and Loyalty applies to COMBO, VIP is likely better. Let's just use max.
-  let finalVipOrLoyaltyDiscount = 0;
-  let finalVipOrLoyaltyLabel = '';
-  if (vipDiscountAmount >= loyaltyComboDiscountAmount && vipDiscountAmount > 0) {
-      finalVipOrLoyaltyDiscount = vipDiscountAmount;
-      finalVipOrLoyaltyLabel = `Ưu đãi VIP (${vipPlan === 'platinum' ? '10%' : '5%'})`;
-  } else if (loyaltyComboDiscountAmount > vipDiscountAmount && loyaltyComboDiscountAmount > 0) {
-      finalVipOrLoyaltyDiscount = loyaltyComboDiscountAmount;
-      finalVipOrLoyaltyLabel = `Hạng thẻ ${loyaltyTierName} (Giảm ${loyaltyComboDiscountPercent * 100}% Combo)`;
-  }
-
+  // Actually, we will show BOTH rows but apply them independently. VIP applies to the Total, Loyalty applies to Combo. Both stack.
+  
   // Update Discount Row
   const discountRow = document.getElementById('order-summary-discount-row');
   const discountAmountEl = document.getElementById('order-summary-discount-amount');
@@ -221,16 +213,16 @@ function updateTotal() {
     }
   }
 
-  // Update VIP/Loyalty Discount Row
+  // Update VIP Discount Row
   const vipDiscountRow = document.getElementById('order-summary-vip-discount-row');
   const vipDiscountAmountEl = document.getElementById('order-summary-vip-discount-amount');
   const vipDiscountLabelEl = document.getElementById('vip-discount-label');
   if (vipDiscountRow && vipDiscountAmountEl) {
-    if (finalVipOrLoyaltyDiscount > 0) {
+    if (vipDiscountAmount > 0) {
       vipDiscountRow.style.display = 'flex';
-      vipDiscountAmountEl.innerText = '-' + formatPrice(finalVipOrLoyaltyDiscount);
+      vipDiscountAmountEl.innerText = '-' + formatPrice(vipDiscountAmount);
       if (vipDiscountLabelEl) {
-          vipDiscountLabelEl.innerText = finalVipOrLoyaltyLabel;
+          vipDiscountLabelEl.innerText = `Ưu đãi VIP (${vipPlan === 'platinum' ? '10%' : '5%'})`;
       }
     } else {
       vipDiscountRow.style.display = 'none';
@@ -238,7 +230,24 @@ function updateTotal() {
     }
   }
 
-  total = Math.max(0, total - discountAmount - finalVipOrLoyaltyDiscount);
+  // Update Loyalty Discount Row
+  const loyaltyDiscountRow = document.getElementById('order-summary-loyalty-discount-row');
+  const loyaltyDiscountAmountEl = document.getElementById('order-summary-loyalty-discount-amount');
+  const loyaltyDiscountLabelEl = document.getElementById('loyalty-discount-label');
+  if (loyaltyDiscountRow && loyaltyDiscountAmountEl) {
+    if (loyaltyTierName) {
+      loyaltyDiscountRow.style.display = 'flex';
+      loyaltyDiscountAmountEl.innerText = '-' + formatPrice(loyaltyComboDiscountAmount);
+      if (loyaltyDiscountLabelEl) {
+          loyaltyDiscountLabelEl.innerText = `Hạng thẻ ${loyaltyTierName} (Giảm ${loyaltyComboDiscountPercent * 100}% Combo)`;
+      }
+    } else {
+      loyaltyDiscountRow.style.display = 'none';
+      loyaltyDiscountAmountEl.innerText = '-0 đ';
+    }
+  }
+
+  total = Math.max(0, total - discountAmount - vipDiscountAmount - loyaltyComboDiscountAmount);
 
   const totalEl = document.getElementById('order-total');
   if (totalEl) {
