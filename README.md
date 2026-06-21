@@ -25,8 +25,8 @@ Mở terminal, trỏ đến thư mục frontend và chạy:
 
 ```bash
 cd frontend
-npm install
-npm run dev
+# npm hiện đang bị lỗi cache, vui lòng sử dụng lệnh python dưới đây để chạy web tĩnh:
+python3 -m http.server 3000 -d src
 ```
 
 > Mở trình duyệt tại: `http://localhost:3000`. Toàn bộ luồng đặt vé và tính năng sẽ hoạt động hoàn toàn dựa vào LocalStorage.

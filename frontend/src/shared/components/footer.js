@@ -28,10 +28,10 @@ export function renderFooter() {
                 <div class="link-column">
                     <h4 style="font-family: 'Inter', sans-serif; font-size: 0.75rem; font-weight: bold; letter-spacing: 1px; margin-bottom: 20px;">HỖ TRỢ</h4>
                     <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px;">
-                        <li><a href="/wip.html" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s; font-family: 'Inter', sans-serif;">Help Center</a></li>
-                        <li><a href="/wip.html" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s; font-family: 'Inter', sans-serif;">Terms of Use</a></li>
-                        <li><a href="/wip.html" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s; font-family: 'Inter', sans-serif;">Privacy Policy</a></li>
-                        <li><a href="/wip.html" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s; font-family: 'Inter', sans-serif;">Cookie Preferences</a></li>
+                        <li><a href="/footer/index.html?tab=help" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s; font-family: 'Inter', sans-serif;">Help Center</a></li>
+                        <li><a href="/footer/index.html?tab=terms" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s; font-family: 'Inter', sans-serif;">Terms of Use</a></li>
+                        <li><a href="/footer/index.html?tab=privacy" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s; font-family: 'Inter', sans-serif;">Privacy Policy</a></li>
+                        <li><a href="/footer/index.html?tab=cookie" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s; font-family: 'Inter', sans-serif;">Cookie Preferences</a></li>
                     </ul>
                 </div>
                 <div class="link-column">
