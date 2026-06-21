@@ -37,7 +37,7 @@ export function getSeatMap(showtimeId) {
   // Lấy các ghế đã đặt từ bookings
   const bookings = getBookings();
   bookings.forEach(b => {
-    if (b.showtimeId === showtimeId) {
+    if (b.showtimeId === showtimeId && b.status !== 'Cancelled') {
       (b.seats || []).forEach(seatId => {
         result[seatId] = { seatId, status: 'booked', bookingId: b.id };
       });
@@ -50,7 +50,7 @@ export function getSeatMap(showtimeId) {
 export function lockSeat(showtimeId, seatId, userId) {
   // Kiểm tra ghế đã được thanh toán chưa
   const bookings = getBookings();
-  const isBooked = bookings.some(b => b.showtimeId === showtimeId && (b.seats || []).includes(seatId));
+  const isBooked = bookings.some(b => b.status !== 'Cancelled' && b.showtimeId === showtimeId && (b.seats || []).includes(seatId));
   if (isBooked) return false;
 
   const map = _getLocksMap();
