@@ -765,3 +765,49 @@
     .summary-total-price { font-size: 1.8rem !important; }
     .btn-continue { font-size: 1rem !important; padding: 0.5rem !important; }
 }
+
+@media (max-width: 1023px) {
+    /* Checkout Page Mobile */
+    .booking-grid-checkout {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    /* Disable sticky top on mobile for Thanh Toan */
+    .booking-grid-checkout .booking-panel:nth-child(2) > .booking-card {
+        position: static !important;
+        margin-bottom: 2rem;
+    }
+    
+    /* Seat Booking Page Mobile Reordering */
+    .booking-grid:not(.booking-grid-checkout) {
+        display: flex;
+        flex-direction: column;
+    }
+    .booking-grid:not(.booking-grid-checkout) .booking-panel {
+        display: contents; 
+    }
+    .booking-grid:not(.booking-grid-checkout) #movie-info-card { order: 1; }
+    
+    /* Seat Grid Card */
+    .booking-grid:not(.booking-grid-checkout) .booking-panel:nth-child(2) > .booking-card { 
+        order: 2; 
+        width: 100%; 
+        overflow-x: auto; 
+        /* Hide scrollbar but keep scrollable */
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+    .booking-grid:not(.booking-grid-checkout) .booking-panel:nth-child(2) > .booking-card::-webkit-scrollbar {
+        display: none;
+    }
+    
+    /* Summary */
+    .booking-grid:not(.booking-grid-checkout) #selection-summary { order: 3; position: static !important; }
+    
+    /* Price Table */
+    .booking-grid:not(.booking-grid-checkout) .booking-panel:nth-child(1) > .booking-card:nth-child(2) { order: 4; }
+    
+    /* Legend */
+    .booking-grid:not(.booking-grid-checkout) .booking-panel:nth-child(1) > .booking-card:nth-child(3) { order: 5; }
+}
