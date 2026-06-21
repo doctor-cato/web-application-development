@@ -798,7 +798,10 @@
 
 
     <script>
-        function openCancelModal(name, time, seats, price) {
+        let currentCancelId = null;
+
+        function openCancelModal(name, time, seats, price, idStr = null) {
+            currentCancelId = idStr;
             document.getElementById('cancel-movie-name').innerText = name;
             document.getElementById('cancel-movie-time').innerText = time;
             document.getElementById('cancel-movie-seats').innerText = seats;
@@ -830,30 +833,36 @@
                 btn.innerHTML = originalText;
                 btn.style.pointerEvents = 'auto';
                 
-                // Update UI to Cancelled state
-                const statusBadge = document.getElementById('f1-status');
-                statusBadge.className = 'status';
-                statusBadge.style.background = 'rgba(255, 255, 255, 0.1)';
-                statusBadge.style.color = '#aaa';
-                statusBadge.style.border = '1px solid rgba(255, 255, 255, 0.2)';
-                statusBadge.innerText = 'Đã huỷ';
-                
-                document.getElementById('f1-view-btn').style.display = 'none';
-                document.getElementById('f1-cancel-btn').style.display = 'none';
-                
-                // Add a text indicating cancellation
-                const actionDiv = document.getElementById('f1-status').parentElement;
-                const cancelledText = document.createElement('div');
-                cancelledText.innerHTML = '<div style="font-size: 0.85rem; color: #e50914; margin-top: 0.5rem; text-align: right;"><i class="fas fa-times-circle"></i> Đã hoàn tiền 80%</div>';
-                actionDiv.appendChild(cancelledText);
-                
-                // Disable card visually
-                const card = actionDiv.parentElement;
-                card.style.opacity = '0.6';
-                card.style.filter = 'grayscale(100%)';
-                
-                alert('Huỷ vé thành công! Số tiền hoàn lại sẽ được chuyển vào tài khoản của bạn trong 3-5 ngày làm việc.');
-            }, 1500);
+                if (currentCancelId) {
+                    document.dispatchEvent(new CustomEvent('cancelTicket', { detail: currentCancelId }));
+                } else {
+                    // Fallback for static f1-status
+                    const statusBadge = document.getElementById('f1-status');
+                    if (statusBadge) {
+                        statusBadge.className = 'status';
+                        statusBadge.style.background = 'rgba(255, 255, 255, 0.1)';
+                        statusBadge.style.color = '#aaa';
+                        statusBadge.style.border = '1px solid rgba(255, 255, 255, 0.2)';
+                        statusBadge.innerText = 'Đã huỷ';
+                        
+                        const actionDiv = statusBadge.parentElement;
+                        if(actionDiv) {
+                            const cancelledText = document.createElement('div');
+                            cancelledText.innerHTML = '<div style="font-size: 0.85rem; color: #e50914; margin-top: 0.5rem; text-align: right;"><i class="fas fa-times-circle"></i> Đã hoàn tiền 80%</div>';
+                            actionDiv.appendChild(cancelledText);
+                            
+                            const card = actionDiv.closest('.history-card');
+                            if(card) {
+                                card.style.opacity = '0.6';
+                                const cb = card.querySelector('.ticket-cb');
+                                if(cb) cb.disabled = true;
+                            }
+                        }
+                    }
+                    if(document.getElementById('f1-view-btn')) document.getElementById('f1-view-btn').style.display = 'none';
+                    if(document.getElementById('f1-cancel-btn')) document.getElementById('f1-cancel-btn').style.display = 'none';
+                }
+            }, 1000);
         }
     </script>
 

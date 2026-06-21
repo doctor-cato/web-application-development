@@ -43,17 +43,42 @@ function renderRealHistory() {
             ? '<div style="margin-top:0.5rem;"><span style="background:rgba(16,185,129,0.2);color:#10b981;padding:2px 8px;border-radius:4px;font-size:0.75rem;border:1px solid rgba(16,185,129,0.4);">Vé Nhóm (Split & Lock)</span></div>'
             : '<div style="margin-top:0.5rem;"><span style="background:rgba(229,9,20,0.2);color:#ff4b4b;padding:2px 8px;border-radius:4px;font-size:0.75rem;border:1px solid rgba(229,9,20,0.3);">Vé Tiêu Chuẩn</span></div>';
 
-        let poster = booking.poster || '';
+                        let poster = booking.poster || '';
+        let displayTitle = booking.movieTitle || 'Phim';
+        
+        // Try to lookup from data.js
+        if (window.heroMovies || window.nowShowingMovies) {
+            const allMovies = [
+                ...(window.heroMovies || []),
+                ...(window.nowShowingMovies || []),
+                ...(window.comingSoonMovies || [])
+            ];
+            
+            // Try exact match first
+            let foundMovie = allMovies.find(m => m.title && booking.movieTitle && m.title.toLowerCase() === booking.movieTitle.toLowerCase());
+            
+            // Try fuzzy match if exact match fails
+            if (!foundMovie && booking.movieTitle) {
+                foundMovie = allMovies.find(m => m.title && (m.title.toLowerCase().includes(booking.movieTitle.toLowerCase()) || booking.movieTitle.toLowerCase().includes(m.title.toLowerCase())));
+            }
+            
+            if (foundMovie) {
+                poster = foundMovie.poster || foundMovie.bg || poster;
+                displayTitle = foundMovie.title || displayTitle;
+            }
+        }
+
         if (poster.startsWith('images/')) poster = '/shared/' + poster;
         else if (poster.startsWith('assets/')) poster = '/shared/' + poster;
         if (!poster) poster = '/shared/images/f1_movie.jpg';
 
         const dateStr = booking.createdAt ? new Date(booking.createdAt).toLocaleDateString('vi-VN') : 'N/A';
         const timeStr = booking.showtimeText || 'N/A';
-        const typeStr = isGroup ? 'group' : 'single';
+        const totalStr = booking.total ? booking.total.toLocaleString('vi-VN') + 'đ' : '0đ';
+        const roomStr = booking.room || 'Rạp';
+        const posterSafe = poster.replace(/'/g, "\\'");
+        const titleSafe = displayTitle.replace(/'/g, "\\'");
         const idStr = booking.id || '';
-        const totalStr = formatPrice(booking.total);
-        const titleSafe = (booking.movieTitle || 'Phim').replace(/'/g, "\'");
         const roomSafe  = (booking.room || 'Rạp').replace(/'/g, "\'");
         const cardStyle = isCancelled
             ? 'opacity:0.65;border:1px solid rgba(150,150,150,0.3)!important;box-shadow:none!important;'
