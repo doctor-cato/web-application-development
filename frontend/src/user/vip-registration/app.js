@@ -33,9 +33,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const planDisplay = document.getElementById('selected-plan-display');
 
     const plans = {
-        silver: 'VIP Silver (Nâng cấp từ 100 PTS)',
-        gold: 'VIP Gold (99.000đ/tháng)',
-        platinum: 'VIP Platinum (199.000đ/tháng)'
+        silver: 'VIP Silver (Nâng cấp từ 4000 điểm)',
+        gold: 'VIP Gold (199.000đ/tháng)',
+        platinum: 'VIP Platinum (499.000đ/tháng)'
     };
 
     if (planDisplay && !selectedPlan) {

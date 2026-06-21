@@ -367,7 +367,13 @@ function handlePayClick(e) {
   
   if (isExpired || (expireTime > 0 && Date.now() >= expireTime)) {
     alert('Thời gian giữ ghế đã hết! Vui lòng chọn lại ghế.');
-    window.location.href = '../seat-booking/booking.html';
+    const co = getCheckout();
+    let url = '../seat-booking/booking.html';
+    if (co && co.movieId) {
+      url += `?id=${co.movieId}`;
+      if (co.showtimeId) url += `&showtimeId=${co.showtimeId}`;
+    }
+    window.location.href = url;
     return;
   }
   
@@ -433,7 +439,13 @@ function startCountdown(seconds) {
       }
 
       alert('Thời gian giữ ghế đã hết! Vui lòng chọn lại ghế.');
-      window.location.href = '../seat-booking/booking.html';
+      const co = getCheckout();
+      let url = '../seat-booking/booking.html';
+      if (co && co.movieId) {
+        url += `?id=${co.movieId}`;
+        if (co.showtimeId) url += `&showtimeId=${co.showtimeId}`;
+      }
+      window.location.href = url;
     } else {
       cdEl.innerText = formatTime(remain);
     }

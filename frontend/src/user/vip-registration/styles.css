@@ -30,6 +30,7 @@ body {
 .vip-hero {
     position: relative;
     margin-bottom: 4rem;
+    text-align: center;
 }
 
 .glow-orb {
