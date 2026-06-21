@@ -443,71 +443,7 @@
                         <div class="history-list">
                             <div id="real-history-container"></div>
 
-                            <!-- Ticket 2: Group Ticket -->
-                            <div class="history-card">
-                                <div class="ticket-select-wrapper"><input type="checkbox" class="ticket-cb" data-static="true"></div>
-                                <div class="history-img">
-                                    <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=400&q=80" alt="Interstellar Poster" loading="lazy" width="90" height="130">
-                                </div>
-                                <div class="history-info">
-                                    <h3>Interstellar</h3>
-                                    <p><i class="fas fa-map-marker-alt"></i> 3HD2K Vincom Đồng Khởi - IMAX</p>
-                                    <p><i class="fas fa-clock"></i> 19:30 - 20/06/2026</p>
-                                    <p><i class="fas fa-couch"></i> Ghế: G1, G2, G3, G4</p>
-                                    <div style="margin-top: 0.5rem;"><span style="background: rgba(16,185,129,0.2); color: #10b981; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; border: 1px solid rgba(16,185,129,0.4);">Vé Nhóm (Split & Lock)</span></div>
-                                </div>
-                                <div class="history-action">
-                                    <span class="status status-upcoming" id="f2-status">Sắp chiếu</span>
-                                    <div class="history-price">500.000đ</div>
-                                    <div style="display: flex; gap: 0.75rem; margin-top: 1rem; justify-content: flex-end; width: 100%;">
-                                        <button id="f2-cancel-btn" onclick="openCancelModal('Interstellar', '19:30 - 20/06/2026', 'G1, G2, G3, G4', '500.000đ', 'f2')" style="padding: 0.35rem 1rem; font-size: 0.8rem; font-family: 'Outfit', sans-serif; font-weight: 500; border-radius: 30px; background: transparent; border: 1px solid rgba(229,9,20,0.5); color: #e50914; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(229,9,20,0.1)'; this.style.borderColor='#e50914'" onmouseout="this.style.background='transparent'; this.style.borderColor='rgba(229,9,20,0.5)'">Huỷ vé</button>
-                                        <button id="f2-view-btn" onclick="openTicketModal('group', 'Interstellar', '20/06/2026', '19:30', 'IMAX', 'G1, G2, G3, G4', '3HD2K Vincom Đồng Khởi', 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=400&q=80', '3HD2K-GROUP4')" style="padding: 0.35rem 1rem; font-size: 0.8rem; font-family: 'Outfit', sans-serif; font-weight: 500; border-radius: 30px; background: #e50914; color: #fff; border: 1px solid #e50914; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 10px rgba(229,9,20,0.3);" onmouseover="this.style.background='#ff4b4b'; this.style.boxShadow='0 6px 15px rgba(229,9,20,0.5)'" onmouseout="this.style.background='#e50914'; this.style.boxShadow='0 4px 10px rgba(229,9,20,0.3)'">Xem mã vé</button>
-                                    </div>
-                                </div>
                             </div>
-
-                            <!-- Ticket 1 -->
-                            <div class="history-card">
-                                <div class="ticket-select-wrapper"><input type="checkbox" class="ticket-cb" data-static="true"></div>
-                                <div class="history-img">
-                                    <img src="/shared/images/f1_movie.jpg" alt="F1 The Movie" loading="lazy" width="90" height="130" onerror="this.src='https://images.unsplash.com/photo-1440404653325-ab127d49abc1?auto=format&fit=crop&w=400&q=80'">
-                                </div>
-                                <div class="history-info">
-                                    <h3>F1: The Movie</h3>
-                                    <p><i class="fas fa-map-marker-alt"></i> 3HD2K Vincom Đồng Khởi - Rạp 1</p>
-                                    <p><i class="fas fa-clock"></i> 20:00 - 15/06/2026</p>
-                                    <p><i class="fas fa-couch"></i> Ghế: E5, E6</p>
-                                </div>
-                                <div class="history-action">
-                                    <span class="status status-upcoming" id="f1-status">Sắp chiếu</span>
-                                    <div class="history-price">250.000đ</div>
-                                    <div style="display: flex; gap: 0.75rem; margin-top: 1rem; justify-content: flex-end; width: 100%;">
-                                        <button id="f1-cancel-btn" onclick="openCancelModal('F1: The Movie', '20:00 - 15/06/2026', 'E5, E6', '250.000đ', 'f1')" style="padding: 0.35rem 1rem; font-size: 0.8rem; font-family: 'Outfit', sans-serif; font-weight: 500; border-radius: 30px; background: transparent; border: 1px solid rgba(229,9,20,0.5); color: #e50914; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(229,9,20,0.1)'; this.style.borderColor='#e50914'" onmouseout="this.style.background='transparent'; this.style.borderColor='rgba(229,9,20,0.5)'">Huỷ vé</button>
-                                        <button id="f1-view-btn" onclick="openTicketModal('single', 'F1: The Movie', '15/06/2026', '20:00', 'Rạp 1', 'E5, E6', '3HD2K Vincom Đồng Khởi', '/shared/images/f1_movie.jpg', '3HD2K-9X8K2M')" style="padding: 0.35rem 1rem; font-size: 0.8rem; font-family: 'Outfit', sans-serif; font-weight: 500; border-radius: 30px; background: #e50914; color: #fff; border: 1px solid #e50914; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 10px rgba(229,9,20,0.3);" onmouseover="this.style.background='#ff4b4b'; this.style.boxShadow='0 6px 15px rgba(229,9,20,0.5)'" onmouseout="this.style.background='#e50914'; this.style.boxShadow='0 4px 10px rgba(229,9,20,0.3)'">Xem mã vé</button>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Ticket 2 -->
-                            <div class="history-card">
-                                <div class="ticket-select-wrapper"><input type="checkbox" class="ticket-cb" data-static="true"></div>
-                                <div class="history-img">
-                                    <img src="/shared/images/war_machine.jpg" alt="War Machine" loading="lazy" width="90" height="130" onerror="this.src='https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=400&q=80'">
-                                </div>
-                                <div class="history-info">
-                                    <h3>War Machine</h3>
-                                    <p><i class="fas fa-map-marker-alt"></i> 3HD2K Landmark 81 - Rạp IMAX</p>
-                                    <p><i class="fas fa-clock"></i> 14:30 - 01/06/2026</p>
-                                    <p><i class="fas fa-couch"></i> Ghế: H10, H11, H12</p>
-                                </div>
-                                <div class="history-action">
-                                    <span class="status status-completed">Đã xem</span>
-                                    <div class="history-price">375.000đ</div>
-                                    <button class="btn-ticket btn-outline" style="display: none;">Mua lại</button>
-                                    <div style="font-size: 0.85rem; color: #10b981; margin-top: 0.5rem; text-align: right;"><i class="fas fa-check-circle"></i> Đã hoàn tất</div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
 
