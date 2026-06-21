@@ -368,17 +368,6 @@
       hint.innerHTML = `🎉 Bạn đang ở <strong>hạng cao nhất</strong>!`;
     }
 
-    // Privileges card
-    const privCard = $('.privileges-card');
-    privCard.querySelector('h2').textContent = `ĐẶC QUYỀN HẠNG ${tier.name}`;
-    const privList = privCard.querySelector('.privilege-list');
-    privList.innerHTML = tier.privileges.map(p => `
-      <li>
-        <span class="check"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span>
-        ${p}
-      </li>
-    `).join('');
-
     // Diamond shimmer
     if (tier.id === 'diamond') {
       card.classList.add('tier-diamond');
