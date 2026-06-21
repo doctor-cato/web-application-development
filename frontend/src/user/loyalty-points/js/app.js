@@ -29,8 +29,9 @@
       gradient: 'linear-gradient(160deg, #1e1e22 0%, #151518 45%, #101012 100%)',
       glowColor: 'rgba(192,192,192,0.30)',
       privileges: [
-        'Tích điểm 1.2x',
-        'Đổi điểm nhận quà hấp dẫn'
+        'Tích điểm 1.5x',
+        'Giảm 5% combo Bắp Nước',
+        'Ưu tiên mua vé trước 30 phút'
       ]
     },
     {
@@ -42,8 +43,10 @@
       gradient: 'linear-gradient(160deg, #1a1814 0%, #141210 45%, #100e0c 100%)',
       glowColor: 'rgba(255,215,0,0.30)',
       privileges: [
-        'Tích điểm 1.5x',
-        'Giảm 5% combo Bắp Nước'
+        'Tích điểm 2x cuối tuần',
+        'Ưu tiên ghế đôi',
+        'Giảm 10% combo',
+        'Tham gia sự kiện premiere'
       ]
     },
     {
@@ -55,8 +58,10 @@
       gradient: 'linear-gradient(160deg, #1a1214 0%, #121010 45%, #100c0c 100%)',
       glowColor: 'rgba(229,9,20,0.35)',
       privileges: [
-        'Tích điểm 2x',
-        'Giảm 10% combo Bắp Nước',
+        'Tích điểm 3x',
+        'Giảm 15% combo',
+        'Phòng chờ VIP',
+        'Vé miễn phí mỗi tháng',
         'Ưu tiên đặt chỗ'
       ]
     },
@@ -69,10 +74,11 @@
       gradient: 'linear-gradient(160deg, #0f1a1e 0%, #0c1418 45%, #0a0e12 100%)',
       glowColor: 'rgba(185,242,255,0.30)',
       privileges: [
-        'Tích điểm 3x',
-        'Giảm 15% combo Bắp Nước',
-        'Vé miễn phí mỗi tháng',
-        'Quà sinh nhật đặc biệt'
+        'Tích điểm 5x',
+        'Giảm 20% combo',
+        'Suất chiếu riêng',
+        'Quà sinh nhật đặc biệt',
+        'Vé IMAX miễn phí'
       ]
     }
   ];
@@ -367,6 +373,17 @@
       const hint = $('.progress-hint');
       hint.innerHTML = `🎉 Bạn đang ở <strong>hạng cao nhất</strong>!`;
     }
+
+    // Privileges card
+    const privCard = $('.privileges-card');
+    privCard.querySelector('h2').textContent = `ĐẶC QUYỀN HẠNG ${tier.name}`;
+    const privList = privCard.querySelector('.privilege-list');
+    privList.innerHTML = tier.privileges.map(p => `
+      <li>
+        <span class="check"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span>
+        ${p}
+      </li>
+    `).join('');
 
     // Diamond shimmer
     if (tier.id === 'diamond') {
