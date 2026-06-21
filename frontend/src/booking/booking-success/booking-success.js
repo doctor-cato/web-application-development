@@ -15,22 +15,37 @@ function awardLoyaltyPoints(booking) {
         processed = JSON.parse(localStorage.getItem(PROCESSED_KEY) || '[]');
     } catch (_) { processed = []; }
 
-    if (processed.includes(booking.id)) return; // Đã tích điểm rồi
-
     // Check VIP status to apply multiplier
     const isVip = localStorage.getItem('is_vip') === 'true';
     const vipPlan = localStorage.getItem('vip_plan') || '';
-    let multiplier = 1;
+    let vipMultiplier = 1;
     if (isVip) {
-        if (vipPlan === 'silver') multiplier = 1.2;
-        else if (vipPlan === 'gold') multiplier = 1.5;
-        else if (vipPlan === 'platinum') multiplier = 2.0;
+        if (vipPlan === 'silver') vipMultiplier = 1.2;
+        else if (vipPlan === 'gold') vipMultiplier = 1.5;
+        else if (vipPlan === 'platinum') vipMultiplier = 2.0;
     }
 
-    // Tính điểm: 50-150 PTS mỗi vé, tùy số ghế, nhân với hệ số VIP
+    // Check Loyalty Tier for multiplier
+    let currentPoints = 0;
+    try {
+        const raw = localStorage.getItem('3hd2k_rewards');
+        if (raw) currentPoints = JSON.parse(raw).points || 0;
+    } catch (_) {}
+    
+    let loyaltyMultiplier = 1;
+    let loyaltyTierName = '';
+    if (currentPoints >= 2000) { loyaltyMultiplier = 2.0; loyaltyTierName = 'DIAMOND'; }
+    else if (currentPoints >= 1000) { loyaltyMultiplier = 1.75; loyaltyTierName = 'VIP'; }
+    else if (currentPoints >= 500) { loyaltyMultiplier = 1.5; loyaltyTierName = 'VÀNG'; }
+    else if (currentPoints >= 200) { loyaltyMultiplier = 1.25; loyaltyTierName = 'BẠC'; }
+
+    const finalMultiplier = Math.max(vipMultiplier, loyaltyMultiplier);
+    const multiplierLabel = finalMultiplier > 1 ? (finalMultiplier === loyaltyMultiplier && loyaltyMultiplier > vipMultiplier ? `[${loyaltyTierName} x${finalMultiplier}]` : `[VIP x${finalMultiplier}]`) : '';
+
+    // Tính điểm: 50-150 PTS mỗi vé, tùy số ghế, nhân với hệ số VIP hoặc Hạng Thẻ
     const seatCount = Array.isArray(booking.seats) ? booking.seats.length : 1;
     const ptsPerSeat = Math.floor(Math.random() * 101) + 50; // 50~150
-    const totalPts = Math.floor(ptsPerSeat * seatCount * multiplier);
+    const totalPts = Math.floor(ptsPerSeat * seatCount * finalMultiplier);
 
     // Đọc state rewards hiện tại
     let rewardsState = { points: 0, history: [] };
@@ -48,7 +63,7 @@ function awardLoyaltyPoints(booking) {
     rewardsState.history.push({
         id: Date.now(),
         actionId: 'ticket',
-        label: `Mua vé: ${booking.movieTitle || 'Phim'} (${seatCount} vé)${multiplier > 1 ? ` [VIP x${multiplier}]` : ''}`,
+        label: `Mua vé: ${booking.movieTitle || 'Phim'} (${seatCount} vé)${multiplierLabel ? ` ${multiplierLabel}` : ''}`,
         icon: '🎬',
         pts: totalPts,
         date: new Date().toISOString(),
