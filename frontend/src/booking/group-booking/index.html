@@ -235,19 +235,22 @@
                     </div>
                 </div>
                 
-                <div class="movie-info-row">
-                    <div style="display: flex; gap: 1rem; align-items: center;">
-                        <img id="dynamic-movie-poster" src="" alt="Poster" style="width: 70px; height: 100px; border-radius: 8px; object-fit: cover; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: none; border: 1px solid rgba(255,255,255,0.1);">
+                <div class="movie-info-row glassmorphism-movie-card" style="position: relative; overflow: hidden; border-radius: 16px; border: 1px solid var(--glass-border); padding: 1.5rem; margin-top: 2rem; border-top: none; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                    <!-- Blurred Background Layer -->
+                    <div id="dynamic-movie-bg" style="position: absolute; top: -10%; left: -10%; right: -10%; bottom: -10%; background-size: cover; background-position: center; filter: blur(25px) brightness(0.3); z-index: 0; transition: background 0.5s ease;"></div>
+                    
+                    <div style="display: flex; gap: 1.5rem; align-items: center; z-index: 1; position: relative;">
+                        <img id="dynamic-movie-poster" src="" alt="Poster" style="width: 80px; height: 115px; border-radius: 8px; object-fit: cover; box-shadow: 0 8px 20px rgba(0,0,0,0.8); display: none; border: 1px solid rgba(255,255,255,0.15);">
                         <div>
-                            <p class="movie-title" id="dynamic-movie-title" style="margin-bottom: 0.4rem; line-height: 1.2;">Đang tải...</p>
+                            <p class="movie-title" id="dynamic-movie-title" style="margin-bottom: 0.5rem; line-height: 1.2; font-size: 1.4rem; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">Đang tải...</p>
                             <div id="dynamic-movie-tags" style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap;"></div>
-                            <p class="movie-meta" id="dynamic-movie-meta" style="margin-top: 0; font-weight: 500;">Đang tải...</p>
+                            <p class="movie-meta" id="dynamic-movie-meta" style="margin-top: 0; font-weight: 500; color: rgba(255,255,255,0.8); font-size: 0.95rem;">Đang tải...</p>
                         </div>
                     </div>
-                    <div style="display: flex; gap: 2rem; border-left: 1px solid rgba(255,255,255,0.1); padding-left: 1.5rem; min-width: max-content; width: 100%;">
-                        <div class="price-block" style="text-align: right;">
-                            <p class="price-value" id="dynamic-price-value" style="font-size: 2rem; color: rgba(255,255,255,0.8); text-shadow: none;">0₫</p>
-                            <p class="price-label">MỖI GHẾ</p>
+                    <div style="display: flex; align-items: center; z-index: 1; position: relative; min-width: max-content;">
+                        <div class="price-block" style="text-align: right; background: rgba(0,0,0,0.4); padding: 1rem 1.5rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(0,0,0,0.3); white-space: nowrap;">
+                            <p class="price-label" style="margin-bottom: 0.3rem; color: var(--neon-red); font-size: 0.85rem; font-weight: bold; letter-spacing: 1px; white-space: nowrap;">MỖI GHẾ</p>
+                            <p class="price-value" id="dynamic-price-value" style="font-size: 2.2rem; color: #fff; font-weight: bold; text-shadow: 0 0 15px rgba(255,255,255,0.3); margin: 0; line-height: 1; white-space: nowrap;">0₫</p>
                         </div>
                     </div>
                 </div>
@@ -477,11 +480,18 @@
             `;
         }
 
-        // Hiển thị Poster
+        // Hiển thị Poster & Background
         if (groupData.checkoutData.poster) {
             const posterImg = document.getElementById('dynamic-movie-poster');
-            posterImg.src = groupData.checkoutData.poster;
-            posterImg.style.display = 'block';
+            if (posterImg) {
+                posterImg.src = groupData.checkoutData.poster;
+                posterImg.style.display = 'block';
+            }
+            
+            const movieBg = document.getElementById('dynamic-movie-bg');
+            if (movieBg) {
+                movieBg.style.backgroundImage = `url('${groupData.checkoutData.poster}')`;
+            }
         }
         
         // Hiển thị Tags (Ví dụ: 18+, Vietsub)
