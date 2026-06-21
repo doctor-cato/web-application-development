@@ -232,6 +232,7 @@ function createBookingNotification(booking) {
 
     const newNotif = {
         id: 'notif_' + booking.id,
+        bookingId: booking.id,
         category: 'booking',
         unread: true,
         title: 'Đặt vé thành công!',

@@ -74,8 +74,9 @@ document.addEventListener('DOMContentLoaded', () => {
             
             visibleNotifs.forEach(n => {
                 const iconInfo = getNotifIcon(n.category);
+                const bId = n.bookingId || (n.id && n.id.startsWith('notif_') ? n.id.replace('notif_', '') : '');
                 const cardHtml = `
-                    <div class="notif-card ${n.unread ? 'unread' : ''}" data-id="${n.id}">
+                    <div class="notif-card ${n.unread ? 'unread' : ''}" data-id="${n.id}" ${bId ? `onclick="window.location.href='/user/user-profile/profile.html?tab=history&bookingId=${bId}'" style="cursor: pointer;"` : ''}>
                         <div class="notif-card-icon ${iconInfo.wrap}"><i class="${iconInfo.icon}"></i></div>
                         <div class="notif-card-content">
                             <p class="notif-card-text"><strong>${n.title}</strong> ${n.textLong || n.text}</p>

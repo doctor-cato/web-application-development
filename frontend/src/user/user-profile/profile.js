@@ -109,6 +109,22 @@ function renderRealHistory() {
     });
     
     container.innerHTML = html;
+    
+    // Auto-open modal if URL has bookingId
+    const urlParams = new URLSearchParams(window.location.search);
+    const bookingIdToOpen = urlParams.get('bookingId');
+    if (bookingIdToOpen) {
+        const targetIndex = bookings.findIndex(b => b.id === bookingIdToOpen);
+        if (targetIndex !== -1) {
+            setTimeout(() => {
+                const btn = document.getElementById(`real-view-btn-${targetIndex}`);
+                if (btn) {
+                    btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    btn.click();
+                }
+            }, 300);
+        }
+    }
 }
 
 function initTabs() {

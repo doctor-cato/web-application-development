@@ -1534,8 +1534,9 @@ export function renderNavbar() {
 
                 navNotifList.innerHTML = notifs.map(n => {
                     const iconInfo = getNotifIcon(n.category);
+                    const bId = n.bookingId || (n.id && n.id.startsWith('notif_') ? n.id.replace('notif_', '') : '');
                     return `
-                        <li class="notif-item ${n.unread ? 'unread' : ''}" data-id="${n.id}">
+                        <li class="notif-item ${n.unread ? 'unread' : ''}" data-id="${n.id}" ${bId ? `onclick="window.location.href='/user/user-profile/profile.html?tab=history&bookingId=${bId}'" style="cursor: pointer;"` : ''}>
                             <div class="notif-icon-wrap ${iconInfo.wrap}"><i class="${iconInfo.icon}"></i></div>
                             <div class="notif-body">
                                 <p class="notif-text"><strong>${n.title}</strong> ${n.text}</p>
