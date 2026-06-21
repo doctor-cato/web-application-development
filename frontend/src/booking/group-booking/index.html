@@ -1,6 +1,29 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
+    <script>
+        window.addEventListener("error", function(e) {
+            console.error("GLOBAL ERROR:", e.message, e.filename, e.lineno);
+            let errDiv = document.getElementById("debug-error-div");
+            if (!errDiv) {
+                errDiv = document.createElement("div");
+                errDiv.id = "debug-error-div";
+                errDiv.style.cssText = "position:fixed;top:0;left:0;width:100%;z-index:999999;background:red;color:white;padding:10px;font-size:12px;";
+                document.body.appendChild(errDiv);
+            }
+            errDiv.innerHTML += "JS Error: " + e.message + " at " + e.filename + ":" + e.lineno + "<br>";
+        });
+        window.addEventListener("unhandledrejection", function(e) {
+            let errDiv = document.getElementById("debug-error-div");
+            if (!errDiv) {
+                errDiv = document.createElement("div");
+                errDiv.id = "debug-error-div";
+                errDiv.style.cssText = "position:fixed;top:0;left:0;width:100%;z-index:999999;background:red;color:white;padding:10px;font-size:12px;";
+                document.body.appendChild(errDiv);
+            }
+            errDiv.innerHTML += "Promise Rejection: " + e.reason + "<br>";
+        });
+    </script>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>3HD2K | Phòng Chờ Chốt Ghế</title>
@@ -9,6 +32,83 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/shared/css/main.css">
     <link rel="stylesheet" href="/booking/group-booking/group-booking.css">
+    <style>
+        /* --- RESPONSIVE MEDIA QUERIES (INLINE) --- */
+        html, body { max-width: 100vw; overflow-x: hidden; margin: 0; padding: 0; }
+        .copy-icon { display: none; }
+        
+        .mobile-seat-picker { display: none; }
+
+        @media (max-width: 1024px) {
+            .main-grid { grid-template-columns: 1fr !important; padding: 0 1.5rem !important; box-sizing: border-box !important; width: 100% !important; overflow-x: hidden; }
+            .hero-section { min-height: auto !important; padding-top: 80px !important; align-items: flex-start !important; }
+            .hero-content { padding: 3rem 1.5rem 0 1.5rem !important; margin-bottom: 2rem; width: 100%; box-sizing: border-box !important; }
+            .hero-title { font-size: 3rem !important; word-wrap: break-word; white-space: normal; line-height: 1.1; }
+            .timer-box { margin-top: 1rem; width: 100%; min-width: 0; box-sizing: border-box; }
+        }
+
+        @media (max-width: 768px) {
+            .hero-title { font-size: 1.8rem !important; }
+            
+            /* Make timer box clean and horizontal */
+            .timer-box { 
+                padding: 1rem !important; 
+                flex-direction: row !important; 
+                justify-content: center !important; 
+                align-items: center !important; 
+                border-radius: 0.5rem !important; 
+                gap: 1rem;
+            }
+            .timer-value { font-size: 2rem !important; margin: 0 !important; animation: none !important; }
+            .timer-label { margin: 0 !important; font-size: 0.8rem !important; }
+            .progress-container { display: none !important; }
+            
+            /* Panels */
+            .panel-title { font-size: 1.5rem !important; }
+            .panel-section, .food-beverage-panel { padding: 1rem !important; box-sizing: border-box; width: 100%; }
+            .fb-panel-title { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+            .quick-combos-container { flex-direction: column; width: 100%; }
+            .combo-card { width: 100%; box-sizing: border-box; }
+            
+            /* Member Cards */
+            .members-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 0.75rem !important; }
+            .member-card { flex-direction: column !important; align-items: center; padding: 0.75rem !important; gap: 0.25rem !important; text-align: center !important; }
+            .member-card > div:last-child { width: 100% !important; padding: 0 !important; flex-direction: column !important; margin-top: 0.5rem !important; gap: 0.4rem !important; }
+            .member-card .avatar-circle { font-size: 1.5rem !important; width: 40px !important; height: 40px !important; margin-bottom: 0.25rem !important; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+            .member-name { font-size: 0.95rem !important; margin: 0 !important; line-height: 1.2; word-break: break-word; }
+            .member-status { margin: 0 !important; font-size: 0.75rem !important; line-height: 1.2; }
+            .btn-pay-avatar, .btn-cancel-avatar { padding: 0.4rem !important; font-size: 0.7rem !important; width: 100% !important; margin: 0 !important; }
+            
+            /* Movie Info */
+            .movie-info-row { flex-direction: column; align-items: center; gap: 1rem; width: 100%; text-align: center; }
+            .movie-info-row > div:last-child { border-left: none !important; padding-left: 0 !important; width: 100%; justify-content: space-evenly; gap: 0; flex-direction: row; }
+            
+            /* Symmetric Prices */
+            #dynamic-price-value, #dynamic-total-value { white-space: nowrap !important; font-size: 1.8rem !important; }
+            .price-block { flex: 1; text-align: center !important; }
+            .price-block:last-child { border-left: 1px dashed rgba(255,255,255,0.15) !important; padding-left: 0 !important; }
+            
+            /* Radar / Seat Map */
+            .radar-box { padding: 1rem; }
+            .screen-line.curved { width: 100% !important; margin-left: 0 !important; border-radius: 50% 50% 0 0 / 20px 20px 0 0 !important; }
+            .seat-map-container { overflow: hidden; width: 100%; height: auto !important; padding-bottom: 2rem; margin-top: 1rem; }
+            .seat-grid { flex-direction: row !important; flex-wrap: wrap; justify-content: center; gap: 1.5rem !important; }
+            .seat { width: 2.5rem !important; height: 2.5rem !important; border-radius: 8px !important; font-size: 0.8rem; }
+            
+            /* Mobile Seat Picker Instruction */
+            .mobile-seat-picker { display: block; text-align: center; margin-top: 1rem; padding: 1rem; background: rgba(0, 243, 255, 0.1); border-radius: 8px; border: 1px dashed var(--neon-blue); }
+            
+            /* Clipboard Button */
+            .share-input { padding-right: 3.5rem !important; font-size: 0.85rem !important; text-overflow: ellipsis; white-space: nowrap; }
+            .share-input-group { flex-direction: row !important; align-items: center; position: relative; }
+            .copy-text { display: none; }
+            .copy-icon { display: inline-block !important; font-size: 1.5rem; }
+            .btn-copy { width: auto !important; padding: 0.5rem 1rem !important; flex-shrink: 0; background: transparent; color: var(--neon-blue); border: none !important; border-radius: 4px; position: absolute; right: 0; top: 0; bottom: 0; height: 100%; }
+            
+            .share-buttons { flex-direction: column; }
+            .share-buttons button { width: 100%; }
+        }
+    </style>
 </head>
 <body>
 
@@ -56,7 +156,7 @@
                 <h3 class="panel-title fb-panel-title">
                     <span style="display: flex; align-items: center;">
                         <span class="material-symbols-outlined fb-icon">fastfood</span> 
-                        <span style="font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 1px;">ĐỒ ĂN THỨC UỐNG</span>
+                        <span style="font-family: 'Barlow Condensed', sans-serif; font-size: 1.8rem; font-weight: 800; letter-spacing: 1px;">ĐỒ ĂN THỨC UỐNG</span>
                     </span>
                     <span class="fb-hot-deal">HOT DEAL</span>
                 </h3>
@@ -105,7 +205,10 @@
                 <div>
                     <div class="share-input-group">
                         <input class="share-input" id="dynamic-share-link" readonly type="text" value="">
-                        <button class="btn-copy" onclick="copyLink(event)">COPY LINK</button>
+                        <button class="btn-copy" onclick="copyLink(event)">
+                            <span class="copy-text">COPY LINK</span>
+                            <i class="fa-solid fa-clipboard copy-icon"></i>
+                        </button>
                     </div>
                     <div class="share-buttons">
                         <button class="btn-share whatsapp" onclick="shareSocial('whatsapp')"><i class="fa-brands fa-whatsapp"></i> Gửi WhatsApp</button>
@@ -119,7 +222,7 @@
         <div class="right-col">
             <div class="panel-section">
                 <h3 class="panel-title"><span class="material-symbols-outlined" style="margin-right: 12px; font-size: 2.2rem; color: var(--primary-red);">radar</span> RADAR GHẾ (TRỰC TIẾP)</h3>
-                <p style="color: var(--neon-red); margin-bottom: 1rem; font-size: 0.9rem; font-weight: 600;"><span class="material-symbols-outlined" style="vertical-align: middle; font-size: 1.1rem; margin-top: -2px;">info</span> Bấm vào ghế đang nhấp nháy để thanh toán hoặc hủy ghế!</p>
+                <p style="color: var(--neon-red); margin-bottom: 1rem; font-size: 0.9rem; font-weight: 600;"><span class="material-symbols-outlined" style="vertical-align: middle; font-size: 1.1rem; margin-top: -2px;">info</span> Vui lòng bấm vào Sơ Đồ Ghế (Radar) bên dưới để thanh toán phần của bạn!</p>
                 <div class="seat-map-container">
                     <div class="screen-line curved">
                         <!-- Removed screen label completely for minimalist cinematic look -->
@@ -140,12 +243,12 @@
                             <p class="movie-meta" id="dynamic-movie-meta" style="margin-top: 0; font-weight: 500;">Đang tải...</p>
                         </div>
                     </div>
-                    <div style="display: flex; gap: 2rem; border-left: 1px solid rgba(255,255,255,0.1); padding-left: 1.5rem; min-width: max-content;">
-                        <div style="text-align: right;">
+                    <div style="display: flex; gap: 2rem; border-left: 1px solid rgba(255,255,255,0.1); padding-left: 1.5rem; min-width: max-content; width: 100%;">
+                        <div class="price-block" style="text-align: right;">
                             <p class="price-value" id="dynamic-price-value" style="font-size: 2rem; color: rgba(255,255,255,0.8); text-shadow: none;">0₫</p>
                             <p class="price-label">MỖI GHẾ</p>
                         </div>
-                        <div style="text-align: right; border-left: 1px dashed rgba(255,255,255,0.15); padding-left: 1.5rem;">
+                        <div class="price-block" style="text-align: right; border-left: 1px dashed rgba(255,255,255,0.15); padding-left: 1.5rem;">
                             <p class="price-value" id="dynamic-total-value">0₫</p>
                             <p class="price-label">TỔNG CỘNG</p>
                         </div>
@@ -201,12 +304,12 @@
 
 <script type="module" src="/shared/components/navbar.js"></script>
 <script type="module" src="/shared/components/footer.js"></script>
-<script type="module" src="/explore/home-page/movieService.js"></script>
+
 
 <script type="module">
-    import { formatPrice } from '/explore/home-page/movieService.js';
+    import { formatPrice } from '../../explore/home-page/movieService.js';
     import { confirmBooking } from '../seat-booking/bookingService.js';
-    import { lsSet, KEYS } from '/shared/utils/storage.js';
+    import { lsSet, KEYS } from '../../shared/utils/storage.js';
 
     // --- State Management ---
     const urlParams = new URLSearchParams(window.location.search);
@@ -217,12 +320,39 @@
     let myFoodText = '';
     
     function loadOrderData() {
-        const rawData = localStorage.getItem('splitOrder_' + orderId);
-        if (rawData) {
-            groupData = JSON.parse(rawData);
+        let rawData = localStorage.getItem('splitOrder_' + orderId);
+        let isValid = false;
+        
+        try {
+            if (rawData) {
+                groupData = JSON.parse(rawData);
+                if (groupData && groupData.checkoutData && Array.isArray(groupData.checkoutData.seats)) {
+                    isValid = true;
+                }
+            }
+        } catch(e) {
+            console.error("Lỗi parse data:", e);
+        }
+        
+        // Force reset demo data if invalid to prevent freezing
+        if (!isValid) {
+            groupData = {
+                checkoutData: {
+                    movieTitle: "Avengers: Endgame",
+                    room: "Phòng chiếu 1",
+                    showtimeText: "20:00 - Hôm nay",
+                    seats: ["H1", "H2", "H3", "H4"],
+                    total: 400000,
+                    poster: "https://lh3.googleusercontent.com/aida-public/AB6AXuCGLcDu8pm8SWXhUMWRRPjOCKwLxh8BHFzWZFx6GfllhNown4jgUkxZQxvQTQZXkruLwDM0hPzbClLuYPAESVMwP9REVJHBHTXRfYUxegXe_uWtHd4bo1bb5y7e7gYXKzyGGlaFaIkhVYRiDJ3B-rQMaSCf9EhlIbGVGeQlRLtMPnxS8JX6KJrioQf_ngrCq1mcRRldeZnQN82OKxgx4fN-igNpOlcqJDyWnGwMKfTuNyxT2e9hg7-uxMl8qK1UxyDYrQKfno-mHr9v"
+                },
+                paidSeats: [],
+                cancelledSeats: []
+            };
+            localStorage.setItem('splitOrder_' + orderId, JSON.stringify(groupData));
+            isValid = true;
         }
 
-        if (!groupData) {
+        if (!isValid) {
             alert('Phiên giao dịch không tồn tại hoặc đã hết hạn.');
             window.location.href = "/explore/home-page/index.html";
             return false;
@@ -283,7 +413,7 @@
             // Nếu ghế của tôi không tồn tại, hoặc đã bị hủy từ nguồn khác, hoặc đã bị ai đó thanh toán mất
             // -> Tìm 1 ghế trống mới gán cho user
             if (!mySeat || !groupData.checkoutData.seats.includes(mySeat) || groupData.cancelledSeats.includes(mySeat)) {
-                const activeUnpaidSeats = groupData.checkoutData.seats.filter(s => 
+                const activeUnpaidSeats = (groupData?.checkoutData?.seats || []).filter(s => 
                     !groupData.cancelledSeats.includes(s) && !groupData.paidSeats.includes(s)
                 );
                 if (activeUnpaidSeats.length > 0) {
@@ -309,9 +439,9 @@
         shareInput.value = window.location.href;
 
         // 2. Movie Info
-        document.getElementById('dynamic-movie-title').textContent = groupData.checkoutData.movieTitle;
-        document.getElementById('dynamic-movie-meta').textContent = `${groupData.checkoutData.room} • ${groupData.checkoutData.showtimeText}`;
-        document.getElementById('dynamic-price-value').textContent = formatPrice(pricePerSeat);
+        document.getElementById('dynamic-movie-title').textContent = groupData?.checkoutData?.movieTitle || 'Không rõ';
+        document.getElementById('dynamic-movie-meta').textContent = `${groupData?.checkoutData?.room || ''} • ${groupData?.checkoutData?.showtimeText || ''}`;
+        document.getElementById('dynamic-price-value').textContent = typeof formatPrice === 'function' ? formatPrice(pricePerSeat) : (pricePerSeat + ' ₫');
         
         // Tính và hiển thị Tổng Tiền
         const totalSeats = groupData.checkoutData.seats ? groupData.checkoutData.seats.length : 1;
@@ -341,7 +471,7 @@
         const membersGrid = document.getElementById('dynamic-members-grid');
         membersGrid.innerHTML = '';
         
-        const activeSeats = groupData.checkoutData.seats.filter(s => !groupData.cancelledSeats.includes(s));
+        const activeSeats = (groupData?.checkoutData?.seats || []).filter(s => !groupData.cancelledSeats.includes(s));
         
         let friendNameIndex = 0;
 
@@ -406,7 +536,7 @@
         const seatMap = document.getElementById('dynamic-seat-map');
         seatMap.innerHTML = '';
         
-        groupData.checkoutData.seats.forEach(seat => {
+        (groupData?.checkoutData?.seats || []).forEach(seat => {
             const isPaid = groupData.paidSeats.includes(seat);
             const isCancelled = groupData.cancelledSeats.includes(seat);
             const isMySeat = (seat === window.mySeat);
@@ -476,7 +606,7 @@
     }
 
     function checkCompletion() {
-        const activeSeats = groupData.checkoutData.seats.filter(s => !groupData.cancelledSeats.includes(s));
+        const activeSeats = (groupData?.checkoutData?.seats || []).filter(s => !groupData.cancelledSeats.includes(s));
         const allPaid = activeSeats.every(s => groupData.paidSeats.includes(s));
         
         if (activeSeats.length > 0 && allPaid) {

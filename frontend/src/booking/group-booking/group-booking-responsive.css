@@ -1,0 +1,57 @@
+/* --- RESPONSIVE MEDIA QUERIES --- */
+@media (max-width: 1024px) {
+    .main-grid {
+        grid-template-columns: 1fr;
+        padding: 0 2rem;
+    }
+    .hero-content {
+        padding: 0 2rem 2rem;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .hero-title {
+        font-size: 4rem;
+    }
+    .timer-box {
+        margin-top: 2rem;
+        width: 100%;
+        min-width: unset;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 3rem;
+    }
+    .main-grid {
+        padding: 0 1rem;
+    }
+    .hero-content {
+        padding: 0 1rem 2rem;
+    }
+    .timer-value {
+        font-size: 3rem;
+    }
+    .panel-section {
+        padding: 1.25rem;
+    }
+    .fb-panel-title {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    .quick-combos-container {
+        flex-direction: column;
+    }
+    .movie-info-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.5rem;
+    }
+    .movie-info-row > div:last-child {
+        border-left: none;
+        padding-left: 0;
+        width: 100%;
+        justify-content: space-between;
+    }
+}
