@@ -553,16 +553,7 @@ function shareMovie() {
     }
 }
 
-// ── SUPPORT MENU ─────────────────────────────────────────────
-function toggleSupportMenu() {
-    const menu = document.getElementById('support-menu');
-    const icon = document.getElementById('support-icon');
-    if (!menu) return;
-    menu.classList.toggle('open');
-    icon.className = menu.classList.contains('open')
-        ? 'fas fa-times'
-        : 'fas fa-headset';
-}
+
 
 // ── SCROLL HELPERS ───────────────────────────────────────────
 function scrollToShowtimes() {

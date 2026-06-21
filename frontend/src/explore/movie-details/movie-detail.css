@@ -635,32 +635,49 @@
 }
 
 .showtime-filter-select {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 8px;
-    padding: 10px 16px;
-    background: var(--glass-bg);
-    border: 1px solid var(--glass-border);
-    border-radius: 8px;
-    transition: border-color 0.2s;
+    gap: 10px;
+    padding: 12px 20px;
+    background: rgba(25, 25, 25, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    position: relative;
+    z-index: 100;
+    cursor: pointer;
 }
-.showtime-filter-select:hover { border-color: rgba(255,255,255,0.2); }
-.showtime-filter-select i { color: var(--text-muted); font-size: 0.85rem; }
+.showtime-filter-select:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 6px 16px rgba(229, 9, 20, 0.2);
+}
+.showtime-filter-select i { 
+    color: var(--primary-red); 
+    font-size: 1rem; 
+}
 .showtime-filter-select select {
     background: transparent;
     border: none;
-    color: var(--text-main);
+    color: white;
     font-family: 'Inter', sans-serif;
-    font-size: 0.875rem;
+    font-weight: 600;
+    font-size: 0.9rem;
     outline: none;
     cursor: pointer;
-    padding-right: 8px;
+    padding-right: 24px;
     appearance: none;
     -webkit-appearance: none;
+    width: 100%;
 }
+
 .showtime-filter-select select option {
     background: #1a1a1a;
     color: white;
+    font-weight: normal;
 }
 
 /* Cinema showtime list */
@@ -1441,112 +1458,6 @@
     color: #87d3f5;
 }
 
-/* ── FLOATING SUPPORT BUTTON ──────────────────────────────── */
-.float-support {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    z-index: 50;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 10px;
-}
-
-.float-support-toggle {
-    width: 54px;
-    height: 54px;
-    border-radius: 50%;
-    background: var(--primary-red);
-    border: none;
-    color: white;
-    font-size: 1.2rem;
-    cursor: pointer;
-    box-shadow: 0 4px 20px rgba(229,9,20,0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-    position: relative;
-}
-.float-support-toggle::before {
-    content: '';
-    position: absolute;
-    inset: -4px;
-    border-radius: 50%;
-    border: 2px solid rgba(229,9,20,0.4);
-    animation: pulse-ring 2s ease-out infinite;
-}
-@keyframes pulse-ring {
-    0% { transform: scale(0.95); opacity: 0.7; }
-    100% { transform: scale(1.3); opacity: 0; }
-}
-.float-support-toggle:hover { transform: scale(1.1); }
-
-.float-support-menu {
-    display: none;
-    flex-direction: column;
-    gap: 8px;
-    align-items: flex-end;
-    animation: slideUpMenu 0.2s ease;
-}
-@keyframes slideUpMenu {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-.float-support-menu.open { display: flex; }
-
-.float-support-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 16px;
-    background: #1a1a1a;
-    border: 1px solid var(--glass-border);
-    border-radius: 24px;
-    font-size: 0.875rem;
-    color: var(--text-main);
-    font-family: 'Inter', sans-serif;
-    cursor: pointer;
-    text-decoration: none;
-    transition: all 0.2s;
-    white-space: nowrap;
-}
-.float-support-item:hover {
-    background: rgba(229,9,20,0.15);
-    border-color: rgba(229,9,20,0.4);
-    color: #ff8888;
-}
-.float-support-item i { color: var(--primary-red); width: 16px; text-align: center; }
-
-/* ── TRAILER MODAL (reuse from main) ──────────────────────── */
-/* Inherited from main.css */
-
-/* ── TOAST NOTIFICATION ───────────────────────────────────── */
-.toast {
-    position: fixed;
-    bottom: 100px;
-    left: 50%;
-    transform: translateX(-50%) translateY(20px);
-    background: #1a1a1a;
-    border: 1px solid var(--glass-border);
-    color: white;
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-size: 0.875rem;
-    font-family: 'Inter', sans-serif;
-    opacity: 0;
-    transition: opacity 0.3s, transform 0.3s;
-    z-index: 9999;
-    pointer-events: none;
-    white-space: nowrap;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.5);
-}
-.toast.show {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-}
-
 /* ── RESPONSIVE ───────────────────────────────────────────── */
 @media (max-width: 1024px) {
     .detail-metadata { grid-template-columns: 180px 1fr; gap: 30px; }
@@ -1602,3 +1513,5 @@
     /* Combined section small screen */
     .detail-combined-poster { width: 110px; }
 }
+
+@media (max-width: 768px) { .detail-combined-content { flex-direction: column; align-items: center; text-align: center; padding: 20px 5%; gap: 20px; } .detail-combined-poster { width: 100%; max-width: 250px; } .detail-hero-actions { justify-content: center; } .showtime-filters-row { flex-direction: column; gap: 10px; } .showtime-filter-select { width: 100%; } .showtime-date-tabs { overflow-x: auto; white-space: nowrap; flex-wrap: nowrap; } }
