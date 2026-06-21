@@ -255,7 +255,7 @@ a:hover {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 10px 24px;
+    padding: 6px 20px;
     border-radius: 50px;
     background: rgba(255, 255, 255, 0.07);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -874,16 +874,36 @@ footer {
     .filter-item { border-right: none; border-bottom: 1px solid var(--glass-border); padding-bottom: 10px; }
 }
 
+@media (max-width: 1024px) {
+    .nav-links { display: none; }
+    .nav-left { gap: 20px; }
+    .navbar { padding: 10px 5%; height: auto; min-height: 60px; }
+    .search-pill { padding: 8px 10px; gap: 4px; }
+    .search-pill span { display: none; }
+    .search-pill.active #search-input { width: 140px; }
+    .btn, button, .nav-actions i { min-height: 44px; min-width: 44px; display: inline-flex; align-items: center; justify-content: center; }
+}
+
 @media (max-width: 768px) {
     .hero { height: 85vh; padding-bottom: 60px; }
     .movie-title { font-size: 2.5rem; }
-    .hero-buttons { flex-direction: column; align-items: flex-start; }
+    .hero-buttons { flex-direction: column; align-items: flex-start; width: 100%; margin-bottom: 30px; }
+    #search-suggestions {
+        position: fixed !important;
+        top: 70px !important;
+        left: 5% !important;
+        right: 5% !important;
+        width: 90% !important;
+        max-width: none !important;
+    }
+    .hero-buttons .btn { width: 100%; text-align: center; justify-content: center; }
     .rewards-section { flex-direction: column; gap: 30px; text-align: center; }
     .rewards-title { justify-content: center; }
     .rewards-action { flex-direction: column; gap: 20px; }
     .points { text-align: center; }
     .footer-content { flex-direction: column; }
-    .footer-links { gap: 40px; }
+    .footer-links { gap: 40px; flex-direction: column; }
+    img { max-width: 100%; height: auto; }
 }
 
 
@@ -967,7 +987,8 @@ footer {
 
 /* Movies page specific offset */
 .filter-pill .custom-select-options,
-.sort-pill .custom-select-options {
+.sort-pill .custom-select-options,
+.showtime-filter-select .custom-select-options {
     left: 0;
     top: calc(100% + 5px);
 }
@@ -1001,4 +1022,111 @@ footer {
     color: white;
     background: var(--primary-red);
     font-weight: 600;
+}
+
+/* ── FLOATING SUPPORT BUTTON ──────────────────────────────── */
+.float-support {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+.float-support-toggle {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: var(--primary-red);
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(229,9,20,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    position: relative;
+}
+.float-support-toggle::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    border: 2px solid rgba(229,9,20,0.4);
+    animation: pulse-ring 2s ease-out infinite;
+}
+@keyframes pulse-ring {
+    0% { transform: scale(0.95); opacity: 0.7; }
+    100% { transform: scale(1.3); opacity: 0; }
+}
+.float-support-toggle:hover { transform: scale(1.1); }
+
+.float-support-menu {
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-end;
+    animation: slideUpMenu 0.2s ease;
+}
+@keyframes slideUpMenu {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.float-support-menu.open { display: flex; }
+
+.float-support-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    background: #1a1a1a;
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    font-size: 0.875rem;
+    color: var(--text-main);
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+.float-support-item:hover {
+    background: rgba(229,9,20,0.15);
+    border-color: rgba(229,9,20,0.4);
+    color: #ff8888;
+}
+.float-support-item i { color: var(--primary-red); width: 16px; text-align: center; }
+
+/* ── TOAST NOTIFICATION ───────────────────────────────────── */
+.toast {
+    position: fixed;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: #1a1a1a;
+    border: 1px solid var(--glass-border);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-family: 'Inter', sans-serif;
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.3s;
+    z-index: 9999;
+    pointer-events: none;
+    white-space: nowrap;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+}
+.toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+@media (max-width: 768px) {
+    .float-support { bottom: 20px; right: 16px; }
 }

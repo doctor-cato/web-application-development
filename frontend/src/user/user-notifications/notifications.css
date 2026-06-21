@@ -273,12 +273,19 @@
         overflow-x: auto;
         padding: 8px;
         gap: 8px;
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    }
+    .notif-sidebar::-webkit-scrollbar { 
+        display: none; /* WebKit */
     }
     
     .notif-filter-btn {
         margin-bottom: 0;
         white-space: nowrap;
         width: auto;
+        flex-shrink: 0;
+        gap: 8px;
     }
     
     .notif-card-actions {

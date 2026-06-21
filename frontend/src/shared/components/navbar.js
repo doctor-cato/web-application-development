@@ -994,6 +994,34 @@ export function renderNavbar() {
             }
         });
 
+        // Helper to close all menus
+        function closeAllMenus(except = null) {
+            const qbToggle = document.getElementById('quick-book-toggle');
+            const qbDropdown = document.getElementById('quick-book-dropdown');
+            if (except !== 'quick-book' && qbToggle && qbDropdown) {
+                qbToggle.classList.remove('active');
+                qbDropdown.classList.remove('active');
+            }
+            const searchPill = document.getElementById('search-pill');
+            const searchSuggestions = document.getElementById('search-suggestions');
+            if (except !== 'search' && searchPill) {
+                searchPill.classList.remove('active');
+                if (searchSuggestions) searchSuggestions.style.display = 'none';
+            }
+            const notifBtn = document.getElementById('notif-btn');
+            if (except !== 'notif' && notifBtn) {
+                notifBtn.classList.remove('active');
+            }
+            const userBtn = document.getElementById('user-btn');
+            if (except !== 'user' && userBtn) {
+                userBtn.classList.remove('active');
+            }
+            const hamburgerDropdown = document.getElementById('hamburger-dropdown');
+            if (except !== 'hamburger' && hamburgerDropdown) {
+                hamburgerDropdown.style.display = 'none';
+            }
+        }
+
         // --- QUICK BOOK LOGIC ---
         const qbToggle = document.getElementById('quick-book-toggle');
         const qbDropdown = document.getElementById('quick-book-dropdown');
@@ -1001,6 +1029,7 @@ export function renderNavbar() {
             qbToggle.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
+                closeAllMenus('quick-book');
                 qbToggle.classList.toggle('active');
                 qbDropdown.classList.toggle('active');
             });
@@ -1179,6 +1208,7 @@ export function renderNavbar() {
             hamburgerBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const isDisplay = hamburgerDropdown.style.display === 'block';
+                closeAllMenus('hamburger');
                 hamburgerDropdown.style.display = isDisplay ? 'none' : 'block';
             });
             
@@ -1316,6 +1346,7 @@ export function renderNavbar() {
 
         if (searchPill) {
             searchPill.addEventListener('click', () => {
+                closeAllMenus('search');
                 searchPill.classList.add('active');
                 if (searchInput) {
                     searchInput.focus();
@@ -1394,14 +1425,13 @@ export function renderNavbar() {
         if (notifBtn) {
             notifBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
+                closeAllMenus('notif');
                 notifBtn.classList.toggle('active');
-                notifBtn.classList.add('ringing');
-                setTimeout(() => {
-                    notifBtn.classList.remove('ringing');
-                }, 600);
-                const userBtn = document.getElementById('user-btn');
-                if (userBtn && userBtn.classList.contains('active')) {
-                    userBtn.classList.remove('active');
+                if (notifBtn.classList.contains('active')) {
+                    notifBtn.classList.add('ringing');
+                    setTimeout(() => {
+                        notifBtn.classList.remove('ringing');
+                    }, 600);
                 }
             });
         }
@@ -1421,11 +1451,9 @@ export function renderNavbar() {
 
         if (userBtn) {
             userBtn.addEventListener('click', (e) => {
-                e.stopPropagation(); 
+                e.stopPropagation();
+                closeAllMenus('user');
                 userBtn.classList.toggle('active');
-                if (notifBtn && notifBtn.classList.contains('active')) {
-                    notifBtn.classList.remove('active');
-                }
             });
         }
 

@@ -85,5 +85,26 @@ function closeAllCustomDropdowns(exceptWrapper = null) {
 
 // Auto-initialize for common filter selectors on page load
 document.addEventListener('DOMContentLoaded', () => {
-    initCustomDropdowns('.filter-item select, .filter-pill select, .sort-pill select');
+    initCustomDropdowns('.filter-item select, .filter-pill select, .sort-pill select, .showtime-filter-select select');
 });
+
+// --- GLOBAL SUPPORT WIDGET & TOAST ---
+window.showToast = function(message) {
+    const toast = document.getElementById('toast');
+    if (!toast) return;
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
+};
+
+window.toggleSupportMenu = function() {
+    const menu = document.getElementById('support-menu');
+    const icon = document.getElementById('support-icon');
+    if (!menu) return;
+    menu.classList.toggle('open');
+    icon.className = menu.classList.contains('open')
+        ? 'fas fa-times'
+        : 'fas fa-headset';
+};

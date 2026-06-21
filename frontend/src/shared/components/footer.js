@@ -48,6 +48,24 @@ export function renderFooter() {
             <p>&copy; 2026 3HD2K Cinema. All rights reserved.</p>
         </div>
     </footer>
+
+    <!-- ── FLOATING SUPPORT ─────────────────────────────────── -->
+    <div class="float-support">
+        <div class="float-support-menu" id="support-menu">
+            <a href="tel:19001234" class="float-support-item">
+                <i class="fas fa-phone"></i> Hotline: 1900 1234
+            </a>
+            <a href="#" class="float-support-item" onclick="event.preventDefault(); window.showToast('Chat trực tuyến sẽ sớm ra mắt!')">
+                <i class="fas fa-comment-dots"></i> Chat trực tuyến
+            </a>
+        </div>
+        <button class="float-support-toggle" id="support-toggle" aria-label="Hỗ trợ" onclick="window.toggleSupportMenu()">
+            <i class="fas fa-headset" id="support-icon"></i>
+        </button>
+    </div>
+
+    <!-- ── TOAST ─────────────────────────────────────────────── -->
+    <div class="toast" id="toast"></div>
     <style>
     footer {
         background-color: var(--bg-color);
