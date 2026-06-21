@@ -443,7 +443,7 @@
                                     <span class="status status-upcoming" id="f2-status">Sắp chiếu</span>
                                     <div class="history-price">500.000đ</div>
                                     <div style="display: flex; gap: 0.75rem; margin-top: 1rem; justify-content: flex-end; width: 100%;">
-                                        <button id="f2-cancel-btn" onclick="openCancelModal('Interstellar', '19:30 - 20/06/2026', 'G1, G2, G3, G4', '500.000đ')" style="padding: 0.35rem 1rem; font-size: 0.8rem; font-family: 'Inter', sans-serif; font-weight: 500; border-radius: 30px; background: transparent; border: 1px solid rgba(229,9,20,0.5); color: #e50914; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(229,9,20,0.1)'; this.style.borderColor='#e50914'" onmouseout="this.style.background='transparent'; this.style.borderColor='rgba(229,9,20,0.5)'">Huỷ vé</button>
+                                        <button id="f2-cancel-btn" onclick="openCancelModal('Interstellar', '19:30 - 20/06/2026', 'G1, G2, G3, G4', '500.000đ', 'f2')" style="padding: 0.35rem 1rem; font-size: 0.8rem; font-family: 'Inter', sans-serif; font-weight: 500; border-radius: 30px; background: transparent; border: 1px solid rgba(229,9,20,0.5); color: #e50914; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(229,9,20,0.1)'; this.style.borderColor='#e50914'" onmouseout="this.style.background='transparent'; this.style.borderColor='rgba(229,9,20,0.5)'">Huỷ vé</button>
                                         <button id="f2-view-btn" onclick="openTicketModal('group', 'Interstellar', '20/06/2026', '19:30', 'IMAX', 'G1, G2, G3, G4', '3HD2K Vincom Đồng Khởi', 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=400&q=80', '3HD2K-GROUP4')" style="padding: 0.35rem 1rem; font-size: 0.8rem; font-family: 'Inter', sans-serif; font-weight: 500; border-radius: 30px; background: #e50914; color: #fff; border: 1px solid #e50914; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 10px rgba(229,9,20,0.3);" onmouseover="this.style.background='#ff4b4b'; this.style.boxShadow='0 6px 15px rgba(229,9,20,0.5)'" onmouseout="this.style.background='#e50914'; this.style.boxShadow='0 4px 10px rgba(229,9,20,0.3)'">Xem mã vé</button>
                                     </div>
                                 </div>
@@ -465,7 +465,7 @@
                                     <span class="status status-upcoming" id="f1-status">Sắp chiếu</span>
                                     <div class="history-price">250.000đ</div>
                                     <div style="display: flex; gap: 0.75rem; margin-top: 1rem; justify-content: flex-end; width: 100%;">
-                                        <button id="f1-cancel-btn" onclick="openCancelModal('F1: The Movie', '20:00 - 15/06/2026', 'E5, E6', '250.000đ')" style="padding: 0.35rem 1rem; font-size: 0.8rem; font-family: 'Inter', sans-serif; font-weight: 500; border-radius: 30px; background: transparent; border: 1px solid rgba(229,9,20,0.5); color: #e50914; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(229,9,20,0.1)'; this.style.borderColor='#e50914'" onmouseout="this.style.background='transparent'; this.style.borderColor='rgba(229,9,20,0.5)'">Huỷ vé</button>
+                                        <button id="f1-cancel-btn" onclick="openCancelModal('F1: The Movie', '20:00 - 15/06/2026', 'E5, E6', '250.000đ', 'f1')" style="padding: 0.35rem 1rem; font-size: 0.8rem; font-family: 'Inter', sans-serif; font-weight: 500; border-radius: 30px; background: transparent; border: 1px solid rgba(229,9,20,0.5); color: #e50914; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(229,9,20,0.1)'; this.style.borderColor='#e50914'" onmouseout="this.style.background='transparent'; this.style.borderColor='rgba(229,9,20,0.5)'">Huỷ vé</button>
                                         <button id="f1-view-btn" onclick="openTicketModal('single', 'F1: The Movie', '15/06/2026', '20:00', 'Rạp 1', 'E5, E6', '3HD2K Vincom Đồng Khởi', '/shared/images/f1_movie.jpg', '3HD2K-9X8K2M')" style="padding: 0.35rem 1rem; font-size: 0.8rem; font-family: 'Inter', sans-serif; font-weight: 500; border-radius: 30px; background: #e50914; color: #fff; border: 1px solid #e50914; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 10px rgba(229,9,20,0.3);" onmouseover="this.style.background='#ff4b4b'; this.style.boxShadow='0 6px 15px rgba(229,9,20,0.5)'" onmouseout="this.style.background='#e50914'; this.style.boxShadow='0 4px 10px rgba(229,9,20,0.3)'">Xem mã vé</button>
                                     </div>
                                 </div>
@@ -833,11 +833,11 @@
                 btn.innerHTML = originalText;
                 btn.style.pointerEvents = 'auto';
                 
-                if (currentCancelId) {
+                if (currentCancelId && currentCancelId.startsWith('3HD2K-')) {
                     document.dispatchEvent(new CustomEvent('cancelTicket', { detail: currentCancelId }));
-                } else {
-                    // Fallback for static f1-status
-                    const statusBadge = document.getElementById('f1-status');
+                } else if (currentCancelId) {
+                    // Fallback for static f1 or f2 status
+                    const statusBadge = document.getElementById(currentCancelId + '-status');
                     if (statusBadge) {
                         statusBadge.className = 'status';
                         statusBadge.style.background = 'rgba(255, 255, 255, 0.1)';
@@ -859,9 +859,10 @@
                             }
                         }
                     }
-                    if(document.getElementById('f1-view-btn')) document.getElementById('f1-view-btn').style.display = 'none';
-                    if(document.getElementById('f1-cancel-btn')) document.getElementById('f1-cancel-btn').style.display = 'none';
+                    if(document.getElementById(currentCancelId + '-view-btn')) document.getElementById(currentCancelId + '-view-btn').style.display = 'none';
+                    if(document.getElementById(currentCancelId + '-cancel-btn')) document.getElementById(currentCancelId + '-cancel-btn').style.display = 'none';
                 }
+                document.activeElement.blur(); // Remove focus to prevent ghost clicks or scroll jumps
             }, 1000);
         }
     </script>
