@@ -8,7 +8,12 @@ const LOCK_DURATION_MS = 15 * 60 * 1000; // 15 minutes
 const channel = new BroadcastChannel('seat_sync');
 
 function makeBookingId() {
-  return 'bk_' + Date.now().toString(36) + Math.random().toString(36).slice(2,6).toUpperCase();
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let result = '';
+  for (let i = 0; i < 8; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return 'bk_' + result;
 }
 
 function _getLocksMap() {
