@@ -17,10 +17,20 @@ function awardLoyaltyPoints(booking) {
 
     if (processed.includes(booking.id)) return; // Đã tích điểm rồi
 
-    // Tính điểm: 50-150 PTS mỗi vé, tùy số ghế
+    // Check VIP status to apply multiplier
+    const isVip = localStorage.getItem('is_vip') === 'true';
+    const vipPlan = localStorage.getItem('vip_plan') || '';
+    let multiplier = 1;
+    if (isVip) {
+        if (vipPlan === 'silver') multiplier = 1.2;
+        else if (vipPlan === 'gold') multiplier = 1.5;
+        else if (vipPlan === 'platinum') multiplier = 2.0;
+    }
+
+    // Tính điểm: 50-150 PTS mỗi vé, tùy số ghế, nhân với hệ số VIP
     const seatCount = Array.isArray(booking.seats) ? booking.seats.length : 1;
     const ptsPerSeat = Math.floor(Math.random() * 101) + 50; // 50~150
-    const totalPts = ptsPerSeat * seatCount;
+    const totalPts = Math.floor(ptsPerSeat * seatCount * multiplier);
 
     // Đọc state rewards hiện tại
     let rewardsState = { points: 0, history: [] };
@@ -38,7 +48,7 @@ function awardLoyaltyPoints(booking) {
     rewardsState.history.push({
         id: Date.now(),
         actionId: 'ticket',
-        label: `Mua vé: ${booking.movieTitle || 'Phim'} (${seatCount} vé)`,
+        label: `Mua vé: ${booking.movieTitle || 'Phim'} (${seatCount} vé)${multiplier > 1 ? ` [VIP x${multiplier}]` : ''}`,
         icon: '🎬',
         pts: totalPts,
         date: new Date().toISOString(),
