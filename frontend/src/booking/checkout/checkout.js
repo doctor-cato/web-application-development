@@ -55,6 +55,13 @@ function renderCheckout() {
     });
   }
 
+  const changeSeatBtn = document.getElementById('change-seat-btn');
+  if (changeSeatBtn && co.movieId) {
+    let url = `../seat-booking/booking.html?id=${co.movieId}`;
+    if (co.showtimeId) url += `&showtimeId=${co.showtimeId}`;
+    changeSeatBtn.href = url;
+  }
+
   // amounts
   const seatsAmount = Number(co.seatAmount || co.total || 0) - Number(co.comboPrice || 0);
   const seatAmountEl = document.getElementById('order-summary-seat-amount');

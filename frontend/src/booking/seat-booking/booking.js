@@ -272,6 +272,7 @@ function handleContinue() {
   const isGroup = isGroupToggleOn && seats.length >= 2;
 
   const checkoutData = {
+    movieId: movieData.id,
     showtimeId: currentShowtimeId,
     movieTitle: movieData.title,
     poster: movieData.poster,
