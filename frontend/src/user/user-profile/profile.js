@@ -150,62 +150,90 @@ function initTabs() {
 }
 
 function loadUserInfo() {
-    // Check if the user is logged in
+    // ── 1. Detect login state ─────────────────────────────────────
     const isLogged = localStorage.getItem('isLoggedIn') === 'true';
-    let user = null;
+    let session = null;
     try {
-        user = getCurrentUser();
+        session = getCurrentUser(); // reads auth_token
     } catch(e) {
         console.error("getCurrentUser error", e);
     }
-    
-    if (user || isLogged) {
-        const name = localStorage.getItem('userName') || (user ? user.name : '');
-        const email = localStorage.getItem('userEmail') || (user ? user.email : '');
-        const avatar = localStorage.getItem('userAvatar') || (user ? user.avatar : '');
-        const phone = localStorage.getItem('userPhone') || (user && user.phone ? user.phone : '0987654321');
-        
-        // Update Sidebar
-        const nameEl = document.getElementById('sidebar-name');
-        if (nameEl) nameEl.innerText = name || email.split('@')[0] || 'User';
-        
-        const avatarEl = document.getElementById('sidebar-avatar');
-        if (avatarEl && avatar) avatarEl.src = avatar;
-        
-        const pointsEl = document.getElementById('sidebar-points');
-        let rewardsPoints = 0;
-        try {
-            const rewardsData = JSON.parse(localStorage.getItem('3hd2k_rewards') || '{}');
-            rewardsPoints = rewardsData.points || 0;
-        } catch(_) {}
-        if (pointsEl) pointsEl.innerText = rewardsPoints;
 
-        // Update VIP / Hạng thường display
-        const vipEl = document.querySelector('.sidebar-vip');
-        if (vipEl) {
-            const isVip = localStorage.getItem('is_vip') === 'true';
-            const vipPlan = localStorage.getItem('vip_plan') || '';
-            if (isVip) {
-                vipEl.innerHTML = `<i class="fas fa-crown"></i> VIP ${vipPlan ? vipPlan.charAt(0).toUpperCase() + vipPlan.slice(1) : ''} - <span id="sidebar-points">${rewardsPoints}</span> điểm`;
-            } else {
-                vipEl.innerHTML = `Hạng thường - <span id="sidebar-points">${rewardsPoints}</span> điểm`;
-            }
-        }
+    console.log('[Profile] isLogged:', isLogged, '| session:', session);
 
-        // Update Form Inputs (if they exist in tab-info)
-        const fullnameInput = document.getElementById('fullname');
-        if (fullnameInput) fullnameInput.value = name || '';
-        
-        const emailInput = document.getElementById('email');
-        if (emailInput) emailInput.value = email || '';
-        
-        const phoneInput = document.getElementById('phone');
-        if (phoneInput) phoneInput.value = phone;
-    } else {
-        // Not logged in
+    if (!session && !isLogged) {
+        // Truly not logged in
         const nameEl = document.getElementById('sidebar-name');
         if (nameEl) nameEl.innerText = 'Khách';
+        return;
     }
+
+    // ── 2. Gather data from all available sources ─────────────────
+    // Priority: session (auth_token) > localStorage legacy keys > registered users list
+    let name  = (session && session.name  && session.name  !== 'Khách') ? session.name  : '';
+    let email = (session && session.email) ? session.email : '';
+    let phone = (session && session.phone) ? session.phone : '';
+    let avatar = (session && session.avatar) ? session.avatar : '';
+
+    // Fallback to legacy localStorage keys
+    if (!name)   name   = localStorage.getItem('userName')  || '';
+    if (!email)  email  = localStorage.getItem('userEmail') || '';
+    if (!avatar) avatar = localStorage.getItem('userAvatar') || '';
+    if (!phone)  phone  = localStorage.getItem('userPhone') || '';
+
+    // Last resort: look up from registered users using email
+    if ((!name || name === 'Khách') && email) {
+        try {
+            const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+            const found = users.find(u => u.email === email);
+            if (found) {
+                name  = found.fullname || found.name || name;
+                phone = found.phone || phone;
+                avatar = found.avatar || avatar;
+                console.log('[Profile] Found user in registeredUsers:', found);
+            }
+        } catch(e) {
+            console.error('[Profile] registeredUsers parse error', e);
+        }
+    }
+
+    console.log('[Profile] Resolved name:', name, '| email:', email);
+
+    // ── 3. Update Sidebar ─────────────────────────────────────────
+    const nameEl = document.getElementById('sidebar-name');
+    if (nameEl) nameEl.innerText = name || (email ? email.split('@')[0] : 'User');
+
+    const avatarEl = document.getElementById('sidebar-avatar');
+    if (avatarEl && avatar) avatarEl.src = avatar;
+
+    let rewardsPoints = 0;
+    try {
+        const rewardsData = JSON.parse(localStorage.getItem('3hd2k_rewards') || '{}');
+        rewardsPoints = rewardsData.points || 0;
+    } catch(_) {}
+
+    // Update VIP / Hạng thường display
+    const vipEl = document.querySelector('.sidebar-vip');
+    if (vipEl) {
+        const isVip = localStorage.getItem('is_vip') === 'true';
+        const vipPlan = (session && session.vip_plan) ? session.vip_plan : (localStorage.getItem('vip_plan') || '');
+        if (isVip || vipPlan) {
+            const planLabel = vipPlan ? vipPlan.charAt(0).toUpperCase() + vipPlan.slice(1) : '';
+            vipEl.innerHTML = `<i class="fas fa-crown"></i> VIP ${planLabel} - <span id="sidebar-points">${rewardsPoints}</span> điểm`;
+        } else {
+            vipEl.innerHTML = `Hạng thường - <span id="sidebar-points">${rewardsPoints}</span> điểm`;
+        }
+    }
+
+    // ── 4. Update Form Inputs ─────────────────────────────────────
+    const fullnameInput = document.getElementById('fullname');
+    if (fullnameInput) fullnameInput.value = name || '';
+
+    const emailInput = document.getElementById('email');
+    if (emailInput) emailInput.value = email || '';
+
+    const phoneInput = document.getElementById('phone');
+    if (phoneInput) phoneInput.value = phone || '';
 }
 
 function initLogout() {
