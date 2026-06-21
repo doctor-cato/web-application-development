@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hỗ Trợ Khách Hàng - 3HD2K Cinema</title>
+    <link rel="stylesheet" href="/shared/css/main.css">
+    
+    <!-- Load custom fonts: Bebas Neue for Headings, Inter for Body -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --accent-glow: rgba(229, 9, 20, 0.15);
+            --border-hover: rgba(229, 9, 20, 0.4);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .support-wrapper {
+            margin-top: 100px;
+            padding: 0 var(--page-padding) 60px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .support-header {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .support-header h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 3.5rem;
+            color: #ffffff;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            background: linear-gradient(180deg, #ffffff 30%, rgba(255, 255, 255, 0.6) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .support-header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Layout Grid */
+        .support-grid {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        /* Sidebar Navigation */
+        .support-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            text-align: left;
+        }
+
+        .sidebar-item i {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            transition: color 0.3s;
+            width: 24px;
+            text-align: center;
+        }
+
+        .sidebar-item span {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.7);
+            transition: color 0.3s;
+        }
+
+        .sidebar-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateX(5px);
+        }
+
+        .sidebar-item.active {
+            background: rgba(229, 9, 20, 0.08);
+            border-color: rgba(229, 9, 20, 0.4);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .sidebar-item.active i {
+            color: var(--primary-red);
+        }
+
+        .sidebar-item.active span {
+            color: #ffffff;
+        }
+
+        /* Main Content Glass Box */
+        .support-content {
+            background: rgba(20, 20, 20, 0.6);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 40px;
+            min-height: 500px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .support-content::before {
+            content: '';
+            position: absolute;
+            top: -150px;
+            right: -150px;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .tab-panel {
+            display: none;
+            animation: fadeIn 0.4s ease-out;
+            position: relative;
+            z-index: 1;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .panel-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .panel-title i {
+            color: var(--primary-red);
+        }
+
+        /* FAQ Styling */
+        .faq-search-wrapper {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .faq-search-input {
+            width: 100%;
+            padding: 16px 20px 16px 50px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            color: #ffffff;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+
+        .faq-search-input:focus {
+            outline: none;
+            border-color: var(--primary-red);
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 0 15px rgba(229, 9, 20, 0.1);
+        }
+
+        .faq-search-wrapper i {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .faq-search-clear {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            cursor: pointer;
+            display: none;
+            transition: color 0.2s;
+        }
+
+        .faq-search-clear:hover {
+            color: #ffffff;
+        }
+
+        .faq-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 50px;
+        }
+
+        .faq-item {
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .faq-item:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .faq-trigger {
+            width: 100%;
+            padding: 20px 24px;
+            background: transparent;
+            border: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-align: left;
+            cursor: pointer;
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .faq-trigger i {
+            color: var(--text-muted);
+            transition: transform 0.3s ease;
+        }
+
+        .faq-item.active {
+            border-color: rgba(229, 9, 20, 0.25);
+            background: rgba(229, 9, 20, 0.02);
+        }
+
+        .faq-item.active .faq-trigger i {
+            transform: rotate(180deg);
+            color: var(--primary-red);
+        }
+
+        .faq-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            padding: 0 24px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        .faq-content p {
+            padding-bottom: 20px;
+        }
+
+        /* Contact Form */
+        .contact-form-section {
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 40px;
+            margin-top: 40px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-row td {
+            padding: 0;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        .form-group label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.6);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .form-control {
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-red);
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 0 10px rgba(229, 9, 20, 0.1);
+        }
+
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.5)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 18px center;
+            background-size: 16px;
+            padding-right: 45px;
+        }
+
+        select.form-control option {
+            background-color: var(--bg-elevated);
+            color: #ffffff;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .btn-submit {
+            background: var(--primary-red);
+            color: #ffffff;
+            font-weight: 700;
+            padding: 16px 30px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            font-size: 1rem;
+            text-transform: uppercase;
+            box-shadow: 0 4px 20px rgba(229, 9, 20, 0.3);
+        }
+
+        .btn-submit:hover {
+            background: #c40610;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(229, 9, 20, 0.45);
+        }
+
+        /* Request History Section */
+        .ticket-history-wrapper {
+            margin-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 30px;
+        }
+
+        .ticket-history-title {
+            font-size: 1.25rem;
+            color: #ffffff;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ticket-table-container {
+            overflow-x: auto;
+        }
+
+        .ticket-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        .ticket-table th, .ticket-table td {
+            padding: 14px 18px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .ticket-table th {
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+        }
+
+        .ticket-table td {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .ticket-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.25);
+        }
+
+        /* Document contents (Terms/Privacy) */
+        .doc-section {
+            margin-bottom: 30px;
+        }
+
+        .doc-section h3 {
+            font-size: 1.2rem;
+            color: #ffffff;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .doc-section p {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.7;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+        }
+
+        .doc-section ul {
+            list-style-type: none;
+            padding-left: 0;
+            margin-bottom: 15px;
+        }
+
+        .doc-section li {
+            position: relative;
+            padding-left: 20px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .doc-section li::before {
+            content: "•";
+            position: absolute;
+            left: 5px;
+            color: var(--primary-red);
+            font-weight: bold;
+        }
+
+        /* Cookie Panel Dashboard */
+        .cookie-dashboard {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .cookie-card {
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            transition: all 0.3s;
+        }
+
+        .cookie-card:hover {
+            border-color: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .cookie-info {
+            flex-grow: 1;
+        }
+
+        .cookie-info h4 {
+            font-size: 1.05rem;
+            color: #ffffff;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .cookie-info h4 .badge {
+            font-size: 0.7rem;
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.6);
+            padding: 2px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .cookie-info p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Beautiful Switch Toggle */
+        .switch-toggle {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 28px;
+            flex-shrink: 0;
+        }
+
+        .switch-toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .switch-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.1);
+            transition: .3s cubic-bezier(0.16, 1, 0.3, 1);
+            border-radius: 34px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .switch-slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: rgba(255, 255, 255, 0.6);
+            transition: .3s cubic-bezier(0.16, 1, 0.3, 1);
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+        }
+
+        input:checked + .switch-slider {
+            background-color: var(--primary-red);
+        }
+
+        input:checked + .switch-slider:before {
+            transform: translateX(22px);
+            background-color: #ffffff;
+            box-shadow: 0 0 10px rgba(229, 9, 20, 0.4);
+        }
+
+        input:disabled + .switch-slider {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Responsive styling */
+        @media (max-width: 900px) {
+            .support-grid {
+                grid-template-columns: 1fr;
+            }
+            .support-sidebar {
+                flex-direction: row;
+                overflow-x: auto;
+                padding-bottom: 10px;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            }
+            .sidebar-item {
+                flex-shrink: 0;
+                padding: 12px 18px;
+            }
+            .sidebar-item:hover {
+                transform: none;
+            }
+            .support-content {
+                padding: 30px 20px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .support-header h1 {
+                font-size: 2.8rem;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .form-group.full-width {
+                grid-column: span 1;
+            }
+            .cookie-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .switch-toggle {
+                align-self: flex-end;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header/Navbar placeholder -->
+    <div id="navbar-placeholder"></div>
+
+    <main class="support-wrapper">
+        <div class="support-header">
+            <h1>HỖ TRỢ KHÁCH HÀNG</h1>
+            <p>Trực thuộc Trung tâm Hỗ trợ Khách hàng 3HD2K. Vui lòng chọn danh mục bên dưới để xem chi tiết hoặc gửi liên hệ hỗ trợ.</p>
+        </div>
+
+        <div class="support-grid">
+            <!-- Sidebar Tabs Menu -->
+            <aside class="support-sidebar">
+                <button class="sidebar-item active" data-target="help-tab">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Trung tâm trợ giúp</span>
+                </button>
+                <button class="sidebar-item" data-target="terms-tab">
+                    <i class="fas fa-file-contract"></i>
+                    <span>Điều khoản sử dụng</span>
+                </button>
+                <button class="sidebar-item" data-target="privacy-tab">
+                    <i class="fas fa-user-shield"></i>
+                    <span>Chính sách bảo mật</span>
+                </button>
+                <button class="sidebar-item" data-target="cookie-tab">
+                    <i class="fas fa-cookie-bite"></i>
+                    <span>Tùy chọn Cookie</span>
+                </button>
+            </aside>
+
+            <!-- Main Content Panels -->
+            <section class="support-content">
+                
+                <!-- ═════════ TAB 1: HELP CENTER & FAQS ═════════ -->
+                <div class="tab-panel active" id="help-tab">
+                    <h2 class="panel-title">
+                        <i class="fas fa-question-circle"></i>
+                        Trung tâm trợ giúp & Câu hỏi thường gặp
+                    </h2>
+                    
+                    <!-- FAQ Search Bar -->
+                    <div class="faq-search-wrapper">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="faq-search-input" class="faq-search-input" placeholder="Tìm câu trả lời hoặc từ khóa..." autocomplete="off">
+                        <i class="fas fa-times faq-search-clear" id="faq-search-clear"></i>
+                    </div>
+
+                    <!-- FAQ Accordions -->
+                    <div class="faq-list" id="faq-list">
+                        <div class="faq-item" data-search="mua ve dat ve thanh toan online qr code">
+                            <button class="faq-trigger">
+                                <span>Làm thế nào để đặt vé trực tuyến và thanh toán?</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                            <div class="faq-content">
+                                <p>Bạn chỉ cần chọn phim mong muốn tại trang <strong>Phim Đang Chiếu</strong>, chọn suất chiếu, cụm rạp phù hợp và tiến hành chọn ghế ngồi. Tại bước tiếp theo, bạn có thể lựa chọn thêm các combo Bắp & Nước. Hệ thống hỗ trợ thanh toán trực tuyến qua thẻ tín dụng hoặc ví điện tử giả lập. Sau khi thanh toán thành công, một hóa đơn điện tử kèm mã QR Code sẽ được gửi và hiển thị trên màn hình để bạn chụp lại và quét vé khi đến rạp.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item" data-search="doi tra ve huy ve doi suat chieu hoan tien pts">
+                            <button class="faq-trigger">
+                                <span>Quy định đổi/trả hoặc hủy vé đã mua như thế nào?</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                            <div class="faq-content">
+                                <p>Nhằm đảm bảo trải nghiệm tốt nhất, bạn có thể tự thực hiện hoàn/hủy vé hoặc đổi suất chiếu ngay trên ứng dụng trước giờ chiếu ít nhất <strong>60 phút</strong>. Hãy truy cập mục <strong>Hồ Sơ</strong> &rarr; <strong>Lịch sử đặt vé</strong> để thực hiện. Các yêu cầu hoàn trả hợp lệ sẽ hoàn lại số tiền giao dịch vào tài khoản tích lũy điểm PTS tương ứng trong hệ thống.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item" data-search="tich diem pts rewards hang thanh vien vip nang cap">
+                            <button class="faq-trigger">
+                                <span>Hệ thống tích điểm PTS hoạt động ra sao?</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                            <div class="faq-content">
+                                <p>Với mỗi giao dịch đặt vé xem phim hoặc mua combo thức ăn nước uống thành công khi đăng nhập tài khoản, bạn sẽ nhận được điểm thưởng PTS tương đương <strong>10%</strong> giá trị giao dịch. Điểm PTS tích lũy có thể dùng để đổi các phần quà hấp dẫn (Bắp, Nước, Voucher giảm giá vé) hoặc nâng cấp hạng thành viên lên VIP để hưởng thụ nhiều quyền lợi đặc biệt.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item" data-search="dat ghe nhom group booking giu ghe chia se lien ket">
+                            <button class="faq-trigger">
+                                <span>Tôi có thể đặt giữ ghế theo nhóm cùng bạn bè không?</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                            <div class="faq-content">
+                                <p>Hoàn toàn được! Hãy trải nghiệm tính năng <strong>Đặt & Giữ ghế nhóm</strong> độc quyền tại 3HD2K. Khi thực hiện đặt vé, bạn chọn chế độ đặt ghế theo nhóm, hệ thống sẽ cấp một đường liên kết đặc biệt để bạn gửi cho bạn bè trong nhóm. Mọi người có thể tự chọn chiếc ghế yêu thích và tự thanh toán phần của mình hoặc một người đại diện thanh toán chung cho cả nhóm.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item" data-search="lien he cham soc khach hang cskh email dien thoai">
+                            <button class="faq-trigger">
+                                <span>Làm cách nào để liên hệ trực tiếp với bộ phận chăm sóc khách hàng?</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                            <div class="faq-content">
+                                <p>Nếu các câu hỏi trên chưa giải đáp được thắc mắc của bạn, vui lòng điền thông tin vào <strong>Mẫu liên hệ hỗ trợ</strong> ở ngay bên dưới. Hoặc bạn cũng có thể liên hệ trực tiếp qua hotline <strong>1900 3HD2K</strong> hoặc gửi thư điện tử về hòm thư <strong>support@3hd2k.com</strong>. Đội ngũ chăm sóc khách hàng của chúng tôi hoạt động từ 8h00 - 24h00 hàng ngày.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact/Support Form -->
+                    <div class="contact-form-section">
+                        <h2 class="panel-title" style="border-bottom:none; padding-bottom:0; margin-bottom:10px;">
+                            <i class="fas fa-paper-plane"></i>
+                            Gửi yêu cầu hỗ trợ trực tuyến
+                        </h2>
+                        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 25px;">
+                            Gặp sự cố giao dịch hay có ý kiến đóng góp? Hãy gửi thông tin cho chúng tôi. Chúng tôi sẽ phản hồi sớm nhất.
+                        </p>
+
+                        <form id="support-contact-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="contact-name">Họ và tên</label>
+                                    <input type="text" id="contact-name" class="form-control" placeholder="Nhập họ và tên..." required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="contact-email">Email liên hệ</label>
+                                    <input type="email" id="contact-email" class="form-control" placeholder="Nhập địa chỉ email..." required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="contact-subject">Chủ đề hỗ trợ</label>
+                                    <select id="contact-subject" class="form-control" required>
+                                        <option value="" disabled selected>-- Chọn chủ đề cần hỗ trợ --</option>
+                                        <option value="Sự cố Đặt vé & Thanh toán">Sự cố Đặt vé & Thanh toán</option>
+                                        <option value="Dịch vụ Bắp nước F&B">Dịch vụ Bắp nước F&B</option>
+                                        <option value="Tài khoản & Điểm thành viên PTS">Tài khoản & Điểm thành viên PTS</option>
+                                        <option value="Ý kiến đóng góp & Phản hồi">Ý kiến đóng góp & Phản hồi</option>
+                                        <option value="Chủ đề khác">Chủ đề khác</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="contact-ticket-no">Mã giao dịch (nếu có)</label>
+                                    <input type="text" id="contact-ticket-no" class="form-control" placeholder="Ví dụ: #3HD2K-12345">
+                                </div>
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="contact-message">Nội dung yêu cầu</label>
+                                <textarea id="contact-message" class="form-control" placeholder="Mô tả chi tiết vấn đề của bạn..." required></textarea>
+                            </div>
+                            <button type="submit" class="btn-submit">
+                                <i class="fas fa-paper-plane"></i>
+                                Gửi yêu cầu hỗ trợ
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Submitted Requests History -->
+                    <div class="ticket-history-wrapper" id="ticket-history-wrapper" style="display: none;">
+                        <h3 class="ticket-history-title">
+                            <i class="fas fa-history"></i>
+                            Yêu cầu đã gửi của bạn
+                        </h3>
+                        <div class="ticket-table-container">
+                            <table class="ticket-table">
+                                <thead>
+                                    <tr>
+                                        <th>Mã yêu cầu</th>
+                                        <th>Ngày gửi</th>
+                                        <th>Chủ đề</th>
+                                        <th>Trạng thái</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ticket-history-tbody">
+                                    <!-- Rendered dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ═════════ TAB 2: TERMS OF USE ═════════ -->
+                <div class="tab-panel" id="terms-tab">
+                    <h2 class="panel-title">
+                        <i class="fas fa-file-contract"></i>
+                        Điều khoản sử dụng dịch vụ
+                    </h2>
+                    
+                    <div class="doc-section">
+                        <h3>1. Chấp thuận các Điều khoản</h3>
+                        <p>Chào mừng bạn đến với hệ thống rạp chiếu phim 3HD2K Cinema. Bằng việc truy cập, duyệt trang web hoặc thực hiện bất kỳ giao dịch đặt vé trực tuyến nào trên hệ thống của chúng tôi, bạn được coi là đã đọc, hiểu và đồng ý hoàn toàn bị ràng buộc bởi các điều khoản sử dụng này. Nếu không đồng ý với các điều khoản này, vui lòng ngưng sử dụng dịch vụ của chúng tôi.</p>
+                    </div>
+
+                    <div class="doc-section">
+                        <h3>2. Đặt vé trực tuyến & Thanh toán</h3>
+                        <p>Giao dịch đặt vé trực tuyến trên hệ thống là giao dịch mua bán vé xem phim và combo đi kèm giữa khách hàng và rạp 3HD2K:</p>
+                        <ul>
+                            <li>Khách hàng chịu trách nhiệm cung cấp thông tin liên hệ chính xác (Họ tên, email, số điện thoại) để hệ thống gửi vé và hóa đơn.</li>
+                            <li>Tất cả các thanh toán trên ứng dụng trực tuyến hiện tại được thực hiện qua các phương thức giả lập của hệ thống.</li>
+                            <li>Vé đã thanh toán thành công được bảo lưu và hiển thị dưới dạng mã QR Code để kiểm tra khi vào phòng chiếu.</li>
+                        </ul>
+                    </div>
+
+                    <div class="doc-section">
+                        <h3>3. Quy định độ tuổi và Phân loại phim</h3>
+                        <p>3HD2K Cinema tuân thủ nghiêm ngặt quy định phân loại độ tuổi xem phim của Bộ Văn hóa, Thể thao và Du lịch Việt Nam:</p>
+                        <ul>
+                            <li><strong>P</strong>: Phim được phép phổ biến rộng rãi đến mọi đối tượng.</li>
+                            <li><strong>T13</strong>: Phim cấm phổ biến đến khán giả dưới 13 tuổi.</li>
+                            <li><strong>T16</strong>: Phim cấm phổ biến đến khán giả dưới 16 tuổi.</li>
+                            <li><strong>T18</strong>: Phim cấm phổ biến đến khán giả dưới 18 tuổi.</li>
+                            <li>Nhân viên rạp có quyền yêu cầu xuất trình giấy tờ tùy thân hợp lệ (CCCD, thẻ học sinh/sinh viên) để đối chiếu độ tuổi trước khi vào phòng chiếu. 3HD2K sẽ không hoàn tiền nếu khách hàng không đủ tuổi theo quy định của phim.</li>
+                        </ul>
+                    </div>
+
+                    <div class="doc-section">
+                        <h3>4. Quy định chung tại rạp</h3>
+                        <p>Khách hàng khi đến xem phim tại 3HD2K Cinema cần chấp hành các quy định nội bộ rạp:</p>
+                        <ul>
+                            <li>Không mang đồ ăn, nước uống từ ngoài vào rạp.</li>
+                            <li>Nghiêm cấm quay phim, chụp ảnh, ghi âm dưới mọi hình thức đối với các tác phẩm điện ảnh đang trình chiếu trong phòng chiếu.</li>
+                            <li>Giữ gìn trật tự và vệ sinh chung, tắt chuông điện thoại và không gây ảnh hưởng đến trải nghiệm của những người xung quanh.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- ═════════ TAB 3: PRIVACY POLICY ═════════ -->
+                <div class="tab-panel" id="privacy-tab">
+                    <h2 class="panel-title">
+                        <i class="fas fa-user-shield"></i>
+                        Chính sách bảo mật thông tin
+                    </h2>
+                    
+                    <div class="doc-section">
+                        <h3>1. Thu thập thông tin cá nhân</h3>
+                        <p>Để mang lại trải nghiệm đặt vé nhanh chóng và quản lý tài khoản thành viên tích điểm PTS, 3HD2K thu thập một số thông tin cơ bản khi khách hàng tương tác trên hệ thống:</p>
+                        <ul>
+                            <li>Thông tin tài khoản: Họ tên, email, số điện thoại, mật khẩu mã hóa.</li>
+                            <li>Lịch sử giao dịch: Danh sách phim đã xem, số vé đã đặt, lịch sử điểm PTS.</li>
+                            <li>Thông tin thiết bị và cookie: Địa chỉ IP, trình duyệt sử dụng, thời gian truy cập để cải thiện hiệu suất.</li>
+                        </ul>
+                    </div>
+
+                    <div class="doc-section">
+                        <h3>2. Sử dụng thông tin thu thập</h3>
+                        <p>Chúng tôi cam kết sử dụng thông tin cá nhân của bạn một cách hợp pháp và bảo mật tuyệt đối cho các mục đích sau:</p>
+                        <ul>
+                            <li>Xử lý và xác nhận các giao dịch đặt vé trực tuyến và cung cấp dịch vụ bắp nước.</li>
+                            <li>Tích lũy, khấu trừ và cập nhật thứ hạng điểm PTS trong hệ thống thành viên của khách hàng.</li>
+                            <li>Gửi email xác nhận giao dịch, hóa đơn điện tử QR Code hoặc thông báo các chương trình khuyến mãi ưu đãi dựa trên tùy chọn của khách hàng.</li>
+                            <li>Giải quyết các thắc mắc, khiếu nại hoặc xử lý sự cố trong quá trình sử dụng dịch vụ thông qua kênh Hỗ trợ.</li>
+                        </ul>
+                    </div>
+
+                    <div class="doc-section">
+                        <h3>3. Bảo mật và chia sẻ thông tin</h3>
+                        <p>3HD2K Cinema áp dụng các giải pháp mã hóa dữ liệu tiên tiến để đảm bảo an toàn tuyệt đối cho thông tin của bạn:</p>
+                        <ul>
+                            <li>Chúng tôi cam kết không bán, trao đổi hoặc cho bên thứ ba thuê thông tin cá nhân của bạn.</li>
+                            <li>Thông tin chỉ được chia sẻ trong trường hợp cần phối hợp với cổng thanh toán để xử lý giao dịch hoặc theo yêu cầu bằng văn bản của cơ quan pháp luật có thẩm quyền.</li>
+                        </ul>
+                    </div>
+
+                    <div class="doc-section">
+                        <h3>4. Quyền của chủ thể dữ liệu</h3>
+                        <p>Bạn có toàn quyền truy cập, chỉnh sửa hoặc yêu cầu xóa bỏ thông tin tài khoản cá nhân của mình bất kỳ lúc nào bằng cách truy cập vào trang quản lý hồ sơ cá nhân hoặc liên hệ trực tiếp với bộ phận chăm sóc khách hàng của 3HD2K.</p>
+                    </div>
+                </div>
+
+                <!-- ═════════ TAB 4: COOKIE PREFERENCES ═════════ -->
+                <div class="tab-panel" id="cookie-tab">
+                    <h2 class="panel-title">
+                        <i class="fas fa-cookie-bite"></i>
+                        Cấu hình và Tùy chọn Cookie
+                    </h2>
+                    <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 30px; line-height: 1.6;">
+                        Chúng tôi sử dụng cookie để cung cấp cho bạn một trải nghiệm web mượt mà, tối ưu hóa tốc độ tải trang và cá nhân hóa nội dung giới thiệu phim phù hợp với sở thích của bạn. Bạn có thể bật/tắt các loại cookie không bắt buộc dưới đây.
+                    </p>
+
+                    <div class="cookie-dashboard">
+                        <!-- Cookie Type 1 -->
+                        <div class="cookie-card">
+                            <div class="cookie-info">
+                                <h4>
+                                    Cookie hệ thống bắt buộc
+                                    <span class="badge">Bắt buộc</span>
+                                </h4>
+                                <p>Cookie này cực kỳ quan trọng và cần thiết để bạn có thể đăng nhập tài khoản, ghi nhớ giỏ hàng, giữ ghế trong quá trình đặt vé và lưu cấu hình bảo mật. Không thể tắt cookie này.</p>
+                            </div>
+                            <label class="switch-toggle">
+                                <input type="checkbox" checked disabled>
+                                <span class="switch-slider"></span>
+                            </label>
+                        </div>
+
+                        <!-- Cookie Type 2 -->
+                        <div class="cookie-card">
+                            <div class="cookie-info">
+                                <h4>Cookie hiệu suất & phân tích</h4>
+                                <p>Cho phép chúng tôi đo lường lượt truy cập, nguồn lưu lượng và thời gian tải của các trang phim để từ đó tiến hành cải tiến thiết kế và tối ưu hóa hiệu năng tải trang cho người dùng.</p>
+                            </div>
+                            <label class="switch-toggle">
+                                <input type="checkbox" id="cookie-analytics" checked>
+                                <span class="switch-slider"></span>
+                            </label>
+                        </div>
+
+                        <!-- Cookie Type 3 -->
+                        <div class="cookie-card">
+                            <div class="cookie-info">
+                                <h4>Cookie quảng cáo & cá nhân hóa</h4>
+                                <p>Giúp hiển thị các đề xuất phim chiếu rạp phù hợp, thông báo khuyến mãi bắp nước cá nhân hóa dựa trên lịch sử đặt vé xem phim của bạn trên trang chủ.</p>
+                            </div>
+                            <label class="switch-toggle">
+                                <input type="checkbox" id="cookie-marketing" checked>
+                                <span class="switch-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button class="btn-submit" id="btn-save-cookies">
+                        <i class="fas fa-save"></i>
+                        Lưu cấu hình Cookie
+                    </button>
+                </div>
+
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer placeholder -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Nhúng components và utilities -->
+    <script type="module" src="/shared/components/navbar.js"></script>
+    <script type="module" src="/shared/components/footer.js"></script>
+    <script src="/shared/js/data.js"></script>
+    <script src="/shared/js/main.js"></script>
+    <script src="/shared/utils/authGuard-global.js"></script>
+
+    <!-- Script điều khiển Logic trang Hỗ Trợ -->
+    <script type="module">
+        import { toast } from '/shared/components/toast.js';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // ─────────────────────────────────────────────────────────────
+            // 1. TABS NAVIGATION CONTROL
+            // ─────────────────────────────────────────────────────────────
+            const sidebarButtons = document.querySelectorAll('.sidebar-item');
+            const tabPanels = document.querySelectorAll('.tab-panel');
+
+            function switchTab(tabId) {
+                sidebarButtons.forEach(btn => {
+                    if (btn.dataset.target === tabId) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                });
+
+                tabPanels.forEach(panel => {
+                    if (panel.id === tabId) {
+                        panel.classList.add('active');
+                    } else {
+                        panel.classList.remove('active');
+                    }
+                });
+
+                // Scroll to top of panel on mobile view
+                if (window.innerWidth <= 900) {
+                    const contentBox = document.querySelector('.support-content');
+                    contentBox.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+
+            sidebarButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const target = button.dataset.target;
+                    // Update URL params silently
+                    const url = new URL(window.location);
+                    const paramTab = target.replace('-tab', '');
+                    url.searchParams.set('tab', paramTab);
+                    window.history.pushState({}, '', url);
+                    
+                    switchTab(target);
+                });
+            });
+
+            // Read tab from query parameters on load
+            const urlParams = new URLSearchParams(window.location.search);
+            const tabParam = urlParams.get('tab');
+            if (tabParam) {
+                const targetTabId = `${tabParam}-tab`;
+                const tabExists = document.getElementById(targetTabId);
+                if (tabExists) {
+                    switchTab(targetTabId);
+                }
+            }
+
+            // ─────────────────────────────────────────────────────────────
+            // 2. FAQ SEARCH & ACCORDION
+            // ─────────────────────────────────────────────────────────────
+            const faqSearchInput = document.getElementById('faq-search-input');
+            const faqSearchClear = document.getElementById('faq-search-clear');
+            const faqItems = document.querySelectorAll('.faq-item');
+
+            // Search filtering FAQ
+            faqSearchInput.addEventListener('input', () => {
+                const query = faqSearchInput.value.toLowerCase().trim();
+                
+                if (query.length > 0) {
+                    faqSearchClear.style.display = 'block';
+                } else {
+                    faqSearchClear.style.display = 'none';
+                }
+
+                faqItems.forEach(item => {
+                    const question = item.querySelector('.faq-trigger span').textContent.toLowerCase();
+                    const content = item.querySelector('.faq-content p').textContent.toLowerCase();
+                    const searchMeta = item.dataset.search.toLowerCase();
+
+                    if (question.includes(query) || content.includes(query) || searchMeta.includes(query)) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+
+            // Clear search text
+            faqSearchClear.addEventListener('click', () => {
+                faqSearchInput.value = '';
+                faqSearchClear.style.display = 'none';
+                faqItems.forEach(item => item.style.display = 'block');
+                faqSearchInput.focus();
+            });
+
+            // FAQ Accordion Click Collapse/Expand
+            faqItems.forEach(item => {
+                const trigger = item.querySelector('.faq-trigger');
+                const content = item.querySelector('.faq-content');
+
+                trigger.addEventListener('click', () => {
+                    const isActive = item.classList.contains('active');
+                    
+                    // Close other open FAQ items
+                    faqItems.forEach(otherItem => {
+                        if (otherItem !== item && otherItem.classList.contains('active')) {
+                            otherItem.classList.remove('active');
+                            otherItem.querySelector('.faq-content').style.maxHeight = '0px';
+                        }
+                    });
+
+                    // Toggle current item
+                    if (isActive) {
+                        item.classList.remove('active');
+                        content.style.maxHeight = '0px';
+                    } else {
+                        item.classList.add('active');
+                        // Calculate scrollHeight dynamically
+                        content.style.maxHeight = content.scrollHeight + 'px';
+                    }
+                });
+            });
+
+            // ─────────────────────────────────────────────────────────────
+            // 3. CONTACT FORM & REQUESTS HISTORY
+            // ─────────────────────────────────────────────────────────────
+            const supportForm = document.getElementById('support-contact-form');
+            const ticketHistoryWrapper = document.getElementById('ticket-history-wrapper');
+            const ticketHistoryTbody = document.getElementById('ticket-history-tbody');
+
+            function getSubmittedTickets() {
+                try {
+                    const tickets = localStorage.getItem('3hd2k_support_tickets');
+                    return tickets ? JSON.parse(tickets) : [];
+                } catch (e) {
+                    return [];
+                }
+            }
+
+            function saveSubmittedTicket(ticket) {
+                const tickets = getSubmittedTickets();
+                tickets.unshift(ticket); // Newest first
+                localStorage.setItem('3hd2k_support_tickets', JSON.stringify(tickets));
+            }
+
+            function renderTicketHistory() {
+                const tickets = getSubmittedTickets();
+                if (tickets.length === 0) {
+                    ticketHistoryWrapper.style.display = 'none';
+                    return;
+                }
+
+                ticketHistoryWrapper.style.display = 'block';
+                ticketHistoryTbody.innerHTML = '';
+
+                tickets.forEach(t => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td style="font-family: monospace; font-weight: 700; color: var(--primary-red);">${t.id}</td>
+                        <td>${t.date}</td>
+                        <td style="font-weight: 500;">${t.subject}</td>
+                        <td><span class="ticket-status status-pending"><i class="fas fa-spinner fa-spin" style="margin-right: 4px;"></i>${t.status}</span></td>
+                    `;
+                    ticketHistoryTbody.appendChild(tr);
+                });
+            }
+
+            // Initial render ticket history
+            renderTicketHistory();
+
+            // Submit Support Form Handler
+            supportForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const name = document.getElementById('contact-name').value.trim();
+                const email = document.getElementById('contact-email').value.trim();
+                const subject = document.getElementById('contact-subject').value;
+                const transactionNo = document.getElementById('contact-ticket-no').value.trim();
+                const message = document.getElementById('contact-message').value.trim();
+
+                if (!name || !email || !subject || !message) {
+                    toast.error('Vui lòng điền đầy đủ các thông tin bắt buộc.');
+                    return;
+                }
+
+                // Generate random ticket id
+                const randomId = `#3HD2K-${Math.floor(100000 + Math.random() * 900000)}`;
+                const currentDate = new Date().toLocaleDateString('vi-VN', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                const newTicket = {
+                    id: randomId,
+                    date: currentDate,
+                    name: name,
+                    email: email,
+                    subject: subject,
+                    transactionNo: transactionNo,
+                    message: message,
+                    status: 'Đã tiếp nhận'
+                };
+
+                saveSubmittedTicket(newTicket);
+                renderTicketHistory();
+                
+                toast.success(`Gửi yêu cầu thành công! Mã số của bạn là ${randomId}.`);
+                
+                // Clear Form
+                supportForm.reset();
+            });
+
+            // ─────────────────────────────────────────────────────────────
+            // 4. COOKIE PREFERENCES SAVING
+            // ─────────────────────────────────────────────────────────────
+            const cookieAnalytics = document.getElementById('cookie-analytics');
+            const cookieMarketing = document.getElementById('cookie-marketing');
+            const btnSaveCookies = document.getElementById('btn-save-cookies');
+
+            // Load saved cookie preferences
+            try {
+                const savedPrefs = localStorage.getItem('3hd2k_cookie_prefs');
+                if (savedPrefs) {
+                    const prefs = JSON.parse(savedPrefs);
+                    cookieAnalytics.checked = prefs.analytics !== false;
+                    cookieMarketing.checked = prefs.marketing !== false;
+                }
+            } catch (e) {
+                console.error('Error loading cookie preferences:', e);
+            }
+
+            btnSaveCookies.addEventListener('click', () => {
+                const prefs = {
+                    necessary: true,
+                    analytics: cookieAnalytics.checked,
+                    marketing: cookieMarketing.checked
+                };
+
+                try {
+                    localStorage.setItem('3hd2k_cookie_prefs', JSON.stringify(prefs));
+                    toast.success('Cập nhật cấu hình Cookie thành công!');
+                } catch (e) {
+                    toast.error('Có lỗi xảy ra khi lưu tùy chọn của bạn.');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
