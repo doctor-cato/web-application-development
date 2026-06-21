@@ -1,5 +1,6 @@
 import { getBookings } from '../../shared/utils/storage.js';
 import { getCurrentUser, clearCurrentUser, setCurrentUser } from '../../auth/auth-services/storage.js';
+import { updateProfile } from '../../auth/auth-services/authService.js';
 import { setupProfileUI } from './profile-ui.js';
 
 function formatPrice(amount) {
@@ -174,12 +175,16 @@ function loadUserInfo() {
     let email = (session && session.email) ? session.email : '';
     let phone = (session && session.phone) ? session.phone : '';
     let avatar = (session && session.avatar) ? session.avatar : '';
+    let dob = (session && session.dob) ? session.dob : '';
+    let gender = (session && session.gender) ? session.gender : '';
 
     // Fallback to legacy localStorage keys
     if (!name)   name   = localStorage.getItem('userName')  || '';
     if (!email)  email  = localStorage.getItem('userEmail') || '';
     if (!avatar) avatar = localStorage.getItem('userAvatar') || '';
     if (!phone)  phone  = localStorage.getItem('userPhone') || '';
+    if (!dob)    dob    = localStorage.getItem('userDob') || '';
+    if (!gender) gender = localStorage.getItem('userGender') || 'male';
 
     // Last resort: look up from registered users using email
     if ((!name || name === 'Khách') && email) {
@@ -190,6 +195,8 @@ function loadUserInfo() {
                 name  = found.fullname || found.name || name;
                 phone = found.phone || phone;
                 avatar = found.avatar || avatar;
+                dob = found.dob || dob;
+                gender = found.gender || gender;
                 console.log('[Profile] Found user in registeredUsers:', found);
             }
         } catch(e) {
@@ -234,6 +241,12 @@ function loadUserInfo() {
 
     const phoneInput = document.getElementById('phone');
     if (phoneInput) phoneInput.value = phone || '';
+
+    const dobInput = document.getElementById('dob');
+    if (dobInput) dobInput.value = dob || '';
+
+    const genderInput = document.querySelector(`input[name="gender"][value="${gender}"]`);
+    if (genderInput) genderInput.checked = true;
 }
 
 function initLogout() {
@@ -267,27 +280,44 @@ function setupProfileForm() {
         
         const fullnameInput = document.getElementById('fullname');
         const phoneInput = document.getElementById('phone');
+        const dobInput = document.getElementById('dob');
+        const genderInput = document.querySelector('input[name="gender"]:checked');
         
+        let updates = {};
+
         if (fullnameInput) {
             const newName = fullnameInput.value.trim();
             localStorage.setItem('userName', newName);
+            updates.fullname = newName;
             
             // Update sidebar
             const nameEl = document.getElementById('sidebar-name');
             if (nameEl) nameEl.innerText = newName || 'User';
-            
-            // Update auth token
-            let user = null;
-            try { user = getCurrentUser(); } catch(e) {}
-            if (user) {
-                user.name = newName;
-                if (phoneInput) user.phone = phoneInput.value.trim();
-                try { setCurrentUser(user); } catch(e) {}
-            }
         }
         
         if (phoneInput) {
-            localStorage.setItem('userPhone', phoneInput.value.trim());
+            const newPhone = phoneInput.value.trim();
+            localStorage.setItem('userPhone', newPhone);
+            updates.phone = newPhone;
+        }
+
+        if (dobInput) {
+            const newDob = dobInput.value;
+            localStorage.setItem('userDob', newDob);
+            updates.dob = newDob;
+        }
+
+        if (genderInput) {
+            const newGender = genderInput.value;
+            localStorage.setItem('userGender', newGender);
+            updates.gender = newGender;
+        }
+
+        // Try updating via authService to persist to registeredUsers
+        try {
+            updateProfile(updates);
+        } catch (error) {
+            console.error('[Profile] updateProfile error', error);
         }
 
         // Show feedback

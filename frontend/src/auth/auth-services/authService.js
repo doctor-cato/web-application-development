@@ -33,8 +33,9 @@ function buildPayload(user) {
     return {
         name:     user.fullname || user.name || 'Khách',
         email:    user.email,
-        phone:    user.phone,
-        dob:      user.dob,
+        phone:    user.phone || '',
+        dob:      user.dob || '',
+        gender:   user.gender || 'male',
         avatar:   user.avatar,
         role:     user.role || 'user',
         vip_plan: user.vip_plan || '',
@@ -161,7 +162,8 @@ export function updateProfile(updates) {
 
     if (updates.fullname) users[idx].fullname = updates.fullname;
     if (updates.phone)    users[idx].phone    = updates.phone;
-    if (updates.dob)      users[idx].dob      = updates.dob;
+    if (updates.dob !== undefined)      users[idx].dob      = updates.dob;
+    if (updates.gender)   users[idx].gender   = updates.gender;
     if (updates.avatar)   users[idx].avatar   = updates.avatar;
 
     saveUsers(users);
