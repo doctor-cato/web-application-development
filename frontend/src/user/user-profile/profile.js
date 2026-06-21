@@ -276,7 +276,7 @@ function setupProfileForm() {
             const nameEl = document.getElementById('sidebar-name');
             if (nameEl) nameEl.innerText = newName || 'User';
             
-            // Update auth token if needed, or we rely on localStorage
+            // Update auth token
             let user = null;
             try { user = getCurrentUser(); } catch(e) {}
             if (user) {
@@ -289,18 +289,17 @@ function setupProfileForm() {
         if (phoneInput) {
             localStorage.setItem('userPhone', phoneInput.value.trim());
         }
-            
-            // Show feedback
-            const btn = form.querySelector('.btn-save');
-            if (btn) {
-                const origText = btn.innerText;
-                btn.innerText = 'Đã lưu thành công!';
-                btn.style.background = '#10b981';
-                setTimeout(() => {
-                    btn.innerText = origText;
-                    btn.style.background = '';
-                }, 2000);
-            }
+
+        // Show feedback
+        const btn = form.querySelector('.btn-save');
+        if (btn) {
+            const origText = btn.innerText;
+            btn.innerText = 'Đã lưu thành công!';
+            btn.style.background = '#10b981';
+            setTimeout(() => {
+                btn.innerText = origText;
+                btn.style.background = '';
+            }, 2000);
         }
     });
 }
