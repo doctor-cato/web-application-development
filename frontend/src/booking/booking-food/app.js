@@ -358,7 +358,7 @@
   if (returnToLobby) {
     if (checkoutBtn) {
       checkoutBtn.innerHTML = '<i class="fas fa-check"></i> XÁC NHẬN & VỀ PHÒNG CHỜ';
-      checkoutBtn.href = `../group-booking/index.html?order=${returnToLobby}`;
+      checkoutBtn.href = `../group-booking/room.html?order=${returnToLobby}`;
     }
     const btnBack = document.querySelector('.summary a.btn.ghost');
     if (btnBack) {
@@ -383,7 +383,7 @@
       localStorage.setItem('checkoutFood', JSON.stringify(cart));
       
       if (returnToLobby) {
-          window.location.href = `../group-booking/index.html?order=${returnToLobby}`;
+          window.location.href = `../group-booking/room.html?order=${returnToLobby}`;
       } else {
           window.location.href = checkoutBtn.getAttribute('href');
       }

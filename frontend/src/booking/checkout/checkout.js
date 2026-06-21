@@ -306,7 +306,7 @@ function init() {
         btnSplitPay.addEventListener('click', () => {
             const orderId = 'SPLIT-' + Math.random().toString(36).substring(2, 8).toUpperCase();
             
-            const baseUrl = window.location.href.split('?')[0].replace('checkout/checkout.html', 'group-booking/index.html');
+            const baseUrl = window.location.href.split('?')[0].replace('checkout/checkout.html', 'group-booking/room.html');
             const splitLink = baseUrl + '?order=' + orderId;
             splitLinkInput.value = splitLink;
             

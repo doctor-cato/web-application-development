@@ -308,7 +308,7 @@ function handleContinue() {
       localStorage.setItem('mySeatForOrder_' + orderId, seats[0]);
       
       // Chuyển hướng thẳng vào phòng chờ
-      window.location.href = '../group-booking/index.html?order=' + orderId;
+      window.location.href = '../group-booking/room.html?order=' + orderId;
   } else {
       // Mua 1 ghế bình thường thì đi qua Checkout để chọn Bắp nước
       window.location.href = '../checkout/checkout.html';
