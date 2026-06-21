@@ -110,6 +110,52 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnSpinner = document.getElementById('btn-spinner');
     const successModal = document.getElementById('success-modal');
 
+    // Handle return from payment simulation
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('success') === 'true') {
+        const plan = urlParams.get('plan') || 'gold';
+        selectedPlan = plan;
+
+        // Perform local storage database upgrade
+        const users = getUsers();
+        const userIndex = users.findIndex(u => u.email === session.email);
+        
+        if (userIndex !== -1) {
+            users[userIndex].role = 'vip';
+            users[userIndex].vip_plan = selectedPlan;
+            users[userIndex].vip_date = new Date().toISOString();
+            saveUsers(users);
+        }
+
+        // Update current session payload
+        session.role = 'vip';
+        session.vip_plan = selectedPlan;
+        setCurrentUser(session);
+
+        // Set local flag for quick checks
+        localStorage.setItem('is_vip', 'true');
+        localStorage.setItem('vip_plan', selectedPlan);
+
+        // Populate success modal details
+        const successUser = document.getElementById('success-user-name');
+        const successPlan = document.getElementById('success-plan-name');
+        const cardUser = document.getElementById('card-user-label');
+        const cardTier = document.getElementById('card-tier-label');
+
+        if (successUser) successUser.textContent = fullnameInput.value.trim() || session.name;
+        if (successPlan) successPlan.textContent = 'VIP ' + selectedPlan.toUpperCase();
+        if (cardUser) cardUser.textContent = (fullnameInput.value.trim() || session.name).toUpperCase();
+        if (cardTier) cardTier.textContent = 'VIP ' + selectedPlan.toUpperCase();
+
+        // Display success modal
+        if (successModal) {
+            successModal.classList.add('show');
+        }
+
+        // Clean up URL to prevent re-triggering on refresh
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
     if (form) {
         form.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -119,54 +165,30 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
+            // Determine Payment Method
+            const selectedPayOption = document.querySelector('input[name="payment"]:checked');
+            const payMethod = selectedPayOption ? selectedPayOption.value : 'momo';
+            
+            // Get price numeric value
+            let priceValue = 99000;
+            const priceMatch = plans[selectedPlan].match(/(\d{1,3}(?:\.\d{3})*)đ/);
+            if (priceMatch) {
+                priceValue = parseInt(priceMatch[1].replace(/\./g, ''));
+            }
+
             // Disable submit button and show loading state
             if (btnSubmit) btnSubmit.disabled = true;
             if (btnText) btnText.style.display = 'none';
             if (btnSpinner) btnSpinner.style.display = 'block';
 
-            // Simulate payment gateway delay
-            setTimeout(() => {
-                // Perform local storage database upgrade
-                const users = getUsers();
-                const userIndex = users.findIndex(u => u.email === session.email);
-                
-                if (userIndex !== -1) {
-                    users[userIndex].role = 'vip';
-                    users[userIndex].vip_plan = selectedPlan;
-                    users[userIndex].vip_date = new Date().toISOString();
-                    saveUsers(users);
-                }
+            // Generate TxId
+            const txId = `VIP_${Date.now()}`;
+            
+            // Construct returnUrl
+            const returnUrl = encodeURIComponent(`../../user/vip-registration/index.html?success=true&plan=${selectedPlan}`);
 
-                // Update current session payload
-                session.role = 'vip';
-                session.vip_plan = selectedPlan;
-                setCurrentUser(session);
-
-                // Set local flag for quick checks
-                localStorage.setItem('is_vip', 'true');
-                localStorage.setItem('vip_plan', selectedPlan);
-
-                // Populate success modal details
-                const successUser = document.getElementById('success-user-name');
-                const successPlan = document.getElementById('success-plan-name');
-                const cardUser = document.getElementById('card-user-label');
-                const cardTier = document.getElementById('card-tier-label');
-
-                if (successUser) successUser.textContent = fullnameInput.value.trim() || session.name;
-                if (successPlan) successPlan.textContent = 'VIP ' + selectedPlan.toUpperCase();
-                if (cardUser) cardUser.textContent = (fullnameInput.value.trim() || session.name).toUpperCase();
-                if (cardTier) cardTier.textContent = 'VIP ' + selectedPlan.toUpperCase();
-
-                // Re-enable button
-                if (btnSubmit) btnSubmit.disabled = false;
-                if (btnText) btnText.style.display = 'block';
-                if (btnSpinner) btnSpinner.style.display = 'none';
-
-                // Display success modal
-                if (successModal) {
-                    successModal.classList.add('show');
-                }
-            }, 2000); // 2 seconds delay
+            // Redirect to the existing system payment simulator
+            window.location.href = `../../booking/checkout/payment_simulation.html?provider=${payMethod}&txId=${txId}&amount=${priceValue}&returnUrl=${returnUrl}`;
         });
     }
 

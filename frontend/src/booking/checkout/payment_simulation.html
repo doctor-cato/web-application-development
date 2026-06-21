@@ -101,6 +101,16 @@
             background: #005baa;
         }
 
+        .sim-header.zalopay { background: #0068ff; }
+        .sim-amount.zalopay { color: #0068ff; }
+        .sim-spinner.zalopay { border-top-color: #0068ff; }
+        .sim-btn.zalopay { background: #0068ff; }
+
+        .sim-header.card { background: #333333; }
+        .sim-amount.card { color: #333333; }
+        .sim-spinner.card { border-top-color: #333333; }
+        .sim-btn.card { background: #333333; }
+
         .sim-btn:hover {
             opacity: 0.9;
         }
@@ -118,7 +128,7 @@
                 <img id="qr-code-img" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=3HD2K-Cinema-Simulation" alt="QR Code" style="width: 180px; height: 180px; display: block;">
             </div>
             
-            <p style="color: #666; font-size: 0.875rem; margin-bottom: 0.5rem;">Dùng ứng dụng để quét mã QR</p>
+            <p id="scan-text" style="color: #666; font-size: 0.875rem; margin-bottom: 0.5rem;">Dùng ứng dụng để quét mã QR</p>
             
             <div class="sim-amount" id="sim-amount" style="margin-top: 0.5rem; margin-bottom: 0;">0 đ</div>
             <p style="font-weight: 600; font-size: 1rem; color: #333; margin-top: 0.25rem; margin-bottom: 1.5rem;">3HD2K Cinema</p>

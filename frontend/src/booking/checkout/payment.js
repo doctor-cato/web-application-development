@@ -68,15 +68,42 @@ function init() {
   const txId = params.get('txId');
 
   const gatewayName = document.getElementById('gateway-name');
+  const scanText = document.getElementById('scan-text');
+  
   if (gatewayName) {
-    gatewayName.innerText = provider.toUpperCase() === 'VNPAY' ? 'Cổng Thanh Toán VNPAY' : 'Cổng Thanh Toán MOMO';
+    if (provider === 'vnpay') {
+        gatewayName.innerText = 'Cổng Thanh Toán VNPAY';
+        if (scanText) scanText.innerText = 'Dùng ứng dụng VNPay hoặc Ngân hàng để quét mã QR';
+    }
+    else if (provider === 'zalopay') {
+        gatewayName.innerText = 'Cổng Thanh Toán ZALOPAY';
+        if (scanText) scanText.innerText = 'Dùng ứng dụng ZaloPay để quét mã QR';
+    }
+    else if (provider === 'card') {
+        gatewayName.innerText = 'Cổng Thanh Toán VISA / MASTER';
+        if (scanText) scanText.innerText = 'Dùng ứng dụng ngân hàng để quét mã QR xác thực';
+    }
+    else {
+        gatewayName.innerText = 'Cổng Thanh Toán MOMO';
+        if (scanText) scanText.innerText = 'Dùng ứng dụng MoMo để quét mã QR';
+    }
   }
   
-  if (provider === 'vnpay') {
-    document.getElementById('sim-header')?.classList.add('vnpay');
-    document.getElementById('sim-amount')?.classList.add('vnpay');
-    document.getElementById('sim-spinner')?.classList.add('vnpay');
-    document.getElementById('sim-btn')?.classList.add('vnpay');
+  const qrImage = document.getElementById('qr-code-img');
+  if (qrImage) {
+     qrImage.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=3HD2K-Cinema-${provider.toUpperCase()}`;
+  }
+
+  const simHeader = document.getElementById('sim-header');
+  const simAmount = document.getElementById('sim-amount');
+  const simSpinner = document.getElementById('sim-spinner');
+  const simBtn2 = document.getElementById('sim-btn');
+
+  if (provider === 'vnpay' || provider === 'zalopay' || provider === 'card') {
+    simHeader?.classList.add(provider);
+    simAmount?.classList.add(provider);
+    simSpinner?.classList.add(provider);
+    simBtn2?.classList.add(provider);
   }
 
   const amountParam = params.get('amount');
