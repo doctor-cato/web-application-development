@@ -38,6 +38,7 @@ function renderRealHistory() {
         const isCancelled = booking.status === 'Cancelled' || booking.status === 'cancelled';
         const isGroup = booking.seats && booking.seats.length > 2;
         const seatStr = booking.seats ? booking.seats.join(', ') : 'N/A';
+        const typeStr = isGroup ? 'group' : 'standard';
 
         const typeBadgeHtml = isGroup
             ? '<div style="margin-top:0.5rem;"><span style="background:rgba(16,185,129,0.2);color:#10b981;padding:2px 8px;border-radius:4px;font-size:0.75rem;border:1px solid rgba(16,185,129,0.4);">Vé Nhóm (Split & Lock)</span></div>'
