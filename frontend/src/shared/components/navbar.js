@@ -99,13 +99,13 @@ export function renderNavbar() {
                         <li><a href="${srcPrefix}/explore/home-page/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;">Trang chủ</a></li>
                         <li><a href="${srcPrefix}/explore/movie-search/index.html?tab=now-showing" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;">Phim Đang Chiếu</a></li>
                         <li><a href="${srcPrefix}/explore/cinema-map/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;">Cụm Rạp</a></li>
+                        <li><a href="#" id="mobile-qb-btn" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;">Đặt vé nhanh</a></li>
                     </ul>
                     <div style="padding: 10px 20px; font-family:'Inter', sans-serif; text-transform:uppercase; font-weight:700; color: var(--primary-red, #e50914); font-size: 0.9rem; letter-spacing:1px; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 5px; margin-top: 5px;">Hệ Sinh Thái 3HD2K</div>
                     <ul style="list-style:none; padding:0; margin:0;">
                         
                         <li><a href="${srcPrefix}/engagement/minigame/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-gamepad" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Cine Predict</a></li>
                         <li><a href="${srcPrefix}/booking/group-booking/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-users" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Đặt & Giữ ghế nhóm</a></li>
-                        <li><a href="${srcPrefix}/user/loyalty-points/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-star" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Điểm thưởng</a></li>
                         <li><a href="${srcPrefix}/wip.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-ticket-alt" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Khuyến mãi</a></li>
                         <li><a href="${srcPrefix}/user/loyalty-points/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-crown" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Gói hội viên</a></li>
                     </ul>
@@ -899,10 +899,36 @@ export function renderNavbar() {
 .mobile-only { display: block; }
 @media (min-width: 1024px) {
     .mobile-only { display: none !important; }
-    #hamburger-btn { display: none !important; }
 }
 @media (max-width: 1024px) {
-    .nav-links { display: none !important; }
+    .nav-links { position: absolute; width: 0; height: 0; overflow: visible; }
+    .nav-links > a { display: none !important; }
+    .navbar { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; background: rgba(8, 8, 8, 0.98) !important; }
+    .quick-book-wrapper { position: static !important; }
+    .quick-book-toggle { display: none !important; }
+    .quick-book-dropdown {
+        position: fixed !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) scale(0.95) !important;
+        width: 90% !important;
+        max-width: 400px !important;
+        z-index: 10000 !important;
+    }
+    .quick-book-dropdown.active {
+        transform: translate(-50%, -50%) scale(1) !important;
+    }
+    .quick-book-dropdown::before { display: none !important; }
+    
+    /* Add a dark overlay behind modal on mobile */
+    .mobile-modal-overlay {
+        position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+        background: rgba(0,0,0,0.8);
+        z-index: 9999;
+        display: none;
+        backdrop-filter: blur(5px);
+    }
+    .mobile-modal-overlay.active { display: block; }
     .nav-left { gap: 15px; }
     .logo { font-size: 1.8rem; }
     .search-pill span { display: none; }
@@ -1146,6 +1172,35 @@ export function renderNavbar() {
                 e.stopPropagation();
                 if (e.target.closest('a')) {
                     hamburgerDropdown.style.display = 'none';
+                }
+            });
+        }
+
+        
+        // Mobile Quick Book Logic
+        const mobileQbBtn = document.getElementById('mobile-qb-btn');
+        const modalOverlay = document.getElementById('mobile-modal-overlay');
+        if (mobileQbBtn && qbDropdown) {
+            mobileQbBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (hamburgerDropdown) hamburgerDropdown.style.display = 'none';
+                qbDropdown.classList.add('active');
+                if (modalOverlay) modalOverlay.classList.add('active');
+            });
+            
+            if (modalOverlay) {
+                modalOverlay.addEventListener('click', () => {
+                    qbDropdown.classList.remove('active');
+                    modalOverlay.classList.remove('active');
+                });
+            }
+            
+            // Override the default document click so it also hides the overlay
+            document.addEventListener('click', (e) => {
+                if (!qbDropdown.contains(e.target) && e.target !== qbToggle && e.target !== mobileQbBtn) {
+                    qbDropdown.classList.remove('active');
+                    if (modalOverlay) modalOverlay.classList.remove('active');
                 }
             });
         }
