@@ -896,6 +896,20 @@ export function renderNavbar() {
     color: #fff;
 }
 
+#hamburger-dropdown a:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-radius: 6px;
+}
+
+#hamburger-dropdown a i {
+    transition: all 0.2s ease;
+}
+
+#hamburger-dropdown a:hover i {
+    color: #ffffff !important;
+    transform: scale(1.15);
+}
+
 .mobile-only { display: block; }
 @media (min-width: 1024px) {
     .mobile-only { display: none !important; }
