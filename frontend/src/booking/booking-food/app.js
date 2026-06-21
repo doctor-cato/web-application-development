@@ -383,7 +383,7 @@
       localStorage.setItem('checkoutFood', JSON.stringify(cart));
       
       if (returnToLobby) {
-          window.location.href = `../group-booking/index.html?orderId=${returnToLobby}`;
+          window.location.href = `../group-booking/index.html?order=${returnToLobby}`;
       } else {
           window.location.href = checkoutBtn.getAttribute('href');
       }
