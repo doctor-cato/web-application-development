@@ -15,15 +15,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const emailInput = document.getElementById('email');
     const phoneInput = document.getElementById('phone');
 
-    if (fullnameInput && session.name) fullnameInput.value = session.name;
+    // Retrieve full user info from local storage
+    const users = getUsers() || [];
+    const fullUser = users.find(u => u.email === session.email) || {};
+
+    if (fullnameInput && (fullUser.fullname || session.name)) fullnameInput.value = fullUser.fullname || session.name;
     if (emailInput && session.email) {
         emailInput.value = session.email;
         emailInput.readOnly = true; // Email cannot be modified for upgrades
     }
-    if (phoneInput && session.phone) phoneInput.value = session.phone;
+    
+    const phone = fullUser.phone || session.phone || localStorage.getItem('userPhone') || '0987654321';
+    if (phoneInput && phone) phoneInput.value = phone;
 
     // Track selected plan
-    let selectedPlan = 'gold'; // Default select is Gold
+    let selectedPlan = null; // Default select is null
     const planDisplay = document.getElementById('selected-plan-display');
 
     const plans = {
@@ -31,6 +37,10 @@ document.addEventListener('DOMContentLoaded', () => {
         gold: 'VIP Gold (99.000đ/tháng)',
         platinum: 'VIP Platinum (199.000đ/tháng)'
     };
+
+    if (planDisplay && !selectedPlan) {
+        planDisplay.textContent = 'Chưa chọn';
+    }
 
     // Plan selection logic
     const planCards = document.querySelectorAll('.plan-card');
@@ -103,6 +113,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (form) {
         form.addEventListener('submit', (e) => {
             e.preventDefault();
+
+            if (!selectedPlan) {
+                alert('Vui lòng chọn một gói VIP trước khi thanh toán!');
+                return;
+            }
 
             // Disable submit button and show loading state
             if (btnSubmit) btnSubmit.disabled = true;

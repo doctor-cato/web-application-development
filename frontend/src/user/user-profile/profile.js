@@ -163,7 +163,7 @@ function loadUserInfo() {
         const name = localStorage.getItem('userName') || (user ? user.name : '');
         const email = localStorage.getItem('userEmail') || (user ? user.email : '');
         const avatar = localStorage.getItem('userAvatar') || (user ? user.avatar : '');
-        const phone = '0987654321'; // Dummy phone
+        const phone = localStorage.getItem('userPhone') || (user && user.phone ? user.phone : '0987654321');
         
         // Update Sidebar
         const nameEl = document.getElementById('sidebar-name');
@@ -235,6 +235,7 @@ function setupProfileForm() {
         e.preventDefault();
         
         const fullnameInput = document.getElementById('fullname');
+        const phoneInput = document.getElementById('phone');
         
         if (fullnameInput) {
             const newName = fullnameInput.value.trim();
@@ -248,6 +249,14 @@ function setupProfileForm() {
             let user = null;
             try { user = getCurrentUser(); } catch(e) {}
             if (user) {
+                user.name = newName;
+                if (phoneInput) user.phone = phoneInput.value.trim();
+                try { setCurrentUser(user); } catch(e) {}
+            }
+        }
+        if (phoneInput) {
+            localStorage.setItem('userPhone', phoneInput.value.trim());
+        }
                 // Not cleanly exporting setCurrentUser here, but localStorage is updated.
                 // Ideally we'd update token, but navbar uses localStorage fallback.
             }
