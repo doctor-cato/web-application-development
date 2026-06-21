@@ -29,8 +29,8 @@
       gradient: 'linear-gradient(160deg, #1e1e22 0%, #151518 45%, #101012 100%)',
       glowColor: 'rgba(192,192,192,0.30)',
       privileges: [
-        'Tích điểm 1.5x',
-        'Giảm 5% combo Bắp Nước',
+        'Tích điểm 1.25x',
+        'Giảm 2% combo Bắp Nước',
         'Ưu tiên mua vé trước 30 phút'
       ]
     },
@@ -43,9 +43,8 @@
       gradient: 'linear-gradient(160deg, #1a1814 0%, #141210 45%, #100e0c 100%)',
       glowColor: 'rgba(255,215,0,0.30)',
       privileges: [
-        'Tích điểm 2x cuối tuần',
-        'Ưu tiên ghế đôi',
-        'Giảm 10% combo',
+        'Tích điểm 1.5x',
+        'Giảm 5% combo',
         'Tham gia sự kiện premiere'
       ]
     },
@@ -58,11 +57,9 @@
       gradient: 'linear-gradient(160deg, #1a1214 0%, #121010 45%, #100c0c 100%)',
       glowColor: 'rgba(229,9,20,0.35)',
       privileges: [
-        'Tích điểm 3x',
-        'Giảm 15% combo',
-        'Phòng chờ VIP',
-        'Vé miễn phí mỗi tháng',
-        'Ưu tiên đặt chỗ'
+        'Tích điểm 1.75x',
+        'Giảm 8% combo',
+        'Phòng chờ VIP'
       ]
     },
     {
@@ -74,11 +71,9 @@
       gradient: 'linear-gradient(160deg, #0f1a1e 0%, #0c1418 45%, #0a0e12 100%)',
       glowColor: 'rgba(185,242,255,0.30)',
       privileges: [
-        'Tích điểm 5x',
-        'Giảm 20% combo',
-        'Suất chiếu riêng',
-        'Quà sinh nhật đặc biệt',
-        'Vé IMAX miễn phí'
+        'Tích điểm 2.0x',
+        'Giảm 10% combo',
+        'Quà sinh nhật đặc biệt'
       ]
     }
   ];
