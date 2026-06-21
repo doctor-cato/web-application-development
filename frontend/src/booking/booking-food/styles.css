@@ -19,7 +19,7 @@ button,input{font:inherit}
 .grid::-webkit-scrollbar-thumb:hover{background:linear-gradient(90deg,rgba(239,31,51,0.75),var(--scrollbar-thumb-hover));box-shadow:0 0 12px rgba(239,31,51,0.4)}
 .grid::-webkit-scrollbar-thumb:active{background:#ff1a27;box-shadow:0 0 16px rgba(239,31,51,0.55)}
 .grid::-webkit-scrollbar-corner{background:transparent}
-.card{background:linear-gradient(145deg, rgba(30, 32, 32, 0.6), rgba(20, 22, 22, 0.8));backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:16px;overflow:visible;border:1px solid rgba(255,255,255,0.05);box-shadow:0 8px 32px rgba(0,0,0,0.5);display:flex;flex-direction:column;flex:0 0 320px;min-width:320px;scroll-snap-align:start;position:relative}
+.card{background:linear-gradient(145deg, rgba(30, 32, 32, 0.6), rgba(20, 22, 22, 0.8));backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:16px;overflow:visible;border:1px solid rgba(255,255,255,0.05);box-shadow:0 8px 32px rgba(0,0,0,0.5);display:flex;flex-direction:column;flex:0 0 280px;min-width:280px;scroll-snap-align:start;position:relative}
 .media{height:200px;display:flex;align-items:center;justify-content:center;position:relative;margin-top:-20px;transition:transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)}
 .media img{width:80%;height:100%;object-fit:contain;filter:drop-shadow(0 10px 15px rgba(0,0,0,0.6));transition:transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)}
 .card:hover .media img{transform:scale(1.15) translateY(-10px)}
@@ -86,7 +86,11 @@ button,input{font:inherit}
 /* Ensure content uses grid with sidebar on right */
 .content{display:flex;justify-content:space-between;gap:40px;align-items:flex-start}
 .items{width:calc(100% - 380px)}
-@media(max-width:920px){.content{flex-direction:column; align-items: stretch;}}
+@media(max-width:920px){
+  .content{flex-direction:column; align-items: stretch;}
+  .items{width:100%;}
+  .summary{width:100%;}
+}
 
 /* Summary card styles */
 .summary-card{position:sticky;top:96px}
@@ -415,6 +419,11 @@ input[type="radio"][hidden] {
   margin-bottom: 24px;
   border-bottom: 1px solid rgba(255,255,255,0.05);
   box-shadow: 0 10px 20px -10px rgba(0,0,0,0.5);
+  overflow-x: auto;
+  scrollbar-width: none; /* Hide scrollbar for cleaner look */
+}
+.food-tabs::-webkit-scrollbar {
+  display: none;
 }
 .food-tab {
   display: inline-flex;
@@ -428,6 +437,8 @@ input[type="radio"][hidden] {
   font-weight: 600;
   font-size: 14px;
   text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .food-tab i { font-size: 16px; transition: color 0.3s ease; }
