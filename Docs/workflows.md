@@ -35,14 +35,14 @@ npm run tailwind:watch
 
 ```text
 main ──────────────────────────────── (stable)
-  └── develop ──────────────────────── (integration branch)
+  └── dev2 ──────────────────────── (integration branch)
         └── feature/payment-ui         (feature branches)
         └── fix/button-alignment
 ```
 
 - **`main`**: Code frontend ổn định, giao diện hoàn thiện.
-- **`develop`**: Branch hội nhập chính.
-- **`feature/*`**: Tạo từ `develop`, merge vào `develop` sau khi hoàn thành một màn hình/tính năng UI.
+- **`dev2`**: Branch hội nhập chính.
+- **`feature/*`**: Tạo từ `dev2`, merge vào `dev2` sau khi hoàn thành một màn hình/tính năng UI.
 
 ### Commit Convention
 
