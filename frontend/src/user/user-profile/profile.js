@@ -11,15 +11,11 @@ function formatPrice(amount) {
 function renderRealHistory() {
     const container = document.getElementById('real-history-container');
     if (!container) return;
-    
-        // Get all bookings from localStorage
+
     let bookings = getBookings();
-    
-    if (!Array.isArray(bookings)) {
-        bookings = [];
-    }
-    
-    // Assign missing IDs to legacy bookings and save back
+    if (!Array.isArray(bookings)) bookings = [];
+
+    // Assign missing IDs to legacy bookings and persist
     let needsSave = false;
     bookings.forEach(b => {
         if (!b.id) {
@@ -28,91 +24,65 @@ function renderRealHistory() {
         }
     });
     if (needsSave) saveBookings(bookings);
-    
-    // Reverse so newest is at the top (use a copy!)
+
+    if (bookings.length === 0) {
+        container.innerHTML = '<div style="text-align:center;padding:40px;color:#aaa;"><i class="fas fa-ticket-alt" style="font-size:3rem;margin-bottom:1rem;display:block;"></i>Chưa có vé đặt nào.</div>';
+        return;
+    }
+
+    // Display newest first (use spread to avoid mutating original)
     const displayBookings = [...bookings].reverse();
-    
     let html = '';
-    
+
     displayBookings.forEach((booking, index) => {
+        const isCancelled = booking.status === 'Cancelled' || booking.status === 'cancelled';
         const isGroup = booking.seats && booking.seats.length > 2;
         const seatStr = booking.seats ? booking.seats.join(', ') : 'N/A';
-        const typeBadge = isGroup 
-            ? `<div style="margin-top: 0.5rem;"><span style="background: rgba(16,185,129,0.2); color: #10b981; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; border: 1px solid rgba(16,185,129,0.4);">Vé Nhóm (Split & Lock)</span></div>` 
-            : `<div style="margin-top: 0.5rem;"><span style="background: rgba(229, 9, 20, 0.2); color: #ff4b4b; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; border: 1px solid rgba(229, 9, 20, 0.3);">Vé Tiêu Chuẩn</span></div>`;
-        
-        // Use poster from booking or look it up from data.js
-        let poster = booking.poster;
-        
-        // Try to lookup from data.js if poster is missing or we just want to be sure
-        if (!poster && typeof heroMovies !== 'undefined' && typeof nowShowingMovies !== 'undefined') {
-            const allMovies = [
-                ...(typeof heroMovies !== 'undefined' ? heroMovies : []),
-                ...(typeof nowShowingMovies !== 'undefined' ? nowShowingMovies : []),
-                ...(typeof comingSoonMovies !== 'undefined' ? comingSoonMovies : [])
-            ];
-            const foundMovie = allMovies.find(m => m.title && booking.movieTitle && m.title.toLowerCase() === booking.movieTitle.toLowerCase());
-            if (foundMovie) {
-                poster = foundMovie.poster || foundMovie.bg;
-            }
-        }
 
-        // Fix relative paths (images/... or assets/...) to point to /shared/
-        if (poster && poster.startsWith('images/')) {
-            poster = '/shared/' + poster;
-        } else if (poster && poster.startsWith('assets/')) {
-            poster = '/shared/' + poster;
-        }
+        const typeBadgeHtml = isGroup
+            ? '<div style="margin-top:0.5rem;"><span style="background:rgba(16,185,129,0.2);color:#10b981;padding:2px 8px;border-radius:4px;font-size:0.75rem;border:1px solid rgba(16,185,129,0.4);">Vé Nhóm (Split & Lock)</span></div>'
+            : '<div style="margin-top:0.5rem;"><span style="background:rgba(229,9,20,0.2);color:#ff4b4b;padding:2px 8px;border-radius:4px;font-size:0.75rem;border:1px solid rgba(229,9,20,0.3);">Vé Tiêu Chuẩn</span></div>';
 
-        // Fallbacks
-        if (!poster) {
-            if (booking.movieTitle && booking.movieTitle.toLowerCase().includes('war machine')) {
-                poster = 'https://images.unsplash.com/photo-1534809027769-62466286b595?auto=format&fit=crop&w=400&q=80';
-            } else if (booking.movieTitle && booking.movieTitle.toLowerCase().includes('interstellar')) {
-                poster = 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=400&q=80';
-            } else {
-                // If nothing else, use a generic icon or the f1_movie.jpg
-                poster = '/shared/images/f1_movie.jpg';
-            }
-        }
+        let poster = booking.poster || '';
+        if (poster.startsWith('images/')) poster = '/shared/' + poster;
+        else if (poster.startsWith('assets/')) poster = '/shared/' + poster;
+        if (!poster) poster = '/shared/images/f1_movie.jpg';
 
         const dateStr = booking.createdAt ? new Date(booking.createdAt).toLocaleDateString('vi-VN') : 'N/A';
         const timeStr = booking.showtimeText || 'N/A';
         const typeStr = isGroup ? 'group' : 'single';
-        const idStr = booking.id;
+        const idStr = booking.id || '';
         const totalStr = formatPrice(booking.total);
+        const titleSafe = (booking.movieTitle || 'Phim').replace(/'/g, "\'");
+        const roomSafe  = (booking.room || 'Rạp').replace(/'/g, "\'");
+        const cardStyle = isCancelled
+            ? 'opacity:0.65;border:1px solid rgba(150,150,150,0.3)!important;box-shadow:none!important;'
+            : 'border:1px solid rgba(229,9,20,0.3)!important;box-shadow:0 0 15px rgba(229,9,20,0.08)!important;';
 
-        // Escape quotes in strings for onclick
-        const titleSafe = booking.movieTitle ? booking.movieTitle.replace(/'/g, "\\'") : 'Phim';
-        const roomSafe = booking.room ? booking.room.replace(/'/g, "\\'") : 'Rạp';
-        
-                let actionHtml = '';
-        if (booking.status === 'Cancelled') {
+        let actionHtml = '';
+        if (isCancelled) {
             actionHtml = `
             <div class="history-action">
-                <span class="status" id="real-status-${index}" style="background: rgba(255, 255, 255, 0.1); color: #aaa; border: 1px solid rgba(255, 255, 255, 0.2);">�? hu?</span>
+                <span class="status" style="background:rgba(255,255,255,0.1);color:#aaa;border:1px solid rgba(255,255,255,0.2);">Đã huỷ</span>
                 <div class="history-price">${totalStr}</div>
-                <div style="font-size: 0.85rem; color: #e50914; margin-top: 0.5rem; text-align: right;"><i class="fas fa-times-circle"></i> �? ho�n ti?n 80%</div>
-            </div>
-            `;
+                <div style="font-size:0.85rem;color:#e50914;margin-top:0.5rem;text-align:right;"><i class="fas fa-times-circle"></i> Đã hoàn tiền 80%</div>
+            </div>`;
         } else {
             actionHtml = `
             <div class="history-action">
-                <span class="status status-upcoming" id="real-status-${index}">S?p chi?u</span>
+                <span class="status status-upcoming">Sắp chiếu</span>
                 <div class="history-price">${totalStr}</div>
-                <div style="display: flex; gap: 0.75rem; margin-top: 1rem; justify-content: flex-end; width: 100%;">
-                    <button id="real-cancel-btn-${index}" onclick="openCancelModal('${titleSafe}', '${timeStr}', '${seatStr}', '${totalStr}', '${idStr}')" style="padding: 0.35rem 1rem; font-size: 0.8rem; font-family: 'Inter', sans-serif; font-weight: 500; border-radius: 30px; background: transparent; border: 1px solid rgba(229,9,20,0.5); color: #e50914; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(229,9,20,0.1)'; this.style.borderColor='#e50914'" onmouseout="this.style.background='transparent'; this.style.borderColor='rgba(229,9,20,0.5)'">Hu? v�</button>
-                    <button id="real-view-btn-${index}" onclick="openTicketModal('${typeStr}', '${titleSafe}', '${dateStr}', '${timeStr}', '${roomSafe}', '${seatStr}', '3HD2K Vincom �?ng Kh?i', '${poster}', '${idStr}')" style="padding: 0.35rem 1rem; font-size: 0.8rem; font-family: 'Inter', sans-serif; font-weight: 500; border-radius: 30px; background: #e50914; color: #fff; border: 1px solid #e50914; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 10px rgba(229,9,20,0.3);" onmouseover="this.style.background='#ff4b4b'; this.style.boxShadow='0 6px 15px rgba(229,9,20,0.5)'" onmouseout="this.style.background='#e50914'; this.style.boxShadow='0 4px 10px rgba(229,9,20,0.3)'">Xem m? v�</button>
+                <div style="display:flex;gap:0.75rem;margin-top:1rem;justify-content:flex-end;width:100%;">
+                    <button onclick="openCancelModal('${titleSafe}','${timeStr}','${seatStr}','${totalStr}','${idStr}')" style="padding:0.35rem 1rem;font-size:0.8rem;font-family:'Inter',sans-serif;font-weight:500;border-radius:30px;background:transparent;border:1px solid rgba(229,9,20,0.5);color:#e50914;cursor:pointer;" onmouseover="this.style.background='rgba(229,9,20,0.1)'" onmouseout="this.style.background='transparent'">Huỷ vé</button>
+                    <button onclick="openTicketModal('${typeStr}','${titleSafe}','${dateStr}','${timeStr}','${roomSafe}','${seatStr}','3HD2K Vincom Đồng Khởi','${poster}','${idStr}')" style="padding:0.35rem 1rem;font-size:0.8rem;font-family:'Inter',sans-serif;font-weight:500;border-radius:30px;background:#e50914;color:#fff;border:none;cursor:pointer;box-shadow:0 4px 10px rgba(229,9,20,0.3);">Xem mã vé</button>
                 </div>
-            </div>
-            `;
+            </div>`;
         }
 
         html += `
-            <div class="history-card"  style="border: 1px solid rgba(16, 185, 129, 0.4) !important; box-shadow: 0 0 15px rgba(16, 185, 129, 0.1) !important;" ${booking.status === "Cancelled" ? "style=\"opacity:0.6\"" : ""}>
-                
+            <div class="history-card" style="${cardStyle}">
                 <div class="ticket-select-wrapper">
-                    <input type="checkbox" class="ticket-cb" data-id="${idStr}" data-index="${index}">
+                    <input type="checkbox" class="ticket-cb" data-id="${idStr}" ${isCancelled ? 'disabled' : ''}>
                 </div>
                 <div class="history-img">
                     <img src="${poster}" alt="${titleSafe}">
@@ -122,26 +92,29 @@ function renderRealHistory() {
                     <p><i class="fas fa-map-marker-alt"></i> 3HD2K Vincom Đồng Khởi - ${roomSafe}</p>
                     <p><i class="fas fa-clock"></i> ${timeStr}</p>
                     <p><i class="fas fa-couch"></i> Ghế: ${seatStr}</p>
-                    ${typeBadge}
+                    ${typeBadgeHtml}
                 </div>
                 ${actionHtml}
             </div>
         `;
     });
-    
+
     container.innerHTML = html;
-    
+
     // Auto-open modal if URL has bookingId
     const urlParams = new URLSearchParams(window.location.search);
     const bookingIdToOpen = urlParams.get('bookingId');
     if (bookingIdToOpen) {
-        const targetIndex = bookings.findIndex(b => b.id === bookingIdToOpen);
-        if (targetIndex !== -1) {
+        const target = displayBookings.find(b => b.id === bookingIdToOpen);
+        if (target) {
             setTimeout(() => {
-                const btn = document.getElementById(`real-view-btn-${targetIndex}`);
-                if (btn) {
-                    btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    btn.click();
+                const idx = displayBookings.indexOf(target);
+                const btns = container.querySelectorAll('button');
+                // find the Xem ma ve button for this booking
+                const allViewBtns = container.querySelectorAll('button:last-child');
+                if (allViewBtns[idx]) {
+                    allViewBtns[idx].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    allViewBtns[idx].click();
                 }
             }, 300);
         }
