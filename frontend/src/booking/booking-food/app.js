@@ -381,7 +381,12 @@
           }
       });
       localStorage.setItem('checkoutFood', JSON.stringify(cart));
-      window.location.href = checkoutBtn.getAttribute('href');
+      
+      if (returnToLobby) {
+          window.location.href = `../group-booking/index.html?orderId=${returnToLobby}`;
+      } else {
+          window.location.href = checkoutBtn.getAttribute('href');
+      }
     });
   }
 
