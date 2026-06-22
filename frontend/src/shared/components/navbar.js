@@ -836,7 +836,6 @@ export function renderNavbar() {
     height: 48px;
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid var(--primary-red);
 }
 
 .user-info {
