@@ -58,17 +58,13 @@ function setupAccordions() {
         });
     });
 
-    document.querySelectorAll('.settings-section').forEach((section, index) => {
+    document.querySelectorAll('.settings-section').forEach((section) => {
         const list = section.querySelector('.settings-list');
         const icon = section.querySelector('.accordion-icon');
-        if (index === 0) {
-            section.classList.add('expanded');
-            if(list) list.style.maxHeight = list.scrollHeight + "px";
-            if(icon) icon.style.transform = "rotate(180deg)";
-        } else {
-            if(list) list.style.maxHeight = "0px";
-            if(icon) icon.style.transform = "rotate(0deg)";
-        }
+        
+        section.classList.remove('expanded');
+        if(list) list.style.maxHeight = "0px";
+        if(icon) icon.style.transform = "rotate(0deg)";
     });
 }
 
