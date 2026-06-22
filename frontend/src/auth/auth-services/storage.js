@@ -37,7 +37,7 @@ export function getCurrentUser() {
     try {
         const token = localStorage.getItem(KEYS.AUTH_TOKEN);
         if (!token) return null;
-        const payload = JSON.parse(atob(token));
+        const payload = JSON.parse(decodeURIComponent(escape(atob(token))));
         if (payload.exp && Date.now() > payload.exp) {
             clearCurrentUser();
             return null;
@@ -49,7 +49,7 @@ export function getCurrentUser() {
 }
 
 export function setCurrentUser(userPayload) {
-    const token = btoa(JSON.stringify(userPayload));
+    const token = btoa(unescape(encodeURIComponent(JSON.stringify(userPayload))));
     localStorage.setItem(KEYS.AUTH_TOKEN,    token);
     // Giữ các key legacy mà navbar.js đang đọc
     localStorage.setItem(KEYS.IS_LOGGED_IN,  'true');
