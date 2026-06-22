@@ -357,10 +357,11 @@ function renderReviews() {
             const stars = Array.from({length: 5}, (_, i) =>
                 `<i class="${i < rev.rating ? 'fas' : 'far'} fa-star star ${i < rev.rating ? 'filled' : ''}"></i>`
             ).join('');
+            const borderClass = rev.borderClass ? rev.borderClass : '';
             return `
                 <div class="review-card">
                     <div class="review-header">
-                        <img class="review-avatar" src="${rev.avatar}" alt="${rev.user}" loading="lazy">
+                        <img class="review-avatar ${borderClass}" src="${rev.avatar}" alt="${rev.user}" loading="lazy">
                         <div class="review-user-info">
                             <div class="user-name">${rev.user}</div>
                             <div class="review-date">${rev.date}</div>
@@ -389,13 +390,15 @@ function submitComment() {
     
     const now = new Date();
     const dateStr = `${now.getDate().toString().padStart(2, '0')}/${(now.getMonth() + 1).toString().padStart(2, '0')}/${now.getFullYear()}`;
+    const userBorder = 'avatar-border-' + (localStorage.getItem('userAvatarBorder') || 'member');
     
     const newComment = {
         user: userName,
         date: dateStr,
         rating: currentRatingSelection,
         text: text,
-        avatar: userAvatar
+        avatar: userAvatar,
+        borderClass: userBorder
     };
     
     currentReviews.unshift(newComment);

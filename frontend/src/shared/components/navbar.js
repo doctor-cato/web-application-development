@@ -1277,6 +1277,8 @@ export function renderNavbar() {
                     ? `<span class="user-points"><i class="fas fa-crown" style="color: #ffc107;"></i> VIP ${vipPlan ? vipPlan.charAt(0).toUpperCase() + vipPlan.slice(1) : ''} - ${pointsDisplay} điểm</span>`
                     : `<span class="user-points">Hạng thường - ${pointsDisplay} điểm</span>`;
 
+                const borderClass = 'avatar-border-' + (localStorage.getItem('userAvatarBorder') || 'member');
+
                 const loggedInHtml = `
                     <div class="notif-btn" id="notif-btn">
                         <i class="fas fa-bell"></i>
@@ -1299,12 +1301,12 @@ export function renderNavbar() {
                     </div>
                     <div class="user-btn" id="user-btn">
                         <div class="avatar-wrapper">
-                            <img src="${userAvatar}" alt="User Avatar" class="user-avatar" onerror="this.onerror=null; this.src='${defaultAvatar}';" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                            <img src="${userAvatar}" alt="User Avatar" class="user-avatar ${borderClass}" onerror="this.onerror=null; this.src='${defaultAvatar}';" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
                         </div>
                         <!-- Dropdown -->
                         <div class="user-dropdown" id="user-dropdown">
                             <div class="user-header">
-                                <img src="${userAvatar}" alt="User Avatar" class="user-header-avatar" onerror="this.onerror=null; this.src='${defaultAvatar}';" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px;">
+                                <img src="${userAvatar}" alt="User Avatar" class="user-header-avatar ${borderClass}" onerror="this.onerror=null; this.src='${defaultAvatar}';" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px;">
                                 <div class="user-info">
                                     <span class="user-name">${userName}</span>
                                     ${userPointsHtml}

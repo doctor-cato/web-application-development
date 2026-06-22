@@ -1130,3 +1130,42 @@ footer {
 @media (max-width: 768px) {
     .float-support { bottom: 20px; right: 16px; }
 }
+
+/* ── AVATAR GLOBAL BORDER STYLES ────────────────────────── */
+.avatar-border-member {
+    border: 3px solid var(--primary-red);
+}
+
+.avatar-border-silver {
+    border: 3px solid #c0c0c0;
+    box-shadow: 0 0 10px rgba(192, 192, 192, 0.6);
+}
+
+.avatar-border-gold {
+    border: 3px solid #ffd700;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+}
+
+.avatar-border-vjp {
+    border: 3px solid #e50914;
+    box-shadow: 0 0 20px rgba(229, 9, 20, 0.8);
+    animation: pulse-vjp 2s infinite;
+}
+
+.avatar-border-diamond {
+    border: 3px solid #00ffff;
+    box-shadow: 0 0 25px rgba(0, 255, 255, 0.9);
+    animation: pulse-diamond 2s infinite;
+}
+
+@keyframes pulse-vjp {
+    0% { box-shadow: 0 0 10px rgba(229, 9, 20, 0.5); }
+    50% { box-shadow: 0 0 25px rgba(229, 9, 20, 1); }
+    100% { box-shadow: 0 0 10px rgba(229, 9, 20, 0.5); }
+}
+
+@keyframes pulse-diamond {
+    0% { box-shadow: 0 0 10px rgba(0, 255, 255, 0.5); }
+    50% { box-shadow: 0 0 30px rgba(0, 255, 255, 1); }
+    100% { box-shadow: 0 0 10px rgba(0, 255, 255, 0.5); }
+}
