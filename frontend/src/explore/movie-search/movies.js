@@ -200,11 +200,21 @@ function switchTab(tab) {
         breadcrumbCurrent.textContent = tab === 'now-showing' ? 'Phim Đang Chiếu' : 'Phim Sắp Chiếu';
     }
 
-    // Reset filters
-    if (filterGenre) filterGenre.value = 'all';
-    if (filterFormat) filterFormat.value = 'all';
-    if (filterAge) filterAge.value = 'all';
-    if (sortSelect) sortSelect.value = 'newest';
+    // Reset filters (both native select AND custom dropdown UI)
+    [filterGenre, filterFormat, filterAge, sortSelect].forEach(sel => {
+        if (!sel) return;
+        sel.value = sel.options[0].value; // reset to first option
+        // Sync custom dropdown UI
+        const wrapper = sel.parentNode.querySelector('.custom-select-wrapper');
+        if (wrapper) {
+            const selectedSpan = wrapper.querySelector('.custom-select-selected span');
+            if (selectedSpan) selectedSpan.textContent = sel.options[0].text;
+            const opts = wrapper.querySelectorAll('.custom-select-option');
+            opts.forEach((o, i) => {
+                o.classList.toggle('selected', i === 0);
+            });
+        }
+    });
 
     // Update URL without reload
     const sq = getSearchQueryFromURL();
