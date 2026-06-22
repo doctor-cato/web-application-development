@@ -205,6 +205,11 @@ function setupPaymentModals() {
         btnAddPayment.addEventListener('click', () => {
             addPaymentModal.style.display = 'flex';
             if(addPaymentForm) addPaymentForm.reset();
+            // Initialize custom dropdown for payment type select (only once)
+            const paymentSelect = document.getElementById('new-payment-type');
+            if (paymentSelect && !paymentSelect.dataset.customized && typeof initCustomDropdowns === 'function') {
+                initCustomDropdowns('#new-payment-type');
+            }
         });
     }
 
