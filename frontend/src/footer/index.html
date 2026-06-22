@@ -348,21 +348,46 @@
             outline: none;
             border-color: var(--primary-red);
             background: rgba(255, 255, 255, 0.05);
-            box-shadow: 0 0 10px rgba(229, 9, 20, 0.1);
+            box-shadow: 0 0 15px rgba(229, 9, 20, 0.1);
         }
 
-        select.form-control {
-            appearance: none;
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.5)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 18px center;
-            background-size: 16px;
-            padding-right: 45px;
+        /* Custom dropdown for contact form */
+        #support-contact-form .custom-select-wrapper {
+            width: 100%;
         }
 
-        select.form-control option {
-            background-color: var(--bg-elevated);
+        #support-contact-form .custom-select-selected {
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
             color: #ffffff;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+
+        #support-contact-form .custom-select-selected span {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-right: 10px;
+        }
+
+        #support-contact-form .custom-select-selected.active {
+            border-color: var(--primary-red);
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 0 15px rgba(229, 9, 20, 0.1);
+        }
+
+        #support-contact-form .custom-select-options {
+            top: calc(100% + 5px);
+            width: 100%;
+            min-width: 100%;
+            background: rgba(20, 20, 20, 0.98);
+        }
+
+        #support-contact-form .custom-select-option {
+            padding: 12px 18px;
         }
 
         textarea.form-control {
@@ -779,7 +804,7 @@
                                 <div class="form-group">
                                     <label for="contact-subject">Chủ đề hỗ trợ</label>
                                     <select id="contact-subject" class="form-control" required>
-                                        <option value="" disabled selected>-- Chọn chủ đề cần hỗ trợ --</option>
+                                        <option value="" disabled selected>Chọn chủ đề cần hỗ trợ...</option>
                                         <option value="Sự cố Đặt vé & Thanh toán">Sự cố Đặt vé & Thanh toán</option>
                                         <option value="Dịch vụ Bắp nước F&B">Dịch vụ Bắp nước F&B</option>
                                         <option value="Tài khoản & Điểm thành viên PTS">Tài khoản & Điểm thành viên PTS</option>
@@ -991,6 +1016,11 @@
         import { toast } from '/shared/components/toast.js';
 
         document.addEventListener('DOMContentLoaded', () => {
+            // Initialize custom dropdown for the contact subject
+            if (typeof initCustomDropdowns !== 'undefined') {
+                initCustomDropdowns('#contact-subject');
+            }
+
             // ─────────────────────────────────────────────────────────────
             // 1. TABS NAVIGATION CONTROL
             // ─────────────────────────────────────────────────────────────
