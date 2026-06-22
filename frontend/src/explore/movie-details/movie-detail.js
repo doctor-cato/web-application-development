@@ -358,8 +358,9 @@ function renderReviews() {
                 `<i class="${i < rev.rating ? 'fas' : 'far'} fa-star star ${i < rev.rating ? 'filled' : ''}"></i>`
             ).join('');
             const borderClass = rev.borderClass ? rev.borderClass : '';
+            const vipPlanClass = rev.vipPlan ? `review-card-${rev.vipPlan}` : '';
             return `
-                <div class="review-card">
+                <div class="review-card ${vipPlanClass}">
                     <div class="review-header">
                         <img class="review-avatar ${borderClass}" src="${rev.avatar}" alt="${rev.user}" loading="lazy">
                         <div class="review-user-info">
@@ -392,13 +393,16 @@ function submitComment() {
     const dateStr = `${now.getDate().toString().padStart(2, '0')}/${(now.getMonth() + 1).toString().padStart(2, '0')}/${now.getFullYear()}`;
     const userBorder = 'avatar-border-' + (localStorage.getItem('userAvatarBorder') || 'member');
     
+    const vipPlan = localStorage.getItem('vip_plan') || '';
+    
     const newComment = {
         user: userName,
         date: dateStr,
         rating: currentRatingSelection,
         text: text,
         avatar: userAvatar,
-        borderClass: userBorder
+        borderClass: userBorder,
+        vipPlan: vipPlan
     };
     
     currentReviews.unshift(newComment);

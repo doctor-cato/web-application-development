@@ -1082,6 +1082,20 @@
 }
 .review-card:hover { border-color: rgba(255,255,255,0.15); }
 
+/* ── VIP REVIEW CARD BORDERS ────────────────────────────── */
+.review-card-silver {
+    border-color: #c0c0c0 !important;
+    box-shadow: 0 0 10px rgba(192, 192, 192, 0.15);
+}
+.review-card-gold {
+    border-color: #ffd700 !important;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+}
+.review-card-platinum {
+    border-color: #b9f2ff !important;
+    box-shadow: 0 0 20px rgba(185, 242, 255, 0.25);
+}
+
 .review-header {
     display: flex;
     align-items: center;
