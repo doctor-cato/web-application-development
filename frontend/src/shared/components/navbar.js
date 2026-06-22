@@ -773,9 +773,7 @@ export function renderNavbar() {
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    overflow: hidden;
-    border: 2px solid transparent;
-    transition: border-color 0.3s ease, transform 0.3s ease;
+    transition: transform 0.3s ease;
 }
 
 .user-avatar {
@@ -784,10 +782,7 @@ export function renderNavbar() {
     object-fit: cover;
 }
 
-.user-btn:hover .avatar-wrapper, .user-btn.active .avatar-wrapper {
-    border-color: var(--primary-red);
-    transform: scale(1.1);
-}
+
 
 .user-dropdown {
     position: absolute;
