@@ -7,7 +7,6 @@ let currentMovie = null;
 let selectedDateIndex = 0;
 let galleryImages = [];
 let currentLightboxIdx = 0;
-let isLiked = false;
 
 // ── UTILITY ─────────────────────────────────────────────────
 function getMovieIdFromURL() {
@@ -523,36 +522,6 @@ function closeTrailerModal() {
     if (iframe) iframe.src = '';
     document.body.style.overflow = '';
 }
-
-// ── INTERACT ─────────────────────────────────────────────────
-function toggleLike() {
-    isLiked = !isLiked;
-    const btn = document.getElementById('btn-like');
-    if (!btn) return;
-    btn.classList.toggle('liked', isLiked);
-    btn.innerHTML = isLiked
-        ? '<i class="fas fa-heart"></i> Đã thích'
-        : '<i class="far fa-heart"></i> Thích';
-    showToast(isLiked ? '❤️ Đã thêm vào danh sách yêu thích!' : 'Đã bỏ thích.');
-}
-
-function shareMovie() {
-    const url = window.location.href;
-    if (navigator.clipboard) {
-        navigator.clipboard.writeText(url).then(() => {
-            showToast('🔗 Đã sao chép link phim vào clipboard!');
-        });
-    } else {
-        const el = document.createElement('textarea');
-        el.value = url;
-        document.body.appendChild(el);
-        el.select();
-        document.execCommand('copy');
-        document.body.removeChild(el);
-        showToast('🔗 Đã sao chép link phim!');
-    }
-}
-
 
 
 // ── SCROLL HELPERS ───────────────────────────────────────────
