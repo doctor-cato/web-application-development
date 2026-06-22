@@ -17,7 +17,8 @@
       glowColor: 'rgba(136,136,136,0.25)',
       privileges: [
         'Tích điểm 1x cho mỗi vé',
-        'Nhận thông báo ưu đãi'
+        'Nhận thông báo ưu đãi',
+        'Mở khóa khung viền Thành Viên'
       ]
     },
     {
@@ -31,7 +32,8 @@
       privileges: [
         'Tích điểm 1.25x',
         'Giảm 2% combo Bắp Nước',
-        'Ưu tiên mua vé trước 30 phút'
+        'Ưu tiên mua vé trước 30 phút',
+        'Mở khóa khung viền Bạc'
       ]
     },
     {
@@ -45,7 +47,8 @@
       privileges: [
         'Tích điểm 1.5x',
         'Giảm 5% combo',
-        'Tham gia sự kiện premiere'
+        'Tham gia sự kiện premiere',
+        'Mở khóa khung viền Gold'
       ]
     },
     {
@@ -59,7 +62,8 @@
       privileges: [
         'Tích điểm 1.75x',
         'Giảm 8% combo',
-        'Phòng chờ VIP'
+        'Phòng chờ VIP',
+        'Mở khóa khung viền VJP'
       ]
     },
     {
@@ -73,7 +77,8 @@
       privileges: [
         'Tích điểm 2.0x',
         'Giảm 10% combo',
-        'Quà sinh nhật đặc biệt'
+        'Quà sinh nhật đặc biệt',
+        'Mở khóa khung viền Diamond'
       ]
     }
   ];
