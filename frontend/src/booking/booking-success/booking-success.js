@@ -189,11 +189,7 @@ function init() {
 
     const codeEl = document.getElementById('bs-ticket-code');
     if (codeEl) {
-        // Format the booking ID slightly for display (e.g. bk_1234 -> TK-1234)
-        let displayCode = booking.id || 'TK-UNKNOWN';
-        if (displayCode.startsWith('bk_')) {
-            displayCode = displayCode.replace('bk_', 'TK-').toUpperCase();
-        }
+        let displayCode = booking.id || 'UNKNOWN';
         codeEl.textContent = displayCode;
 
         // Generate actual QR Code dynamically
