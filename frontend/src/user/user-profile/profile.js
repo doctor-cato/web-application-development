@@ -399,16 +399,57 @@ function initAvatarBorders() {
     const borderOptions = document.querySelectorAll('.border-option');
     if (!avatarImg || borderOptions.length === 0) return;
 
+    let points = 0;
+    try {
+        const rewardsData = JSON.parse(localStorage.getItem('3hd2k_rewards') || '{}');
+        points = rewardsData.points || 0;
+    } catch(_) {}
+
+    const requiredPoints = {
+        'member': 0,
+        'silver': 200,
+        'gold': 500,
+        'vjp': 1000,
+        'diamond': 2000
+    };
+
     // Load saved border
-    const savedBorder = localStorage.getItem('userAvatarBorder') || 'member';
+    let savedBorder = localStorage.getItem('userAvatarBorder') || 'member';
+    if (points < requiredPoints[savedBorder]) {
+        savedBorder = 'member';
+        localStorage.setItem('userAvatarBorder', 'member');
+    }
     
     // Apply initial border
     applyBorder(savedBorder);
 
     // Setup click events
     borderOptions.forEach(option => {
+        const borderType = option.getAttribute('data-border');
+        const req = requiredPoints[borderType] || 0;
+        
+        // Add lock icon and styling if not enough points
+        if (points < req) {
+            option.classList.add('locked');
+            option.title = `Cần ${req} điểm để mở khóa`;
+            // Add lock icon inside
+            const iconEl = document.createElement('i');
+            iconEl.className = 'fas fa-lock';
+            iconEl.style.position = 'absolute';
+            iconEl.style.top = '10px';
+            iconEl.style.right = '10px';
+            iconEl.style.color = '#fff';
+            iconEl.style.fontSize = '12px';
+            iconEl.style.opacity = '0.7';
+            option.style.position = 'relative';
+            option.appendChild(iconEl);
+        }
+
         option.addEventListener('click', () => {
-            const borderType = option.getAttribute('data-border');
+            if (points < req) {
+                alert(`Bạn cần đạt tối thiểu ${req} điểm để sử dụng viền này!`);
+                return;
+            }
             applyBorder(borderType);
             localStorage.setItem('userAvatarBorder', borderType);
         });
