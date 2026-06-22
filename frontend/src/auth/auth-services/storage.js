@@ -64,4 +64,13 @@ export function clearCurrentUser() {
     localStorage.removeItem(KEYS.USER_NAME);
     localStorage.removeItem(KEYS.USER_EMAIL);
     localStorage.removeItem(KEYS.USER_AVATAR);
+    
+    // Clear all legacy and profile-specific data to prevent leakage to new accounts
+    localStorage.removeItem('userPhone');
+    localStorage.removeItem('userDob');
+    localStorage.removeItem('userGender');
+    localStorage.removeItem('3hd2k_rewards');
+    localStorage.removeItem('is_vip');
+    localStorage.removeItem('vip_plan');
+    localStorage.removeItem('avatar_border_class');
 }

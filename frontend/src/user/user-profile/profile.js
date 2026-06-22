@@ -236,13 +236,15 @@ function loadUserInfo() {
     let dob = (session && session.dob) ? session.dob : '';
     let gender = (session && session.gender) ? session.gender : '';
 
-    // Fallback to legacy localStorage keys
-    if (!name)   name   = localStorage.getItem('userName')  || '';
-    if (!email)  email  = localStorage.getItem('userEmail') || '';
-    if (!avatar) avatar = localStorage.getItem('userAvatar') || '';
-    if (!phone)  phone  = localStorage.getItem('userPhone') || '';
-    if (!dob)    dob    = localStorage.getItem('userDob') || '';
-    if (!gender) gender = localStorage.getItem('userGender') || 'male';
+    // Fallback to legacy localStorage keys ONLY if no session
+    if (!session) {
+        if (!name)   name   = localStorage.getItem('userName')  || '';
+        if (!email)  email  = localStorage.getItem('userEmail') || '';
+        if (!avatar) avatar = localStorage.getItem('userAvatar') || '';
+        if (!phone)  phone  = localStorage.getItem('userPhone') || '';
+        if (!dob)    dob    = localStorage.getItem('userDob') || '';
+        if (!gender) gender = localStorage.getItem('userGender') || 'male';
+    }
 
     // Last resort: look up from registered users using email
     if ((!name || name === 'Khách') && email) {
