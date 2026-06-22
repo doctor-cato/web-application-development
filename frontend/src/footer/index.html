@@ -122,16 +122,23 @@
 
         /* Main Content Glass Box */
         .support-content {
+            position: relative;
+        }
+
+        .panel-card {
             background: rgba(20, 20, 20, 0.6);
             border: 1px solid var(--glass-border);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border-radius: 16px;
             padding: 40px;
-            min-height: 500px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
-            position: relative;
-            overflow: hidden;
+            margin-bottom: 30px;
+        }
+        
+        /* Ensure minimum height for tabs that use a single card */
+        .tab-panel.single-card .panel-card {
+            min-height: 500px;
         }
 
         .support-content::before {
@@ -679,73 +686,76 @@
                 
                 <!-- ═════════ TAB 1: HELP CENTER & FAQS ═════════ -->
                 <div class="tab-panel active" id="help-tab">
-                    <h2 class="panel-title">
-                        <i class="fas fa-question-circle"></i>
-                        Trung tâm trợ giúp & Câu hỏi thường gặp
-                    </h2>
                     
-                    <!-- FAQ Search Bar -->
-                    <div class="faq-search-wrapper">
-                        <i class="fas fa-search"></i>
-                        <input type="text" id="faq-search-input" class="faq-search-input" placeholder="Tìm câu trả lời hoặc từ khóa..." autocomplete="off">
-                        <i class="fas fa-times faq-search-clear" id="faq-search-clear"></i>
-                    </div>
-
-                    <!-- FAQ Accordions -->
-                    <div class="faq-list" id="faq-list">
-                        <div class="faq-item" data-search="mua ve dat ve thanh toan online qr code">
-                            <button class="faq-trigger">
-                                <span>Làm thế nào để đặt vé trực tuyến và thanh toán?</span>
-                                <i class="fas fa-chevron-down"></i>
-                            </button>
-                            <div class="faq-content">
-                                <p>Bạn chỉ cần chọn phim mong muốn tại trang <strong>Phim Đang Chiếu</strong>, chọn suất chiếu, cụm rạp phù hợp và tiến hành chọn ghế ngồi. Tại bước tiếp theo, bạn có thể lựa chọn thêm các combo Bắp & Nước. Hệ thống hỗ trợ thanh toán trực tuyến qua thẻ tín dụng hoặc ví điện tử giả lập. Sau khi thanh toán thành công, một hóa đơn điện tử kèm mã QR Code sẽ được gửi và hiển thị trên màn hình để bạn chụp lại và quét vé khi đến rạp.</p>
-                            </div>
+                    <div class="panel-card">
+                        <h2 class="panel-title">
+                            <i class="fas fa-question-circle"></i>
+                            Trung tâm trợ giúp & Câu hỏi thường gặp
+                        </h2>
+                        
+                        <!-- FAQ Search Bar -->
+                        <div class="faq-search-wrapper">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="faq-search-input" class="faq-search-input" placeholder="Tìm câu trả lời hoặc từ khóa..." autocomplete="off">
+                            <i class="fas fa-times faq-search-clear" id="faq-search-clear"></i>
                         </div>
 
-                        <div class="faq-item" data-search="doi tra ve huy ve doi suat chieu hoan tien pts">
-                            <button class="faq-trigger">
-                                <span>Quy định đổi/trả hoặc hủy vé đã mua như thế nào?</span>
-                                <i class="fas fa-chevron-down"></i>
-                            </button>
-                            <div class="faq-content">
-                                <p>Nhằm đảm bảo trải nghiệm tốt nhất, bạn có thể tự thực hiện hoàn/hủy vé hoặc đổi suất chiếu ngay trên ứng dụng trước giờ chiếu ít nhất <strong>60 phút</strong>. Hãy truy cập mục <strong>Hồ Sơ</strong> &rarr; <strong>Lịch sử đặt vé</strong> để thực hiện. Các yêu cầu hoàn trả hợp lệ sẽ hoàn lại số tiền giao dịch vào tài khoản tích lũy điểm PTS tương ứng trong hệ thống.</p>
+                        <!-- FAQ List -->
+                        <div class="faq-list" id="faq-list">
+                            <div class="faq-item" data-search="dat ve mua ve thanh toan loi giao dich online">
+                                <button class="faq-trigger">
+                                    <span>Làm sao để đặt vé và thanh toán trực tuyến?</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                                <div class="faq-content">
+                                    <p>Bạn chỉ cần chọn phim mong muốn tại trang <strong>Phim Đang Chiếu</strong>, chọn suất chiếu, cụm rạp phù hợp và tiến hành chọn ghế ngồi. Tại bước tiếp theo, bạn có thể lựa chọn thêm các combo Bắp & Nước. Hệ thống hỗ trợ thanh toán trực tuyến qua thẻ tín dụng hoặc ví điện tử giả lập. Sau khi thanh toán thành công, một hóa đơn điện tử kèm mã QR Code sẽ được gửi và hiển thị trên màn hình để bạn chụp lại và quét vé khi đến rạp.</p>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="faq-item" data-search="tich diem pts rewards hang thanh vien vip nang cap">
-                            <button class="faq-trigger">
-                                <span>Hệ thống tích điểm PTS hoạt động ra sao?</span>
-                                <i class="fas fa-chevron-down"></i>
-                            </button>
-                            <div class="faq-content">
-                                <p>Với mỗi giao dịch đặt vé xem phim hoặc mua combo thức ăn nước uống thành công khi đăng nhập tài khoản, bạn sẽ nhận được điểm thưởng PTS tương đương <strong>10%</strong> giá trị giao dịch. Điểm PTS tích lũy có thể dùng để đổi các phần quà hấp dẫn (Bắp, Nước, Voucher giảm giá vé) hoặc nâng cấp hạng thành viên lên VIP để hưởng thụ nhiều quyền lợi đặc biệt.</p>
+                            <div class="faq-item" data-search="doi tra ve huy ve doi suat chieu hoan tien pts">
+                                <button class="faq-trigger">
+                                    <span>Quy định đổi/trả hoặc hủy vé đã mua như thế nào?</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                                <div class="faq-content">
+                                    <p>Nhằm đảm bảo trải nghiệm tốt nhất, bạn có thể tự thực hiện hoàn/hủy vé hoặc đổi suất chiếu ngay trên ứng dụng trước giờ chiếu ít nhất <strong>60 phút</strong>. Hãy truy cập mục <strong>Hồ Sơ</strong> &rarr; <strong>Lịch sử đặt vé</strong> để thực hiện. Các yêu cầu hoàn trả hợp lệ sẽ hoàn lại số tiền giao dịch vào tài khoản tích lũy điểm PTS tương ứng trong hệ thống.</p>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="faq-item" data-search="dat ghe nhom group booking giu ghe chia se lien ket">
-                            <button class="faq-trigger">
-                                <span>Tôi có thể đặt giữ ghế theo nhóm cùng bạn bè không?</span>
-                                <i class="fas fa-chevron-down"></i>
-                            </button>
-                            <div class="faq-content">
-                                <p>Hoàn toàn được! Hãy trải nghiệm tính năng <strong>Đặt & Giữ ghế nhóm</strong> độc quyền tại 3HD2K. Khi thực hiện đặt vé, bạn chọn chế độ đặt ghế theo nhóm, hệ thống sẽ cấp một đường liên kết đặc biệt để bạn gửi cho bạn bè trong nhóm. Mọi người có thể tự chọn chiếc ghế yêu thích và tự thanh toán phần của mình hoặc một người đại diện thanh toán chung cho cả nhóm.</p>
+                            <div class="faq-item" data-search="tich diem pts rewards hang thanh vien vip nang cap">
+                                <button class="faq-trigger">
+                                    <span>Hệ thống tích điểm PTS hoạt động ra sao?</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                                <div class="faq-content">
+                                    <p>Với mỗi giao dịch đặt vé xem phim hoặc mua combo thức ăn nước uống thành công khi đăng nhập tài khoản, bạn sẽ nhận được điểm thưởng PTS tương đương <strong>10%</strong> giá trị giao dịch. Điểm PTS tích lũy có thể dùng để đổi các phần quà hấp dẫn (Bắp, Nước, Voucher giảm giá vé) hoặc nâng cấp hạng thành viên lên VIP để hưởng thụ nhiều quyền lợi đặc biệt.</p>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="faq-item" data-search="lien he cham soc khach hang cskh email dien thoai">
-                            <button class="faq-trigger">
-                                <span>Làm cách nào để liên hệ trực tiếp với bộ phận chăm sóc khách hàng?</span>
-                                <i class="fas fa-chevron-down"></i>
-                            </button>
-                            <div class="faq-content">
-                                <p>Nếu các câu hỏi trên chưa giải đáp được thắc mắc của bạn, vui lòng điền thông tin vào <strong>Mẫu liên hệ hỗ trợ</strong> ở ngay bên dưới. Hoặc bạn cũng có thể liên hệ trực tiếp qua hotline <strong>1900 3HD2K</strong> hoặc gửi thư điện tử về hòm thư <strong>support@3hd2k.com</strong>. Đội ngũ chăm sóc khách hàng của chúng tôi hoạt động từ 8h00 - 24h00 hàng ngày.</p>
+                            <div class="faq-item" data-search="dat ghe nhom group booking giu ghe chia se lien ket">
+                                <button class="faq-trigger">
+                                    <span>Tôi có thể đặt giữ ghế theo nhóm cùng bạn bè không?</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                                <div class="faq-content">
+                                    <p>Hoàn toàn được! Hãy trải nghiệm tính năng <strong>Đặt & Giữ ghế nhóm</strong> độc quyền tại 3HD2K. Khi thực hiện đặt vé, bạn chọn chế độ đặt ghế theo nhóm, hệ thống sẽ cấp một đường liên kết đặc biệt để bạn gửi cho bạn bè trong nhóm. Mọi người có thể tự chọn chiếc ghế yêu thích và tự thanh toán phần của mình hoặc một người đại diện thanh toán chung cho cả nhóm.</p>
+                                </div>
+                            </div>
+
+                            <div class="faq-item" data-search="lien he cham soc khach hang cskh email dien thoai">
+                                <button class="faq-trigger">
+                                    <span>Làm cách nào để liên hệ trực tiếp với bộ phận chăm sóc khách hàng?</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                                <div class="faq-content">
+                                    <p>Nếu các câu hỏi trên chưa giải đáp được thắc mắc của bạn, vui lòng điền thông tin vào <strong>Mẫu liên hệ hỗ trợ</strong> ở ngay bên dưới. Hoặc bạn cũng có thể liên hệ trực tiếp qua hotline <strong>1900 3HD2K</strong> hoặc gửi thư điện tử về hòm thư <strong>support@3hd2k.com</strong>. Đội ngũ chăm sóc khách hàng của chúng tôi hoạt động từ 8h00 - 24h00 hàng ngày.</p>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Contact/Support Form -->
-                    <div class="contact-form-section">
+                    <div class="contact-form-section panel-card">
                         <h2 class="panel-title" style="border-bottom:none; padding-bottom:0; margin-bottom:10px;">
                             <i class="fas fa-paper-plane"></i>
                             Gửi yêu cầu hỗ trợ trực tuyến
@@ -786,7 +796,7 @@
                                 <label for="contact-message">Nội dung yêu cầu</label>
                                 <textarea id="contact-message" class="form-control" placeholder="Mô tả chi tiết vấn đề của bạn..." required></textarea>
                             </div>
-                            <button type="submit" class="btn-submit">
+                            <button type="submit" class="btn-submit" style="width: 100%; margin-top: 10px;">
                                 <i class="fas fa-paper-plane"></i>
                                 Gửi yêu cầu hỗ trợ
                             </button>
