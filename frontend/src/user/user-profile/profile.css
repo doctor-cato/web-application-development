@@ -63,7 +63,7 @@
     height: 100%;
     border-radius: 50%;
     object-fit: cover;
-    border: 3px solid var(--primary-red);
+    transition: all 0.3s ease;
 }
 
 .avatar-upload-btn {
@@ -1218,4 +1218,85 @@ input:checked + .slider:before {
     .modal-content {
         padding: 20px 15px;
     }
+}
+
+/* --- AVATAR BORDERS --- */
+.avatar-border-options {
+    display: flex;
+    gap: 20px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
+
+.border-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    transition: all 0.3s;
+}
+
+.border-option:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.border-option.active {
+    background: rgba(229, 9, 20, 0.1);
+    border-color: rgba(229, 9, 20, 0.3);
+}
+
+.border-preview {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: url('/shared/images/avatar.jpg') center/cover;
+}
+
+.border-option span {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* Border Styles */
+.avatar-border-member {
+    border: 3px solid var(--primary-red);
+}
+
+.avatar-border-silver {
+    border: 3px solid #c0c0c0;
+    box-shadow: 0 0 10px rgba(192, 192, 192, 0.6);
+}
+
+.avatar-border-gold {
+    border: 3px solid #ffd700;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+}
+
+.avatar-border-vjp {
+    border: 3px solid #ff007f;
+    box-shadow: 0 0 20px rgba(255, 0, 127, 0.8);
+    animation: pulse-vjp 2s infinite;
+}
+
+.avatar-border-diamond {
+    border: 3px solid #00ffff;
+    box-shadow: 0 0 25px rgba(0, 255, 255, 0.9);
+    animation: pulse-diamond 2s infinite;
+}
+
+@keyframes pulse-vjp {
+    0% { box-shadow: 0 0 10px rgba(255, 0, 127, 0.5); }
+    50% { box-shadow: 0 0 25px rgba(255, 0, 127, 1); }
+    100% { box-shadow: 0 0 10px rgba(255, 0, 127, 0.5); }
+}
+
+@keyframes pulse-diamond {
+    0% { box-shadow: 0 0 10px rgba(0, 255, 255, 0.5); }
+    50% { box-shadow: 0 0 30px rgba(0, 255, 255, 1); }
+    100% { box-shadow: 0 0 10px rgba(0, 255, 255, 0.5); }
 }

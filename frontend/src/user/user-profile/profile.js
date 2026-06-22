@@ -392,6 +392,38 @@ function setupProfileForm() {
     });
 }
 
+function initAvatarBorders() {
+    const avatarImg = document.getElementById('sidebar-avatar');
+    const borderOptions = document.querySelectorAll('.border-option');
+    if (!avatarImg || borderOptions.length === 0) return;
+
+    // Load saved border
+    const savedBorder = localStorage.getItem('userAvatarBorder') || 'member';
+    
+    // Apply initial border
+    applyBorder(savedBorder);
+
+    // Setup click events
+    borderOptions.forEach(option => {
+        option.addEventListener('click', () => {
+            const borderType = option.getAttribute('data-border');
+            applyBorder(borderType);
+            localStorage.setItem('userAvatarBorder', borderType);
+        });
+    });
+
+    function applyBorder(borderType) {
+        // Update avatar classes
+        avatarImg.className = ''; // reset classes
+        avatarImg.classList.add(`avatar-border-${borderType}`);
+
+        // Update UI selection
+        borderOptions.forEach(opt => opt.classList.remove('active'));
+        const activeOpt = document.querySelector(`.border-option[data-border="${borderType}"]`);
+        if (activeOpt) activeOpt.classList.add('active');
+    }
+}
+
 function initProfile() {
     try { initTabs(); } catch(e) { console.error('initTabs error:', e); }
     try { loadUserInfo(); } catch(e) { console.error('loadUserInfo error:', e); }
@@ -399,6 +431,7 @@ function initProfile() {
     try { setupProfileUI(); } catch(e) { console.error('setupProfileUI error:', e); }
     try { renderRealHistory(); } catch(e) { console.error('renderRealHistory error:', e); }
     try { initLogout(); } catch(e) { console.error('initLogout error:', e); }
+    try { initAvatarBorders(); } catch(e) { console.error('initAvatarBorders error:', e); }
 }
 
 if (document.readyState === 'loading') {
