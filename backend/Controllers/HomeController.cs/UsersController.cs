@@ -22,7 +22,7 @@ using appweb.Infrastructure;
     }
 
     // GET: USERS/Details/5
-    public async Task<IActionResult> Details(int? id)
+    public async Task<IActionResult> Details(Guid? id)
     {
         if (id == null)
         {
@@ -62,7 +62,7 @@ using appweb.Infrastructure;
     }
 
     // GET: USERS/Edit/5
-    public async Task<IActionResult> Edit(int? id)
+    public async Task<IActionResult> Edit(Guid? id)
     {
         if (id == null)
         {
@@ -82,7 +82,7 @@ using appweb.Infrastructure;
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int? id, [Bind("Id,Fullname,Email,Password,Phone,Role,CreatedAt,Bookings")] User user)
+    public async Task<IActionResult> Edit(Guid? id, [Bind("Id,Fullname,Email,Password,Phone,Role,CreatedAt,Bookings")] User user)
     {
         if (id != user.Id)
         {
@@ -113,7 +113,7 @@ using appweb.Infrastructure;
     }
 
     // GET: USERS/Delete/5
-    public async Task<IActionResult> Delete(int? id)
+    public async Task<IActionResult> Delete(Guid? id)
     {
         if (id == null)
         {
@@ -133,7 +133,7 @@ using appweb.Infrastructure;
     // POST: USERS/Delete/5
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeleteConfirmed(int? id)
+    public async Task<IActionResult> DeleteConfirmed(Guid? id)
     {
         var user = await _context.Users.FindAsync(id);
         if (user != null)
@@ -145,7 +145,7 @@ using appweb.Infrastructure;
         return RedirectToAction(nameof(Index));
     }
 
-    private bool UserExists(int? id)
+    private bool UserExists(Guid? id)
     {
         return _context.Users.Any(e => e.Id == id);
     }

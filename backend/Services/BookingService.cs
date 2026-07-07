@@ -14,7 +14,7 @@ namespace appweb.Services
             _movieRepository = movieRepository;
         }
 
-        public async Task<bool> ProcessBookingAsync(User user, Movie movie, int showtimeId, string seats)
+        public async Task<bool> ProcessBookingAsync(User user, Movie movie, Guid showtimeId, string seats)
         {
             if (user == null || movie == null) return false;
 

@@ -25,7 +25,7 @@ namespace appweb.Controllers
         // Action xử lý đặt vé khi người dùng bấm nút đặt
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(int showtimeId, string seats, string paymentMethod)
+        public async Task<IActionResult> Create(Guid showtimeId, string seats, string paymentMethod)
         {
             // 1. Lấy Email của người dùng hiện tại đang đăng nhập hệ thống
             var email = User.FindFirstValue(ClaimTypes.Email);
@@ -66,3 +66,4 @@ namespace appweb.Controllers
         }
     }
 }
+

@@ -1,4 +1,4 @@
-﻿using appweb.Infrastructure;
+using appweb.Infrastructure;
 using appweb.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -23,14 +23,14 @@ namespace appweb.Queries
         }
 
         // Lấy chi tiết booking theo Id
-        public async Task<Booking?> GetByIdAsync(int id)
+        public async Task<Booking?> GetByIdAsync(Guid id)
         {
             return await _context.Bookings
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         // Lấy danh sách booking theo cấu trúc UserId
-        public async Task<List<Booking>> GetByUserIdAsync(int userId)
+        public async Task<List<Booking>> GetByUserIdAsync(Guid userId)
         {
             return await _context.Bookings
                 .Where(x => x.UserId == userId)

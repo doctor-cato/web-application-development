@@ -1,4 +1,4 @@
-﻿using appweb.Infrastructure;
+using appweb.Infrastructure;
 using appweb.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,7 +18,7 @@ namespace appweb.Queries
             return await _context.Movies.ToListAsync();
         }
 
-        public async Task<Movie?> GetMovieByIdAsync(int id)
+        public async Task<Movie?> GetMovieByIdAsync(Guid id)
         {
             return await _context.Movies
                 .FirstOrDefaultAsync(x => x.MovieId == id);

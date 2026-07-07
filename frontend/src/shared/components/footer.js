@@ -9,7 +9,7 @@ export function renderFooter() {
     <footer>
         <div class="footer-content" style="border-top: 1px solid var(--glass-border); padding-top: 40px; margin-top: 40px;">
             <div class="footer-brand">
-                <h2 class="logo" style="font-family: 'Bebas Neue', sans-serif; font-size: 3rem; color: var(--primary-red); margin-bottom: 10px;">3HD2K</h2>
+                <h2 class="logo" style="font-family: 'Inter', sans-serif; font-size: 3rem; color: var(--primary-red); margin-bottom: 10px;">3HD2K</h2>
                 <p style="color: rgba(255,255,255,0.6); max-width: 300px; line-height: 1.6;">Trải nghiệm điện ảnh đỉnh cao, mang Hollywood đến gần bạn hơn.</p>
                 <div class="social-icons" style="margin-top: 20px; display: flex; gap: 15px;">
                     <i class="fas fa-share-alt" style="color: white; font-size: 1.2rem; cursor: pointer;"></i>
@@ -20,26 +20,26 @@ export function renderFooter() {
                 <div class="link-column">
                     <h4 style="font-family: 'Inter', sans-serif; font-size: 0.75rem; font-weight: bold; letter-spacing: 1px; margin-bottom: 20px;">KHÁM PHÁ</h4>
                     <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px;">
-                        <li><a href="/engagement/minigame/index.html" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s; font-family: 'Inter', sans-serif;">CINE PREDICT</a></li>
-                        <li><a href="/booking/group-booking/index.html" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s; font-family: 'Inter', sans-serif;">Đặt ghế nhóm</a></li>
-                        <li><a href="/wip.html" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s; font-family: 'Inter', sans-serif;">Khuyến mãi</a></li>
+                        <li><a href="../../engagement/minigame/index.html" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s; font-family: 'Inter', sans-serif;">CINE PREDICT</a></li>
+                        <li><a href="../../booking/group-booking/index.html" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s; font-family: 'Inter', sans-serif;">Đặt ghế nhóm</a></li>
+                        <li><a href="../../wip.html" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s; font-family: 'Inter', sans-serif;">Khuyến mãi</a></li>
                     </ul>
                 </div>
                 <div class="link-column">
                     <h4 style="font-family: 'Inter', sans-serif; font-size: 0.75rem; font-weight: bold; letter-spacing: 1px; margin-bottom: 20px;">HỖ TRỢ</h4>
                     <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px;">
-                        <li><a href="/footer/index.html?tab=help" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s; font-family: 'Inter', sans-serif;">Help Center</a></li>
-                        <li><a href="/footer/index.html?tab=terms" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s; font-family: 'Inter', sans-serif;">Terms of Use</a></li>
-                        <li><a href="/footer/index.html?tab=privacy" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s; font-family: 'Inter', sans-serif;">Privacy Policy</a></li>
-                        <li><a href="/footer/index.html?tab=cookie" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s; font-family: 'Inter', sans-serif;">Cookie Preferences</a></li>
+                        <li><a href="../../footer/index.html?tab=help" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s; font-family: 'Inter', sans-serif;">Help Center</a></li>
+                        <li><a href="../../footer/index.html?tab=terms" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s; font-family: 'Inter', sans-serif;">Terms of Use</a></li>
+                        <li><a href="../../footer/index.html?tab=privacy" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s; font-family: 'Inter', sans-serif;">Privacy Policy</a></li>
+                        <li><a href="../../footer/index.html?tab=cookie" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s; font-family: 'Inter', sans-serif;">Cookie Preferences</a></li>
                     </ul>
                 </div>
                 <div class="link-column">
                     <h4 style="font-family: 'Inter', sans-serif; font-size: 0.75rem; font-weight: bold; letter-spacing: 1px; margin-bottom: 20px;">VỀ CHÚNG TÔI</h4>
                     <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px;">
-                        <li><a href="/wip.html" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s; font-family: 'Inter', sans-serif;">About Us</a></li>
-                        <li><a href="/wip.html" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s; font-family: 'Inter', sans-serif;">Corporate Information</a></li>
-                        <li><a href="/wip.html" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s; font-family: 'Inter', sans-serif;">Tuyển Dụng</a></li>
+                        <li><a href="../../wip.html" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s; font-family: 'Inter', sans-serif;">About Us</a></li>
+                        <li><a href="../../wip.html" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s; font-family: 'Inter', sans-serif;">Corporate Information</a></li>
+                        <li><a href="../../wip.html" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s; font-family: 'Inter', sans-serif;">Tuyển Dụng</a></li>
                     </ul>
                 </div>
             </div>

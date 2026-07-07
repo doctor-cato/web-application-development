@@ -4,7 +4,7 @@
  * Component render thanh Navbar dùng chung cho toàn dự án.
  */
 
-import { logout, getSession } from '/auth/auth-services/authService.js';
+import { logout, getSession } from '../../auth/auth-services/authService.js';
 
 export function renderNavbar() {
     // Luôn dùng đường dẫn tuyệt đối từ root (thư mục src/)
@@ -18,46 +18,11 @@ export function renderNavbar() {
                 <a href="${srcPrefix}/explore/home-page/index.html">Trang chủ</a>
                 <a href="${srcPrefix}/explore/movie-search/index.html?tab=now-showing">Phim Đang Chiếu</a>
                 <a href="${srcPrefix}/explore/cinema-map/index.html">Cụm Rạp</a>
-                <a href="${srcPrefix}/user/user-notifications/index.html?tab=promo">Khuyến Mãi</a>
-                <div class="quick-book-wrapper">
-                    <a href="#" class="quick-book-toggle" id="quick-book-toggle">Đặt vé <i class="fas fa-chevron-down" style="font-size:0.7rem; margin-left:4px;"></i></a>
-                    <div class="quick-book-dropdown" id="quick-book-dropdown">
-                        <h3 class="qb-title">ĐẶT VÉ NHANH</h3>
-                        <div class="qb-step" id="qb-movie-step">
-                            <label>1. Chọn Phim</label>
-                            <div class="qb-custom-select" id="qb-movie-wrapper">
-                                <div class="qb-select-trigger qb-search-trigger" id="qb-movie-trigger">
-                                    <i class="fas fa-search" style="font-size: 0.8rem; color: rgba(255,255,255,0.5); margin-right: 8px;"></i>
-                                    <input type="text" id="qb-movie-search" placeholder="-- Chọn Phim --" autocomplete="off">
-                                    <i class="fas fa-chevron-down" style="font-size: 0.8rem; color: rgba(255,255,255,0.5); margin-left: auto;"></i>
-                                </div>
-                                <div class="qb-select-menu" id="qb-movie-menu">
-                                    <ul class="qb-options-list" id="qb-movie-list">
-                                        <!-- Render options via JS -->
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="qb-step">
-                            <label>2. Chọn Rạp</label>
-                            <select id="qb-cinema" disabled>
-                                <option value="" disabled selected>-- Chọn Rạp --</option>
-                            </select>
-                        </div>
-                        <div class="qb-step">
-                            <label>3. Chọn Ngày</label>
-                            <select id="qb-date" disabled>
-                                <option value="" disabled selected>-- Chọn Ngày --</option>
-                            </select>
-                        </div>
-                        <div class="qb-step">
-                            <label>4. Chọn Suất</label>
-                            <select id="qb-showtime" disabled>
-                                <option value="" disabled selected>-- Chọn Suất Chiếu --</option>
-                            </select>
-                        </div>
-                        <button id="qb-submit" class="qb-btn" disabled>Tiếp tục</button>
-                    </div>
+                <a href="${srcPrefix}/booking/booking-food/index.html">Đặt đồ ăn</a>
+                <div class="cine-match-wrapper">
+                    <a href="${srcPrefix}/engagement/cinematch/index.html" class="cine-match-nav" style="color: var(--primary-red, #e50914); font-weight: bold;">
+                        Cine-Match <i class="fas fa-heart" style="font-size:0.9rem; margin-left:4px; animation: heartbeat 1.5s infinite;"></i>
+                    </a>
                 </div>
             </nav>
         </div>
@@ -105,7 +70,7 @@ export function renderNavbar() {
                     <ul style="list-style:none; padding:0; margin:0;">
                         
                         <li><a href="${srcPrefix}/engagement/minigame/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-gamepad" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Cine Predict</a></li>
-                        <li><a href="${srcPrefix}/booking/group-booking/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-users" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Đặt & Giữ ghế nhóm</a></li>
+                        <li><a href="${srcPrefix}/explore/movie-search/index.html?tab=now-showing" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-heart" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Cine-Match (Ghép đôi)</a></li>
                         <li><a href="${srcPrefix}/user/user-notifications/index.html?tab=promo" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-ticket-alt" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Khuyến mãi</a></li>
                         <li><a href="${srcPrefix}/user/loyalty-points/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-crown" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Gói hội viên</a></li>
                     </ul>
@@ -1255,7 +1220,7 @@ export function renderNavbar() {
                 if (oldNotifBtn) oldNotifBtn.remove();
                 if (oldUserBtn) oldUserBtn.remove();
 
-                const userName = session.name || 'Khách';
+                const userName = (session.fullname || session.name) || 'Khách';
                 const defaultAvatar = `${srcPrefix}/shared/images/avatar.jpg`;
                 const userAvatar = session.avatar || defaultAvatar;
                 
@@ -1541,6 +1506,49 @@ export function renderNavbar() {
                 notifs = [];
             }
 
+            // --- SYNC WITH BOOKING DATA ---
+            try {
+                const bookings = JSON.parse(localStorage.getItem('cinema_bookings') || '[]');
+                const existingBookingNotifs = notifs.filter(n => n.category === 'booking');
+                // Retain non-booking notifs
+                notifs = notifs.filter(n => n.category !== 'booking');
+                
+                bookings.forEach(b => {
+                    const bId = b.id || '';
+                    const notifId = 'notif_' + bId;
+                    const existing = existingBookingNotifs.find(n => n.id === notifId);
+                    
+                    const isCancelled = b.status === 'Cancelled' || b.status === 'cancelled';
+                    const title = isCancelled ? 'Đã hủy vé thành công!' : 'Đặt vé thành công!';
+                    
+                    // Format date & time
+                    let timeText = b.showtimeText || b.time || 'N/A';
+                    if (b.date) {
+                        timeText += ', ' + b.date;
+                    }
+
+                    const text = `${b.movieTitle || 'Phim'} - Suất ${timeText}`;
+                    const time = existing ? existing.timestamp : (b.createdAt || Date.now());
+                    // default to true for newly synced ones
+                    const unread = existing ? existing.unread : true;
+                    
+                    notifs.push({
+                        id: notifId,
+                        category: 'booking',
+                        bookingId: bId,
+                        title: title,
+                        text: text,
+                        timestamp: time,
+                        unread: unread
+                    });
+                });
+                
+                localStorage.setItem('3hd2k_notifications', JSON.stringify(notifs));
+            } catch (e) {
+                console.error('Error syncing booking notifications', e);
+            }
+            // ------------------------------
+
             // Sort by timestamp desc
             notifs.sort((a, b) => b.timestamp - a.timestamp);
 
@@ -1560,7 +1568,7 @@ export function renderNavbar() {
                     const iconInfo = getNotifIcon(n.category);
                     const bId = n.bookingId || (n.id && n.id.startsWith('notif_') ? n.id.replace('notif_', '') : '');
                     return `
-                        <li class="notif-item ${n.unread ? 'unread' : ''}" data-id="${n.id}" ${bId ? `onclick="window.location.href='/user/user-profile/profile.html?tab=history&bookingId=${bId}'" style="cursor: pointer;"` : ''}>
+                        <li class="notif-item ${n.unread ? 'unread' : ''}" data-id="${n.id}" ${bId ? `onclick="window.location.href='${srcPrefix}/user/user-profile/profile.html?tab=history&bookingId=${bId}'" style="cursor: pointer;"` : ''}>
                             <div class="notif-icon-wrap ${iconInfo.wrap}"><i class="${iconInfo.icon}"></i></div>
                             <div class="notif-body">
                                 <p class="notif-text"><strong>${n.title}</strong> ${n.text}</p>

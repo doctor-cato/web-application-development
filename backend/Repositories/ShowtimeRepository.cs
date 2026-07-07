@@ -1,4 +1,4 @@
-﻿using appweb.Infrastructure;
+using appweb.Infrastructure;
 using appweb.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,13 +20,13 @@ namespace appweb.Repositories
         }
 
         // Lấy chi tiết suất chiếu theo Id kiểu int
-        public async Task<Showtime?> GetByIdAsync(int id)
+        public async Task<Showtime?> GetByIdAsync(Guid id)
         {
             return await _context.Showtimes.FirstOrDefaultAsync(s => s.Id == id);
         }
 
         // Lọc suất chiếu theo MovieId kiểu int
-        public async Task<List<Showtime>> GetByMovieIdAsync(int movieId)
+        public async Task<List<Showtime>> GetByMovieIdAsync(Guid movieId)
         {
             return await _context.Showtimes.Where(s => s.MovieId == movieId).ToListAsync();
         }
@@ -39,14 +39,14 @@ namespace appweb.Repositories
         }
 
         // Cập nhật lịch chiếu
-        public async Task UpdateAsync(int id, Showtime showtime)
+        public async Task UpdateAsync(Guid id, Showtime showtime)
         {
             _context.Showtimes.Update(showtime);
             await _context.SaveChangesAsync();
         }
 
         // Xóa lịch chiếu theo Id kiểu int
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(Guid id)
         {
             var showtime = await GetByIdAsync(id);
             if (showtime != null)

@@ -1,13 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace appweb.Models;
 
 public partial class Room
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 
-    public int? CinemaId { get; set; }
+    public Guid? CinemaId { get; set; }
 
     public string Name { get; set; } = null!;
 
@@ -19,3 +19,4 @@ public partial class Room
 
     public virtual ICollection<Showtime> Showtimes { get; set; } = new List<Showtime>();
 }
+

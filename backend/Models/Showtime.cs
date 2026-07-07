@@ -1,15 +1,15 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace appweb.Models;
 
 public partial class Showtime
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 
-    public int? MovieId { get; set; }
+    public Guid? MovieId { get; set; }
 
-    public int? RoomId { get; set; }
+    public Guid? RoomId { get; set; }
 
     public DateTime StartTime { get; set; }
 
@@ -25,3 +25,4 @@ public partial class Showtime
 
     public virtual Room? Room { get; set; }
 }
+

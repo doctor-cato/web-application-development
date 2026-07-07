@@ -1,0 +1,1899 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3HD2K - Nhân Viên Bán Hàng (POS)</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        /* Base styles from Parent App (Cinematic Noir / Glassmorphism) */
+        :root {
+            --primary-red: #E50914;
+            --neon-red-glow: 0 0 10px rgba(229, 9, 20, 0.4);
+            --btn-green-color: #0df286;
+            --btn-green-glow: 0 0 15px rgba(13, 242, 134, 0.4);
+            --bg-color: #0c0c0c;
+            --bg-elevated: #1a1a1a;
+            --text-main: #f5f5f5;
+            --text-muted: #888888;
+            --glass-bg: rgba(255, 255, 255, 0.04);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --btn-cyan-color: #00f0ff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Glass Panel */
+        .glass-panel {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 8px;
+        }
+
+        /* Button base */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            border: none;
+            color: #fff;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        /* LEFT COLUMN: STAFF SIDEBAR (APP QUEUE) */
+        .admin-sidebar {
+            width: 380px;
+            height: 100vh;
+            background: rgba(12, 12, 12, 0.95);
+            border-right: 1px solid var(--glass-border);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 110;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .sidebar-header .logo {
+            font-family: 'Inter', sans-serif;
+            font-size: 2.2rem;
+            color: var(--primary-red);
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(229, 9, 20, 0.5);
+            text-decoration: none;
+        }
+
+        .portal-badge {
+            font-size: 0.6875rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+        }
+
+        /* Search input with absolute icon fix */
+        .search-box {
+            position: relative;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            z-index: 2;
+            pointer-events: none;
+            transition: color 0.3s ease;
+        }
+
+        .search-box input {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--glass-border);
+            border-radius: 6px;
+            padding: 12px 16px 12px 38px;
+            outline: none;
+            color: #fff;
+            font-size: 0.9rem;
+            width: 100%;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .search-box input:focus {
+            border-color: var(--btn-green-color);
+            box-shadow: 0 0 10px rgba(13, 242, 134, 0.25);
+            background: rgba(0, 0, 0, 0.6);
+        }
+
+        .search-box:focus-within i {
+            color: var(--btn-green-color);
+        }
+
+        /* App Orders Scroll List */
+        .orders-list {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding-right: 5px;
+        }
+
+        /* Custom Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.1);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255,255,255,0.25);
+        }
+
+        /* App Order Card */
+        .order-card {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 6px;
+        }
+
+        .order-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: var(--btn-green-color);
+            box-shadow: 0 0 10px rgba(13, 242, 134, 0.6);
+        }
+
+        .order-card:hover {
+            border-color: rgba(13, 242, 134, 0.3);
+            background: rgba(255,255,255,0.06);
+        }
+
+        .order-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .order-customer {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .order-id {
+            font-size: 0.75rem;
+            font-family: monospace;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: var(--text-muted);
+        }
+
+        .order-items {
+            font-size: 0.85rem;
+            color: var(--text-main);
+            margin: 4px 0;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        .order-time {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Confirm Delivery Button */
+        .btn-confirm-delivery {
+            background-color: var(--btn-green-color);
+            box-shadow: var(--btn-green-glow);
+            color: #000;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 10px 14px;
+            border-radius: 6px;
+            white-space: nowrap;
+            height: fit-content;
+            font-weight: 800;
+        }
+
+        .btn-confirm-delivery:hover {
+            background-color: #0be07b;
+            box-shadow: 0 0 20px rgba(13, 242, 134, 0.6);
+            transform: translateY(-1px);
+        }
+
+        /* Profile in Sidebar Footer */
+        .sidebar-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .admin-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .admin-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        .admin-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .admin-name {
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: #ffffff;
+            line-height: 1.2;
+        }
+
+        .admin-role {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .btn-logout {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            transition: color 0.25s;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-logout:hover {
+            color: var(--btn-cyan-color);
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
+        }
+
+        /* RIGHT COLUMN: MAIN CONTENT WRAPPER */
+        .admin-wrapper {
+            flex-grow: 1;
+            height: 100vh;
+            margin-left: 380px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background-color: var(--bg-color);
+        }
+
+        /* Header Styling matching 3HD2K_Admin */
+        .admin-header {
+            height: 70px;
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 24px;
+            z-index: 100;
+            background: rgba(12, 12, 12, 0.4);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .header-left h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: #fff;
+        }
+
+        .header-left p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .time-widget, .notification-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+        }
+        
+        .notification-pill {
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+
+        .notification-pill .badge {
+            background: var(--primary-red);
+            color: #fff;
+            padding: 2px 6px;
+            font-size: 0.7rem;
+            border-radius: 10px;
+            font-weight: 700;
+        }
+
+        .view-site-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            background: transparent;
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            transition: all 0.25s ease;
+            cursor: pointer;
+        }
+
+        .view-site-btn:hover {
+            border-color: var(--btn-cyan-color);
+            color: var(--btn-cyan-color);
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+        }
+
+        /* POS Filter Tab Bar */
+        .pos-tabs {
+            display: flex;
+            gap: 10px;
+            padding: 15px 24px 5px 24px;
+        }
+
+        .pos-tab {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--glass-border);
+            color: var(--text-muted);
+            padding: 10px 18px;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .pos-tab:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .pos-tab.active {
+            background: rgba(229, 9, 20, 0.12);
+            border-color: var(--primary-red);
+            color: #fff;
+            box-shadow: var(--neon-red-glow);
+        }
+
+        /* POS Grid Scroll Area */
+        .pos-grid-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px 24px 20px 24px;
+        }
+
+        .pos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 18px;
+        }
+
+        /* POS Item Card */
+        .pos-item-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .pos-item-card:hover {
+            border-color: var(--primary-red);
+            box-shadow: var(--neon-red-glow);
+            transform: translateY(-2px);
+        }
+
+        .pos-item-img {
+            height: 105px;
+            width: 100%;
+            object-fit: cover;
+            background-color: rgba(0,0,0,0.5);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .pos-item-info {
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            justify-content: space-between;
+        }
+
+        .pos-item-name {
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: #fff;
+            line-height: 1.4;
+            margin-bottom: 8px;
+            min-height: 2.8em;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .pos-item-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 5px;
+        }
+
+        .pos-item-price {
+            color: var(--btn-green-color);
+            font-weight: 800;
+            font-size: 0.95rem;
+        }
+
+        .pos-item-stock {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .pos-item-card.out-of-stock {
+            opacity: 0.4;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .pos-item-card.out-of-stock::after {
+            content: 'HẾT NGUYÊN LIỆU';
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            color: var(--primary-red);
+            font-weight: 800;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            letter-spacing: 0.5px;
+        }
+
+        /* Bottom Checkout Panel */
+        .checkout-panel {
+            border-top: 1px solid var(--glass-border);
+            background: rgba(18, 18, 18, 0.95);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            padding: 15px 24px;
+            display: flex;
+            gap: 24px;
+            align-items: stretch;
+            height: 220px;
+        }
+
+        /* Cart Column */
+        .cart-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--glass-border);
+            padding-right: 20px;
+        }
+
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .cart-header h3 {
+            font-size: 0.85rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-clear-cart {
+            background: transparent;
+            border: none;
+            color: var(--primary-red);
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .cart-items-list {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.875rem;
+        }
+
+        .cart-item-name {
+            font-weight: 600;
+            color: #fff;
+            max-width: 55%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .cart-item-qty-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--glass-border);
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+
+        .cart-qty-btn {
+            background: transparent;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            font-size: 0.75rem;
+            width: 14px;
+            height: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cart-item-qty {
+            font-size: 0.85rem;
+            font-weight: 700;
+            min-width: 16px;
+            text-align: center;
+        }
+
+        .cart-item-price {
+            font-weight: 700;
+            color: var(--btn-green-color);
+            min-width: 75px;
+            text-align: right;
+        }
+
+        /* Loyalty Section */
+        .loyalty-section {
+            width: 260px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            border-right: 1px solid var(--glass-border);
+            padding-right: 20px;
+        }
+
+        .loyalty-header {
+            font-size: 0.85rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+        }
+
+        .loyalty-input-wrapper {
+            position: relative;
+        }
+
+        .loyalty-input-wrapper input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--glass-border);
+            border-radius: 4px;
+            padding: 10px 10px 10px 32px;
+            color: #fff;
+            font-size: 0.875rem;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .loyalty-input-wrapper input:focus {
+            border-color: var(--btn-cyan-color);
+        }
+
+        .loyalty-input-wrapper i {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .loyalty-status-box {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--glass-border);
+            border-radius: 4px;
+            padding: 10px;
+            font-size: 0.8rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .loyalty-status-name {
+            font-weight: 700;
+            color: var(--btn-cyan-color);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .loyalty-status-points {
+            font-weight: 600;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Checkout Action Column */
+        .actions-section {
+            width: 220px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .total-box {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .total-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        .total-value {
+            font-size: 1.7rem;
+            font-weight: 900;
+            color: var(--btn-green-color);
+            line-height: 1;
+        }
+
+        .payment-methods {
+            display: flex;
+            gap: 6px;
+            margin: 8px 0;
+        }
+
+        .payment-btn {
+            flex: 1;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--glass-border);
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            padding: 8px 0;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 700;
+            transition: all 0.2s ease;
+        }
+
+        .payment-btn.active {
+            background: rgba(0, 240, 255, 0.1);
+            border-color: var(--btn-cyan-color);
+            color: var(--btn-cyan-color);
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.25);
+        }
+
+        .btn-checkout-submit {
+            background-color: var(--btn-green-color);
+            box-shadow: var(--btn-green-glow);
+            color: #000;
+            width: 100%;
+            padding: 12px 0;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 800;
+        }
+
+        .btn-checkout-submit:hover {
+            background-color: #0be07b;
+            box-shadow: 0 0 20px rgba(13, 242, 134, 0.6);
+        }
+
+        .btn-checkout-submit:disabled {
+            background-color: #2b3a32;
+            color: #555;
+            box-shadow: none;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        /* Success & VIP Modals */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 999;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            width: 100%;
+            max-width: 400px;
+            padding: 25px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            position: relative;
+        }
+
+        .modal-close-btn {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+
+        .modal-close-btn:hover {
+            color: #fff;
+        }
+
+        /* Toast notifications */
+        #toast-notification {
+            position: fixed;
+            bottom: 240px;
+            left: 400px;
+            background: rgba(13, 242, 134, 0.95);
+            color: #000;
+            font-weight: 800;
+            padding: 12px 20px;
+            border-radius: 6px;
+            z-index: 1000;
+            font-size: 0.9rem;
+            box-shadow: 0 0 15px rgba(13, 242, 134, 0.4);
+            transform: translateY(30px);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        #toast-notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    </style>
+    <script>
+        // Auth check for Staff Sales
+        (function() {
+            const token = localStorage.getItem('auth_token');
+            if (!token) {
+                window.location.href = '/auth/user-login/login.html';
+                return;
+            }
+            let user = null;
+            try {
+                user = JSON.parse(decodeURIComponent(atob(token)));
+                if (user.role !== 'ADMIN' && user.role !== 'STAFF') {
+                    window.location.href = '../explore/home-page/index.html';
+                    return;
+                }
+            } catch (e) {
+                window.location.href = '/auth/user-login/login.html';
+                return;
+            }
+            
+            // Hide Admin link if not Admin
+            document.addEventListener('DOMContentLoaded', function() {
+                if (user && user.role !== 'ADMIN') {
+                    const adminBtn = document.getElementById('btn-switch-admin');
+                    if (adminBtn) adminBtn.style.display = 'none';
+                }
+            });
+        })();
+    </script>
+</head>
+<body class="admin-body">
+
+    <!-- LEFT COLUMN: STAFF SIDEBAR (APP QUEUE) -->
+    <aside class="admin-sidebar">
+        <div class="sidebar-header">
+            <a href="#" class="logo">3HD2K</a>
+            <span class="portal-badge" style="color: var(--btn-green-color); text-shadow: 0 0 5px rgba(13, 242, 134, 0.3);">STAFF PORTAL</span>
+        </div>
+        
+        <!-- App Queue content inside the sidebar -->
+        <div style="flex-grow: 1; padding: 20px 24px; display: flex; flex-direction: column; gap: 15px; overflow: hidden;">
+            <div class="column-header" style="margin-bottom: 5px;">
+                <h2 style="font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-ticket-alt" style="color: var(--btn-green-color);"></i> Đơn Đặt Trước (App Queue)
+                </h2>
+                <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 3px;">Nhập SĐT hoặc quét QR để giao đồ ăn uống</p>
+            </div>
+
+            <!-- QR code / Phone search -->
+            <div class="search-box">
+                <i class="fas fa-qrcode"></i>
+                <input type="text" id="order-scan-search" placeholder="Quét mã QR hoặc nhập SĐT..." oninput="filterAppOrders()">
+            </div>
+
+            <!-- Scrollable list of orders -->
+            <div class="orders-list" id="app-orders-container" style="flex-grow: 1; overflow-y: auto;">
+                <!-- Orders rendered dynamically -->
+            </div>
+        </div>
+
+        <div class="sidebar-footer">
+            <div class="admin-profile">
+                <div class="admin-avatar" style="background: var(--btn-green-color); color: #000; font-weight: 800;">S</div>
+                <div class="admin-info">
+                    <p class="admin-name">Nhân viên POS</p>
+                    <p class="admin-role">Cashier & Service</p>
+                </div>
+            </div>
+            <a href="#" onclick="localStorage.removeItem('auth_token'); localStorage.removeItem('3hd2k_is_logged_in'); window.location.href='../auth/user-login/login.html';" class="btn-logout" title="Đăng xuất">
+                <i class="fas fa-sign-out-alt"></i>
+            </a>
+        </div>
+    </aside>
+
+    <!-- RIGHT COLUMN: MAIN CONTENT (POS GRID & CHECKOUT) -->
+    <div class="admin-wrapper" style="width: calc(100% - 380px);">
+        <!-- HEADER matching 3HD2K_Admin -->
+        <header class="admin-header">
+            <div class="header-left">
+                <h1>Quầy Bán Hàng</h1>
+                <p>Thao tác bán hàng trực tiếp và xử lý đơn đặt trước</p>
+            </div>
+            <div class="header-right">
+                <div class="time-widget glass-panel">
+                    <i class="far fa-clock"></i>
+                    <span id="live-time">14:45:48</span>
+                </div>
+                <div class="notification-pill glass-panel" onclick="showToast('Hệ thống hoạt động bình thường')">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge">0</span>
+                </div>
+                <a href="admin.html" class="view-site-btn btn-outline-small" id="btn-switch-admin">
+                    <i class="fas fa-external-link-alt"></i> Quản Lý Admin
+                </a>
+            </div>
+        </header>
+
+        <!-- POS Filter Tab Bar -->
+        <div class="pos-tabs" id="pos-category-tabs">
+            <button class="pos-tab active" data-cat="all" onclick="filterPOSCategory('all')">Tất cả</button>
+            <button class="pos-tab" data-cat="Bắp" onclick="filterPOSCategory('Bắp')">Bắp Popcorn</button>
+            <button class="pos-tab" data-cat="Nước" onclick="filterPOSCategory('Nước')">Nước Giải Khát</button>
+            <button class="pos-tab" data-cat="Combo" onclick="filterPOSCategory('Combo')">Combo Ưu Đãi</button>
+        </div>
+
+        <!-- POS Grid Scroll Area -->
+        <div class="pos-grid-container">
+            <div class="pos-grid" id="pos-products-grid">
+                <!-- Products rendered dynamically -->
+            </div>
+        </div>
+
+        <!-- Checkout Panel -->
+        <div class="checkout-panel">
+            
+            <!-- Cart display -->
+            <div class="cart-section">
+                <div class="cart-header">
+                    <h3>Giỏ hàng trực tiếp</h3>
+                    <button class="btn-clear-cart" onclick="clearCart()">Xóa tất cả</button>
+                </div>
+                <div class="cart-items-list" id="cart-container">
+                    <!-- Items rendered dynamically -->
+                </div>
+            </div>
+
+            <!-- Loyalty / SĐT input -->
+            <div class="loyalty-section">
+                <div class="loyalty-header">Khách hàng VIP / Tích điểm</div>
+                <div class="loyalty-input-wrapper">
+                    <i class="fas fa-phone"></i>
+                    <input type="text" id="loyalty-phone-input" placeholder="Nhập Số điện thoại..." oninput="lookupVIPCustomer()">
+                </div>
+                <div class="loyalty-status-box" id="loyalty-status-container">
+                    <div style="color: var(--text-muted); text-align: center; font-style: italic;">Chưa nhập SĐT tích điểm</div>
+                </div>
+            </div>
+
+            <!-- Action / Submit -->
+            <div class="actions-section">
+                <div class="total-box">
+                    <span class="total-label">Tổng tiền thanh toán</span>
+                    <span class="total-value" id="cart-total-value">0đ</span>
+                </div>
+                <div class="payment-methods">
+                    <button class="payment-btn active" onclick="setPaymentMethod('cash')" id="pay-cash">Tiền mặt</button>
+                    <button class="payment-btn" onclick="setPaymentMethod('card')" id="pay-card">Thẻ ATM</button>
+                    <button class="payment-btn" onclick="setPaymentMethod('qr')" id="pay-qr">Mã QR</button>
+                </div>
+                <button class="btn btn-checkout-submit" id="btn-checkout-action" onclick="submitPOSSale()" disabled>
+                    XUẤT HĐ & GIAO ĐỒ
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- SUCCESS RECEIPT MODAL -->
+    <div class="modal" id="success-modal">
+        <div class="modal-content glass-panel" style="border-color: var(--btn-green-color); box-shadow: var(--btn-green-glow); max-width: 380px;">
+            <button class="modal-close-btn" onclick="closeSuccessModal()">&times;</button>
+            <div style="text-align: center; padding: 10px 0;">
+                <i class="fas fa-check-circle" style="color: var(--btn-green-color); font-size: 3.5rem; margin-bottom: 10px;"></i>
+                <h3 style="color: #fff; font-size: 1.3rem;">GIAO ĐỒ THÀNH CÔNG</h3>
+                <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 4px;">Đã ghi nhận doanh thu và cập nhật kho vật tư</p>
+            </div>
+            <div style="border-top: 1px dashed var(--glass-border); border-bottom: 1px dashed var(--glass-border); padding: 15px 0; font-size: 0.85rem; display: flex; flex-direction: column; gap: 8px;">
+                <div style="display: flex; justify-content: space-between;"><span style="color: var(--text-muted);">Mã giao dịch:</span><strong id="modal-receipt-id" style="font-family: monospace;">-</strong></div>
+                <div style="display: flex; justify-content: space-between;"><span style="color: var(--text-muted);">Khách hàng:</span><strong id="modal-receipt-customer">-</strong></div>
+                <div style="display: flex; justify-content: space-between;"><span style="color: var(--text-muted);">Chi tiết:</span><span id="modal-receipt-details" style="font-weight: 600; text-align: right; max-width: 60%; word-break: break-all;">-</span></div>
+                <div style="display: flex; justify-content: space-between;"><span style="color: var(--text-muted);">Tổng thanh toán:</span><strong id="modal-receipt-total" style="color: var(--btn-green-color); font-size: 1rem;">-</strong></div>
+                <div style="display: flex; justify-content: space-between;" id="modal-points-wrapper"><span style="color: var(--text-muted);">Điểm thành viên:</span><strong id="modal-receipt-points" style="color: var(--btn-cyan-color);">-</strong></div>
+            </div>
+            <button class="btn" style="background-color: var(--btn-green-color); color: #000; font-weight: 700; width: 100%;" onclick="closeSuccessModal()">HOÀN THÀNH</button>
+        </div>
+    </div>
+
+    <!-- QR PAYMENT MODAL -->
+    <div class="modal" id="qr-modal">
+        <div class="modal-content glass-panel" style="max-width: 350px; text-align: center; border-color: var(--btn-cyan-color); box-shadow: var(--btn-cyan-glow);">
+            <button class="modal-close-btn" onclick="document.getElementById('qr-modal').style.display='none'">&times;</button>
+            <h3 style="color: #fff; margin-bottom: 10px;">Thanh Toán Mã QR</h3>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 15px;">Khách hàng quét mã để thanh toán</p>
+            <div style="background: white; padding: 10px; border-radius: 8px; display: inline-block; margin-bottom: 15px;">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=3HD2K_PAYMENT" alt="QR Code" style="width: 200px; height: 200px;">
+            </div>
+            <h2 id="qr-total-amount" style="color: var(--btn-cyan-color); margin-bottom: 20px;">0đ</h2>
+            <button class="btn" style="background-color: var(--btn-green-color); color: #000; width: 100%; font-weight: bold;" onclick="confirmQRPayment()">Xác nhận Đã Thanh Toán</button>
+        </div>
+    </div>
+
+    <!-- POS SWIPE MODAL -->
+    <div class="modal" id="pos-modal">
+        <div class="modal-content glass-panel" style="max-width: 350px; text-align: center; border-color: var(--btn-cyan-color); box-shadow: var(--btn-cyan-glow);">
+            <h3 style="color: #fff; margin-bottom: 10px;">Quẹt Thẻ POS</h3>
+            <p id="pos-status-text" style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 25px;">Đang chờ quẹt thẻ / chạm thẻ POS...</p>
+            
+            <div style="position: relative; height: 120px; display: flex; justify-content: center; align-items: center; margin-bottom: 25px; overflow: hidden; border-radius: 8px; background: rgba(0,0,0,0.2);">
+                <i class="fas fa-cash-register" style="font-size: 4rem; color: #555; position: relative; z-index: 1;"></i>
+                <i id="pos-card-icon" class="fas fa-credit-card" style="font-size: 3rem; color: var(--btn-cyan-color); position: absolute; top: -50px; z-index: 2; transition: all 1s cubic-bezier(0.25, 0.1, 0.25, 1);"></i>
+                <i id="pos-success-icon" class="fas fa-check-circle" style="font-size: 3.5rem; color: var(--btn-green-color); position: absolute; z-index: 3; display: none; background: #000; border-radius: 50%;"></i>
+            </div>
+            
+            <h2 id="pos-total-amount" style="color: var(--btn-cyan-color); margin-bottom: 10px;">0đ</h2>
+            <div class="loader-line" id="pos-loader" style="width: 100%; height: 3px; background: rgba(255,255,255,0.1); overflow: hidden; border-radius: 2px;">
+                <style>
+                    @keyframes posSlide { 0% { transform: translateX(-100%); } 100% { transform: translateX(200%); } }
+                </style>
+                <div style="width: 50%; height: 100%; background: var(--btn-cyan-color); animation: posSlide 1s infinite alternate;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NEW VIP MEMBER REGISTRATION MODAL -->
+    <div class="modal" id="vip-modal">
+        <div class="modal-content glass-panel" style="border-color: var(--btn-cyan-color); box-shadow: 0 0 15px rgba(0, 240, 255, 0.3); max-width: 360px;">
+            <button class="modal-close-btn" onclick="closeVIPModal()">&times;</button>
+            <div style="text-align: center;">
+                <i class="fas fa-id-card" style="color: var(--btn-cyan-color); font-size: 2.2rem; margin-bottom: 8px;"></i>
+                <h3 style="color: #fff; font-size: 1.15rem;">ĐĂNG KÝ VIP THÀNH VIÊN</h3>
+                <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 4px;">SĐT này chưa kích hoạt tích điểm. Tạo thẻ VIP mới.</p>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;">
+                <div style="display: flex; flex-direction: column; gap: 5px;">
+                    <label style="font-size: 0.75rem; color: var(--text-muted);">Số điện thoại</label>
+                    <input type="text" id="vip-modal-phone" disabled style="background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); padding: 8px 10px; border-radius: 4px; color: #888; font-family: monospace;">
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 5px;">
+                    <label style="font-size: 0.75rem; color: var(--text-main); font-weight: 600;">Họ và tên khách hàng</label>
+                    <input type="text" id="vip-modal-name" placeholder="Nhập họ và tên..." style="background: rgba(0,0,0,0.5); border: 1px solid var(--glass-border); padding: 8px 10px; border-radius: 4px; color: #fff; outline: none; font-size: 0.9rem;">
+                </div>
+            </div>
+            <button class="btn" style="background-color: var(--btn-cyan-color); color: #000; font-weight: 700; width: 100%;" onclick="submitVIPRegister()">KÍCH HOẠT THẺ VIP</button>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toast-notification">Đã thêm vào giỏ hàng!</div>
+
+    <!-- SOUND PLAYBACK AND SCRIPT -->
+    <script>
+        // --- Web Audio API Synth for Beep Sounds ---
+        let audioCtx = null;
+        function playBeep(type) {
+            try {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                if (type === 'scan') {
+                    // Quick high double beep
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(880, audioCtx.currentTime); // A5
+                    gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.08);
+                    
+                    setTimeout(() => {
+                        const osc2 = audioCtx.createOscillator();
+                        const gain2 = audioCtx.createGain();
+                        osc2.connect(gain2);
+                        gain2.connect(audioCtx.destination);
+                        osc2.type = 'sine';
+                        osc2.frequency.setValueAtTime(1200, audioCtx.currentTime); // Higher
+                        gain2.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                        osc2.start();
+                        osc2.stop(audioCtx.currentTime + 0.1);
+                    }, 100);
+                } else if (type === 'success') {
+                    // Upward arpeggio
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+                    gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                    osc.start();
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+                    osc.stop(audioCtx.currentTime + 0.4);
+                } else if (type === 'click') {
+                    // Subtler short click
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+                    gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+                    osc.start();
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
+                    osc.stop(audioCtx.currentTime + 0.05);
+                }
+            } catch (e) {
+                console.log("Audio not supported or blocked: ", e);
+            }
+        }
+
+        // --- Mock Data Initialization ---
+        const DEFAULT_INVENTORY = [
+            { id: "INV-001", name: "Bắp Ngọt", category: "Nguyên liệu", qty: 120, min: 20, unit: "Hộp", expiry: "18/07/2026", online: true },
+            { id: "INV-002", name: "Bắp Phô Mai", category: "Nguyên liệu", qty: 95, min: 20, unit: "Hộp", expiry: "18/07/2026", online: true },
+            { id: "INV-003", name: "Pepsi Lon", category: "Đồ uống", qty: 150, min: 30, unit: "Lon", expiry: "25/12/2026", online: true },
+            { id: "INV-004", name: "Coca-Cola Chai", category: "Đồ uống", qty: 110, min: 30, unit: "Chai", expiry: "10/01/2027", online: true },
+            { id: "INV-005", name: "Nước Khoáng", category: "Đồ uống", qty: 80, min: 25, unit: "Chai", expiry: "30/05/2027", online: true },
+            { id: "INV-006", name: "Ly Giấy 22oz", category: "Bao bì", qty: 200, min: 50, unit: "Cái", expiry: "-", online: true },
+            { id: "INV-007", name: "Hộp Bắp Giấy", category: "Bao bì", qty: 250, min: 50, unit: "Cái", expiry: "-", online: true },
+            { id: "INV-008", name: "Bắp Caramel", category: "Nguyên liệu", qty: 110, min: 20, unit: "Hộp", expiry: "18/07/2026", online: true },
+            { id: "INV-009", name: "7Up Lon", category: "Đồ uống", qty: 140, min: 30, unit: "Lon", expiry: "15/02/2027", online: true },
+            { id: "INV-010", name: "Fanta Cam Lon", category: "Đồ uống", qty: 125, min: 25, unit: "Lon", expiry: "10/03/2027", online: true }
+        ];
+
+        const DEFAULT_ORDERS = [
+            { id: "QR-3HD2K-82910", customerName: "Huy Trần", phone: "0987654321", itemsText: "1 Bắp Ngọt + 1 Pepsi", items: [{ prodId: "PROD-001", name: "Bắp Ngọt (Lớn)", qty: 1 }, { prodId: "PROD-003", name: "Pepsi Lon 330ml", qty: 1 }], totalAmount: 70000, dateCreated: "2026-06-18T14:10:00Z" },
+            { id: "QR-3HD2K-98172", customerName: "Mai Nguyễn", phone: "0977665544", itemsText: "1 Bắp Phô Mai + 2 Coca-Cola", items: [{ prodId: "PROD-002", name: "Bắp Phô Mai (Lớn)", qty: 1 }, { prodId: "PROD-004", name: "Coca-Cola Chai", qty: 2 }], totalAmount: 105000, dateCreated: "2026-06-18T14:20:00Z" },
+            { id: "QR-3HD2K-77182", customerName: "Đỗ Minh", phone: "0911223344", itemsText: "1 Combo Đôi (2 Bắp + 2 Pepsi)", items: [{ prodId: "PROD-007", name: "Combo Đôi (2 Bắp + 2 Pepsi)", qty: 1 }], totalAmount: 110000, dateCreated: "2026-06-18T14:35:00Z" }
+        ];
+
+        const SALE_PRODUCTS = [
+            { id: "PROD-001", name: "Bắp Ngọt (Lớn)", price: 45000, category: "Bắp", image: "https://images.unsplash.com/photo-1578242173167-73d84cbcd29d?auto=format&fit=crop&w=300&q=80", deduct: [{ id: "INV-001", qty: 1 }, { id: "INV-007", qty: 1 }] },
+            { id: "PROD-002", name: "Bắp Phô Mai (Lớn)", price: 55000, category: "Bắp", image: "https://images.unsplash.com/photo-1585647347483-22b66260dffd?auto=format&fit=crop&w=300&q=80", deduct: [{ id: "INV-002", qty: 1 }, { id: "INV-007", qty: 1 }] },
+            { id: "PROD-008", name: "Bắp Caramel (Lớn)", price: 55000, category: "Bắp", image: "https://images.unsplash.com/photo-1578242173167-73d84cbcd29d?auto=format&fit=crop&w=300&q=80", deduct: [{ id: "INV-008", qty: 1 }, { id: "INV-007", qty: 1 }] },
+            { id: "PROD-003", name: "Pepsi Lon 330ml", price: 25000, category: "Nước", image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=300&q=80", deduct: [{ id: "INV-003", qty: 1 }] },
+            { id: "PROD-004", name: "Coca-Cola Chai 390ml", price: 25000, category: "Nước", image: "https://images.unsplash.com/photo-1554866585-cd94860890b7?auto=format&fit=crop&w=300&q=80", deduct: [{ id: "INV-004", qty: 1 }] },
+            { id: "PROD-009", name: "7Up Lon 330ml", price: 25000, category: "Nước", image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=300&q=80", deduct: [{ id: "INV-009", qty: 1 }] },
+            { id: "PROD-010", name: "Fanta Cam Lon 330ml", price: 25000, category: "Nước", image: "https://images.unsplash.com/photo-1554866585-cd94860890b7?auto=format&fit=crop&w=300&q=80", deduct: [{ id: "INV-010", qty: 1 }] },
+            { id: "PROD-005", name: "Nước khoáng Aquafina", price: 15000, category: "Nước", image: "https://images.unsplash.com/photo-1548839140-29a749e1cf4d?auto=format&fit=crop&w=300&q=80", deduct: [{ id: "INV-005", qty: 1 }] },
+            { id: "PROD-006", name: "Combo Đơn (1 Bắp + 1 Nước)", price: 65000, category: "Combo", image: "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=300&q=80", deduct: [{ id: "INV-001", qty: 1 }, { id: "INV-003", qty: 1 }, { id: "INV-007", qty: 1 }] },
+            { id: "PROD-007", name: "Combo Đôi (2 Bắp + 2 Nước)", price: 110000, category: "Combo", image: "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=300&q=80", deduct: [{ id: "INV-001", qty: 2 }, { id: "INV-003", qty: 2 }, { id: "INV-007", qty: 2 }] },
+            { id: "PROD-011", name: "Combo Gia Đình (3 Bắp + 3 Nước)", price: 155000, category: "Combo", image: "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=300&q=80", deduct: [{ id: "INV-001", qty: 3 }, { id: "INV-003", qty: 3 }, { id: "INV-007", qty: 3 }, { id: "INV-006", qty: 3 }] }
+        ];
+
+        // Global variables for POS state
+        let cart = [];
+        let activePOSCategory = "all";
+        let activePaymentMethod = "cash";
+        let vipCustomer = null;
+
+        // Initialize LocalStorage Database if empty
+        function dbInit() {
+            let stored = localStorage.getItem("cinema_inventory");
+            if (!stored) {
+                localStorage.setItem("cinema_inventory", JSON.stringify(DEFAULT_INVENTORY));
+            } else {
+                // Merge new default items that don't exist yet
+                let current = JSON.parse(stored);
+                let currentIds = current.map(item => item.id);
+                let merged = [...current];
+                DEFAULT_INVENTORY.forEach(item => {
+                    if (!currentIds.includes(item.id)) {
+                        merged.push(item);
+                    }
+                });
+                localStorage.setItem("cinema_inventory", JSON.stringify(merged));
+            }
+            if (!localStorage.getItem("cinema_app_orders")) {
+                localStorage.setItem("cinema_app_orders", JSON.stringify(DEFAULT_ORDERS));
+            }
+            if (!localStorage.getItem("cinema_activity_log")) {
+                localStorage.setItem("cinema_activity_log", JSON.stringify([
+                    { time: new Date().toLocaleTimeString("vi-VN"), text: "Hệ thống POS khởi động thành công." }
+                ]));
+            }
+        }
+
+        // --- Live Clock ---
+        function updateClock() {
+            const timeEl = document.getElementById("live-time");
+            if (timeEl) {
+                timeEl.textContent = new Date().toLocaleTimeString("vi-VN");
+            }
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // --- Load & Render App Orders (Left Column) ---
+        function renderAppOrders() {
+            const container = document.getElementById("app-orders-container");
+            if (!container) return;
+
+            const orders = JSON.parse(localStorage.getItem("cinema_app_orders")) || [];
+            const searchVal = document.getElementById("order-scan-search").value.trim().toLowerCase();
+
+            // Filter by ID (e.g. QR code scan) or Phone number
+            const filtered = orders.filter(o => {
+                return o.id.toLowerCase().includes(searchVal) || o.phone.includes(searchVal);
+            });
+
+            // If a exact match for a QR code is scanned (length matching or exact)
+            if (searchVal.length > 5 && filtered.length === 1 && searchVal === filtered[0].id.toLowerCase()) {
+                // Play sound alert for barcode scanning
+                if (window.lastScannedCode !== filtered[0].id) {
+                    window.lastScannedCode = filtered[0].id;
+                    playBeep('scan');
+                    showToast("Quét mã thành công: " + filtered[0].customerName);
+                }
+            }
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; color: var(--text-muted); padding: 40px 10px; font-style: italic; font-size: 0.85rem;">
+                        <i class="fas fa-search-minus" style="font-size: 2rem; margin-bottom: 10px; opacity: 0.5; display: block; margin: 0 auto 10px auto;"></i>
+                        <p>Không tìm thấy đơn đặt trước.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = filtered.map(o => `
+                <div class="order-card">
+                    <div class="order-info">
+                        <div class="order-customer">
+                            ${o.customerName} 
+                            <span class="order-id">${o.id}</span>
+                        </div>
+                        <div class="order-items">${o.itemsText}</div>
+                        <div class="order-time">
+                            <i class="far fa-user"></i> SĐT: ${o.phone}
+                        </div>
+                    </div>
+                    <button class="btn btn-confirm-delivery" onclick="deliverAppOrder('${o.id}')">
+                        Giao Đồ
+                    </button>
+                </div>
+            `).join("");
+        }
+
+        // Giao đồ đặt trước qua App
+        window.deliverAppOrder = function(orderId) {
+            playBeep('success');
+            const orders = JSON.parse(localStorage.getItem("cinema_app_orders")) || [];
+            const inventory = JSON.parse(localStorage.getItem("cinema_inventory")) || [];
+            const users = JSON.parse(localStorage.getItem("3hd2k_users")) || [];
+            const orderIndex = orders.findIndex(o => o.id === orderId);
+
+            if (orderIndex === -1) return;
+            const order = orders[orderIndex];
+
+            // 1. Check & Deduct Inventory
+            let canDeduct = true;
+            let missingItems = [];
+
+            // Compile the list of ingredients to deduct
+            const deductList = {};
+            order.items.forEach(item => {
+                const prod = SALE_PRODUCTS.find(p => p.id === item.prodId);
+                if (prod && prod.deduct) {
+                    prod.deduct.forEach(d => {
+                        const totalQtyNeeded = d.qty * item.qty;
+                        deductList[d.id] = (deductList[d.id] || 0) + totalQtyNeeded;
+                    });
+                }
+            });
+
+            // Verify stock levels
+            for (const invId in deductList) {
+                const invItem = inventory.find(i => i.id === invId);
+                if (!invItem || invItem.qty < deductList[invId]) {
+                    canDeduct = false;
+                    missingItems.push(invItem ? invItem.name : "Vật liệu kho");
+                }
+            }
+
+            if (!canDeduct) {
+                alert(`Không thể giao đơn! Kho không đủ nguyên liệu chế biến: ${missingItems.join(", ")}`);
+                return;
+            }
+
+            // Deduct inventory
+            for (const invId in deductList) {
+                const invItem = inventory.find(i => i.id === invId);
+                invItem.qty = parseFloat((invItem.qty - deductList[invId]).toFixed(2));
+            }
+            localStorage.setItem("cinema_inventory", JSON.stringify(inventory));
+
+            // 2. Credit VIP points (1 point per 10,000đ spent)
+            const ptsEarned = Math.floor(order.totalAmount / 10000);
+            let vipName = "Khách vãng lai";
+            let pointsSummary = "";
+
+            const user = users.find(u => u.phone === order.phone || (u.email && u.email.includes(order.customerName.toLowerCase().replace(/\s/g, ''))));
+            if (user) {
+                user.points = (user.points || 0) + ptsEarned;
+                localStorage.setItem("3hd2k_users", JSON.stringify(users));
+                vipName = user.name;
+                pointsSummary = `${user.points} điểm VIP (+${ptsEarned})`;
+            }
+
+            // 3. Log sales transaction for admin dashboard
+            const logs = JSON.parse(localStorage.getItem("cinema_activity_log")) || [];
+            logs.unshift({
+                time: new Date().toLocaleTimeString("vi-VN"),
+                text: `POS giao đơn đặt trước: ${order.customerName} - Mã ${order.id} - Tổng tiền: ${order.totalAmount.toLocaleString('vi-VN')}đ.`
+            });
+            localStorage.setItem("cinema_activity_log", JSON.stringify(logs.slice(0, 50)));
+
+            // 4. Remove order from queue
+            orders.splice(orderIndex, 1);
+            localStorage.setItem("cinema_app_orders", JSON.stringify(orders));
+
+            // 5. Show receipt modal
+            document.getElementById("modal-receipt-id").textContent = order.id;
+            document.getElementById("modal-receipt-customer").textContent = `${order.customerName} (${order.phone})`;
+            document.getElementById("modal-receipt-details").textContent = order.itemsText;
+            document.getElementById("modal-receipt-total").textContent = order.totalAmount.toLocaleString('vi-VN') + "đ";
+            
+            if (pointsSummary) {
+                document.getElementById("modal-points-wrapper").style.display = "flex";
+                document.getElementById("modal-receipt-points").textContent = pointsSummary;
+            } else {
+                document.getElementById("modal-points-wrapper").style.display = "none";
+            }
+
+            document.getElementById("success-modal").classList.add("active");
+
+            // Reset search scan
+            document.getElementById("order-scan-search").value = "";
+            window.lastScannedCode = null;
+
+            // Re-render UI
+            renderAppOrders();
+            renderPOSProducts();
+            
+            // Notify other pages
+            window.dispatchEvent(new Event("storage"));
+        }
+
+        // Filter App Orders
+        window.filterAppOrders = function() {
+            renderAppOrders();
+        }
+
+        // --- POS Product Direct Sales (Right Column) ---
+        function getProductStockAvailable(prod) {
+            const inventory = JSON.parse(localStorage.getItem("cinema_inventory")) || [];
+            let maxAvailable = Infinity;
+
+            if (!prod.deduct || prod.deduct.length === 0) return 99;
+
+            prod.deduct.forEach(d => {
+                const invItem = inventory.find(i => i.id === d.id);
+                if (!invItem) {
+                    maxAvailable = 0;
+                    return;
+                }
+                const avail = Math.floor(invItem.qty / d.qty);
+                if (avail < maxAvailable) {
+                    maxAvailable = avail;
+                }
+            });
+
+            return maxAvailable;
+        }
+
+        function renderPOSProducts() {
+            const grid = document.getElementById("pos-products-grid");
+            if (!grid) return;
+
+            const filtered = SALE_PRODUCTS.filter(p => {
+                return activePOSCategory === "all" || p.category === activePOSCategory;
+            });
+
+            grid.innerHTML = filtered.map(p => {
+                const stock = getProductStockAvailable(p);
+                const isOutOfStock = stock <= 0;
+
+                return `
+                    <div class="pos-item-card ${isOutOfStock ? 'out-of-stock' : ''}" onclick="addToCart('${p.id}')">
+                        <img src="${p.image}" alt="${p.name}" class="pos-item-img">
+                        <div class="pos-item-info">
+                            <div class="pos-item-name">${p.name}</div>
+                            <div class="pos-item-meta">
+                                <span class="pos-item-price">${p.price.toLocaleString('vi-VN')}đ</span>
+                                <span class="pos-item-stock">Tồn: ${stock}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join("");
+        }
+
+        window.filterPOSCategory = function(cat) {
+            playBeep('click');
+            activePOSCategory = cat;
+            const tabs = document.querySelectorAll(".pos-tab");
+            tabs.forEach(t => {
+                t.classList.remove("active");
+                if (t.getAttribute("data-cat") === cat) {
+                    t.classList.add("active");
+                }
+            });
+            renderPOSProducts();
+        }
+
+        // --- POS Cart Handling ---
+        window.addToCart = function(prodId) {
+            const prod = SALE_PRODUCTS.find(p => p.id === prodId);
+            if (!prod) return;
+
+            const stock = getProductStockAvailable(prod);
+            if (stock <= 0) {
+                showToast("Sản phẩm đã hết nguyên liệu kho!");
+                return;
+            }
+
+            playBeep('click');
+
+            const cartItem = cart.find(item => item.product.id === prodId);
+            if (cartItem) {
+                if (cartItem.qty >= stock) {
+                    showToast("Không thể vượt quá số lượng tồn kho!");
+                    return;
+                }
+                cartItem.qty++;
+            } else {
+                cart.push({ product: prod, qty: 1 });
+            }
+
+            renderCart();
+            showToast(`Đã thêm ${prod.name}`);
+        }
+
+        window.updateCartQty = function(prodId, delta) {
+            playBeep('click');
+            const cartItem = cart.find(item => item.product.id === prodId);
+            if (!cartItem) return;
+
+            const stock = getProductStockAvailable(cartItem.product);
+
+            if (delta > 0 && cartItem.qty >= stock) {
+                showToast("Số lượng vượt quá tồn kho nguyên liệu!");
+                return;
+            }
+
+            cartItem.qty += delta;
+            if (cartItem.qty <= 0) {
+                cart = cart.filter(item => item.product.id !== prodId);
+            }
+
+            renderCart();
+        }
+
+        window.clearCart = function() {
+            playBeep('click');
+            cart = [];
+            renderCart();
+        }
+
+        function renderCart() {
+            const container = document.getElementById("cart-container");
+            const submitBtn = document.getElementById("btn-checkout-action");
+            const totalValEl = document.getElementById("cart-total-value");
+
+            if (!container || !submitBtn || !totalValEl) return;
+
+            if (cart.length === 0) {
+                container.innerHTML = `<div style="color: var(--text-muted); text-align: center; font-style: italic; font-size: 0.8rem; padding-top: 20px;">Giỏ hàng trống. Click chọn sản phẩm phía trên để bán.</div>`;
+                totalValEl.textContent = "0đ";
+                submitBtn.disabled = true;
+                return;
+            }
+
+            let total = 0;
+            container.innerHTML = cart.map(item => {
+                const cost = item.product.price * item.qty;
+                total += cost;
+
+                return `
+                    <div class="cart-item">
+                        <div class="cart-item-name">${item.product.name}</div>
+                        <div class="cart-item-qty-control">
+                            <button class="cart-qty-btn" onclick="updateCartQty('${item.product.id}', -1)">-</button>
+                            <span class="cart-item-qty">${item.qty}</span>
+                            <button class="cart-qty-btn" onclick="updateCartQty('${item.product.id}', 1)">+</button>
+                        </div>
+                        <div class="cart-item-price">${cost.toLocaleString('vi-VN')}đ</div>
+                    </div>
+                `;
+            }).join("");
+
+            totalValEl.textContent = total.toLocaleString('vi-VN') + "đ";
+            submitBtn.disabled = false;
+        }
+
+        // --- Payment Method Selector ---
+        window.setPaymentMethod = function(method) {
+            playBeep('click');
+            activePaymentMethod = method;
+            document.querySelectorAll(".payment-btn").forEach(b => b.classList.remove("active"));
+            
+            if (method === 'cash') document.getElementById("pay-cash").classList.add("active");
+            if (method === 'card') document.getElementById("pay-card").classList.add("active");
+            if (method === 'qr') document.getElementById("pay-qr").classList.add("active");
+        }
+
+        // --- VIP Customer Phone Lookup ---
+        window.lookupVIPCustomer = function() {
+            const phone = document.getElementById("loyalty-phone-input").value.trim();
+            const container = document.getElementById("loyalty-status-container");
+            
+            if (!container) return;
+
+            if (phone.length < 8) {
+                container.innerHTML = `<div style="color: var(--text-muted); text-align: center; font-style: italic;">Chưa nhập SĐT tích điểm</div>`;
+                vipCustomer = null;
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem("3hd2k_users")) || [];
+            // Match user by phone number
+            const user = users.find(u => u.phone === phone);
+
+            if (user) {
+                vipCustomer = user;
+                container.innerHTML = `
+                    <div>
+                        <div class="loyalty-status-name"><i class="fas fa-crown"></i> VIP: ${user.name}</div>
+                        <div class="loyalty-status-points"><i class="fas fa-coins"></i> Tích lũy: ${user.points || 0} điểm</div>
+                    </div>
+                `;
+            } else {
+                vipCustomer = null;
+                container.innerHTML = `
+                    <div style="display: flex; flex-direction: column; gap: 5px; align-items: center;">
+                        <span style="color: var(--primary-red); font-weight: 600; font-size: 0.75rem;">SĐT chưa đăng ký VIP</span>
+                        <button class="btn" style="background: rgba(0, 240, 255, 0.15); border: 1px solid var(--btn-cyan-color); color: var(--btn-cyan-color); padding: 4px 10px; font-size: 0.7rem; border-radius: 4px;" onclick="openVIPModal('${phone}')">
+                            ĐĂNG KÝ VIP
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        // Open VIP Card Registration Modal
+        window.openVIPModal = function(phone) {
+            playBeep('click');
+            const phoneInput = document.getElementById("vip-modal-phone");
+            const nameInput = document.getElementById("vip-modal-name");
+            
+            phoneInput.value = phone;
+            nameInput.value = "";
+
+            document.getElementById("vip-modal").classList.add("active");
+        }
+
+        window.closeVIPModal = function() {
+            playBeep('click');
+            document.getElementById("vip-modal").classList.remove("active");
+        }
+
+        window.submitVIPRegister = function() {
+            const phone = document.getElementById("vip-modal-phone").value.trim();
+            const name = document.getElementById("vip-modal-name").value.trim();
+
+            if (!name) {
+                alert("Vui lòng nhập họ tên khách hàng!");
+                return;
+            }
+
+            playBeep('success');
+
+            const users = JSON.parse(localStorage.getItem("3hd2k_users")) || [];
+            const newUser = {
+                username: "vip_" + phone,
+                name: name,
+                email: name.toLowerCase().replace(/\s/g, '') + "@vip.3hd2k.com",
+                phone: phone,
+                role: "customer",
+                status: "active",
+                points: 0
+            };
+
+            users.push(newUser);
+            localStorage.setItem("3hd2k_users", JSON.stringify(users));
+
+            // Select this new user in POS
+            vipCustomer = newUser;
+            lookupVIPCustomer();
+            closeVIPModal();
+            showToast("Đã kích hoạt thẻ VIP mới!");
+        }
+
+        // --- Submit POS direct sale ---
+        window.confirmQRPayment = function() {
+            document.getElementById('qr-modal').style.display = 'none';
+            submitPOSSale(true);
+        }
+
+        window.confirmPOSPayment = function() {
+            document.getElementById('pos-total-amount').innerText = document.getElementById('cart-total-value').innerText;
+            document.getElementById('pos-modal').style.display = 'flex';
+            
+            // Reset animations
+            const cardIcon = document.getElementById('pos-card-icon');
+            const successIcon = document.getElementById('pos-success-icon');
+            const statusText = document.getElementById('pos-status-text');
+            const loader = document.getElementById('pos-loader');
+            
+            cardIcon.style.transition = 'none';
+            cardIcon.style.top = '-50px';
+            cardIcon.style.opacity = '1';
+            successIcon.style.display = 'none';
+            statusText.innerText = 'Đang chờ quẹt thẻ / chạm thẻ POS...';
+            statusText.style.color = 'var(--text-muted)';
+            loader.style.display = 'block';
+            
+            // Animation sequence
+            setTimeout(() => {
+                // Swipe down
+                cardIcon.style.transition = 'all 0.8s cubic-bezier(0.25, 0.1, 0.25, 1)';
+                cardIcon.style.top = '30px';
+                statusText.innerText = 'Đang xử lý giao dịch máy chủ ngân hàng...';
+                
+                setTimeout(() => {
+                    // Success
+                    cardIcon.style.opacity = '0';
+                    successIcon.style.display = 'inline-block';
+                    statusText.innerText = 'Thanh toán thẻ thành công!';
+                    statusText.style.color = 'var(--btn-green-color)';
+                    loader.style.display = 'none';
+                    playBeep('success');
+                    
+                    setTimeout(() => {
+                        document.getElementById('pos-modal').style.display = 'none';
+                        submitPOSSale(true);
+                    }, 1200);
+                }, 1500);
+            }, 800);
+        }
+
+        window.submitPOSSale = function(skipMethodCheck = false) {
+            if (cart.length === 0) return;
+
+            if (activePaymentMethod === 'qr' && !skipMethodCheck) {
+                document.getElementById('qr-total-amount').innerText = document.getElementById('cart-total-value').innerText;
+                document.getElementById('qr-modal').style.display = 'flex';
+                return;
+            }
+            if (activePaymentMethod === 'card' && !skipMethodCheck) {
+                confirmPOSPayment();
+                return;
+            }
+
+            playBeep('success');
+
+            const inventory = JSON.parse(localStorage.getItem("cinema_inventory")) || [];
+            const users = JSON.parse(localStorage.getItem("3hd2k_users")) || [];
+            
+            // 1. Deduct ingredients
+            const deductList = {};
+            cart.forEach(item => {
+                if (item.product.deduct) {
+                    item.product.deduct.forEach(d => {
+                        deductList[d.id] = (deductList[d.id] || 0) + (d.qty * item.qty);
+                    });
+                }
+            });
+
+            // Double check stock levels
+            let canDeduct = true;
+            let missingItems = [];
+            for (const invId in deductList) {
+                const invItem = inventory.find(i => i.id === invId);
+                if (!invItem || invItem.qty < deductList[invId]) {
+                    canDeduct = false;
+                    missingItems.push(invItem ? invItem.name : "Vật liệu kho");
+                }
+            }
+
+            if (!canDeduct) {
+                alert(`Không đủ nguyên vật liệu để thanh toán: ${missingItems.join(", ")}`);
+                return;
+            }
+
+            // Perform deductions
+            for (const invId in deductList) {
+                const invItem = inventory.find(i => i.id === invId);
+                invItem.qty = parseFloat((invItem.qty - deductList[invId]).toFixed(2));
+            }
+            localStorage.setItem("cinema_inventory", JSON.stringify(inventory));
+
+            // Calculate total price
+            let totalAmount = 0;
+            const itemsText = cart.map(item => `${item.qty} ${item.product.name}`).join(" + ");
+            cart.forEach(item => { totalAmount += (item.product.price * item.qty); });
+
+            // 2. VIP point accumulation (1 point per 10k)
+            const pointsEarned = Math.floor(totalAmount / 10000);
+            let customerName = "Khách vãng lai";
+            let pointsSummary = "";
+
+            if (vipCustomer) {
+                const user = users.find(u => u.phone === vipCustomer.phone);
+                if (user) {
+                    user.points = (user.points || 0) + pointsEarned;
+                    localStorage.setItem("3hd2k_users", JSON.stringify(users));
+                    customerName = user.name;
+                    pointsSummary = `${user.points} điểm VIP (+${pointsEarned})`;
+                }
+            }
+
+            // 3. Log sale transaction to activity logs
+            const logs = JSON.parse(localStorage.getItem("cinema_activity_log")) || [];
+            const methodLabel = activePaymentMethod === 'cash' ? "Tiền mặt" : (activePaymentMethod === 'card' ? "Thẻ ATM" : "Quét QR");
+            logs.unshift({
+                time: new Date().toLocaleTimeString("vi-VN"),
+                text: `POS bán trực tiếp: ${customerName} - ${itemsText} - Thanh toán: ${methodLabel} - Tổng tiền: ${totalAmount.toLocaleString('vi-VN')}đ.`
+            });
+            localStorage.setItem("cinema_activity_log", JSON.stringify(logs.slice(0, 50)));
+
+            // 4. Show success modal receipt
+            const receiptId = "POS-" + Math.floor(10000 + Math.random() * 90000);
+            document.getElementById("modal-receipt-id").textContent = receiptId;
+            document.getElementById("modal-receipt-customer").textContent = `${customerName} ${vipCustomer ? '(' + vipCustomer.phone + ')' : ''}`;
+            document.getElementById("modal-receipt-details").textContent = itemsText;
+            document.getElementById("modal-receipt-total").textContent = totalAmount.toLocaleString('vi-VN') + "đ";
+
+            if (pointsSummary) {
+                document.getElementById("modal-points-wrapper").style.display = "flex";
+                document.getElementById("modal-receipt-points").textContent = pointsSummary;
+            } else {
+                document.getElementById("modal-points-wrapper").style.display = "none";
+            }
+
+            document.getElementById("success-modal").classList.add("active");
+
+            // 5. Reset POS checkout panel
+            cart = [];
+            document.getElementById("loyalty-phone-input").value = "";
+            vipCustomer = null;
+            lookupVIPCustomer();
+            renderCart();
+            renderPOSProducts();
+
+            // Trigger cross-page sync event
+            window.dispatchEvent(new Event("storage"));
+        }
+
+        // --- Modal close functions ---
+        window.closeSuccessModal = function() {
+            playBeep('click');
+            document.getElementById("success-modal").classList.remove("active");
+        }
+
+        // --- Custom Toasts ---
+        function showToast(msg) {
+            const toast = document.getElementById("toast-notification");
+            if (!toast) return;
+            toast.textContent = msg;
+            toast.classList.add("show");
+            setTimeout(() => { toast.classList.remove("show"); }, 2200);
+        }
+
+        // --- Real-time sync listener ---
+        window.addEventListener("storage", (e) => {
+            if (e.key === "cinema_inventory" || e.key === "cinema_app_orders" || e.key === "3hd2k_users") {
+                renderAppOrders();
+                renderPOSProducts();
+                renderCart();
+                lookupVIPCustomer();
+            }
+        });
+
+        // --- Initial execution ---
+        dbInit();
+        renderAppOrders();
+        renderPOSProducts();
+        renderCart();
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+    <script>
+        // --- SignalR Real-time Notifications ---
+        try {
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl("/notificationHub")
+                .withAutomaticReconnect()
+                .build();
+
+            connection.on("ReceiveNewBooking", (bookingData) => {
+                // Thêm vào danh sách đơn hàng online
+                let appOrders = JSON.parse(localStorage.getItem("cinema_app_orders")) || [];
+                appOrders.unshift({
+                    id: "ORD-" + Math.floor(100000 + Math.random() * 900000),
+                    status: "new",
+                    customerName: bookingData.customerEmail,
+                    time: bookingData.time,
+                    items: bookingData.seats,
+                    total: bookingData.totalAmount
+                });
+                localStorage.setItem("cinema_app_orders", JSON.stringify(appOrders));
+                
+                // Cập nhật UI
+                renderAppOrders();
+
+                // Hiển thị toast
+                playBeep('success');
+                showToast("🚀 CÓ ĐƠN HÀNG MỚI TỪ KHÁCH HÀNG: " + bookingData.customerEmail);
+            });
+
+            connection.start().then(() => {
+                console.log("Connected to SignalR Notification Hub!");
+            }).catch(err => console.error("SignalR Connection Error: ", err));
+        } catch (error) {
+            console.error("Failed to setup SignalR:", error);
+        }
+    </script>
+</body>
+</html>

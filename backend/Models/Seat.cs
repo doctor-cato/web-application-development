@@ -1,13 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace appweb.Models;
 
 public partial class Seat
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 
-    public int? RoomId { get; set; }
+    public Guid? RoomId { get; set; }
 
     public string SeatRow { get; set; } = null!;
 
@@ -19,3 +19,4 @@ public partial class Seat
 
     public virtual Room? Room { get; set; }
 }
+

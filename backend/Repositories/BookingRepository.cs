@@ -1,4 +1,4 @@
-﻿using appweb.Infrastructure;
+using appweb.Infrastructure;
 using appweb.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -17,7 +17,7 @@ namespace appweb.Repositories
         }
 
         // Sửa lỗi triệt để cho TicketVerificationService.cs gọi
-        public async Task<Booking?> GetBookingByIdAsync(int id)
+        public async Task<Booking?> GetBookingByIdAsync(Guid id)
         {
             return await _context.Bookings
                 .Include(b => b.Movie)
@@ -26,14 +26,14 @@ namespace appweb.Repositories
                 .FirstOrDefaultAsync(b => b.Id == id);
         }
 
-        public async Task<List<Booking>> GetByUserIdAsync(int userId)
+        public async Task<List<Booking>> GetByUserIdAsync(Guid userId)
         {
             return await _context.Bookings
                 .Where(b => b.UserId == userId)
                 .ToListAsync();
         }
 
-        public async Task<Booking?> GetByIdAsync(int id)
+        public async Task<Booking?> GetByIdAsync(Guid id)
         {
             return await _context.Bookings.FirstOrDefaultAsync(b => b.Id == id);
         }
@@ -42,6 +42,11 @@ namespace appweb.Repositories
         {
             await _context.Bookings.AddAsync(booking);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<Booking>> GetAllAsync()
+        {
+            return await _context.Bookings.ToListAsync();
         }
     }
 }

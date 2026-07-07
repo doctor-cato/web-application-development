@@ -5,25 +5,25 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Đăng ký - 3HD2K Cinema</title>
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <!-- Vanilla CSS -->
-    <link rel="stylesheet" href="/auth/auth-services/auth.css?v=4">
+    <link rel="stylesheet" href="../../auth/auth-services/auth.css?v=4">
 </head>
 <body>
 
     <header class="auth-header">
-        <a class="auth-logo" href="/explore/home-page/index.html">3HD2K</a>
+        <a class="auth-logo" href="../../explore/home-page/index.html">3HD2K</a>
     </header>
 
     <main class="auth-main">
         <!-- Left Side: Banner (Hidden on Mobile) -->
         <div class="auth-banner">
             <div class="auth-banner-bg">
-                <img src="/shared/images/cinema_audience_smiling.png" alt="Cinema Background">
+                <img src="../../shared/images/cinema_audience_smiling.png" alt="Cinema Background">
             </div>
-            <a href="/explore/home-page/index.html" class="back-home-link">
+            <a href="../../explore/home-page/index.html" class="back-home-link">
                 <span class="material-symbols-outlined">arrow_back</span>
                 Về trang chủ
             </a>
@@ -37,27 +37,17 @@
             <div class="auth-box register-box">
                 <!-- Tabs -->
                 <div class="auth-tabs">
-                    <a href="/auth/user-login/login.html" class="auth-tab">Đăng Nhập</a>
-                    <a href="/auth/user-register/register.html" class="auth-tab active">Đăng Ký</a>
+                    <a href="../../auth/user-login/login.html" class="auth-tab">Đăng Nhập</a>
+                    <a href="../../auth/user-register/register.html" class="auth-tab active">Đăng Ký</a>
                 </div>
 
                 <!-- Error Banner (Global) -->
                 <div id="form-error-banner" class="form-error-banner"></div>
 
                 <!-- Form -->
-                <form id="registerForm" class="auth-form" action="/explore/home-page/index.html" method="GET">
+                <form id="registerForm" class="auth-form" action="../../explore/home-page/index.html" method="GET">
                     
-                    <!-- Avatar Upload -->
-                    <div style="text-align: center;">
-                        <label style="font-size: 12px; color: var(--text-secondary); font-weight: 500;">Ảnh đại diện</label>
-                        <div class="avatar-container mt-2">
-                            <img id="registerAvatarPreview" class="avatar-preview" src="/shared/images/avatar.jpg" alt="Avatar">
-                            <label for="avatarInput" class="avatar-upload-btn">
-                                <span class="material-symbols-outlined">add_a_photo</span>
-                            </label>
-                            <input type="file" id="avatarInput" accept="image/*" class="hidden">
-                        </div>
-                    </div>
+
 
                     <!-- Full Name -->
                     <div class="form-group">
@@ -84,6 +74,22 @@
                                 <input class="auth-input" type="tel" id="phone" name="phone" placeholder="0987654321" required>
                             </div>
                             <div id="phone-error" class="inline-error">SĐT không hợp lệ (10 số).</div>
+                        </div>
+                    </div>
+
+                    <!-- Gender -->
+                    <div class="form-group" style="margin-top: 10px; margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px;">Giới tính</label>
+                        <div style="display: flex; gap: 20px; align-items: center; color: white;">
+                            <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                                <input type="radio" name="gender" value="male" checked> Nam
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                                <input type="radio" name="gender" value="female"> Nữ
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                                <input type="radio" name="gender" value="other"> Khác
+                            </label>
                         </div>
                     </div>
 
@@ -133,6 +139,6 @@
         <div class="footer-copy">© 2026 3HD2K Cinema. All rights reserved.</div>
     </footer>
 
-    <script type="module" src="/auth/user-register/register.js"></script>
+    <script type="module" src="../../auth/user-register/register.js?v=2"></script>
 </body>
 </html>

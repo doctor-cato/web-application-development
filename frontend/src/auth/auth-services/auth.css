@@ -1,5 +1,5 @@
 /* Import fonts just in case, though they are in HTML */
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&family=Oswald:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap');
 
 /* Reset & Variables */
 :root {
@@ -41,7 +41,7 @@ body {
 }
 
 .auth-logo {
-    font-family: 'Bebas Neue', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-size: 48px;
     color: var(--primary-red);
     text-decoration: none;
@@ -114,7 +114,7 @@ body {
 .auth-banner-title {
     position: relative;
     z-index: 10;
-    font-family: 'Oswald', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-size: 64px;
     line-height: 1;
     color: var(--text-primary);
@@ -196,7 +196,7 @@ body {
     flex: 1;
     padding-bottom: 0.75rem;
     text-align: center;
-    font-family: 'Bebas Neue', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-size: 24px;
     letter-spacing: 1px;
     text-decoration: none;
@@ -378,7 +378,7 @@ body {
 }
 
 .footer-logo {
-    font-family: 'Bebas Neue', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-size: 20px;
     color: var(--primary-red);
     letter-spacing: 1px;

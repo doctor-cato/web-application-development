@@ -1,4 +1,4 @@
-﻿using appweb.Infrastructure;
+using appweb.Infrastructure;
 using appweb.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,7 +18,7 @@ namespace appweb.Queries
             return await _context.Users.ToListAsync();
         }
 
-        public async Task<User?> GetByIdAsync(int id)
+        public async Task<User?> GetByIdAsync(Guid id)
         {
             return await _context.Users
                 .FirstOrDefaultAsync(x => x.UserId == id);

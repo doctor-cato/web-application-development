@@ -22,7 +22,7 @@ using appweb.Infrastructure;
     }
 
     // GET: SHOWTIMES/Details/5
-    public async Task<IActionResult> Details(int? id)
+    public async Task<IActionResult> Details(Guid? id)
     {
         if (id == null)
         {
@@ -62,7 +62,7 @@ using appweb.Infrastructure;
     }
 
     // GET: SHOWTIMES/Edit/5
-    public async Task<IActionResult> Edit(int? id)
+    public async Task<IActionResult> Edit(Guid? id)
     {
         if (id == null)
         {
@@ -82,7 +82,7 @@ using appweb.Infrastructure;
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int? id, [Bind("Id,MovieId,RoomId,StartTime,EndTime,TicketPrice,BookingDetails,Bookings,Movie,Room")] Showtime showtime)
+    public async Task<IActionResult> Edit(Guid? id, [Bind("Id,MovieId,RoomId,StartTime,EndTime,TicketPrice,BookingDetails,Bookings,Movie,Room")] Showtime showtime)
     {
         if (id != showtime.Id)
         {
@@ -113,7 +113,7 @@ using appweb.Infrastructure;
     }
 
     // GET: SHOWTIMES/Delete/5
-    public async Task<IActionResult> Delete(int? id)
+    public async Task<IActionResult> Delete(Guid? id)
     {
         if (id == null)
         {
@@ -133,7 +133,7 @@ using appweb.Infrastructure;
     // POST: SHOWTIMES/Delete/5
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeleteConfirmed(int? id)
+    public async Task<IActionResult> DeleteConfirmed(Guid? id)
     {
         var showtime = await _context.Showtimes.FindAsync(id);
         if (showtime != null)
@@ -145,9 +145,10 @@ using appweb.Infrastructure;
         return RedirectToAction(nameof(Index));
     }
 
-    private bool ShowtimeExists(int? id)
+    private bool ShowtimeExists(Guid? id)
     {
         return _context.Showtimes.Any(e => e.Id == id);
     }
 }
+
 

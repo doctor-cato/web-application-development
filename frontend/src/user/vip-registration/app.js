@@ -1,4 +1,5 @@
-import { getCurrentUser, setCurrentUser, getUsers, saveUsers } from '/auth/auth-services/storage.js';
+import { getCurrentUser, setCurrentUser, getUsers, saveUsers } from '../../auth/auth-services/storage.js';
+
 
 document.addEventListener('DOMContentLoaded', () => {
     // Check if user is logged in
@@ -116,6 +117,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const plan = urlParams.get('plan') || 'gold';
         selectedPlan = plan;
 
+        // Báo cho backend biết để nâng cấp VIP trong CSDL
+        if (session && session.email) {
+            import('../../shared/utils/apiConfig.js?v=4').then(({ API_BASE_URL, getHeaders }) => {
+                fetch(`${API_BASE_URL}/auth/upgrade-vip`, {
+                    method: 'POST',
+                    headers: getHeaders(),
+                    body: JSON.stringify({ email: session.email, plan: selectedPlan })
+                }).catch(err => console.error("Lỗi khi nâng cấp VIP:", err));
+            });
+        }
+
         // Perform local storage database upgrade
         const users = getUsers();
         const userIndex = users.findIndex(u => u.email === session.email);
@@ -197,7 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnCloseModal) {
         btnCloseModal.addEventListener('click', () => {
             if (successModal) successModal.classList.remove('show');
-            window.location.href = '/explore/home-page/index.html';
+            window.location.href = '../../explore/home-page/index.html';
         });
     }
 });

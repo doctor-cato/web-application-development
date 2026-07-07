@@ -6,25 +6,25 @@
     <title>Quên mật khẩu - 3HD2K Cinema</title>
     <meta name="description" content="Đặt lại mật khẩu tài khoản 3HD2K Cinema của bạn.">
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <!-- CSS -->
-    <link rel="stylesheet" href="/auth/auth-services/auth.css">
+    <link rel="stylesheet" href="../../auth/auth-services/auth.css">
 </head>
 <body>
 
     <header class="auth-header">
-        <a class="auth-logo" href="/explore/home-page/index.html">3HD2K</a>
+        <a class="auth-logo" href="../../explore/home-page/index.html">3HD2K</a>
     </header>
 
     <main class="auth-main">
         <!-- Left Side: Banner -->
         <div class="auth-banner">
             <div class="auth-banner-bg">
-                <img src="/shared/images/cinema_audience_smiling.png" alt="Cinema Background">
+                <img src="../../shared/images/cinema_audience_smiling.png" alt="Cinema Background">
             </div>
-            <a href="/explore/home-page/index.html" class="back-home-link">
+            <a href="../../explore/home-page/index.html" class="back-home-link">
                 <span class="material-symbols-outlined">arrow_back</span>
                 Về trang chủ
             </a>
@@ -64,14 +64,56 @@
                         </button>
 
                         <div style="text-align: center; margin-top: 0.5rem;">
-                            <a href="/auth/user-login/login.html" style="font-size: 13px; color: var(--text-secondary); text-decoration: none;">
+                            <a href="../../auth/user-login/login.html" style="font-size: 13px; color: var(--text-secondary); text-decoration: none;">
                                 ← Quay lại đăng nhập
                             </a>
                         </div>
                     </form>
                 </div>
 
-                <!-- Step 2: Thành công -->
+                <!-- Step 2: Nhập OTP & Mật khẩu mới -->
+                <div id="step-reset" style="display: none;">
+                    <div class="auth-tabs" style="margin-bottom: 1.5rem;">
+                        <span class="auth-tab active" style="cursor:default;">Đặt Lại Mật Khẩu</span>
+                    </div>
+
+                    <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 1.5rem; line-height: 1.6;">
+                        Mã OTP đã được gửi đến email của bạn. Vui lòng kiểm tra hộp thư (hoặc Cửa sổ Console của Backend) và nhập mã để tạo mật khẩu mới.
+                    </p>
+
+                    <div id="reset-error-banner" class="form-error-banner"></div>
+
+                    <form id="resetForm" class="auth-form">
+                        <div class="form-group">
+                            <label for="otp">Mã OTP</label>
+                            <div class="input-wrapper">
+                                <span class="material-symbols-outlined">pin</span>
+                                <input class="auth-input" type="text" id="otp" placeholder="Nhập mã 6 số" required maxlength="6">
+                            </div>
+                            <div id="otp-error" class="inline-error">Mã OTP không hợp lệ.</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="newPassword">Mật khẩu mới</label>
+                            <div class="input-wrapper">
+                                <span class="material-symbols-outlined">lock</span>
+                                <input class="auth-input" type="password" id="newPassword" placeholder="Ít nhất 6 ký tự" required minlength="6">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-submit" id="submitResetBtn">
+                            Xác nhận đặt lại
+                        </button>
+                        
+                        <div style="text-align: center; margin-top: 0.5rem;">
+                            <a href="#" id="btnResendOtp" style="font-size: 13px; color: var(--text-secondary); text-decoration: underline; background:none; border:none; cursor:pointer;">
+                                Gửi lại mã OTP
+                            </a>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Step 3: Thành công -->
                 <div id="step-success" style="display: none; text-align: center; padding: 1rem 0;">
                     <div style="
                         width: 72px; height: 72px; border-radius: 50%;
@@ -83,17 +125,17 @@
                         <span class="material-symbols-outlined" style="font-size: 36px; color: var(--primary-red);">mark_email_read</span>
                     </div>
 
-                    <h2 style="font-family: 'Oswald', sans-serif; font-size: 1.5rem; margin-bottom: 0.75rem;">
+                    <h2 style="font-family: 'Inter', sans-serif; font-size: 1.5rem; margin-bottom: 0.75rem;">
                         Đã gửi link đặt lại!
                     </h2>
 
                     <p id="success-msg" style="font-size: 13px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 2rem;"></p>
 
                     <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-                        <a href="/auth/user-login/login.html" class="btn-submit" style="text-align:center; text-decoration:none; display:block; padding: 12px;">
+                        <a href="../../auth/user-login/login.html" class="btn-submit" style="text-align:center; text-decoration:none; display:block; padding: 12px;">
                             Quay lại đăng nhập
                         </a>
-                        <button id="btnResend" style="
+                        <button id="btnResend" style="display:none;
                             background: transparent; border: 1px solid rgba(255,255,255,0.15);
                             color: var(--text-secondary); border-radius: 8px; padding: 10px;
                             font-size: 13px; cursor: pointer; transition: all 0.2s;
@@ -110,6 +152,6 @@
         <div class="footer-copy">© 2026 3HD2K Cinema. All rights reserved.</div>
     </footer>
 
-    <script type="module" src="/auth/forgot-password/forgot.js"></script>
+    <script type="module" src="../../auth/forgot-password/forgot.js"></script>
 </body>
 </html>

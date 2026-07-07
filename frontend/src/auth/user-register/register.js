@@ -1,7 +1,7 @@
 /**
  * register.js — Xử lý form đăng ký tài khoản
  */
-import { register, isLoggedIn } from '/auth/auth-services/authService.js';
+import { register, isLoggedIn } from '../../auth/auth-services/authService.js?v=5';
 
 // Redirect nếu đã đăng nhập
 if (isLoggedIn()) {
@@ -19,28 +19,8 @@ const emailError        = document.getElementById('email-error');
 const pwdError          = document.getElementById('pwd-error');
 const confirmPwdError   = document.getElementById('confirm-pwd-error');
 const phoneError        = document.getElementById('phone-error');
-const avatarInput       = document.getElementById('avatarInput');
-const preview           = document.getElementById('registerAvatarPreview');
+// ── Avatar removed from registration ─────────────────────────
 
-// ── Avatar preview ─────────────────────────────────────────
-let avatarDataUrl = '';
-
-window.addEventListener('DOMContentLoaded', () => {
-    localStorage.removeItem('user_avatar');
-});
-
-if (avatarInput) {
-    avatarInput.addEventListener('change', function () {
-        const file = this.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = e => {
-            avatarDataUrl = e.target.result;
-            if (preview) preview.src = avatarDataUrl;
-        };
-        reader.readAsDataURL(file);
-    });
-}
 
 // ── Toggle hiển thị mật khẩu ──────────────────────────────
 document.querySelectorAll('.togglePasswordBtn').forEach(btn => {
@@ -67,7 +47,7 @@ document.querySelectorAll('.togglePasswordBtn').forEach(btn => {
 });
 
 // ── Submit ─────────────────────────────────────────────────
-registerForm.addEventListener('submit', function (e) {
+registerForm.addEventListener('submit', async function (e) {
     e.preventDefault();
 
     // Reset errors
@@ -81,7 +61,7 @@ registerForm.addEventListener('submit', function (e) {
     const confirmPassword = confirmPwdInput.value;
     const dob             = document.getElementById('dob').value;
     const phone           = phoneInput.value.trim();
-    const avatar          = avatarDataUrl || '/shared/images/avatar.jpg';
+    const gender          = document.querySelector('input[name="gender"]:checked').value;
 
     let isValid = true;
 
@@ -112,7 +92,7 @@ registerForm.addEventListener('submit', function (e) {
 
     if (!isValid) return;
 
-    const result = register({ fullname, email, password, dob, phone, avatar });
+    const result = await register({ fullname, email, password, dob, phone, gender });
 
     if (result.ok) {
         window.location.href = '/explore/home-page/index.html';

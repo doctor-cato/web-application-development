@@ -218,7 +218,21 @@
       return sum + products[id].price * item.qty;
     }, 0);
 
-    refs.summary.amount.textContent = money(order.ticketPrice + productTotal);
+    let finalProductTotal = productTotal;
+    if (typeof window.currentDiscount !== 'undefined' && window.currentDiscount > 0) {
+      const discountAmount = Math.floor(productTotal * (window.currentDiscount / 100));
+      finalProductTotal = productTotal - discountAmount;
+      const discountLine = document.createElement('div');
+      discountLine.className = 'line line-product';
+      discountLine.style.color = '#4caf50';
+      discountLine.innerHTML = `
+        <span>Khuyến mãi (${window.currentDiscount}%)</span>
+        <span class="count">- ${money(discountAmount)}</span>
+      `;
+      refs.summary.items.appendChild(discountLine);
+    }
+
+    refs.summary.amount.textContent = money(order.ticketPrice + finalProductTotal);
 
     // Save selected items to localStorage for the checkout page
     const selectedFoods = [];
@@ -313,6 +327,59 @@
     }
   });
 
+  window.currentPromoCode = '';
+  window.currentDiscount = 0;
+
+  const btnApplyPromo = document.getElementById('btn-apply-promo');
+  const btnRemovePromo = document.getElementById('btn-remove-promo');
+  const promoInput = document.getElementById('promo-input');
+  const promoInputGroup = document.getElementById('promo-input-group');
+  const appliedPromoContainer = document.getElementById('applied-promo-container');
+  const appliedPromoCodeEl = document.getElementById('applied-promo-code');
+  const promoDropdown = document.getElementById('promo-dropdown');
+  const promoToggleBtn = document.getElementById('promo-toggle-btn');
+
+  if (promoToggleBtn && promoDropdown) {
+    promoToggleBtn.addEventListener('click', () => {
+      promoDropdown.classList.toggle('show');
+    });
+    document.addEventListener('click', (e) => {
+      if (!promoDropdown.contains(e.target) && e.target !== promoToggleBtn && !promoToggleBtn.contains(e.target)) {
+        promoDropdown.classList.remove('show');
+      }
+    });
+  }
+
+  if (btnApplyPromo) {
+    btnApplyPromo.addEventListener('click', () => {
+      const val = promoInput.value.trim().toUpperCase();
+      if (val === 'DISCOUNT10' || val === 'FOOD10') {
+        window.currentPromoCode = val;
+        window.currentDiscount = 10;
+        applyPromoUI();
+        renderSummary();
+      } else if (val) {
+        alert('Mã khuyến mãi không hợp lệ hoặc đã hết hạn.');
+      }
+    });
+  }
+
+  if (btnRemovePromo) {
+    btnRemovePromo.addEventListener('click', () => {
+      window.currentPromoCode = '';
+      window.currentDiscount = 0;
+      promoInput.value = '';
+      promoInputGroup.style.display = 'flex';
+      appliedPromoContainer.style.display = 'none';
+      renderSummary();
+    });
+  }
+
+  function applyPromoUI() {
+    promoInputGroup.style.display = 'none';
+    appliedPromoContainer.style.display = 'flex';
+    appliedPromoCodeEl.innerText = window.currentPromoCode;
+  }
 
   // Sticky Tabs Scroll Spy
   const sections = document.querySelectorAll('.menu-section');
@@ -381,6 +448,25 @@
           }
       });
       localStorage.setItem('checkoutFood', JSON.stringify(cart));
+      
+      let co = sessionStorage.getItem('cinema_checkout');
+      if (!co) {
+          sessionStorage.setItem('cinema_checkout', JSON.stringify({
+              movieId: "food-only",
+              movieTitle: "Chỉ Đặt Đồ Ăn",
+              poster: "../../shared/images/combo_double.png",
+              seats: [],
+              ticketPrice: 0,
+              totalPrice: 0,
+              promoCode: window.currentPromoCode || ''
+          }));
+      } else {
+          try {
+              const sd = JSON.parse(co);
+              sd.promoCode = window.currentPromoCode || sd.promoCode || '';
+              sessionStorage.setItem('cinema_checkout', JSON.stringify(sd));
+          } catch(err) {}
+      }
       
       if (returnToLobby) {
           window.location.href = `../group-booking/room.html?order=${returnToLobby}`;

@@ -63,7 +63,10 @@ function renderMoviesGrid(movies) {
 
     moviesToShow.forEach(movie => {
         const badgeClass = getAgeBadgeClass(movie.age);
-        const detailUrl = movie.id ? `../movie-details/index.html?id=${movie.id}` : '#';
+        let detailUrl = movie.id ? `../movie-details/index.html?id=${movie.id}` : '#';
+        if (new URLSearchParams(window.location.search).get('cinematch') === 'true' || localStorage.getItem('cinematch_active') === 'true') {
+            detailUrl += '&cinematch=true';
+        }
         const tagsHtml = movie.tags ? movie.tags.map(tag => `<span class="tag">${tag}</span>`).join('') : '';
         const cardHtml = `
             <div class="movie-card" onclick="window.location.href='${detailUrl}'" style="cursor:pointer;">
@@ -221,6 +224,15 @@ function switchTab(tab) {
     const newUrl = sq ? `index.html?tab=${tab}&q=${encodeURIComponent(sq)}` : `index.html?tab=${tab}`;
     window.history.replaceState(null, '', newUrl);
 
+    // Apply Cine-Match preset genre if active (only ONCE on initial load)
+    if (!window.cinematch_genre_applied && localStorage.getItem('cinematch_active') === 'true') {
+        const preGenre = localStorage.getItem('cinematch_genre');
+        if (preGenre && filterGenre) {
+            filterGenre.value = preGenre;
+            window.cinematch_genre_applied = true;
+        }
+    }
+
     // Check URL params for search to update UI title
     if (sq) {
         if (breadcrumbCurrent) breadcrumbCurrent.innerText = `Tìm kiếm: "${sq}"`;
@@ -262,5 +274,11 @@ if (sortSelect) sortSelect.addEventListener('change', applyMoviesFilters);
 // --- INIT ---
 document.addEventListener('DOMContentLoaded', () => {
     const initialTab = getTabFromURL();
-    switchTab(initialTab);
+    if (window.fetchMoviesPromise) {
+        window.fetchMoviesPromise.then(() => {
+            switchTab(initialTab);
+        });
+    } else {
+        switchTab(initialTab);
+    }
 });

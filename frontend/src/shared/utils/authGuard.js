@@ -5,7 +5,7 @@
  * các tính năng yêu cầu xác thực (đặt vé, thanh toán, v.v.)
  *
  * Cách dùng:
- *   import { requireAuth } from '/shared/utils/authGuard.js';
+ *   import { requireAuth } from '../../shared/utils/authGuard.js';
  *
  *   // Returns true nếu đã đăng nhập, false nếu chưa (và hiện modal)
  *   if (!requireAuth()) return;
@@ -84,7 +84,7 @@ export function showAuthModal(message) {
 
                 <!-- Title -->
                 <h2 style="
-                    font-family: 'Oswald', 'Inter', sans-serif;
+                    font-family: 'Inter', 'Inter', sans-serif;
                     font-size: 1.5rem; font-weight: 700;
                     color: #fff; margin-bottom: 0.75rem;
                     letter-spacing: 0.5px;
@@ -98,7 +98,7 @@ export function showAuthModal(message) {
 
                 <!-- Buttons -->
                 <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-                    <a href="/auth/user-login/login.html" id="auth-guard-login" style="
+                    <a href="../../auth/user-login/login.html" id="auth-guard-login" style="
                         display: flex; align-items: center; justify-content: center; gap: 8px;
                         padding: 14px; border-radius: 10px;
                         background: linear-gradient(135deg, #E50914, #b8070f);
@@ -111,7 +111,7 @@ export function showAuthModal(message) {
                         <i class="fas fa-sign-in-alt"></i>
                         ĐĂNG NHẬP
                     </a>
-                    <a href="/auth/user-register/register.html" id="auth-guard-register" style="
+                    <a href="../../auth/user-register/register.html" id="auth-guard-register" style="
                         display: flex; align-items: center; justify-content: center; gap: 8px;
                         padding: 14px; border-radius: 10px;
                         background: rgba(255,255,255,0.06);

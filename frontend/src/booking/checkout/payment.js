@@ -20,7 +20,7 @@ async function handleSuccess(txId) {
   const params = new URLSearchParams(window.location.search);
   const returnUrl = params.get('returnUrl');
   
-  simulatePayment(txId, (result) => {
+  simulatePayment(txId, async (result) => {
     if (result.status === 'success') {
       try {
         if (returnUrl) {
@@ -29,9 +29,10 @@ async function handleSuccess(txId) {
         }
         const checkoutData = getCheckout();
         checkoutData.transactionId = txId;
-        const booking = confirmBooking(checkoutData);
+        const booking = await confirmBooking(checkoutData);
         // Lưu ID booking vào session để trang invoice hiển thị
         lsSet(KEYS.LAST_BOOKING, booking);
+        localStorage.removeItem('cinematch_active');
         window.location.href = '../booking-success/index.html';
       } catch (e) {
         console.error(e);

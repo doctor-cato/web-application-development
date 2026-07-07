@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 
 namespace appweb.Services
 {
@@ -12,7 +12,7 @@ namespace appweb.Services
             _bookingRepository = bookingRepository;
         }
 
-        public async Task<bool> VerifyTicketAsync(int id)
+        public async Task<bool> VerifyTicketAsync(Guid id)
         {
             // Sửa tên hàm gọi bị gạch đỏ thành GetByIdAsync
             var booking = await _bookingRepository.GetByIdAsync(id);

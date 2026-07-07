@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3HD2K - Chi tiết phim</title>
     <meta name="description" content="Xem thông tin chi tiết, lịch chiếu và đặt vé phim tại 3HD2K Cinemas.">
-    <link rel="stylesheet" href="/shared/css/main.css">
-    <link rel="stylesheet" href="/explore/movie-details/movie-detail.css">
+    <link rel="stylesheet" href="../../shared/css/main.css">
+    <link rel="stylesheet" href="../../explore/movie-details/movie-detail.css">
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,9 +23,9 @@
 
         <!-- BREADCRUMB -->
         <nav class="detail-breadcrumb" id="detail-breadcrumb" aria-label="breadcrumb">
-            <a href="/explore/home-page/index.html"><i class="fas fa-home" style="margin-right:4px;"></i>Trang chủ</a>
+            <a href="../../explore/home-page/index.html"><i class="fas fa-home" style="margin-right:4px;"></i>Trang chủ</a>
             <span class="sep"><i class="fas fa-chevron-right"></i></span>
-            <a href="/explore/movie-search/index.html" id="breadcrumb-tab-link">Phim Đang Chiếu</a>
+            <a href="../../explore/movie-search/index.html" id="breadcrumb-tab-link">Phim Đang Chiếu</a>
             <span class="sep"><i class="fas fa-chevron-right"></i></span>
             <span class="current" id="breadcrumb-movie-name">Đang tải...</span>
         </nav>
@@ -218,6 +218,15 @@
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                             allowfullscreen>
                         </iframe>
+                        <div id="detail-trailer-fallback" style="display:none; position:absolute; inset:0; background:#0a0a0a; display:none; flex-direction:column; align-items:center; justify-content:center; gap:20px; border-radius:8px;">
+                            <div style="font-size:3rem;">&#9654;</div>
+                            <p style="color:rgba(255,255,255,0.7); font-family:'Inter',sans-serif; font-size:0.95rem; text-align:center; max-width:300px; line-height:1.6;">Video không thể phát trực tiếp.<br>Xem trailer trên YouTube:</p>
+                            <a id="detail-trailer-yt-link" href="#" target="_blank" rel="noopener"
+                                style="display:inline-flex; align-items:center; gap:10px; background:#e50914; color:#fff; padding:12px 28px; border-radius:6px; font-family:'Inter',sans-serif; font-weight:600; font-size:0.95rem; text-decoration:none; transition:background 0.2s;">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+                                Xem trên YouTube
+                            </a>
+                        </div>
                     </div>
                 </div>
 
@@ -281,6 +290,15 @@
                 <iframe id="trailer-video" src="" title="YouTube video player" frameborder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowfullscreen></iframe>
+                <div id="trailer-fallback" style="display:none; position:absolute; inset:0; background:#0a0a0a; display:none; flex-direction:column; align-items:center; justify-content:center; gap:20px; border-radius:8px;">
+                    <div style="font-size:3rem;">&#9654;</div>
+                    <p style="color:rgba(255,255,255,0.7); font-family:'Inter',sans-serif; font-size:0.95rem; text-align:center; max-width:300px; line-height:1.6;">Video không thể phát trực tiếp.<br>Xem trailer trên YouTube:</p>
+                    <a id="trailer-yt-link" href="#" target="_blank" rel="noopener"
+                        style="display:inline-flex; align-items:center; gap:10px; background:#e50914; color:#fff; padding:12px 28px; border-radius:6px; font-family:'Inter',sans-serif; font-weight:600; font-size:0.95rem; text-decoration:none; transition:background 0.2s;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+                        Xem trên YouTube
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -304,12 +322,12 @@
 
 
     <!-- ── SCRIPTS ──────────────────────────────────────────── -->
-    <script src="/shared/js/data.js"></script>
-    <script src="/shared/js/main.js"></script>
-    <script src="/shared/utils/authGuard-global.js"></script>
-    <script src="/explore/movie-details/movie-detail.js"></script>
-    <script type="module" src="/shared/components/navbar.js"></script>
-    <script type="module" src="/shared/components/footer.js"></script>
+    <script src="../../shared/js/data.js"></script>
+    <script src="../../shared/js/main.js"></script>
+    <script src="../../shared/utils/authGuard-global.js"></script>
+    <script src="../../explore/movie-details/movie-detail.js"></script>
+    <script type="module" src="../../shared/components/navbar.js"></script>
+    <script type="module" src="../../shared/components/footer.js"></script>
 </body>
 </html>
 

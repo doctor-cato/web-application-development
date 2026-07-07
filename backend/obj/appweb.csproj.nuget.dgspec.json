@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\appweb.csproj": {}
+    "c:\\Users\\Le Minh Khuong 1\\web-application-development\\web-application-development\\backend\\appweb.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\appweb.csproj": {
+    "c:\\Users\\Le Minh Khuong 1\\web-application-development\\web-application-development\\backend\\appweb.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\appweb.csproj",
+        "projectUniqueName": "c:\\Users\\Le Minh Khuong 1\\web-application-development\\web-application-development\\backend\\appweb.csproj",
         "projectName": "appweb",
-        "projectPath": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\appweb.csproj",
+        "projectPath": "c:\\Users\\Le Minh Khuong 1\\web-application-development\\web-application-development\\backend\\appweb.csproj",
         "packagesPath": "C:\\Users\\Le Minh Khuong 1\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\obj\\",
+        "outputPath": "c:\\Users\\Le Minh Khuong 1\\web-application-development\\web-application-development\\backend\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
