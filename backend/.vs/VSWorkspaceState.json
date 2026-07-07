@@ -4,8 +4,8 @@
     "\\Controllers",
     "\\Infrastructure",
     "\\Repositories",
-    "\\Services"
+    "\\Services",
+    "\\wwwroot"
   ],
-  "SelectedNode": "\\Repositories\\CinemaRepository.cs",
   "PreviewInSolutionExplorer": false
 }

@@ -13,8 +13,8 @@
  */
 
 import { getNowShowing, getComingSoon, seedMovies } from './movieService.js';
-import { createMovieCard, createComingSoonCard } from '/shared/components/movieCard.js';
-import { renderNavbar } from '/shared/components/navbar.js';
+import { createMovieCard, createComingSoonCard } from '../../shared/components/movieCard.js';
+import { renderNavbar } from '../../shared/components/navbar.js';
 
 // TODO: function init() { ... }
 // TODO: function renderBanner(movie) { ... }

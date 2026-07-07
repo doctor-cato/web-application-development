@@ -2,7 +2,7 @@
  * bookingService.js — seat locking with BroadcastChannel API
  */
 
-import { lsGet, lsSet, getBookings, saveBookings, KEYS } from '/shared/utils/storage.js';
+import { lsGet, lsSet, getBookings, saveBookings, KEYS } from '../../shared/utils/storage.js';
 
 const LOCK_DURATION_MS = 15 * 60 * 1000; // 15 minutes
 const channel = new BroadcastChannel('seat_sync');
@@ -104,47 +104,97 @@ export function releaseExpiredLocks() {
   if (changed) _saveLocksMap(map);
 }
 
-export function confirmBooking(checkoutData) {
-  // create booking record
-  const bookings = getBookings();
-  const id = makeBookingId();
-  const now = new Date();
-  const finalId = checkoutData.id || id;
-  const booking = {
-    id: finalId,
-    movieTitle: checkoutData.movieTitle || 'Unknown Movie',
-    showtimeId: checkoutData.showtimeId || null,
-    showtimeText: checkoutData.showtimeText || '',
-    room: checkoutData.room || '',
-    seats: checkoutData.seats || [],
-    combo: checkoutData.combo || 'none',
-    total: checkoutData.total || checkoutData.amount || 0,
-    userId: checkoutData.userId || null,
-    transactionId: checkoutData.transactionId || null,
-    paymentMethod: checkoutData.paymentMethod || null,
-    poster: checkoutData.poster || '',
-    createdAt: now.toISOString()
-  };
+import { API_BASE_URL, getHeaders } from '../../shared/utils/apiConfig.js?v=4';
 
-  bookings.push(booking);
-  saveBookings(bookings);
+export async function confirmBooking(checkoutData) {
+  try {
+    const payload = {
+        Email: checkoutData.userId || 'guest@example.com',
+        ShowtimeId: checkoutData.showtimeId || 1, // fallback
+        MovieId: checkoutData.movieId || 1,       // fallback
+        Seats: (checkoutData.seats || []).join(','),
+        TotalPrice: checkoutData.total || checkoutData.amount || 0,
+        PaymentMethod: checkoutData.paymentMethod || 'Credit Card'
+    };
+    
+    const response = await fetch(`${API_BASE_URL}/bookings`, {
+        method: 'POST',
+        headers: getHeaders(),
+        body: JSON.stringify(payload)
+    });
+    
+    if (response.ok) {
+        const data = await response.json();
+        const finalId = data.bookingId || checkoutData.id || makeBookingId();
+        
+        const booking = {
+            id: finalId,
+            movieTitle: checkoutData.movieTitle || 'Unknown Movie',
+            showtimeId: checkoutData.showtimeId || null,
+            showtimeText: checkoutData.showtimeText || '',
+            room: checkoutData.room || '',
+            seats: checkoutData.seats || [],
+            combo: checkoutData.combo || 'none',
+            total: payload.TotalPrice,
+            userId: checkoutData.userId || null,
+            transactionId: checkoutData.transactionId || null,
+            paymentMethod: checkoutData.paymentMethod || null,
+            poster: checkoutData.poster || '',
+            createdAt: new Date().toISOString()
+        };
 
-  // remove locks for booked seats and notify
-  const map = _getLocksMap();
-  (booking.seats || []).forEach(s => {
-    if (map[booking.showtimeId] && map[booking.showtimeId][s]) {
-      delete map[booking.showtimeId][s];
+        // remove locks for booked seats and notify
+        const map = _getLocksMap();
+        (booking.seats || []).forEach(s => {
+          if (map[booking.showtimeId] && map[booking.showtimeId][s]) {
+            delete map[booking.showtimeId][s];
+          }
+          try { channel.postMessage({ type: 'seat_booked', showtimeId: booking.showtimeId, seatId: s }); } catch (e) {}
+        });
+        _saveLocksMap(map);
+
+        // Notify Staff about F&B App Order if there is food
+        if (checkoutData.customFood && checkoutData.customFood.length > 0) {
+            let appOrders = JSON.parse(localStorage.getItem("cinema_app_orders")) || [];
+            let itemsText = checkoutData.customFood.map(item => `${item.qty}x ${item.name}`).join(", ");
+            let userName = localStorage.getItem('userName') || 'Khách Vãng Lai';
+            let userPhone = localStorage.getItem('userPhone') || 'N/A';
+            
+            appOrders.unshift({
+                id: 'APP-' + Math.random().toString(36).substr(2, 6).toUpperCase(),
+                customerName: userName,
+                phone: userPhone,
+                items: checkoutData.customFood.map(f => ({ prodId: f.id || 'f1', qty: f.qty })),
+                itemsText: itemsText,
+                timestamp: new Date().toISOString()
+            });
+            localStorage.setItem("cinema_app_orders", JSON.stringify(appOrders));
+        }
+
+        return booking;
+    } else {
+        console.error('Booking failed at backend');
+        return null;
     }
-    try { channel.postMessage({ type: 'seat_booked', showtimeId: booking.showtimeId, seatId: s }); } catch (e) {}
-  });
-  _saveLocksMap(map);
-
-  return booking;
+  } catch (error) {
+    console.error('Error in confirmBooking:', error);
+    return null;
+  }
 }
 
-export function getUserBookings(userId) {
-  const bookings = getBookings();
-  if (!userId) return bookings;
-  return bookings.filter(b => b.userId === userId);
+export async function getUserBookings(userId) {
+  if (!userId) return [];
+  try {
+    const response = await fetch(`${API_BASE_URL}/bookings/${encodeURIComponent(userId)}`, {
+      method: 'GET',
+      headers: getHeaders()
+    });
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    }
+  } catch (err) {
+    console.error(err);
+  }
+  return [];
 }
-

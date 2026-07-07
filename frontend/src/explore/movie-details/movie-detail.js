@@ -11,7 +11,8 @@ let currentLightboxIdx = 0;
 // ── UTILITY ─────────────────────────────────────────────────
 function getMovieIdFromURL() {
     const params = new URLSearchParams(window.location.search);
-    return params.get('id') || null;
+    const id = params.get('id');
+    return id ? id.replace(/\s+/g, '-') : null;
 }
 
 function getAgeBadgeClass(age) {
@@ -320,7 +321,11 @@ function handleBooking(event, cinemaName, format, time) {
     showToast(`🎬 Đang chuyển đến trang đặt vé: ${cinemaName} — ${format} lúc ${time}`);
     setTimeout(() => {
         localStorage.removeItem('checkoutFood');
-        window.location.href = `/booking/seat-booking/booking.html?id=${currentMovie.id}&showtimeId=${time}`;
+        let targetUrl = `../../booking/seat-booking/booking.html?id=${currentMovie.id}&showtimeId=${time}`;
+        if (new URLSearchParams(window.location.search).get('cinematch') === 'true' || localStorage.getItem('cinematch_active') === 'true') {
+            targetUrl += '&cinematch=true';
+        }
+        window.location.href = targetUrl;
     }, 1500);
 }
 
@@ -424,8 +429,15 @@ function submitComment() {
 function renderGallery(movie) {
     // Trailer iframe
     const iframe = document.getElementById('detail-trailer-iframe');
+    const fallback = document.getElementById('detail-trailer-fallback');
+    const ytLink = document.getElementById('detail-trailer-yt-link');
     if (iframe && movie.trailer) {
-        iframe.src = movie.trailer + '?rel=0&modestbranding=1';
+        iframe.src = movie.trailer + '?rel=0&modestbranding=1&enablejsapi=1';
+        if (fallback) fallback.style.display = 'none';
+        iframe.style.display = 'block';
+        if (ytLink && movie.trailerWatch) {
+            ytLink.href = movie.trailerWatch;
+        }
     }
 
     // Gallery grid
@@ -516,8 +528,17 @@ function scrollRelated(dir) {
 function openTrailerModal(embedUrl, watchUrl) {
     const modal = document.getElementById('trailer-modal');
     const iframe = document.getElementById('trailer-video');
+    const fallback = document.getElementById('trailer-fallback');
+    const ytLink = document.getElementById('trailer-yt-link');
     if (!modal || !iframe) return;
-    iframe.src = embedUrl + '?autoplay=1&rel=0';
+    
+    iframe.src = embedUrl + '?autoplay=1&rel=0&enablejsapi=1';
+    if (fallback) fallback.style.display = 'none';
+    iframe.style.display = 'block';
+    if (ytLink && watchUrl) {
+        ytLink.href = watchUrl;
+    }
+    
     modal.style.display = 'flex';
     document.body.style.overflow = 'hidden';
 }
@@ -585,7 +606,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!currentMovie) {
         document.title = '3HD2K - Không tìm thấy phim';
-        document.querySelector('.detail-main').innerHTML = `
+        document.querySelector('.movie-detail-page').innerHTML = `
             <div style="padding: 100px 20px; text-align:center; color: var(--text-muted);">
                 <i class="fas fa-film" style="font-size:4rem;opacity:0.3;margin-bottom:24px;"></i>
                 <h2>Không tìm thấy phim</h2>
@@ -635,4 +656,24 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     }
+});
+
+// Lắng nghe sự kiện lỗi từ iframe YouTube để hiển thị fallback
+window.addEventListener('message', (e) => {
+    try {
+        const data = JSON.parse(e.data);
+        if (data.event === 'onError' && [100, 150, 151, 153].includes(data.info)) {
+            const iframe1 = document.getElementById('trailer-video');
+            const iframe2 = document.getElementById('detail-trailer-iframe');
+            if (iframe1 && e.source === iframe1.contentWindow) {
+                const fb = document.getElementById('trailer-fallback');
+                if (fb) fb.style.display = 'flex';
+                iframe1.style.display = 'none';
+            } else if (iframe2 && e.source === iframe2.contentWindow) {
+                const fb = document.getElementById('detail-trailer-fallback');
+                if (fb) fb.style.display = 'flex';
+                iframe2.style.display = 'none';
+            }
+        }
+    } catch (_) {}
 });

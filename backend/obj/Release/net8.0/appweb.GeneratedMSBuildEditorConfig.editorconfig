@@ -12,173 +12,173 @@ build_property.EntryPointFilePath =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = appweb
 build_property.RootNamespace = appweb
-build_property.ProjectDir = C:\Users\Le Minh Khuong 1\source\repos\appweb\
+build_property.ProjectDir = C:\Users\Le Minh Khuong 1\web-application-development\web-application-development\backend\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 8.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Users\Le Minh Khuong 1\source\repos\appweb
+build_property.MSBuildProjectDirectory = C:\Users\Le Minh Khuong 1\web-application-development\web-application-development\backend
 build_property._RazorSourceGeneratorDebug = 
 build_property.EffectiveAnalysisLevelStyle = 8.0
 build_property.EnableCodeStyleSeverity = 
 
-[C:/Users/Le Minh Khuong 1/source/repos/appweb/Views/BookingDetail/Create.cshtml]
+[C:/Users/Le Minh Khuong 1/web-application-development/web-application-development/backend/Views/BookingDetail/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va2luZ0RldGFpbFxDcmVhdGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Le Minh Khuong 1/source/repos/appweb/Views/BookingDetail/Delete.cshtml]
+[C:/Users/Le Minh Khuong 1/web-application-development/web-application-development/backend/Views/BookingDetail/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va2luZ0RldGFpbFxEZWxldGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Le Minh Khuong 1/source/repos/appweb/Views/BookingDetail/Details.cshtml]
+[C:/Users/Le Minh Khuong 1/web-application-development/web-application-development/backend/Views/BookingDetail/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va2luZ0RldGFpbFxEZXRhaWxzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Le Minh Khuong 1/source/repos/appweb/Views/BookingDetail/Edit.cshtml]
+[C:/Users/Le Minh Khuong 1/web-application-development/web-application-development/backend/Views/BookingDetail/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va2luZ0RldGFpbFxFZGl0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Le Minh Khuong 1/source/repos/appweb/Views/BookingDetail/Index.cshtml]
+[C:/Users/Le Minh Khuong 1/web-application-development/web-application-development/backend/Views/BookingDetail/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va2luZ0RldGFpbFxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Le Minh Khuong 1/source/repos/appweb/Views/Booking/Create.cshtml]
+[C:/Users/Le Minh Khuong 1/web-application-development/web-application-development/backend/Views/Booking/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va2luZ1xDcmVhdGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Le Minh Khuong 1/source/repos/appweb/Views/Booking/Delete.cshtml]
+[C:/Users/Le Minh Khuong 1/web-application-development/web-application-development/backend/Views/Booking/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va2luZ1xEZWxldGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Le Minh Khuong 1/source/repos/appweb/Views/Booking/Details.cshtml]
+[C:/Users/Le Minh Khuong 1/web-application-development/web-application-development/backend/Views/Booking/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va2luZ1xEZXRhaWxzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Le Minh Khuong 1/source/repos/appweb/Views/Booking/Edit.cshtml]
+[C:/Users/Le Minh Khuong 1/web-application-development/web-application-development/backend/Views/Booking/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va2luZ1xFZGl0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Le Minh Khuong 1/source/repos/appweb/Views/Booking/Index.cshtml]
+[C:/Users/Le Minh Khuong 1/web-application-development/web-application-development/backend/Views/Booking/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va2luZ1xJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Le Minh Khuong 1/source/repos/appweb/Views/Cinema/Create.cshtml]
+[C:/Users/Le Minh Khuong 1/web-application-development/web-application-development/backend/Views/Cinema/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2luZW1hXENyZWF0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Le Minh Khuong 1/source/repos/appweb/Views/Cinema/Delete.cshtml]
+[C:/Users/Le Minh Khuong 1/web-application-development/web-application-development/backend/Views/Cinema/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2luZW1hXERlbGV0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Le Minh Khuong 1/source/repos/appweb/Views/Cinema/Details.cshtml]
+[C:/Users/Le Minh Khuong 1/web-application-development/web-application-development/backend/Views/Cinema/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2luZW1hXERldGFpbHMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Le Minh Khuong 1/source/repos/appweb/Views/Cinema/Edit.cshtml]
+[C:/Users/Le Minh Khuong 1/web-application-development/web-application-development/backend/Views/Cinema/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2luZW1hXEVkaXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Le Minh Khuong 1/source/repos/appweb/Views/Cinema/Index.cshtml]
+[C:/Users/Le Minh Khuong 1/web-application-development/web-application-development/backend/Views/Cinema/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2luZW1hXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Le Minh Khuong 1/source/repos/appweb/Views/Movie/Create.cshtml]
+[C:/Users/Le Minh Khuong 1/web-application-development/web-application-development/backend/Views/Movie/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTW92aWVcQ3JlYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Le Minh Khuong 1/source/repos/appweb/Views/Movie/Delete.cshtml]
+[C:/Users/Le Minh Khuong 1/web-application-development/web-application-development/backend/Views/Movie/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTW92aWVcRGVsZXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Le Minh Khuong 1/source/repos/appweb/Views/Movie/Details.cshtml]
+[C:/Users/Le Minh Khuong 1/web-application-development/web-application-development/backend/Views/Movie/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTW92aWVcRGV0YWlscy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Le Minh Khuong 1/source/repos/appweb/Views/Movie/Edit.cshtml]
+[C:/Users/Le Minh Khuong 1/web-application-development/web-application-development/backend/Views/Movie/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTW92aWVcRWRpdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Le Minh Khuong 1/source/repos/appweb/Views/Movie/Index.cshtml]
+[C:/Users/Le Minh Khuong 1/web-application-development/web-application-development/backend/Views/Movie/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTW92aWVcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Le Minh Khuong 1/source/repos/appweb/Views/Room/Create.cshtml]
+[C:/Users/Le Minh Khuong 1/web-application-development/web-application-development/backend/Views/Room/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUm9vbVxDcmVhdGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Le Minh Khuong 1/source/repos/appweb/Views/Room/Delete.cshtml]
+[C:/Users/Le Minh Khuong 1/web-application-development/web-application-development/backend/Views/Room/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUm9vbVxEZWxldGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Le Minh Khuong 1/source/repos/appweb/Views/Room/Details.cshtml]
+[C:/Users/Le Minh Khuong 1/web-application-development/web-application-development/backend/Views/Room/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUm9vbVxEZXRhaWxzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Le Minh Khuong 1/source/repos/appweb/Views/Room/Edit.cshtml]
+[C:/Users/Le Minh Khuong 1/web-application-development/web-application-development/backend/Views/Room/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUm9vbVxFZGl0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Le Minh Khuong 1/source/repos/appweb/Views/Room/Index.cshtml]
+[C:/Users/Le Minh Khuong 1/web-application-development/web-application-development/backend/Views/Room/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUm9vbVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Le Minh Khuong 1/source/repos/appweb/Views/Seat/Create.cshtml]
+[C:/Users/Le Minh Khuong 1/web-application-development/web-application-development/backend/Views/Seat/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2VhdFxDcmVhdGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Le Minh Khuong 1/source/repos/appweb/Views/Seat/Delete.cshtml]
+[C:/Users/Le Minh Khuong 1/web-application-development/web-application-development/backend/Views/Seat/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2VhdFxEZWxldGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Le Minh Khuong 1/source/repos/appweb/Views/Seat/Details.cshtml]
+[C:/Users/Le Minh Khuong 1/web-application-development/web-application-development/backend/Views/Seat/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2VhdFxEZXRhaWxzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Le Minh Khuong 1/source/repos/appweb/Views/Seat/Edit.cshtml]
+[C:/Users/Le Minh Khuong 1/web-application-development/web-application-development/backend/Views/Seat/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2VhdFxFZGl0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Le Minh Khuong 1/source/repos/appweb/Views/Seat/Index.cshtml]
+[C:/Users/Le Minh Khuong 1/web-application-development/web-application-development/backend/Views/Seat/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2VhdFxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Le Minh Khuong 1/source/repos/appweb/Views/Showtime/Create.cshtml]
+[C:/Users/Le Minh Khuong 1/web-application-development/web-application-development/backend/Views/Showtime/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hvd3RpbWVcQ3JlYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Le Minh Khuong 1/source/repos/appweb/Views/Showtime/Delete.cshtml]
+[C:/Users/Le Minh Khuong 1/web-application-development/web-application-development/backend/Views/Showtime/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hvd3RpbWVcRGVsZXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Le Minh Khuong 1/source/repos/appweb/Views/Showtime/Details.cshtml]
+[C:/Users/Le Minh Khuong 1/web-application-development/web-application-development/backend/Views/Showtime/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hvd3RpbWVcRGV0YWlscy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Le Minh Khuong 1/source/repos/appweb/Views/Showtime/Edit.cshtml]
+[C:/Users/Le Minh Khuong 1/web-application-development/web-application-development/backend/Views/Showtime/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hvd3RpbWVcRWRpdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Le Minh Khuong 1/source/repos/appweb/Views/Showtime/Index.cshtml]
+[C:/Users/Le Minh Khuong 1/web-application-development/web-application-development/backend/Views/Showtime/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hvd3RpbWVcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Le Minh Khuong 1/source/repos/appweb/Views/User/Create.cshtml]
+[C:/Users/Le Minh Khuong 1/web-application-development/web-application-development/backend/Views/User/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxDcmVhdGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Le Minh Khuong 1/source/repos/appweb/Views/User/Delete.cshtml]
+[C:/Users/Le Minh Khuong 1/web-application-development/web-application-development/backend/Views/User/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxEZWxldGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Le Minh Khuong 1/source/repos/appweb/Views/User/Details.cshtml]
+[C:/Users/Le Minh Khuong 1/web-application-development/web-application-development/backend/Views/User/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxEZXRhaWxzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Le Minh Khuong 1/source/repos/appweb/Views/User/Edit.cshtml]
+[C:/Users/Le Minh Khuong 1/web-application-development/web-application-development/backend/Views/User/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxFZGl0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Le Minh Khuong 1/source/repos/appweb/Views/User/Index.cshtml]
+[C:/Users/Le Minh Khuong 1/web-application-development/web-application-development/backend/Views/User/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 

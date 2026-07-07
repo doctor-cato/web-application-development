@@ -249,7 +249,7 @@
                     </div>
                     <div style="display: flex; align-items: center; z-index: 1; position: relative; min-width: max-content;">
                         <div class="price-block" style="text-align: right; background: rgba(0,0,0,0.4); padding: 1rem 1.5rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(0,0,0,0.3); white-space: nowrap;">
-                            <p class="price-label" style="margin-bottom: 0.3rem; color: var(--neon-red); font-size: 0.85rem; font-weight: bold; letter-spacing: 1px; white-space: nowrap;">MỖI GHẾ</p>
+                            <p class="price-label" style="margin-bottom: 0.3rem; color: var(--neon-red); font-size: 0.85rem; font-weight: bold; letter-spacing: 1px; white-space: nowrap;">PHẦN CỦA BẠN</p>
                             <p class="price-value" id="dynamic-price-value" style="font-size: 2.2rem; color: #fff; font-weight: bold; text-shadow: 0 0 15px rgba(255,255,255,0.3); margin: 0; line-height: 1; white-space: nowrap;">0₫</p>
                         </div>
                     </div>
@@ -440,8 +440,44 @@
         return true;
     }
 
-    function saveOrderData() {
+
+    async function saveOrderData() {
+        try {
+            await fetch('/api/groupbooking/' + orderId, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    checkoutData: groupData.checkoutData,
+                    paidSeats: groupData.paidSeats,
+                    cancelledSeats: groupData.cancelledSeats
+                })
+            });
+        } catch(e) {
+            console.warn("API save failed, using localStorage:", e);
+        }
         localStorage.setItem('splitOrder_' + orderId, JSON.stringify(groupData));
+    }
+
+    // --- Helper: Check if current user is the group leader (first seat) ---
+    function isGroupLeader() {
+        const allSeats = groupData?.checkoutData?.seats || [];
+        return allSeats.length > 0 && window.mySeat === allSeats[0];
+    }
+
+    // --- Leader Pay For Member ---
+    window.leaderPayForMember = function(seatName) {
+        if (!isGroupLeader()) {
+            showToast('Chi truong nhom moi co the thanh toan ho!', 'error');
+            return;
+        }
+        if (groupData.paidSeats.includes(seatName)) return;
+        currentlyPayingSeat = seatName;
+        document.getElementById('modal-seat-id').textContent = seatName + ' (Thanh toan ho)';
+        const payAmount = pricePerSeat;
+        document.getElementById('btn-confirm-pay').textContent = 'THANH TOAN HO (' + formatPrice(payAmount) + ')';
+        document.getElementById('payment-modal-backdrop').classList.add('active');
+        window._isProxyPayment = true;
+        window._proxyPaySeat = seatName;
     }
 
     // --- Dynamic Rendering ---
@@ -561,11 +597,16 @@
                     `;
                 } else {
                     card.className = 'member-card empty';
+                    const leaderBtns = isGroupLeader() ? `
+                        <div style="display: flex; flex-direction: column; gap: 0.4rem; margin-top: 0.75rem; width: 100%; padding: 0 0.5rem;">
+                            <button class="btn-pay-avatar" style="font-size: 0.7rem; padding: 0.5rem;" onclick="leaderPayForMember('${seatName}')">💳 THANH TOÁN HỘ</button>
+                        </div>
+                    ` : `<div style="margin-top: 1rem; color: var(--neon-red); font-size: 0.7rem; font-weight: 600; font-style: italic;">Chờ người khác thanh toán...</div>`;
                     card.innerHTML = `
                         <div class="avatar-circle"><span class="material-symbols-outlined" style="font-size: 2rem;">person_add</span></div>
                         <span class="member-name">Đang đợi...</span>
                         <span class="member-status" style="color: rgba(255,255,255,0.4); margin-top: 0.25rem;">Ghế ${seatName}</span>
-                        <div style="margin-top: 1rem; color: var(--neon-red); font-size: 0.7rem; font-weight: 600; font-style: italic;">Chờ người khác thanh toán...</div>
+                        ${leaderBtns}
                     `;
                 }
             }
@@ -620,7 +661,9 @@
         if (!seat || typeof seat !== 'string') {
             seat = window.mySeat;
         }
-        if (!seat || seat !== window.mySeat) return; // Chỉ được thanh toán ghế của mình
+        // Allow own seat OR leader proxy payment
+        if (!seat) return;
+        if (seat !== window.mySeat && !isGroupLeader()) return;
         
         currentlyPayingSeat = seat;
         modalSeatId.textContent = seat;
@@ -672,7 +715,9 @@
     }
 
     btnConfirmPay.addEventListener('click', () => {
-        if (!currentlyPayingSeat || currentlyPayingSeat !== window.mySeat) return;
+        // Allow proxy payment by leader OR own seat payment
+        const isProxy = window._isProxyPayment === true;
+        if (!isProxy && (!currentlyPayingSeat || currentlyPayingSeat !== window.mySeat)) return;
         
         const originalBtnText = btnConfirmPay.textContent;
         btnConfirmPay.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ĐANG XỬ LÝ...';
@@ -683,21 +728,51 @@
             btnConfirmPay.textContent = originalBtnText;
             btnConfirmPay.style.pointerEvents = 'auto';
 
-            // Lấy phương thức thanh toán đang chọn
+            if (isProxy) {
+                // --- PROXY PAYMENT: Leader pays for member instantly ---
+                const proxySeat = window._proxyPaySeat;
+                if (proxySeat && !groupData.paidSeats.includes(proxySeat)) {
+                    groupData.paidSeats.push(proxySeat);
+                    localStorage.setItem('splitOrder_' + orderId, JSON.stringify(groupData));
+                    
+                    // Save notification for member
+                    let notifications = JSON.parse(localStorage.getItem('3hd2k_notifications') || '[]');
+                    notifications.unshift({
+                        id: 'NOTIF-' + Date.now(),
+                        type: 'payment',
+                        message: 'Truong nhom da thanh toan ho ghe ' + proxySeat + ' cho ban!',
+                        seat: proxySeat,
+                        orderId: orderId,
+                        time: new Date().toLocaleTimeString('vi-VN'),
+                        read: false
+                    });
+                    localStorage.setItem('3hd2k_notifications', JSON.stringify(notifications));
+                    
+                    showToast('Da thanh toan ho ghe ' + proxySeat + ' thanh cong!', 'success');
+                }
+                window._isProxyPayment = false;
+                window._proxyPaySeat = null;
+                currentlyPayingSeat = null;
+                
+                loadOrderData();
+                renderLobby();
+                checkCompletion();
+                return;
+            }
+
+            // --- NORMAL PAYMENT: Redirect to payment gateway ---
             const selectedMethod = document.querySelector('.payment-method.selected input')?.value || 'momo';
             
-            // Tạo Return URL có chứa tham số ghế vừa thanh toán
             const currentUrl = new URL(window.location.href);
             currentUrl.searchParams.set('paidSeat', currentlyPayingSeat);
             currentUrl.searchParams.set('clearFood', 'true');
             const returnUrl = encodeURIComponent(currentUrl.toString());
 
-            // Chuyển hướng sang trang VNPay / Momo ảo
             const txId = 'TX-' + Math.random().toString(36).substr(2, 9).toUpperCase();
             const totalPay = pricePerSeat + myFoodTotal;
             window.location.href = `../checkout/payment_simulation.html?provider=${encodeURIComponent(selectedMethod)}&txId=${txId}&amount=${totalPay}&returnUrl=${returnUrl}`;
             
-        }, 500); // Simulate short delay before redirect
+        }, 500);
     });
 
     // --- Toast Logic ---
@@ -740,7 +815,7 @@
 
     const COMBOS = { none: { price: 0, name: '' }, single: { price: 65000, name: 'Combo 1 Người' }, double: { price: 95000, name: 'Combo 2 Người' } };
 
-    function updateGroupFood() {
+    async function updateGroupFood() {
         const v = document.querySelector('input[name="group-combo"]:checked')?.value || 'none';
         let items = [];
         if (v !== 'none' && COMBOS[v]) {
@@ -752,7 +827,7 @@
         } else {
             showToast('Đã bỏ chọn bắp nước', 'info');
         }
-        loadOrderData();
+        await loadOrderData();
         renderLobby();
     }
 
@@ -800,7 +875,7 @@
         pendingCancelSeat = null;
     });
 
-    btnProceedCancel.addEventListener('click', () => {
+    btnProceedCancel.addEventListener('click', async () => {
         if (!pendingCancelSeat) return;
         
         const seatToCancel = pendingCancelSeat;
@@ -809,12 +884,12 @@
         // Mark as cancelled
         groupData.cancelledSeats.push(seatToCancel);
         groupData.checkoutData.total -= pricePerSeat;
-        saveOrderData();
+        await saveOrderData();
         
         // Chuyển người dùng thành Observer
         localStorage.setItem('mySeatForOrder_' + orderId, 'CANCELLED');
         
-        loadOrderData(); 
+        await loadOrderData(); 
         renderLobby(); 
         
         showToast(`Đã hủy ghế ${seatToCancel} thành công!`, 'success');

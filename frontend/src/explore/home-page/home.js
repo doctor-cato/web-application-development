@@ -15,16 +15,31 @@ const trailerFallback = document.getElementById('trailer-fallback');
 const trailerYtLink = document.getElementById('trailer-yt-link');
 const btnBookNow = document.getElementById('btn-book-now');
 
-// Set trailer mặc định cho phim đầu tiên khi trang load
-if (heroMovies[0] && heroMovies[0].trailer) {
-    iframe.src = heroMovies[0].trailer + '?enablejsapi=1';
-    if (trailerYtLink && heroMovies[0].trailerWatch) {
-        trailerYtLink.href = heroMovies[0].trailerWatch;
+window.fetchMoviesPromise.then(() => {
+    // Set trailer mặc định cho phim đầu tiên khi trang load
+    if (heroMovies[0] && heroMovies[0].trailer) {
+        iframe.src = heroMovies[0].trailer + '?enablejsapi=1';
+        if (trailerYtLink && heroMovies[0].trailerWatch) {
+            trailerYtLink.href = heroMovies[0].trailerWatch;
+        }
     }
-}
-if (btnBookNow && heroMovies[0] && heroMovies[0].id) {
-    btnBookNow.href = `/explore/movie-details/index.html?id=${heroMovies[0].id}`;
-}
+    if (btnBookNow && heroMovies[0] && heroMovies[0].id) {
+        btnBookNow.href = `/explore/movie-details/index.html?id=${heroMovies[0].id}`;
+    }
+
+    if (heroMovies[0] && heroMovies[0].bg) {
+        heroSection.style.setProperty('--hero-bg-url', `url('${heroMovies[0].bg}')`);
+    }
+
+    // Force update text to match database on initial load without fading
+    if (heroMovies[0]) {
+        const movie = heroMovies[0];
+        titleEl.textContent = movie.title;
+        metaEl.innerHTML = movie.meta.replace(/•/g, '&bull;');
+        descEl.textContent = movie.desc;
+        ageEl.textContent = movie.age;
+    }
+});
 
 if (btnBookNow) {
     btnBookNow.addEventListener('click', (e) => {
@@ -35,6 +50,8 @@ if (btnBookNow) {
 }
 
 function changeHeroSlide(direction = 1) {
+    if (!heroMovies || heroMovies.length === 0) return;
+    
     currentHeroIndex = (currentHeroIndex + direction + heroMovies.length) % heroMovies.length;
     const movie = heroMovies[currentHeroIndex];
 
@@ -49,8 +66,7 @@ function changeHeroSlide(direction = 1) {
         ageEl.textContent = movie.age;
 
         // Update background
-        const gradient = "linear-gradient(to top, var(--bg-color) 0%, rgba(12,12,12,0.3) 35%, rgba(0,0,0,0.6) 100%), linear-gradient(to right, rgba(0,0,0,0.85) 0%, transparent 55%)";
-        heroSection.style.backgroundImage = `${gradient}, url('${movie.bg}')`;
+        heroSection.style.setProperty('--hero-bg-url', `url('${movie.bg}')`);
 
         // Update trailer link theo phim hiện tại
         if (movie.trailer) {
@@ -173,7 +189,7 @@ function renderNowShowing(movies) {
     movies.forEach(movie => {
         const tagsHtml = movie.tags.map(tag => `<span class="tag">${tag}</span>`).join('');
         
-        const detailUrl = `../movie-details/index.html?id=${movie.id}`;
+        const detailUrl = `/explore/movie-details/index.html?id=${movie.id}`;
         const cardHtml = `
             <div class="movie-card" onclick="window.location.href='${detailUrl}'" style="cursor:pointer;">
                 <a href="${detailUrl}" class="poster" style="background-image: url('${movie.poster}')" aria-label="Xem chi tiết ${movie.title}">
@@ -195,16 +211,6 @@ function renderNowShowing(movies) {
         nowShowingGrid.innerHTML += cardHtml;
     });
 
-    // Add empty placeholders to keep grid formatting nicely if needed
-    if (movies.length < 4) {
-        for (let i = 0; i < 4 - movies.length; i++) {
-            nowShowingGrid.innerHTML += `
-                <div class="movie-card" style="opacity: 0.3; pointer-events: none;">
-                    <div class="poster placeholder"></div>
-                </div>
-            `;
-        }
-    }
 }
 
 function applyFilters() {
@@ -229,8 +235,18 @@ if (filterFormat) filterFormat.addEventListener('change', applyFilters);
 if (filterCinema) filterCinema.addEventListener('change', applyFilters);
 
 // Initial render
-document.addEventListener('DOMContentLoaded', () => {
-    renderNowShowing(nowShowingMovies);
+document.addEventListener('DOMContentLoaded', async () => {
+    if (window.fetchMoviesPromise) {
+        await window.fetchMoviesPromise;
+    }
+
+    if (window.nowShowingMovies) {
+        renderNowShowing(window.nowShowingMovies);
+    }
+    
+    if (typeof window.renderComingSoon === 'function' && window.comingSoonMovies) {
+        window.renderComingSoon(window.comingSoonMovies);
+    }
 
     // --- VIP LOGIC FOR REWARDS BUTTON ---
     const btnVip = document.getElementById('btn-home-vip');
@@ -241,10 +257,54 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (isLogged && isVip) {
             btnVip.textContent = 'XEM QUYỀN LỢI VIP';
-            btnVip.href = '../../user/loyalty-points/index.html'; 
+            btnVip.href = '/user/loyalty-points/index.html'; 
         } else {
             // Default logic if not logged in or not VIP
             btnVip.textContent = 'ĐĂNG KÝ THÀNH VIÊN VIP';
         }
     }
 });
+
+// Define comingSoonGrid
+const comingSoonGrid = document.getElementById('coming-soon-grid');
+
+window.renderComingSoon = function(movies) {
+    if (!comingSoonGrid) return;
+    
+    comingSoonGrid.innerHTML = '';
+    
+    if (!movies || movies.length === 0) {
+        comingSoonGrid.innerHTML = `
+            <div style="width:100%; padding: 40px; text-align:center; color: var(--text-muted);">
+                <i class="fas fa-calendar-alt" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.5;"></i>
+                <h3>Hiện chưa có phim sắp chiếu</h3>
+            </div>
+        `;
+        return;
+    }
+
+    movies.forEach(movie => {
+        const tagsHtml = movie.tags ? movie.tags.map(tag => `<span class="tag">${tag}</span>`).join('') : '';
+        const detailUrl = `/explore/movie-details/index.html?id=${movie.id}`;
+        const cardHtml = `
+            <div class="movie-card" onclick="window.location.href='${detailUrl}'" style="cursor:pointer;">
+                <a href="${detailUrl}" class="poster" style="background-image: url('${movie.poster}')" aria-label="Xem chi tiết ${movie.title}">
+                    <div class="poster-overlay">
+                        <span class="overlay-text">Xem thêm</span>
+                        <span class="btn-book" onclick="event.preventDefault(); event.stopPropagation(); window.location.href='${detailUrl}'">Đặt trước vé</span>
+                    </div>
+                </a>
+                <div class="info">
+                    <h3><a href="${detailUrl}">${movie.title}</a></h3>
+                    <div class="movie-meta-row">
+                        <span class="duration"><i class="far fa-clock"></i> ${movie.duration || 'N/A'}</span>
+                        <span class="age-badge">${movie.age || 'P'}</span>
+                    </div>
+                    <div class="tags">${tagsHtml}</div>
+                </div>
+            </div>
+        `;
+        comingSoonGrid.innerHTML += cardHtml;
+    });
+
+};

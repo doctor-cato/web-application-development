@@ -23,7 +23,7 @@ namespace appweb.Controllers
         }
 
         // Chi tiết phim
-        public async Task<IActionResult> Details(int id)
+        public async Task<IActionResult> Details(Guid id)
         {
             var movie = await _movieRepository.GetByIdAsync(id);
             if (movie == null) return NotFound();
@@ -44,7 +44,7 @@ namespace appweb.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Edit(int id)
+        public async Task<IActionResult> Edit(Guid id)
         {
             var movie = await _movieRepository.GetByIdAsync(id);
             if (movie == null) return NotFound();
@@ -53,7 +53,7 @@ namespace appweb.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Movie movie)
+        public async Task<IActionResult> Edit(Guid id, Movie movie)
         {
             // Sửa lỗi: Đối chiếu khóa chính dùng movie.Id thay vì movie.MovieId
             if (id != movie.Id) return BadRequest();
@@ -65,7 +65,7 @@ namespace appweb.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             var movie = await _movieRepository.GetByIdAsync(id);
             if (movie == null) return NotFound();
@@ -74,10 +74,11 @@ namespace appweb.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             await _movieRepository.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
         }
     }
 }
+

@@ -1,4 +1,4 @@
-﻿using appweb.Models;
+using appweb.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace appweb.Infrastructure
@@ -14,10 +14,12 @@ namespace appweb.Infrastructure
         public DbSet<User> Users { get; set; }
         public DbSet<Showtime> Showtimes { get; set; }
 
-        // --- BỔ SUNG ĐẦY ĐỦ 3 BẢNG NÀY ĐỂ HẾT LỖI 'Cinemas', 'Rooms', 'Seats' ---
         public DbSet<Cinema> Cinemas { get; set; }
         public DbSet<Room> Rooms { get; set; }
         public DbSet<Seat> Seats { get; set; }
+        
+        // --- BỔ SUNG BẢNG CINE-MATCH ---
+        public DbSet<CineMatch> CineMatches { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

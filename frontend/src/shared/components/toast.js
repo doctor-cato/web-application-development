@@ -4,7 +4,7 @@
  * Hiển thị toast notification (thông báo ngắn góc màn hình).
  *
  * Cách dùng:
- *   import { toast } from '/shared/components/toast.js';
+ *   import { toast } from '../../shared/components/toast.js';
  *   toast.success('Đặt ghế thành công!');
  *   toast.error('Ghế đã được người khác chọn.');
  *   toast.info('Còn 1 phút để hoàn tất thanh toán.');

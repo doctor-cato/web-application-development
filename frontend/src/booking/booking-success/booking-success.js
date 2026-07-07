@@ -95,6 +95,34 @@ function init() {
         return;
     }
 
+    // --- Cine-Match Creation Logic ---
+    if (booking.isCineMatch) {
+        const CINE_MATCH_PROCESSED_KEY = '3hd2k_cinematch_processed';
+        let cmProcessed = [];
+        try { cmProcessed = JSON.parse(localStorage.getItem(CINE_MATCH_PROCESSED_KEY) || '[]'); } catch (_) {}
+        
+        if (!cmProcessed.includes(booking.id)) {
+            // Fake user id for now if auth is not implemented properly
+            const mockUserId = localStorage.getItem('currentUserId') || '11111111-1111-1111-1111-111111111111';
+            
+            fetch('/api/cinematch/create', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    userId: mockUserId, // Replace with real GUID
+                    showtimeId: parseInt(booking.showtimeId?.replace(/\D/g, '') || '200'),
+                    seatId: Array.isArray(booking.seats) ? booking.seats[0] : booking.seats,
+                    adjacentSeatId: booking.cineMatchAdjacentSeat || '',
+                    matchPreference: booking.cineMatchPreference || 'any'
+                })
+            }).then(res => res.json()).then(data => {
+                console.log('Cine-Match created:', data);
+                cmProcessed.push(booking.id);
+                localStorage.setItem(CINE_MATCH_PROCESSED_KEY, JSON.stringify(cmProcessed));
+            }).catch(err => console.error('Failed to create Cine-Match:', err));
+        }
+    }
+
     // Update Hero Banner
     const heroImage = document.getElementById('bs-hero-image');
     let poster = booking.poster;
@@ -102,14 +130,8 @@ function init() {
     let movieData = null;
 
     // Tìm dữ liệu phim để lấy backdrop và tags
-    if (window.nowShowingMovies) {
-        movieData = window.nowShowingMovies.find(m => m.title === booking.movieTitle || m.id === booking.movieId);
-    }
-    if (!movieData && window.comingSoonMovies) {
-        movieData = window.comingSoonMovies.find(m => m.title === booking.movieTitle || m.id === booking.movieId);
-    }
-    if (!movieData && window.heroMovies) {
-        movieData = window.heroMovies.find(m => m.title === booking.movieTitle || m.id === booking.movieId);
+    if (window.allMoviesData) {
+        movieData = window.allMoviesData.find(m => m.title === booking.movieTitle || m.id === booking.movieId);
     }
 
     if (movieData) {

@@ -1,7 +1,7 @@
 /**
  * login.js — Xử lý form đăng nhập
  */
-import { login, isLoggedIn } from '/auth/auth-services/authService.js';
+import { login, isLoggedIn } from '../../auth/auth-services/authService.js?v=5';
 
 // Redirect nếu đã đăng nhập
 if (isLoggedIn()) {
@@ -21,17 +21,24 @@ togglePassword.addEventListener('click', function () {
 });
 
 // ── Xử lý submit ──────────────────────────────────────────
-loginForm.addEventListener('submit', function (e) {
+loginForm.addEventListener('submit', async function (e) {
     e.preventDefault();
     errorBanner.classList.remove('show');
 
     const email    = document.getElementById('email').value.trim();
     const password = passwordInput.value;
 
-    const result = login(email, password);
+    const result = await login(email, password);
 
     if (result.ok) {
-        window.location.href = '/explore/home-page/index.html';
+        const role = result.user?.role?.toUpperCase() || 'CUSTOMER';
+        if (role === 'ADMIN') {
+            window.location.href = '/management/admin.html';
+        } else if (role === 'STAFF') {
+            window.location.href = '/management/staff-sales.html';
+        } else {
+            window.location.href = '/explore/home-page/index.html';
+        }
     } else {
         errorBanner.textContent = result.error;
         errorBanner.classList.add('show');

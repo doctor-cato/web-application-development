@@ -50,7 +50,7 @@
 
 /* ── HEADINGS ───────────────────────────────────────────────────────── */
 .booking-section-title {
-    font-family: 'Oswald', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-weight: 600;
     font-size: 1.25rem;
     text-transform: uppercase;
@@ -88,7 +88,7 @@
 }
 
 .movie-details-sm h1 {
-    font-family: 'Oswald', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-weight: 600;
     font-size: 1.25rem;
     line-height: 1.2;
@@ -266,7 +266,7 @@
     border: 1px solid var(--primary-red);
     border-radius: 6px;
     color: #fff;
-    font-family: 'Oswald', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-size: 0.875rem;
     font-weight: 500;
     letter-spacing: 1.5px;
@@ -308,7 +308,7 @@
 }
 
 .summary-total-price {
-    font-family: 'Oswald', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-weight: 600;
     font-size: 1.5rem;
     color: var(--primary-red);
@@ -318,7 +318,7 @@
 .btn-continue {
     width: 100%;
     padding: 0.75rem;
-    font-family: 'Oswald', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-weight: 600;
     font-size: 1.25rem;
     letter-spacing: 2px;
@@ -330,7 +330,7 @@
 }
 
 .checkout-header h1 {
-    font-family: 'Oswald', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-weight: 600;
     font-size: 2.5rem;
     letter-spacing: 1px;
@@ -576,7 +576,7 @@
 }
 
 .invoice-title {
-    font-family: 'Oswald', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-weight: 600;
     font-size: 2.5rem;
     margin-bottom: 0.5rem;

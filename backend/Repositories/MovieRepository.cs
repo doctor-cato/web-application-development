@@ -1,4 +1,4 @@
-﻿using appweb.Infrastructure;
+using appweb.Infrastructure;
 using appweb.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,10 +18,9 @@ namespace appweb.Repositories
             return await _context.Movies.ToListAsync();
         }
 
-        // Sửa m.MovieId thành m.Id
-        public async Task<Movie?> GetByIdAsync(int id)
+        public async Task<Movie?> GetByIdAsync(Guid id)
         {
-            return await _context.Movies.FirstOrDefaultAsync(m => m.Id == id);
+            return await _context.Movies.FirstOrDefaultAsync(m => m.MovieId == id);
         }
 
         public async Task AddAsync(Movie movie)
@@ -36,7 +35,7 @@ namespace appweb.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(Guid id)
         {
             var movie = await GetByIdAsync(id);
             if (movie != null)

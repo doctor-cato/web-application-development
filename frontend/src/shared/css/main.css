@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 /* 3HD2K Stylesheet
   Theme: Cinematic Noir, High Contrast, Glassmorphism
 */
@@ -27,7 +28,7 @@ button, input, select, textarea {
 
 /* Fallback for Tailwind font classes */
 .font-\[\'Inter\'\] { font-family: 'Inter', sans-serif !important; }
-.font-\[\'Bebas_Neue\'\] { font-family: 'Bebas Neue', sans-serif !important; }
+.font-\[\'Bebas_Neue\'\] { font-family: 'Inter', sans-serif !important; }
 .font-bold { font-weight: 700 !important; }
 .font-semibold { font-weight: 600 !important; }
 .font-medium { font-weight: 500 !important; }
@@ -79,16 +80,23 @@ body {
 }
 
 /* Headings & Brand Typography */
-h1, h2, h3, h4, .btn, .tag {
+h1, h2, h3, h4 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.btn, .tag {
     font-family: 'Inter', sans-serif;
     font-weight: 700;
     letter-spacing: 0.5px;
 }
 
 .logo {
-    font-family: 'Bebas Neue', sans-serif;
+    font-family: 'Inter', sans-serif;
     letter-spacing: 2px;
-    font-weight: normal;
+    font-weight: 700;
 }
 
 a {

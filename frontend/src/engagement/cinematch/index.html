@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cine-Match Premium | 3HD2K Cinema</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+    <link rel="stylesheet" href="../../shared/css/main.css">
+    
+    <style>
+        :root {
+            --neon-red: #ff2a5f;
+            --neon-purple: #9d00ff;
+            --glass-bg: rgba(20, 20, 25, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }
+
+        body {
+            background-color: #050508;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(255, 42, 95, 0.15), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(157, 0, 255, 0.15), transparent 25%);
+            color: white;
+            font-family: 'Outfit', sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .premium-container {
+            max-width: 850px;
+            margin: 120px auto 80px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Glassmorphism Panel */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            padding: 50px;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.05);
+            text-align: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Ambient Glow inside Panel */
+        .glass-panel::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 60%);
+            pointer-events: none;
+            animation: rotateBg 20s linear infinite;
+        }
+
+        @keyframes rotateBg {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .header-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff 0%, #ff8a9d 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .header-subtitle {
+            font-size: 1.2rem;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 40px;
+            font-weight: 300;
+        }
+
+        /* Inputs */
+        .premium-form {
+            text-align: left;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .premium-form .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-label {
+            font-size: 0.95rem;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 12px;
+            font-weight: 600;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-select {
+            width: 100%;
+            background: rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            padding: 16px 20px;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            font-family: 'Outfit', sans-serif;
+            appearance: none;
+            outline: none;
+            transition: all 0.3s;
+            cursor: pointer;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .form-select:hover, .form-select:focus {
+            border-color: var(--neon-red);
+            box-shadow: 0 0 15px rgba(255, 42, 95, 0.2), inset 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        /* Custom Select Arrow */
+        .select-wrapper {
+            position: relative;
+        }
+        .select-wrapper::after {
+            content: '\f107';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255,255,255,0.5);
+            pointer-events: none;
+        }
+
+        /* Primary Button */
+        .btn-neon {
+            background: linear-gradient(45deg, var(--neon-red), var(--neon-purple));
+            border: none;
+            padding: 18px 50px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: white;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(255, 42, 95, 0.4);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-neon::after {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: rgba(255,255,255,0.2);
+            transform: rotate(45deg) translateY(-100%);
+            transition: all 0.6s ease;
+        }
+
+        .btn-neon:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(157, 0, 255, 0.5);
+        }
+
+        .btn-neon:hover::after {
+            transform: rotate(45deg) translateY(100%);
+        }
+
+        /* Radar 3D */
+        .radar-zone {
+            display: none;
+            height: 400px;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .radar-circle {
+            position: absolute;
+            width: 300px; height: 300px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 42, 95, 0.3);
+            box-shadow: 0 0 40px rgba(255, 42, 95, 0.1);
+            background: radial-gradient(circle, rgba(255, 42, 95, 0.05) 0%, transparent 70%);
+        }
+
+        .radar-beam {
+            position: absolute;
+            width: 150px; height: 150px;
+            top: 50%; left: 50%;
+            transform-origin: 0 0;
+            background: conic-gradient(from 0deg, transparent 70%, rgba(255, 42, 95, 0.8) 100%);
+            animation: scan 2s linear infinite;
+        }
+
+        .radar-ripple {
+            position: absolute;
+            width: 30px; height: 30px;
+            background: var(--neon-red);
+            border-radius: 50%;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            animation: ripple 2s infinite ease-out;
+        }
+
+        @keyframes scan {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes ripple {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+            100% { transform: translate(-50%, -50%) scale(10); opacity: 0; }
+        }
+
+        .match-avatar-node {
+            position: absolute;
+            width: 40px; height: 40px;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 1rem;
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.5s;
+        }
+
+        .radar-status {
+            position: absolute;
+            bottom: 20px;
+            left: 0; right: 0;
+            font-size: 1.1rem;
+            color: var(--neon-red);
+            font-weight: 600;
+            letter-spacing: 1px;
+            animation: pulseText 1.5s infinite;
+        }
+
+        @keyframes pulseText {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        /* Match Found Card */
+        .match-found-zone {
+            display: none;
+            animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn {
+            0% { opacity: 0; transform: scale(0.8) translateY(30px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .match-card {
+            background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
+            border: 1px solid rgba(255, 42, 95, 0.4);
+            border-radius: 24px;
+            padding: 40px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        .match-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 5px;
+            background: linear-gradient(90deg, var(--neon-red), var(--neon-purple));
+        }
+
+        .mc-avatar-wrapper {
+            position: relative;
+            width: 130px; height: 130px;
+            margin: 0 auto 20px;
+        }
+
+        .mc-avatar {
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            border: 3px solid var(--neon-red);
+            background: rgba(0,0,0,0.5);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 3.5rem; color: var(--neon-red);
+            filter: blur(2px); /* Bí ẩn */
+            transition: filter 0.3s;
+        }
+
+        .mc-avatar-wrapper:hover .mc-avatar {
+            filter: blur(0px);
+        }
+
+        .mc-badge {
+            position: absolute;
+            bottom: 0; right: 0;
+            background: #4CAF50;
+            color: white;
+            font-size: 0.8rem;
+            font-weight: 800;
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: 2px solid var(--glass-bg);
+            box-shadow: 0 4px 10px rgba(76, 175, 80, 0.4);
+        }
+
+        .mc-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        .mc-tags {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .mc-tag {
+            background: rgba(255, 42, 95, 0.15);
+            color: #ff8a9d;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: 1px solid rgba(255, 42, 95, 0.3);
+        }
+
+        .action-links {
+            margin-top: 25px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .link-secondary {
+            color: rgba(255,255,255,0.5);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .link-secondary:hover {
+            color: white;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="navbar-placeholder"></div>
+
+    <main class="premium-container">
+        <div class="glass-panel">
+            
+            <!-- STEP 1: PREFERENCES -->
+            <div id="step-form">
+                <h1 class="header-title">CINE-MATCH</h1>
+                <p class="header-subtitle">Ghép đôi ẩn danh - Trải nghiệm điện ảnh theo cách hoàn toàn mới</p>
+
+                <div class="premium-form">
+                    <div class="select-wrapper full-width">
+                        <label class="form-label">Thể loại phim yêu thích chung</label>
+                        <select class="form-select" id="pref-genre">
+                            <option value="Hành Động">Hành động / Blockbuster</option>
+                            <option value="Tình Cảm">Tình cảm / Lãng mạn</option>
+                            <option value="Kinh Dị">Kinh dị / Giật gân</option>
+                            <option value="Hài">Hài kịch / Giải trí</option>
+                            <option value="all">Bất kỳ thể loại nào</option>
+                        </select>
+                    </div>
+                    
+                    <div class="select-wrapper">
+                        <label class="form-label">Ghép đôi với</label>
+                        <select class="form-select" id="pref-gender">
+                            <option value="opposite">Khác giới (Mặc định)</option>
+                            <option value="same">Cùng giới</option>
+                            <option value="any">Bất kỳ</option>
+                        </select>
+                    </div>
+
+                    <div class="select-wrapper">
+                        <label class="form-label">Khu vực rạp</label>
+                        <select class="form-select" id="pref-cinema">
+                            <option value="hn">Hà Nội</option>
+                            <option value="hcm">TP. Hồ Chí Minh</option>
+                            <option value="all">Tất cả</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="btn-neon" id="btn-start">
+                    <i class="fas fa-satellite-dish" style="margin-right: 10px;"></i> BẮT ĐẦU TÌM KIẾM
+                </button>
+                
+                <div class="action-links">
+                    <a href="../../user/user-profile/profile.html?tab=cinematch" class="link-secondary">
+                        <i class="fas fa-history"></i> Lịch sử ghép đôi của tôi
+                    </a>
+                </div>
+            </div>
+
+            <!-- STEP 2: RADAR SCANNING -->
+            <div class="radar-zone" id="step-radar">
+                <div class="radar-circle">
+                    <div class="radar-ripple"></div>
+                    <div class="radar-beam"></div>
+                    <!-- Nodes injected via JS -->
+                </div>
+                <div class="radar-status" id="radar-status-text">Đang phân tích 1,420 hồ sơ phù hợp...</div>
+            </div>
+            
+            <!-- STEP 3: CANDIDATE LIST -->
+            <div id="step-candidates" style="display:none; animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+                <h2 style="text-align: center; color: white; margin-bottom: 10px;">CÁC ỨNG VIÊN PHÙ HỢP</h2>
+                <p style="text-align: center; color: #aaa; margin-bottom: 30px;">Chọn một người bạn muốn cùng xem phim. Hệ thống sẽ gửi yêu cầu kết nối.</p>
+                <div class="candidates-grid" id="candidates-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                    <!-- Rendered by JS -->
+                </div>
+            </div>
+
+            <!-- STEP 4: ONLINE SYNC WAITING -->
+            <div id="step-sync" style="display:none; text-align: center; padding: 50px 20px; animation: popIn 0.6s;">
+                <div class="radar-ripple" style="position: relative; margin: 0 auto 30px; width: 60px; height: 60px; top: auto; left: auto; transform: none; animation: ripple 1.5s infinite ease-out;"></div>
+                <h2 style="color: white; margin-bottom: 15px;" id="sync-title">Đang chờ đối phương phản hồi...</h2>
+                <p style="color: #aaa;" id="sync-subtitle">Người dùng <strong style="color:var(--neon-red);" id="sync-partner-name">...</strong> đang xem xét yêu cầu của bạn.</p>
+            </div>
+
+            <!-- STEP 5: SHARED MOVIE ROOM -->
+            <div id="step-shared-room" style="display:none; animation: popIn 0.6s;">
+                <div style="background: rgba(0,0,0,4); border: 1px solid rgba(255,42,95,0.3); border-radius: 16px; padding: 20px; text-align: center; margin-bottom: 30px;">
+                    <h2 style="color: #fff; margin-bottom: 10px;"><i class="fas fa-handshake" style="color: var(--neon-red);"></i> PHÒNG CHỌN PHIM CHUNG</h2>
+                    <p style="color: #aaa;">Hãy cùng <strong id="room-partner-name" style="color:var(--neon-red);">...</strong> chọn ra bộ phim yêu thích để bắt đầu hành trình!</p>
+                </div>
+                
+                <div style="display: flex; align-items: center; justify-content: center; gap: 30px; margin-bottom: 30px;">
+                    <div style="text-align: center;">
+                        <img src="../../shared/images/avatar.jpg" alt="You" style="width: 60px; height: 60px; border-radius: 50%; border: 2px solid white; object-fit: cover;">
+                        <div style="color: white; margin-top: 8px; font-weight: bold;">Bạn</div>
+                    </div>
+                    <div style="width: 50px; height: 2px; background: rgba(255,42,95,0.5); position: relative;">
+                        <i class="fas fa-heart" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: var(--neon-red);"></i>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--neon-red); background: rgba(255,42,95,0.2); display: flex; align-items: center; justify-content: center; color: var(--neon-red); font-size: 1.5rem; filter: blur(1px);">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div style="color: var(--neon-red); margin-top: 8px; font-weight: bold;" id="room-partner-avatar-name">H***</div>
+                    </div>
+                </div>
+
+                <div id="shared-movies-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                    <!-- Rendered by JS -->
+                </div>
+                
+                <div id="chat-log" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; height: 100px; overflow-y: auto; font-size: 0.9rem; color: #ccc; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1);">
+                    <div style="margin-bottom: 5px;"><em>Hệ thống:</em> Kết nối thành công! Hãy bắt đầu thảo luận.</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <!-- MAIN SCRIPT -->
+    <script type="module" src="./cinematch.js"></script>
+</body>
+</html>

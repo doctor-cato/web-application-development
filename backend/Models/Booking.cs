@@ -5,10 +5,10 @@ namespace appweb.Models
 {
     public class Booking
     {
-        public int Id { get; set; }
-        public int? UserId { get; set; }
-        public int ShowtimeId { get; set; }
-        public int MovieId { get; set; }
+        public Guid Id { get; set; }
+        public Guid? UserId { get; set; }
+        public Guid ShowtimeId { get; set; }
+        public Guid MovieId { get; set; }
         public string? Seats { get; set; }
         public decimal TotalPrice { get; set; }
         public string? PaymentMethod { get; set; }
@@ -22,3 +22,4 @@ namespace appweb.Models
         public virtual ICollection<BookingDetail> BookingDetails { get; set; } = new List<BookingDetail>();
     }
 }
+

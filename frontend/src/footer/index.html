@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hỗ Trợ Khách Hàng - 3HD2K Cinema</title>
-    <link rel="stylesheet" href="/shared/css/main.css">
+    <link rel="stylesheet" href="../shared/css/main.css">
     
-    <!-- Load custom fonts: Bebas Neue for Headings, Inter for Body -->
+    <!-- Load custom fonts: Inter for Headings, Inter for Body -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -40,7 +40,7 @@
         }
 
         .support-header h1 {
-            font-family: 'Bebas Neue', sans-serif;
+            font-family: 'Inter', sans-serif;
             font-size: 3.5rem;
             color: #ffffff;
             letter-spacing: 2px;
@@ -1005,15 +1005,15 @@
     <div id="footer-placeholder"></div>
 
     <!-- Nhúng components và utilities -->
-    <script type="module" src="/shared/components/navbar.js"></script>
-    <script type="module" src="/shared/components/footer.js"></script>
-    <script src="/shared/js/data.js"></script>
-    <script src="/shared/js/main.js"></script>
-    <script src="/shared/utils/authGuard-global.js"></script>
+    <script type="module" src="../shared/components/navbar.js"></script>
+    <script type="module" src="../shared/components/footer.js"></script>
+    <script src="../shared/js/data.js"></script>
+    <script src="../shared/js/main.js"></script>
+    <script src="../shared/utils/authGuard-global.js"></script>
 
     <!-- Script điều khiển Logic trang Hỗ Trợ -->
     <script type="module">
-        import { toast } from '/shared/components/toast.js';
+        import { toast } from '../shared/components/toast.js';
 
         document.addEventListener('DOMContentLoaded', () => {
             // Initialize custom dropdown for the contact subject

@@ -1,4 +1,4 @@
-﻿using appweb.Infrastructure;
+using appweb.Infrastructure;
 using appweb.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -24,7 +24,7 @@ namespace appweb.Repositories
         }
 
         // 2. Tìm kiếm thông tin một rạp cụ thể theo ID
-        public async Task<Cinema?> GetCinemaByIdAsync(int id)
+        public async Task<Cinema?> GetCinemaByIdAsync(Guid id)
         {
             return await _context.Cinemas.FindAsync(id);
         }
@@ -44,7 +44,7 @@ namespace appweb.Repositories
         }
 
         // 5. Admin sử dụng: Xóa một rạp chiếu phim ra khỏi hệ thống
-        public async Task DeleteCinemaAsync(int id)
+        public async Task DeleteCinemaAsync(Guid id)
         {
             var cinema = await _context.Cinemas.FindAsync(id);
             if (cinema != null)

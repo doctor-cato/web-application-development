@@ -67,7 +67,7 @@
                     </div>
 
                     <h2 style="
-                        font-family: 'Oswald', 'Inter', sans-serif;
+                        font-family: 'Inter', 'Inter', sans-serif;
                         font-size: 1.5rem; font-weight: 700;
                         color: #fff; margin-bottom: 0.75rem;
                         letter-spacing: 0.5px;
@@ -79,7 +79,7 @@
                     ">${msg}</p>
 
                     <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-                        <a href="/auth/user-login/login.html" style="
+                        <a href="../../auth/user-login/login.html" style="
                             display: flex; align-items: center; justify-content: center; gap: 8px;
                             padding: 14px; border-radius: 10px;
                             background: linear-gradient(135deg, #E50914, #b8070f);
@@ -92,7 +92,7 @@
                             <i class="fas fa-sign-in-alt"></i>
                             ĐĂNG NHẬP
                         </a>
-                        <a href="/auth/user-register/register.html" style="
+                        <a href="../../auth/user-register/register.html" style="
                             display: flex; align-items: center; justify-content: center; gap: 8px;
                             padding: 14px; border-radius: 10px;
                             background: rgba(255,255,255,0.06);

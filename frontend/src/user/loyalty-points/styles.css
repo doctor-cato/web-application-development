@@ -975,7 +975,7 @@ a { color: inherit; text-decoration: none; }
 }
 
 .celebration-title {
-  font-family: "Bebas Neue", sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: 32px;
   letter-spacing: 3px;
   margin: 0 0 8px;
@@ -1350,7 +1350,7 @@ a { color: inherit; text-decoration: none; }
 }
 
 .foot-brand {
-  font-family: "Bebas Neue", sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: 22px;
   color: var(--accent);
   letter-spacing: 1px;

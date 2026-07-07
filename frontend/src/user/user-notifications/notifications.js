@@ -37,6 +37,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         let notifs = [];
         try { notifs = JSON.parse(notifsStr); } catch(e) {}
+        
+        const currentUser = localStorage.getItem('currentUser') ? JSON.parse(localStorage.getItem('currentUser')).username : null;
+        
+        // Filter by targetUser if specified
+        notifs = notifs.filter(n => !n.targetUser || n.targetUser === currentUser);
 
         // Sort desc
         notifs.sort((a, b) => b.timestamp - a.timestamp);
@@ -75,11 +80,20 @@ document.addEventListener('DOMContentLoaded', () => {
             visibleNotifs.forEach(n => {
                 const iconInfo = getNotifIcon(n.category);
                 const bId = n.bookingId || (n.id && n.id.startsWith('notif_') ? n.id.replace('notif_', '') : '');
+                
+                let actionBtn = '';
+                if (n.action === 'receive_ticket') {
+                    actionBtn = `<button class="btn-action receive-ticket-btn" data-id="${n.id}" style="margin-top: 10px; background: var(--primary-red); color: #fff; border: none; padding: 5px 15px; border-radius: 4px; cursor: pointer;">Nhận vé</button>`;
+                } else if (n.action === 'pay_split') {
+                    actionBtn = `<button class="btn-action" onclick="window.location.href='${n.splitLink}'" style="margin-top: 10px; background: #e50914; color: #fff; border: none; padding: 5px 15px; border-radius: 4px; cursor: pointer;">Thanh toán</button>`;
+                }
+                
                 const cardHtml = `
-                    <div class="notif-card ${n.unread ? 'unread' : ''}" data-id="${n.id}" ${bId ? `onclick="window.location.href='/user/user-profile/profile.html?tab=history&bookingId=${bId}'" style="cursor: pointer;"` : ''}>
+                    <div class="notif-card ${n.unread ? 'unread' : ''}" data-id="${n.id}" ${bId && !n.action ? `onclick="window.location.href='../user-profile/profile.html?tab=history&bookingId=${bId}'" style="cursor: pointer;"` : ''}>
                         <div class="notif-card-icon ${iconInfo.wrap}"><i class="${iconInfo.icon}"></i></div>
                         <div class="notif-card-content">
-                            <p class="notif-card-text"><strong>${n.title}</strong> ${n.textLong || n.text}</p>
+                            <p class="notif-card-text"><strong>${n.title || ''}</strong> ${n.message || n.textLong || n.text}</p>
+                            ${actionBtn}
                             <div class="notif-card-meta">
                                 <span class="notif-card-time"><i class="far fa-clock"></i> ${formatRelativeTime(n.timestamp)}</span>
                             </div>
@@ -90,6 +104,47 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 `;
                 emptyState.insertAdjacentHTML('beforebegin', cardHtml);
+            });
+
+            // Bind receive ticket events
+            document.querySelectorAll('.receive-ticket-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const notifId = btn.getAttribute('data-id');
+                    let currentNotifs = JSON.parse(localStorage.getItem('3hd2k_notifications') || '[]');
+                    const notif = currentNotifs.find(n => n.id == notifId);
+                    
+                    if (notif && notif.bookingData) {
+                        const currentUserData = localStorage.getItem('currentUser') ? JSON.parse(localStorage.getItem('currentUser')) : {};
+                        let bookings = JSON.parse(localStorage.getItem('3hd2k_bookings') || '[]');
+                        
+                        // Create individual ticket
+                        bookings.push({
+                            id: 'INDIV-' + Math.random().toString(36).substring(2, 8).toUpperCase(),
+                            movieTitle: notif.bookingData.movieTitle,
+                            showtimeText: notif.bookingData.showtimeText,
+                            room: notif.bookingData.room,
+                            seats: [notif.bookingData.seat],
+                            combo: 'none',
+                            total: 0, // Paid by host
+                            userId: currentUserData.email || currentUserData.username || 'guest',
+                            status: 'Confirmed',
+                            createdAt: new Date().toISOString()
+                        });
+                        
+                        localStorage.setItem('3hd2k_bookings', JSON.stringify(bookings));
+                        
+                        // Mark notif as read and remove action
+                        notif.unread = false;
+                        notif.action = null;
+                        notif.message = notif.message + ' (Đã nhận vé)';
+                        localStorage.setItem('3hd2k_notifications', JSON.stringify(currentNotifs));
+                        
+                        alert('Nhận vé thành công! Bạn có thể xem vé trong mục Lịch sử.');
+                        renderNotifications();
+                        if (window.updateNavNotifications) window.updateNavNotifications();
+                    }
+                });
             });
 
             // Bind delete events

@@ -1,33 +1,68 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace appweb.Models
 {
+    [Table("users")]
     public class User
     {
         [Key]
-        public int UserId { get; set; }
+        [Column("user_id")]
+        public Guid UserId { get; set; } = Guid.NewGuid();
 
-        // Cầu nối bảo vệ: Giúp các file sửa từ trước gọi .Id vẫn chạy chuẩn
         [NotMapped]
-        public int Id { get => UserId; set => UserId = value; }
+        [System.Text.Json.Serialization.JsonIgnore]
+        public Guid Id { get => UserId; set => UserId = value; }
 
-        // Hệ thống đang gọi chữ 'n' viết thường
+        [Column("full_name")]
         public string Fullname { get; set; } = string.Empty;
 
-        // Cầu nối bảo vệ cho trường FullName viết hoa chữ N
         [NotMapped]
+        [System.Text.Json.Serialization.JsonIgnore]
         public string FullName { get => Fullname; set => Fullname = value; }
 
+        [Column("email")]
         public string Email { get; set; } = string.Empty;
-        public string Password { get; set; } = string.Empty;
-        public string Phone { get; set; } = string.Empty; // Sửa lỗi thiếu Phone
-        public string Role { get; set; } = "Customer";
-        public DateTime CreatedAt { get; set; } = DateTime.Now; // Sửa lỗi thiếu CreatedAt
 
-        // Khôi phục liên kết 1-nhiều sang bảng Booking
+        [Column("phone_number")]
+        public string Phone { get; set; } = string.Empty;
+
+        [Column("password_hash")]
+        public string Password { get; set; } = string.Empty;
+
+        [Column("role")]
+        public string Role { get; set; } = "CUSTOMER";
+
+        [Column("is_verified_otp")]
+        public bool IsVerifiedOtp { get; set; } = false;
+
+        [Column("avatar_url")]
+        public string? AvatarUrl { get; set; }
+
+        [Column("created_at")]
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+        [Column("updated_at")]
+        public DateTime UpdatedAt { get; set; } = DateTime.Now;
+
+        [Column("date_of_birth")]
+        public DateTime? DateOfBirth { get; set; }
+
+        [Column("gender")]
+        public string? Gender { get; set; }
+
+        // OTP Fields (Add columns to DB)
+        [Column("otp_code")]
+        public string? OtpCode { get; set; }
+
+        [Column("otp_expiry_time")]
+        public DateTime? OtpExpiryTime { get; set; }
+
+        [Column("vip_plan")]
+        public string? VipPlan { get; set; }
+
         public List<Booking> Bookings { get; set; } = new List<Booking>();
     }
 }

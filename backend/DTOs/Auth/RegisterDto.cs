@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace appweb.DTOs.Auth
 {
@@ -20,5 +20,20 @@ namespace appweb.DTOs.Auth
         [DataType(DataType.Password)]
         [Compare("Password", ErrorMessage = "Mật khẩu xác nhận không trùng khớp")]
         public string ConfirmPassword { get; set; } = string.Empty;
+
+        public string? Phone { get; set; }
+
+        public System.DateTime? DateOfBirth { get; set; }
+
+        public string? Gender { get; set; }
+    }
+
+    public class UpgradeVipDto
+    {
+        [Required]
+        public string Email { get; set; } = string.Empty;
+
+        [Required]
+        public string Plan { get; set; } = string.Empty;
     }
 }

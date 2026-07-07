@@ -29,7 +29,7 @@ namespace appweb.Controllers.HomeController.cs
 
         // 2. GET: api/Cinemas/5 (Lấy thông tin 1 rạp theo ID)
         [HttpGet("{id}")]
-        public async Task<ActionResult<Cinema>> GetCinema(int id)
+        public async Task<ActionResult<Cinema>> GetCinema(Guid id)
         {
             var cinema = await _context.Cinemas.FindAsync(id);
             if (cinema == null) return NotFound(new { message = "Không tìm thấy rạp phim này!" });
@@ -47,7 +47,7 @@ namespace appweb.Controllers.HomeController.cs
 
         // 4. PUT: api/Cinemas/5 (Cập nhật thông tin rạp theo ID)
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCinema(int id, Cinema cinema)
+        public async Task<IActionResult> PutCinema(Guid id, Cinema cinema)
         {
             if (id != cinema.Id) return BadRequest(new { message = "ID rạp không trùng khớp!" });
 
@@ -68,7 +68,7 @@ namespace appweb.Controllers.HomeController.cs
 
         // 5. DELETE: api/Cinemas/5 (Xóa rạp theo ID)
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCinema(int id)
+        public async Task<IActionResult> DeleteCinema(Guid id)
         {
             var cinema = await _context.Cinemas.FindAsync(id);
             if (cinema == null) return NotFound(new { message = "Không tìm thấy rạp để xóa!" });
@@ -80,3 +80,4 @@ namespace appweb.Controllers.HomeController.cs
         }
     }
 }
+

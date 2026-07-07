@@ -4,7 +4,7 @@
     /* Cinematic Background using Unsplash placeholder */
     background: linear-gradient(to top, var(--bg-color) 0%, rgba(12,12,12,0.3) 35%, rgba(0,0,0,0.6) 100%),
                 linear-gradient(to right, rgba(0,0,0,0.85) 0%, transparent 55%),
-                url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhnSURswrgKGgY2hE8cwABvIHXJk9Y0naYN1cN4w6Tf0aJ9kEsgSgGrGtBaxhyphenhyphenqRQ4GcTJaHELDx2G0rlx6mrulOu2f_tSKEoJo4IVXFjwBFC8RYrT-V9mFRxLPw_W8qFCcjOz-lmYdl9wr/s1600/742320.jpg') center/cover no-repeat;
+                var(--hero-bg-url) center/cover no-repeat;
     display: flex;
     align-items: flex-end;
     padding: 0 var(--page-padding) 80px var(--page-padding);

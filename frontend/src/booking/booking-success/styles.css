@@ -60,7 +60,7 @@ a { color: inherit; text-decoration: none; }
   justify-content: center;
   min-width: 86px;
   color: var(--accent);
-  font-family: "Bebas Neue", sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: 37px;
   line-height: 1;
   letter-spacing: 1.5px;
@@ -291,7 +291,7 @@ a { color: inherit; text-decoration: none; }
 }
 
 .movie-title {
-  font-family: "Bebas Neue", sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: 58px;
   line-height: 1;
   letter-spacing: 1.5px;
@@ -349,7 +349,7 @@ a { color: inherit; text-decoration: none; }
 }
 
 .info-card h2 {
-  font-family: "Bebas Neue", sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: 26px;
   letter-spacing: 1px;
   margin-bottom: 20px;
@@ -482,7 +482,7 @@ a { color: inherit; text-decoration: none; }
 }
 
 .code-value {
-  font-family: "Bebas Neue", sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: 28px;
   letter-spacing: 1.5px;
   color: #fff;
@@ -503,7 +503,7 @@ a { color: inherit; text-decoration: none; }
 }
 
 .upsell-section h2 {
-  font-family: "Bebas Neue", sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: 26px;
   letter-spacing: 1px;
   font-weight: normal;
@@ -595,7 +595,7 @@ a { color: inherit; text-decoration: none; }
 }
 
 .foot-brand {
-  font-family: "Bebas Neue", sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: 22px;
   color: var(--accent);
   letter-spacing: 1px;

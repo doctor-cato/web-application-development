@@ -1,9 +1,160 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta http-equiv="refresh" content="0; url=explore/home-page/index.html" />
-  
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3HD2K - Premium Cinematic Experience</title>
+    <link rel="stylesheet" href="/shared/css/main.css">
+    <link rel="stylesheet" href="/explore/home-page/home.css?v=14">
+    <!-- Load custom fonts: Inter for Headings, Inter for Body -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
-  <body></body>
+<body>
+    <div id="navbar-placeholder"></div>
+
+    <main>
+        <!-- HERO SECTION -->
+        <section class="hero" id="hero-section" style="--hero-bg-url: url('/shared/images/Kimi-no-Na-wa.-Visual.jpg');">
+            <div class="hero-hover-zone left-zone" id="hero-prev">
+                <i class="fas fa-chevron-left hero-nav-icon"></i>
+            </div>
+            <div class="hero-hover-zone right-zone" id="hero-next">
+                <i class="fas fa-chevron-right hero-nav-icon"></i>
+            </div>
+            <div class="hero-content" id="hero-content" style="transition: opacity 0.5s ease;">
+                <span class="age-rating" id="hero-age">T13</span>
+                <h1 class="movie-title" id="hero-title">YOUR NAME - TÊN CẬU LÀ GÌ?</h1>
+                <p class="movie-meta" id="hero-meta">2016 &bull; Anime, Tình Cảm &bull; 1h 46m</p>
+                <p class="movie-desc" id="hero-desc">Hai cô cậu học sinh trung học, một ở Tokyo sầm uất, một ở vùng quê hẻo lánh, bất ngờ bị hoán đổi cơ thể cho nhau trong giấc mơ. Từ đó, vô vàn rắc rối xen lẫn những rung động tinh khôi bắt đầu...</p>
+                <div class="hero-buttons">
+                    <a href="#" class="btn btn-primary" id="btn-book-now"><i class="fas fa-ticket-alt" style="margin-right: 8px;"></i>BOOK NOW</a>
+                    <a href="#" class="btn btn-outline" id="btn-watch-trailer"><i class="fas fa-play" style="margin-right: 8px;"></i>WATCH TRAILER</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- FILTER BAR -->
+        <section class="filters-container">
+            <div class="filters glass-panel">
+                <div class="filter-item">
+                    <i class="fas fa-film"></i>
+                    <select id="filter-genre">
+                        <option value="all">Tất cả Thể loại</option>
+                        <option value="Hành Động">Hành Động</option>
+                        <option value="Viễn Tưởng">Viễn Tưởng</option>
+                        <option value="Kinh Dị">Kinh Dị</option>
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <i class="fas fa-video"></i>
+                    <select id="filter-format">
+                        <option value="all">Định dạng</option>
+                        <option value="2D">2D</option>
+                        <option value="3D">3D</option>
+                        <option value="IMAX">IMAX</option>
+                        <option value="4DX">4DX</option>
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <select id="filter-cinema">
+                        <option value="all">Cụm rạp</option>
+                        <option value="Q1">3HD2K Quận 1</option>
+                        <option value="Q7">3HD2K Quận 7</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <!-- NOW SHOWING -->
+        <section class="movie-section">
+            <div class="section-header">
+                <h2>PHIM ĐANG CHIẾU</h2>
+                <a href="/explore/movie-search/index.html?tab=now-showing" class="see-all">Xem tất cả <i class="fas fa-chevron-right"></i></a>
+            </div>
+            <div class="movie-grid" id="now-showing-grid">
+            </div>
+        </section>
+
+        <!-- COMING SOON -->
+        <section class="movie-section">
+            <div class="section-header">
+                <h2>PHIM SẮP CHIẾU</h2>
+                <a href="/explore/movie-search/index.html?tab=coming-soon" class="see-all">Xem tất cả <i class="fas fa-chevron-right"></i></a>
+            </div>
+            <div class="movie-grid" id="coming-soon-grid">
+            </div>
+        </section>
+
+        <!-- FEATURE ZONES -->
+        <section class="features-section">
+            <!-- Cine Predict -->
+            <div class="feature-card cinepredict glass-panel" style="background: linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0.2)), url('/engagement/minigame/images/cine_predict_hero_2.png') center/cover no-repeat;">
+                <div class="feature-content">
+                    <i class="fas fa-chart-line feature-icon" style="color: var(--primary-red); font-size: 2rem; margin-bottom: 10px;"></i>
+                    <h2 class="feature-title">CINE PREDICT</h2>
+                    <p>Dự đoán điểm số IMDb, doanh thu phòng vé và rinh về ngàn phần thưởng cực chất!</p>
+                    <a href="/engagement/minigame/index.html" class="btn btn-primary" style="margin-top: 15px; display: inline-block;">DỰ ĐOÁN NGAY</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- REWARDS -->
+        <section class="rewards-section glass-panel">
+            <div class="rewards-info">
+                <h2 class="rewards-title"><i class="fas fa-star" style="color:var(--primary-red); margin-right: 8px;"></i>3HD2K REWARDS</h2>
+                <p>Tích điểm đổi vé, nhận bắp nước miễn phí và nhiều đặc quyền VIP.</p>
+            </div>
+            <div class="rewards-action">
+                <div class="points">Điểm của bạn<br><strong id="home-rewards-pts">0 PTS</strong></div>
+                <a href="/user/vip-registration/index.html" class="btn btn-primary" id="btn-home-vip">ĐĂNG KÝ THÀNH VIÊN VIP</a>
+            </div>
+        </section>
+        <script>
+            // Sync home page rewards points with localStorage
+            try {
+                const rd = JSON.parse(localStorage.getItem('3hd2k_rewards') || '{}');
+                const pts = rd.points || 0;
+                const el = document.getElementById('home-rewards-pts');
+                if (el) el.textContent = pts + ' PTS';
+            } catch(_) {}
+        </script>
+        <!-- FOOTER: Rendered via footer.js -->
+    </main>
+
+    <!-- TRAILER MODAL -->
+    <div id="trailer-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" id="close-modal">&times;</span>
+            <div class="video-container">
+                <iframe id="trailer-video" src="" title="YouTube video player" frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen></iframe>
+                <!-- Fallback khi YouTube block embed -->
+                <div id="trailer-fallback" style="display:none; position:absolute; inset:0; background:#0a0a0a; display:none; flex-direction:column; align-items:center; justify-content:center; gap:20px; border-radius:8px;">
+                    <div style="font-size:3rem;">&#9654;</div>
+                    <p style="color:rgba(255,255,255,0.7); font-family:'Inter',sans-serif; font-size:0.95rem; text-align:center; max-width:300px; line-height:1.6;">Video kh&#244;ng th&#7875; ph&#225;t tr&#7921;c ti&#7871;p.<br>Xem trailer tr&#234;n YouTube:</p>
+                    <a id="trailer-yt-link" href="#" target="_blank" rel="noopener"
+                        style="display:inline-flex; align-items:center; gap:10px; background:#e50914; color:#fff; padding:12px 28px; border-radius:6px; font-family:'Inter',sans-serif; font-weight:600; font-size:0.95rem; text-decoration:none; transition:background 0.2s;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+                        Xem tr&#234;n YouTube
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="footer-placeholder"></div>
+    <!-- Nhúng components -->
+    <script type="module" src="/shared/components/navbar.js"></script>
+    <script type="module" src="/shared/components/footer.js"></script>
+    <script src="/shared/js/data.js"></script>
+    <script src="/shared/js/main.js"></script>
+    <script src="/shared/utils/authGuard-global.js"></script>
+    <script src="/explore/home-page/home.js?v=6"></script>
+</body>
 </html>

@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3HD2K - Danh sách phim</title>
-    <link rel="stylesheet" href="/shared/css/main.css">
-    <link rel="stylesheet" href="/explore/movie-search/movies.css">
+    <link rel="stylesheet" href="../../shared/css/main.css">
+    <link rel="stylesheet" href="../../explore/movie-search/movies.css">
     <!-- Load custom fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,10 +19,19 @@
     <main class="movies-page">
         <!-- BREADCRUMB -->
         <div class="breadcrumb">
-            <a href="/explore/home-page/index.html">Trang chủ</a>
+            <a href="../../explore/home-page/index.html">Trang chủ</a>
             <span class="separator"><i class="fas fa-chevron-right"></i></span>
             <span class="current" id="breadcrumb-current">Phim Đang Chiếu</span>
         </div>
+
+        <div id="cinematch-banner" style="display:none; background: linear-gradient(90deg, #e50914, #ff4081); color: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-weight: bold; font-family: 'Inter', sans-serif;">
+            <i class="fas fa-heart" style="margin-right: 10px;"></i> Đang trong phiên Cine-Match! Hãy chọn một bộ phim mà cả hai cùng yêu thích.
+        </div>
+        <script>
+            if (new URLSearchParams(window.location.search).get('cinematch') === 'true' || localStorage.getItem('cinematch_active') === 'true') {
+                document.getElementById('cinematch-banner').style.display = 'block';
+            }
+        </script>
 
         <!-- TABS -->
         <div class="page-tabs">
@@ -106,12 +115,12 @@
     </main>
 
     <div id="footer-placeholder"></div>
-    <script type="module" src="/shared/components/navbar.js"></script>
-    <script type="module" src="/shared/components/footer.js"></script>
+    <script type="module" src="../../shared/components/navbar.js"></script>
+    <script type="module" src="../../shared/components/footer.js"></script>
 
-    <script src="/shared/js/data.js"></script>
-    <script src="/shared/js/main.js"></script>
-    <script src="/shared/utils/authGuard-global.js"></script>
-    <script src="/explore/movie-search/movies.js"></script>
+    <script src="../../shared/js/data.js?v=5"></script>
+    <script src="../../shared/js/main.js"></script>
+    <script src="../../shared/utils/authGuard-global.js"></script>
+    <script src="../../explore/movie-search/movies.js?v=5"></script>
 </body>
 </html>

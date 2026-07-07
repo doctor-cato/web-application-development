@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "KgSAv7fCOXM=",
+  "dgSpecHash": "3Q3J8163gdg=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Le Minh Khuong 1\\source\\repos\\appweb\\appweb.csproj",
+  "projectFilePath": "c:\\Users\\Le Minh Khuong 1\\web-application-development\\web-application-development\\backend\\appweb.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Le Minh Khuong 1\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\Le Minh Khuong 1\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",
