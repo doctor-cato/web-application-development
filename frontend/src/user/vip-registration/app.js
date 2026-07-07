@@ -1,4 +1,4 @@
-import { getCurrentUser, setCurrentUser, getUsers, saveUsers } from '../../auth/auth-services/storage.js';
+import { getCurrentUser, setCurrentUser, getUsers, saveUsers } from '/auth/auth-services/storage.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     // Check if user is logged in
@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!session) {
         // Not logged in, redirect to login page
         alert('Vui lòng đăng nhập tài khoản trước khi đăng ký thành viên VIP!');
-        window.location.href = '../../auth/user-login/login.html';
+        window.location.href = '/auth/user-login/login.html';
         return;
     }
 
@@ -197,7 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnCloseModal) {
         btnCloseModal.addEventListener('click', () => {
             if (successModal) successModal.classList.remove('show');
-            window.location.href = '../../explore/home-page/index.html';
+            window.location.href = '/explore/home-page/index.html';
         });
     }
 });

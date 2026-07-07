@@ -1,7 +1,7 @@
-import { getCheckout, saveCheckout } from '../../shared/utils/storage.js';
-import { createTransaction } from '../../shared/utils/paymentService.js';
-import { formatPrice } from '../../explore/home-page/movieService.js';
-import { requireAuth } from '../../shared/utils/authGuard.js';
+import { getCheckout, saveCheckout } from '/shared/utils/storage.js';
+import { createTransaction } from '/shared/utils/paymentService.js';
+import { formatPrice } from '/explore/home-page/movieService.js';
+import { requireAuth } from '/shared/utils/authGuard.js';
 
 // Kiểm tra đăng nhập ngay khi tải trang thanh toán
 if (!requireAuth('Bạn cần đăng nhập để thanh toán vé. Hãy đăng nhập hoặc tạo tài khoản để tiếp tục.')) {

@@ -1,5 +1,5 @@
-import { getCheckout, lsSet, KEYS } from '../../shared/utils/storage.js';
-import { simulatePayment } from '../../shared/utils/paymentService.js';
+import { getCheckout, lsSet, KEYS } from '/shared/utils/storage.js';
+import { simulatePayment } from '/shared/utils/paymentService.js';
 import { confirmBooking } from '../seat-booking/bookingService.js';
 
 let countdownTimer = null;

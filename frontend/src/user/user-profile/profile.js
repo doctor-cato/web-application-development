@@ -1,6 +1,6 @@
-import { getBookings, saveBookings } from '../../shared/utils/storage.js';
-import { getCurrentUser, clearCurrentUser, setCurrentUser } from '../../auth/auth-services/storage.js';
-import { updateProfile } from '../../auth/auth-services/authService.js';
+import { getBookings, saveBookings } from '/shared/utils/storage.js';
+import { getCurrentUser, clearCurrentUser, setCurrentUser } from '/auth/auth-services/storage.js';
+import { updateProfile } from '/auth/auth-services/authService.js';
 import { setupProfileUI } from './profile-ui.js';
 
 function formatPrice(amount) {

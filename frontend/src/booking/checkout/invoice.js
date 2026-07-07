@@ -1,5 +1,5 @@
-import { getLastBooking } from '../../shared/utils/storage.js';
-import { formatPrice } from '../../explore/home-page/movieService.js';
+import { getLastBooking } from '/shared/utils/storage.js';
+import { formatPrice } from '/explore/home-page/movieService.js';
 
 function renderBookingInfo(booking) {
   if (!booking) return;

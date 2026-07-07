@@ -1,4 +1,4 @@
-import { getLastBooking } from '../../shared/utils/storage.js';
+import { getLastBooking } from '/shared/utils/storage.js';
 
 function qs(sel) { return document.querySelector(sel); }
 
