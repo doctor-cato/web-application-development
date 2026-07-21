@@ -27,6 +27,11 @@ export function renderNavbar() {
                         <a href="${srcPrefix}/booking/group-booking/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; white-space:nowrap;">Thuê rạp</a>
                     </div>
                 </div>
+                <div class="cine-match-wrapper">
+                    <a href="${srcPrefix}/engagement/cinematch/index.html" class="cine-match-nav" style="color: var(--primary-red, #e50914); font-weight: bold;">
+                        Cine-Match <i class="fas fa-heart" style="font-size:0.9rem; margin-left:4px; animation: heartbeat 1.5s infinite;"></i>
+                    </a>
+                </div>
             </nav>
         </div>
         <div class="nav-actions">

@@ -285,7 +285,7 @@ window.renderComingSoon = function(movies) {
 
     movies.forEach(movie => {
         const tagsHtml = movie.tags ? movie.tags.map(tag => `<span class="tag">${tag}</span>`).join('') : '';
-        const detailUrl = `/explore/movie-details/index.html?id=${movie.id}`;
+        const detailUrl = `../movie-details/index.html?id=${movie.id}`;
         const cardHtml = `
             <div class="movie-card" onclick="window.location.href='${detailUrl}'" style="cursor:pointer;">
                 <a href="${detailUrl}" class="poster" style="background-image: url('${movie.poster}')" aria-label="Xem chi tiết ${movie.title}">

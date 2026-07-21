@@ -1,0 +1,39 @@
+name: Wait for Vercel Preview
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  wait-for-vercel:
+    name: Check Vercel Deployment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for Vercel Preview
+        uses: patrickedqvist/wait-for-vercel-preview@v1.3.2
+        id: waitForVercel
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          max_timeout: 600 # Wait for up to 10 minutes (600 seconds)
+          
+      - name: Vercel Preview URL
+        run: echo "Vercel preview deployment finished at ${{ steps.waitForVercel.outputs.url }}"
+
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install Dependencies
+        run: npm ci || npm install
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright E2E Tests
+        env:
+          PLAYWRIGHT_TEST_BASE_URL: ${{ steps.waitForVercel.outputs.url }}
+        run: npx playwright test
