@@ -239,6 +239,9 @@ function renderCinemaShowtimes() {
         filteredCinemas = cinemas.filter(c => c.id === selectedCinema);
     }
 
+    // If we have API data available globally, use it, else fallback to empty
+    const currentMovieShowtimes = window.currentMovieShowtimes || [];
+
     listEl.innerHTML = filteredCinemas.map(cinema => {
         const formatsToShow = selectedFormat === 'all'
             ? movieFormats
@@ -247,7 +250,20 @@ function renderCinemaShowtimes() {
         if (formatsToShow.length === 0) return '';
 
         const formatRows = formatsToShow.map(fmt => {
-            const showtimes = generateShowtimes(cinema.id, fmt);
+            const now = new Date();
+            const targetDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            targetDate.setDate(targetDate.getDate() + (typeof selectedDateIndex !== 'undefined' ? selectedDateIndex : 0));
+            const targetDateStr = targetDate.toLocaleDateString('vi-VN');
+
+            const rawShowtimes = currentMovieShowtimes.filter(s => {
+                return s.room && s.room.cinemaId === cinema.id && new Date(s.startTime).toLocaleDateString('vi-VN') === targetDateStr;
+            });
+            
+            if (rawShowtimes.length === 0) return '';
+
+            const showtimes = rawShowtimes.map(s => {
+                 return { time: new Date(s.startTime).toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit'}), status: 'available' };
+            });
             const btns = showtimes.map(st => {
                 let status = st.status;
                 if (typeof selectedDateIndex !== 'undefined') {
@@ -571,7 +587,7 @@ document.addEventListener('keydown', (e) => {
 });
 
 // ── CLOSE MODAL ON BACKDROP ──────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     const modal = document.getElementById('trailer-modal');
     const closeBtn = document.getElementById('close-modal');
     if (closeBtn) closeBtn.addEventListener('click', closeTrailerModal);
@@ -585,6 +601,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ── INIT ──────────────────────────────────────────────────
+    if (window.fetchMoviesPromise) await window.fetchMoviesPromise;
+    if (window.fetchCinemasPromise) await window.fetchCinemasPromise;
+
     const movieId = getMovieIdFromURL();
 
     if (!movieId) {
@@ -623,6 +642,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const dates = generateDates(7);
     renderDateTabs(dates);
+    
+    if (window.fetchShowtimesByMovie && currentMovie) {
+        window.currentMovieShowtimes = await window.fetchShowtimesByMovie(currentMovie.id);
+    }
     renderCinemaShowtimes();
 
     renderRatings(currentMovie);

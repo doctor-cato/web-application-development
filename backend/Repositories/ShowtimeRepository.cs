@@ -16,19 +16,19 @@ namespace appweb.Repositories
         // Lấy toàn bộ danh sách lịch chiếu
         public async Task<List<Showtime>> GetAllAsync()
         {
-            return await _context.Showtimes.ToListAsync();
+            return await _context.Showtimes.Include(s => s.Room).ThenInclude(r => r.Cinema).ToListAsync();
         }
 
         // Lấy chi tiết suất chiếu theo Id kiểu int
         public async Task<Showtime?> GetByIdAsync(Guid id)
         {
-            return await _context.Showtimes.FirstOrDefaultAsync(s => s.Id == id);
+            return await _context.Showtimes.Include(s => s.Room).ThenInclude(r => r.Cinema).FirstOrDefaultAsync(s => s.Id == id);
         }
 
         // Lọc suất chiếu theo MovieId kiểu int
         public async Task<List<Showtime>> GetByMovieIdAsync(Guid movieId)
         {
-            return await _context.Showtimes.Where(s => s.MovieId == movieId).ToListAsync();
+            return await _context.Showtimes.Include(s => s.Room).ThenInclude(r => r.Cinema).Where(s => s.MovieId == movieId).ToListAsync();
         }
 
         // Tạo lịch chiếu mới

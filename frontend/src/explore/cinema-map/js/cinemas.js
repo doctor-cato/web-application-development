@@ -159,7 +159,12 @@ if (btnLoc) btnLoc.addEventListener('click', () => {
 });
 
 // --- INIT ---
-document.addEventListener('DOMContentLoaded', () => {
-    renderCinemas();
-    initMap();
+document.addEventListener('DOMContentLoaded', async () => {
+    if (window.fetchCinemasPromise) await window.fetchCinemasPromise;
+    if (window.cinemas && window.cinemas.length > 0) {
+        renderCinemas();
+        initMap();
+    } else {
+        if (cinemasList) cinemasList.innerHTML = '<p style="padding: 20px; color: var(--text-muted);">Không có dữ liệu rạp</p>';
+    }
 });

@@ -9,19 +9,8 @@ let heroMovies = [];
 let nowShowingMovies = [];
 let comingSoonMovies = [];
 
-const mockGallery = [
-    "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=800&q=80",
-    "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=800&q=80",
-    "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=800&q=80",
-    "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&w=800&q=80"
-];
-
-const mockCast = [
-    { name: "Brad Pitt", avatar: "https://i.pravatar.cc/80?img=53" },
-    { name: "Damson Idris", avatar: "https://i.pravatar.cc/80?img=17" },
-    { name: "Kerry Condon", avatar: "https://i.pravatar.cc/80?img=23" },
-    { name: "Javier Bardem", avatar: "https://i.pravatar.cc/80?img=60" }
-];
+const mockGallery = [];
+const mockCast = [];
 
 async function fetchMovies() {
     try {
@@ -89,141 +78,44 @@ async function fetchMovies() {
 window.fetchMoviesPromise = fetchMovies();
 
 // ── CINEMAS ──────────────────────────────────────────────────
-const cinemas = [
-    {
-        id: "ha-dong",
-        name: "3HD2K HÀ ĐÔNG",
-        distance: "0.5 KM",
-        address: "Tầng 5, AEON Mall Hà Đông, Dương Nội, Quận Hà Đông, Hà Nội",
-        screens: 9,
-        features: ["IMAX", "4DX", "Dolby Atmos"],
-        lat: 20.9745,
-        lng: 105.7455
-    },
-    {
-        id: "le-trong-tan",
-        name: "3HD2K LÊ TRỌNG TẤN",
-        distance: "2.1 KM",
-        address: "Tầng 4, Trung tâm TM Hồ Gươm Plaza, 102 Trần Phú, Quận Hà Đông, Hà Nội",
-        screens: 7,
-        features: ["Dolby Atmos", "ScreenX"],
-        lat: 20.9720,
-        lng: 105.7830
-    },
-    {
-        id: "my-dinh",
-        name: "3HD2K MỸ ĐÌNH",
-        distance: "5.3 KM",
-        address: "Tầng 6, The Garden Shopping Center, Mễ Trì, Quận Nam Từ Liêm, Hà Nội",
-        screens: 8,
-        features: ["IMAX", "4DX"],
-        lat: 21.0170,
-        lng: 105.7780
-    },
-    {
-        id: "royal-city",
-        name: "3HD2K ROYAL CITY",
-        distance: "7.8 KM",
-        address: "Tầng B2, Vincom Mega Mall Royal City, 72A Nguyễn Trãi, Quận Thanh Xuân, Hà Nội",
-        screens: 10,
-        features: ["IMAX", "Dolby Atmos", "4DX"],
-        lat: 21.0020,
-        lng: 105.8148
-    },
-    {
-        id: "cau-giay",
-        name: "3HD2K CẦU GIẤY",
-        distance: "2.8 KM",
-        address: "Tầng 6, Indochina Plaza, 241 Xuân Thủy, Quận Cầu Giấy, Hà Nội",
-        screens: 8,
-        features: ["IMAX", "Dolby Atmos"],
-        lat: 21.0365,
-        lng: 105.7980
-    },
-    {
-        id: "lang-ha",
-        name: "3HD2K LÁNG HẠ",
-        distance: "1.7 KM",
-        address: "Tầng 4, M5 Tower, 91 Nguyễn Chí Thanh, Quận Đống Đa, Hà Nội",
-        screens: 6,
-        features: ["4DX", "Dolby Atmos"],
-        lat: 21.0180,
-        lng: 105.8080
-    }
-];
+let cinemas = [];
 
-// ── MOCK SHOWTIMES GENERATOR ─────────────────────────────────
-// Returns mock showtime data for a given cinemaId and format
-function generateShowtimes(cinemaId, format) {
-    const allTimes = ["09:00", "10:30", "11:45", "13:15", "14:30", "16:00", "17:20", "18:45", "20:10", "21:30", "22:50"];
-    const statuses = ["available", "available", "available", "almost-full", "available", "available", "available", "almost-full", "available", "available", "available"];
-    const count = 5 + Math.floor(Math.random() * 4);
-    const startIdx = Math.floor(Math.random() * (allTimes.length - count));
-    return allTimes.slice(startIdx, startIdx + count).map((time, i) => ({
-        time,
-        status: statuses[(startIdx + i) % statuses.length]
-    }));
+async function fetchCinemas() {
+    try {
+        const response = await fetch(`/api/cinemas`);
+        if (response.ok) {
+            cinemas = await response.json();
+            cinemas.forEach((c, idx) => {
+                c.lat = c.lat || (21.005 + (idx * 0.012));
+                c.lng = c.lng || (105.790 + (idx * 0.015));
+                c.distance = c.distance || "3.5 KM";
+                c.screens = c.screens || c.rooms?.length || 5;
+                c.features = c.features || ["2D", "3D"];
+            });
+            window.cinemas = cinemas;
+        }
+    } catch (e) {
+        console.error("Failed to fetch cinemas:", e);
+    }
 }
+window.fetchCinemasPromise = fetchCinemas();
+
+// ── SHOWTIMES API ─────────────────────────────────
+async function fetchShowtimesByMovie(movieId) {
+    try {
+        const response = await fetch(`/api/showtimes/movie/${movieId}`);
+        if (response.ok) {
+            return await response.json();
+        }
+    } catch (e) {
+        console.error("Failed to fetch showtimes:", e);
+    }
+    return [];
+}
+window.fetchShowtimesByMovie = fetchShowtimesByMovie;
 
 // ── MOCK REVIEWS ─────────────────────────────────────────────
-const mockReviews = [
-    {
-        user: "Minh Tuấn",
-        avatar: "https://i.pravatar.cc/48?img=1",
-        rating: 5,
-        date: "10/06/2026",
-        text: "Phim rất hay! Kỹ xảo đỉnh cao, cốt truyện hấp dẫn từ đầu đến cuối. Xem ở IMAX mới cảm nhận được hết độ hoành tráng.",
-        hasSpoiler: false
-    },
-    {
-        user: "Lan Anh",
-        avatar: "https://i.pravatar.cc/48?img=20",
-        rating: 4,
-        date: "09/06/2026",
-        text: "Diễn xuất của các diễn viên chính rất tốt. Tuy nhiên phần đầu hơi chậm, phải đến 30 phút sau phim mới thực sự bắt đầu cuốn hút.",
-        hasSpoiler: false
-    },
-    {
-        user: "Đức Khải",
-        avatar: "https://i.pravatar.cc/48?img=3",
-        rating: 3,
-        date: "08/06/2026",
-        text: "Cẩn thận spoiler! Kết thúc phim khá bất ngờ và cảm xúc. Nếu bạn đã xem phần trước thì sẽ hiểu hơn nhiều.",
-        hasSpoiler: true
-    },
-    {
-        user: "Thu Hà",
-        avatar: "https://i.pravatar.cc/48?img=44",
-        rating: 5,
-        date: "07/06/2026",
-        text: "Masterpiece! Không có gì để chê. Âm nhạc, hình ảnh, diễn xuất đều xuất sắc. Đây chắc chắn là một trong những bộ phim hay nhất năm nay.",
-        hasSpoiler: false
-    },
-    {
-        user: "Hoàng Long",
-        avatar: "https://i.pravatar.cc/48?img=11",
-        rating: 4,
-        date: "06/06/2026",
-        text: "Hình ảnh âm thanh làm cực kỳ ấn tượng, đáng đồng tiền bát gạo ra rạp.",
-        hasSpoiler: false
-    },
-    {
-        user: "Thảo Trang",
-        avatar: "https://i.pravatar.cc/48?img=5",
-        rating: 5,
-        date: "05/06/2026",
-        text: "Tuyệt vời! Ai chưa xem thì khuyên thật lòng nên đi xem ngay, không xem là phí.",
-        hasSpoiler: false
-    },
-    {
-        user: "Gia Bảo",
-        avatar: "https://i.pravatar.cc/48?img=8",
-        rating: 4,
-        date: "04/06/2026",
-        text: "Cốt truyện ok, diễn xuất tròn vai, kĩ xảo tạm ổn. Một bộ phim giải trí tốt dịp cuối tuần.",
-        hasSpoiler: false
-    }
-];
+const mockReviews = [];
 
 // Normalize image paths based on current URL depth
 function getSrcPrefix() {

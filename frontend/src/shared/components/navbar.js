@@ -1103,10 +1103,14 @@ export function renderNavbar() {
                 }
             });
 
-            function triggerMovieSelection() {
+            let currentShowtimes = [];
+
+            async function triggerMovieSelection() {
+                qbCinema.innerHTML = '<option value="" disabled selected>-- Đang tải Rạp... --</option>';
+                if (window.fetchCinemasPromise) await window.fetchCinemasPromise;
                 qbCinema.innerHTML = '<option value="" disabled selected>-- Chọn Rạp --</option>';
-                if (typeof cinemas !== 'undefined') {
-                    cinemas.forEach(c => {
+                if (window.cinemas && window.cinemas.length > 0) {
+                    window.cinemas.forEach(c => {
                         const opt = document.createElement('option');
                         opt.value = c.id;
                         opt.textContent = c.name;
@@ -1115,7 +1119,7 @@ export function renderNavbar() {
                 } else {
                     const opt = document.createElement('option');
                     opt.value = "dummy-cinema";
-                    opt.textContent = "Rạp Demo";
+                    opt.textContent = "Chưa có Rạp";
                     qbCinema.appendChild(opt);
                 }
                 qbCinema.disabled = false;
@@ -1126,19 +1130,35 @@ export function renderNavbar() {
                 qbSubmit.disabled = true;
             }
 
-            qbCinema.addEventListener('change', () => {
+            qbCinema.addEventListener('change', async () => {
                 qbDate.disabled = false;
+                qbDate.innerHTML = '<option value="" disabled selected>-- Đang tải lịch chiếu... --</option>';
+                
+                // Fetch showtimes
+                if (window.fetchShowtimesByMovie && selectedMovieId) {
+                    currentShowtimes = await window.fetchShowtimesByMovie(selectedMovieId);
+                }
+                
+                const selectedCinemaId = qbCinema.value;
+                // Filter showtimes for selected cinema
+                const cinemaShowtimes = currentShowtimes.filter(s => s.room && s.room.cinemaId === selectedCinemaId);
+                
                 qbDate.innerHTML = '<option value="" disabled selected>-- Chọn Ngày --</option>';
-                // Populate dummy dates based on today
-                const today = new Date();
-                for(let i=0; i<3; i++) {
-                    const d = new Date(today);
-                    d.setDate(today.getDate() + i);
-                    const dateStr = d.toLocaleDateString('vi-VN');
-                    const opt = document.createElement('option');
-                    opt.value = dateStr;
-                    opt.textContent = dateStr;
-                    qbDate.appendChild(opt);
+                // Extract unique dates
+                const uniqueDates = [...new Set(cinemaShowtimes.map(s => new Date(s.startTime).toLocaleDateString('vi-VN')))];
+                
+                if (uniqueDates.length === 0) {
+                     const opt = document.createElement('option');
+                     opt.value = "";
+                     opt.textContent = "Không có lịch chiếu";
+                     qbDate.appendChild(opt);
+                } else {
+                     uniqueDates.forEach(dateStr => {
+                         const opt = document.createElement('option');
+                         opt.value = dateStr;
+                         opt.textContent = dateStr;
+                         qbDate.appendChild(opt);
+                     });
                 }
                 qbShowtime.disabled = true;
                 qbShowtime.innerHTML = '<option value="" disabled selected>-- Chọn Suất Chiếu --</option>';
@@ -1148,14 +1168,31 @@ export function renderNavbar() {
             qbDate.addEventListener('change', () => {
                 qbShowtime.disabled = false;
                 qbShowtime.innerHTML = '<option value="" disabled selected>-- Chọn Suất Chiếu --</option>';
-                // Populate dummy showtimes
-                const times = ['09:00', '10:30', '13:00', '15:30', '18:00', '19:30', '21:00'];
-                times.forEach(t => {
+                
+                const selectedCinemaId = qbCinema.value;
+                const selectedDate = qbDate.value;
+                
+                const filteredShowtimes = currentShowtimes.filter(s => 
+                    s.room && s.room.cinemaId === selectedCinemaId && 
+                    new Date(s.startTime).toLocaleDateString('vi-VN') === selectedDate
+                );
+                
+                if (filteredShowtimes.length === 0) {
                     const opt = document.createElement('option');
-                    opt.value = t;
-                    opt.textContent = t;
+                    opt.value = "";
+                    opt.textContent = "Hết suất chiếu";
                     qbShowtime.appendChild(opt);
-                });
+                } else {
+                    // Sort by time
+                    filteredShowtimes.sort((a,b) => new Date(a.startTime) - new Date(b.startTime));
+                    filteredShowtimes.forEach(s => {
+                        const t = new Date(s.startTime).toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit'});
+                        const opt = document.createElement('option');
+                        opt.value = s.id;
+                        opt.textContent = t;
+                        qbShowtime.appendChild(opt);
+                    });
+                }
                 qbSubmit.disabled = true;
             });
 
