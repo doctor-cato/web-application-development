@@ -1,0 +1,16 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "http://3hd2k-api.somee.com/api/:path*"
+    },
+    {
+      "source": "/notificationHub",
+      "destination": "http://3hd2k-api.somee.com/notificationHub"
+    },
+    {
+      "source": "/cinematchHub",
+      "destination": "http://3hd2k-api.somee.com/cinematchHub"
+    }
+  ]
+}

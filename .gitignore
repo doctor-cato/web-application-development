@@ -15,3 +15,4 @@ tunnel_*.txt
 booking_screenshot.png
 **/bin/
 **/obj/
+appsettings.Development.json
