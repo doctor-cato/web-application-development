@@ -9,6 +9,10 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using System.Net;
 using System.Net.Mail;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace appweb.Controllers
 {
@@ -52,7 +56,7 @@ namespace appweb.Controllers
                 Phone = model.Phone ?? string.Empty,
                 DateOfBirth = model.DateOfBirth,
                 Gender = model.Gender,
-                Password = model.Password, // Nên hash mật khẩu thực tế
+                Password = BCrypt.Net.BCrypt.HashPassword(model.Password),
                 Role = "CUSTOMER"
             };
 
@@ -88,12 +92,29 @@ namespace appweb.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var user = await _userRepository.CheckLoginAsync(model.Email, model.Password);
+            var user = await _userRepository.CheckLoginAsync(model.Email);
 
-            if (user == null)
+            if (user == null || !BCrypt.Net.BCrypt.Verify(model.Password, user.Password))
                 return Unauthorized(new { message = "Tài khoản hoặc mật khẩu không chính xác." });
 
-            // Trả về token hoặc cookie thực tế, ở đây trả về json đơn giản cho Frontend JS dùng
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, user.Email),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Role, user.Role ?? "CUSTOMER")
+            };
+
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(claimsIdentity),
+                new AuthenticationProperties
+                {
+                    IsPersistent = true,
+                    ExpiresUtc = DateTimeOffset.UtcNow.AddDays(30)
+                });
+
             return Ok(new { 
                 message = "Đăng nhập thành công", 
                 user = new { 
@@ -108,6 +129,13 @@ namespace appweb.Controllers
             });
         }
 
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return Ok(new { message = "Đăng xuất thành công" });
+        }
+
         [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto model)
         {
@@ -119,18 +147,12 @@ namespace appweb.Controllers
                 return NotFound(new { message = "Không tìm thấy tài khoản với email này." });
 
             // Sinh mã OTP 6 số
-            Random rand = new Random();
-            string otp = rand.Next(100000, 999999).ToString();
+            string otp = System.Security.Cryptography.RandomNumberGenerator.GetInt32(100000, 999999).ToString();
 
             // Lưu vào DB
             user.OtpCode = otp;
             user.OtpExpiryTime = DateTime.Now.AddMinutes(5); // Hết hạn sau 5 phút
             await _userRepository.UpdateAsync(user);
-
-            // Gửi email giả lập ra màn hình Console
-            Console.WriteLine($"\n========================================");
-            Console.WriteLine($"MÃ OTP GỬI TỚI EMAIL {model.Email}: {otp}");
-            Console.WriteLine($"========================================\n");
 
             // Gửi email thật qua SMTP
             try
@@ -161,7 +183,7 @@ namespace appweb.Controllers
                 }
                 else
                 {
-                    Console.WriteLine("SMTP chưa được cấu hình, chỉ in OTP ra console.");
+                    Console.WriteLine("SMTP chưa được cấu hình.");
                 }
             }
             catch (Exception ex)
@@ -190,7 +212,7 @@ namespace appweb.Controllers
                 return BadRequest(new { message = "Mã OTP đã hết hạn." });
 
             // Cập nhật mật khẩu mới
-            user.Password = model.NewPassword;
+            user.Password = BCrypt.Net.BCrypt.HashPassword(model.NewPassword);
             user.OtpCode = null;
             user.OtpExpiryTime = null;
             await _userRepository.UpdateAsync(user);
@@ -198,11 +220,15 @@ namespace appweb.Controllers
             return Ok(new { message = "Cập nhật mật khẩu thành công. Bạn có thể đăng nhập bằng mật khẩu mới." });
         }
 
+        [Authorize]
         [HttpPost("upgrade-vip")]
         public async Task<IActionResult> UpgradeVip([FromBody] UpgradeVipDto model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            if (User.Identity?.Name != model.Email && !User.IsInRole("ADMIN"))
+                return Forbid("Bạn không có quyền nâng cấp tài khoản này.");
 
             var user = await _userRepository.GetByEmailAsync(model.Email);
             if (user == null)
@@ -216,11 +242,15 @@ namespace appweb.Controllers
             return Ok(new { message = "Nâng cấp VIP thành công." });
         }
 
+        [Authorize]
         [HttpPost("update-avatar")]
         public async Task<IActionResult> UpdateAvatar([FromForm] string email, IFormFile file)
         {
             if (string.IsNullOrEmpty(email) || file == null || file.Length == 0)
                 return BadRequest(new { message = "Thiếu thông tin email hoặc file ảnh." });
+
+            if (User.Identity?.Name != email && !User.IsInRole("ADMIN"))
+                return Forbid("Bạn không có quyền cập nhật ảnh đại diện của tài khoản này.");
 
             var user = await _userRepository.GetByEmailAsync(email);
             if (user == null)

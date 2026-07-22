@@ -1,4 +1,25 @@
-// File is now empty as navbar logic was moved to navbar.js to fix asynchronous loading issues.
+// Global fetch interceptor to automatically include credentials for cross-origin authentication
+const originalFetch = window.fetch;
+window.fetch = async function(...args) {
+    let [resource, config] = args;
+    const url = typeof resource === 'string' ? resource : (resource instanceof Request ? resource.url : '');
+    
+    // Check if the request is an API call
+    if (url.includes('/api/')) {
+        if (resource instanceof Request) {
+            // Modify Request object credentials
+            const newConfig = { credentials: 'include', ...config };
+            resource = new Request(resource, newConfig);
+            args[0] = resource;
+        } else {
+            // Modify fetch options
+            config = config || {};
+            config.credentials = 'include';
+            args[1] = config;
+        }
+    }
+    return originalFetch.apply(this, args);
+};
 
 // --- GLOBAL CUSTOM DROPDOWNS SETUP ---
 function initCustomDropdowns(selector) {

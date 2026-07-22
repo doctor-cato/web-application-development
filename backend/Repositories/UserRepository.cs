@@ -35,9 +35,9 @@ namespace appweb.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<User?> CheckLoginAsync(string email, string password)
+        public async Task<User?> CheckLoginAsync(string email)
         {
-            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email && u.Password == password);
+            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
         }
 
         public async Task UpdateAsync(User user)

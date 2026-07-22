@@ -19,8 +19,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll",
         builder =>
-        {
-            builder.SetIsOriginAllowed(origin => true) // SignalR requires this instead of AllowAnyOrigin
+            builder.WithOrigins("http://localhost:3000", "http://127.0.0.1:3000", "https://32dk-web-app-project.vercel.app")
                    .AllowAnyMethod()
                    .AllowAnyHeader()
                    .AllowCredentials(); // Required for SignalR

@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace appweb.Models
 {
-    [Table("Movies")]
+    [Table("movies")]
     public class Movie
     {
         [Key]

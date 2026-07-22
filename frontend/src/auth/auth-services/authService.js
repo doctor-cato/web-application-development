@@ -75,7 +75,15 @@ export async function register(userData) {
     }
 }
 
-export function logout() {
+export async function logout() {
+    try {
+        await fetch(`${API_BASE_URL}/auth/logout`, {
+            method: 'POST',
+            headers: getHeaders()
+        });
+    } catch (error) {
+        console.error('Logout error:', error);
+    }
     clearCurrentUser();
     window.location.href = '/explore/home-page/index.html';
 }

@@ -31,6 +31,9 @@ function renderBookingInfo(booking) {
 
   const total = document.getElementById('invoice-total');
   if (total && booking.total) total.textContent = formatPrice(booking.total);
+
+  const qrCode = document.getElementById('invoice-qr-code');
+  if (qrCode && booking.transactionId) qrCode.src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(booking.transactionId)}`;
 }
 
 function init() {

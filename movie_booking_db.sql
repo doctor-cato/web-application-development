@@ -130,12 +130,16 @@ GO
 ----------------------------------------------------------------------
 -- PHẦN 4: CINE-MATCH
 ----------------------------------------------------------------------
-CREATE TABLE cine_match_registrations (
-    match_id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+CREATE TABLE cinematches (
+    id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
     user_id UNIQUEIDENTIFIER REFERENCES users(user_id),
     showtime_id UNIQUEIDENTIFIER REFERENCES showtimes(showtime_id),
-    gender_preference VARCHAR(10), -- 'MALE', 'FEMALE', 'ANY'
-    matched_with_user_id UNIQUEIDENTIFIER REFERENCES users(user_id),
+    seat_id VARCHAR(50),
+    adjacent_seat_id VARCHAR(50),
+    match_preference VARCHAR(10) DEFAULT 'any', -- 'male', 'female', 'any'
+    matched_user_id UNIQUEIDENTIFIER REFERENCES users(user_id),
+    status VARCHAR(20) DEFAULT 'pending', -- 'pending', 'matched', 'completed', 'cancelled'
+    reveal_code VARCHAR(10),
     is_revealed BIT DEFAULT 0,
     created_at DATETIME DEFAULT GETDATE()
 );
