@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     let currentBalance = 1250;
     const balanceDisplay = document.getElementById('balance-amount');
-    const poolCards = document.querySelectorAll('.pool-card');
     const toastElement = document.getElementById('toast');
 
     // Toast Notification System
@@ -18,47 +17,113 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 3000);
     }
 
+    // Fetch and render data
+    async function loadCinePredictData() {
+        try {
+            const response = await fetch('/api/CinePredict');
+            if (!response.ok) throw new Error('API Error');
+            const data = await response.json();
+            
+            const activeGrid = document.getElementById('active-pools-grid');
+            const endedGrid = document.getElementById('ended-pools-grid');
+            
+            if (activeGrid) activeGrid.innerHTML = '';
+            if (endedGrid) endedGrid.innerHTML = '';
 
-    // Card Selection and Betting Logic
-    poolCards.forEach(card => {
-        const optionButtons = card.querySelectorAll('.option-btn');
-        const betActionBtn = card.querySelector('.btn-bet-action');
-        let selectedValue = null;
+            data.forEach(item => {
+                const isEnded = item.status === 'ended';
+                const cardClass = isEnded ? 'pool-card ended-card' : 'pool-card';
+                const buttonClass = isEnded ? 'btn-bet-action disabled' : 'btn-bet-action';
+                const buttonText = isEnded ? 'ĐÃ TRẢ THƯỞNG' : 'DỰ ĐOÁN';
+                
+                let optionsHtml = '';
+                item.options.forEach((opt, idx) => {
+                    if (isEnded) {
+                        const isWinner = item.winnerIndex === idx;
+                        optionsHtml += `<button class="option-btn disabled ${isWinner ? 'winner' : ''}" data-option="${opt}">${opt}${isWinner ? ' (KẾT QUẢ)' : ''}</button>`;
+                    } else {
+                        optionsHtml += `<button class="option-btn" data-option="${opt}">${opt}</button>`;
+                    }
+                });
 
-        optionButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                optionButtons.forEach(b => b.classList.remove('selected'));
-                btn.classList.add('selected');
-                selectedValue = btn.getAttribute('data-option');
-            });
-        });
-
-        if (betActionBtn) {
-            betActionBtn.addEventListener('click', () => {
-                const isExpert = card.querySelector('.card-badge.expert') !== null;
-                const cost = isExpert ? 75 : 50;
-
-                if (!selectedValue) {
-                    showToast('Vui lòng chọn phương án dự đoán trước khi đặt cược!');
-                    return;
+                const html = `
+                <div class="${cardClass}">
+                    <span class="card-badge" style="background-color: ${item.badgeColor}; color: ${item.textColor};">${item.badgeText}</span>
+                    <div class="card-image" style="background-image: url('${item.image}')"></div>
+                    <div class="card-content">
+                        <h3>${item.title}</h3>
+                        <p class="card-description">${item.description}</p>
+                        <div class="reward-box">
+                            <span class="reward-label">PHẦN THƯỞNG</span>
+                            <span class="reward-value">${item.reward}</span>
+                        </div>
+                        <div class="options-row">
+                            ${optionsHtml}
+                        </div>
+                        <div class="card-footer">
+                            <span class="price-tag">Phí: ${item.fee} Điểm</span>
+                            <button class="${buttonClass}">${buttonText}</button>
+                        </div>
+                    </div>
+                </div>`;
+                
+                if (isEnded && endedGrid) {
+                    endedGrid.insertAdjacentHTML('beforeend', html);
+                } else if (!isEnded && activeGrid) {
+                    activeGrid.insertAdjacentHTML('beforeend', html);
                 }
-
-                if (currentBalance < cost) {
-                    showToast('Số dư tài khoản điểm không đủ để thực hiện lượt dự đoán này!');
-                    return;
-                }
-
-                currentBalance -= cost;
-                animateBalance(currentBalance);
-
-                // Reset selections
-                optionButtons.forEach(b => b.classList.remove('selected'));
-                selectedValue = null;
-
-                showToast(`Ghi nhận lượt dự đoán thành công! Đã trừ ${cost} Điểm.`);
             });
+            
+            attachCardEvents();
+        } catch (error) {
+            console.error('Error loading Cine Predict data:', error);
+            showToast('Lỗi khi tải dữ liệu. Vui lòng thử lại sau.');
         }
-    });
+    }
+
+    function attachCardEvents() {
+        const poolCards = document.querySelectorAll('.pool-card:not(.ended-card)');
+        poolCards.forEach(card => {
+            const optionButtons = card.querySelectorAll('.option-btn');
+            const betActionBtn = card.querySelector('.btn-bet-action');
+            let selectedValue = null;
+
+            optionButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    optionButtons.forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    selectedValue = btn.getAttribute('data-option');
+                });
+            });
+
+            if (betActionBtn) {
+                betActionBtn.addEventListener('click', () => {
+                    const priceText = card.querySelector('.price-tag').textContent;
+                    const costMatch = priceText.match(/\d+/);
+                    const cost = costMatch ? parseInt(costMatch[0]) : 50;
+
+                    if (!selectedValue) {
+                        showToast('Vui lòng chọn phương án dự đoán trước khi đặt cược!');
+                        return;
+                    }
+
+                    if (currentBalance < cost) {
+                        showToast('Số dư tài khoản điểm không đủ để thực hiện lượt dự đoán này!');
+                        return;
+                    }
+
+                    currentBalance -= cost;
+                    animateBalance(currentBalance);
+
+                    // Reset selections
+                    optionButtons.forEach(b => b.classList.remove('selected'));
+                    selectedValue = null;
+
+                    showToast(`Ghi nhận lượt dự đoán thành công! Đã trừ ${cost} Điểm.`);
+                });
+            }
+        });
+    }
 
     // Balance Animation helper
     function animateBalance(target) {
@@ -123,4 +188,7 @@ document.addEventListener('DOMContentLoaded', () => {
             showToast('Lịch sử: Chưa ghi nhận lượt dự đoán gần đây.');
         });
     }
+    
+    // Initial Load
+    loadCinePredictData();
 });

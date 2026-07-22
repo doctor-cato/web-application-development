@@ -1,0 +1,72 @@
+name: Deploy Documentation
+
+on:
+  push:
+    branches:
+      - main
+      - dev2
+    paths:
+      - 'docs/**'
+      - 'mkdocs.yml'
+      - '.markdownlint.yml'
+      - '.github/workflows/docs.yml'
+      - 'README.md'
+  pull_request:
+    branches:
+      - main
+      - dev2
+    paths:
+      - 'docs/**'
+      - 'mkdocs.yml'
+      - '.markdownlint.yml'
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  lint:
+    name: Markdown Linting
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Markdownlint CLI
+        run: npm install -g markdownlint-cli
+
+      - name: Run Markdownlint Check
+        run: markdownlint "docs/**/*.md" "README.md" --config .markdownlint.yml
+
+  deploy:
+    name: Build & Deploy MkDocs
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install MkDocs Material & Extensions
+        run: |
+          pip install --upgrade pip
+          pip install mkdocs-material
+
+      - name: Build MkDocs Site
+        run: mkdocs build --strict
+
+      - name: Deploy to GitHub Pages
+        if: github.ref == 'refs/heads/main'
+        run: mkdocs gh-deploy --force

@@ -17,3 +17,9 @@ booking_screenshot.png
 **/obj/
 appsettings.Development.json
 backend/publish_output/
+
+# MkDocs build directory
+site/
+.venv/
+__pycache__/
+

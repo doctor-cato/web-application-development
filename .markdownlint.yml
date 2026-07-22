@@ -1,0 +1,31 @@
+# Configuration for markdownlint
+default: true
+
+# MD013/line-length - Line length
+MD013: false
+
+# MD033/no-inline-html - Inline HTML
+MD033:
+  allowed_elements:
+    - details
+    - summary
+    - img
+    - span
+    - div
+    - br
+    - kbd
+    - table
+    - tr
+    - td
+    - th
+
+# MD024/no-duplicate-heading - Multiple headings with the same content
+MD024:
+  siblings_only: true
+
+# MD041/first-line-heading/first-line-h1 - First line in file should be a top level heading
+MD041: true
+
+# MD007/ul-indent - Unordered list indentation
+MD007:
+  indent: 2
