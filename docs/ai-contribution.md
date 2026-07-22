@@ -1,76 +1,159 @@
-# Quy định & Hướng dẫn dành cho AI Agent (AI Agent Guide)
+# Quy định & Hướng dẫn Sử dụng AI (AI Contribution & Agent Guide)
 
-Tài liệu này định nghĩa các quy tắc cốt lõi, quy trình làm việc và các điều khoản bắt buộc để các AI Agent (Cursor, Antigravity, GitHub Copilot) tuân thủ khi thao tác với codebase và tài liệu của dự án **3HD2Kcinema**.
-
----
-
-## 🎯 1. Triết lý Phát triển cho AI (AI Core Philosophy)
-
-- **Code Đơn giản & Dạng Module**: Viết mã nguồn sạch sẽ, sử dụng Vanilla ES6 Modules (`import`/`export`), dễ đọc và dễ mở rộng.
-- **TUYỆT ĐỐI TRÁNH Over-Engineering**: Không tự ý cài đặt thêm các framework hay bundler phức tạp (như React, Vue, Angular, Webpack, Vite, Babel) vào phân hệ Frontend Vanilla JS trừ khi có chỉ thị trực tiếp từ người dùng.
-- **Code dễ đọc quan trọng hơn code rườm rà**: Ưu tiên sự rõ ràng, giữ nguyên các comment hiện có trong dự án.
+Tài liệu này định nghĩa chính thức toàn bộ các quy định, chính sách và quy trình kỹ thuật dành cho lập trình viên và các **AI Agent** (Google Antigravity, Cursor, GitHub Copilot) khi tương tác với mã nguồn và tài liệu của dự án **3HD2Kcinema**.
 
 ---
 
-## 🛡️ 2. Quy tắc Thao tác Codebase
+## 🎯 1. Vai trò & Triết lý Sử dụng AI (AI Philosophy)
 
-1. **Phạm vi Hoạt động**: AI Agent chỉ được chỉnh sửa các tệp tin trong thư mục `/frontend/src/` cho các công việc giao diện Client-side. Không tự ý chỉnh sửa tệp tin bên trong `/backend/` ngoại trừ trường hợp người dùng yêu cầu nâng cấp API/EF Core Backend.
-2. **Quản lý Storage qua Single Source of Truth**:
-    - Không gọi trực tiếp `localStorage.getItem()` hay `localStorage.setItem()` rải rác.
-    - Mọi thao tác lưu trữ phải gọi qua wrapper `frontend/src/shared/utils/storage.js`.
-3. **Bảo tồn và Cập nhật Tài liệu**: Khi thực hiện bất kỳ thay đổi nào về logic nghiệp vụ hoặc cấu trúc dữ liệu, AI Agent **phải chủ động cập nhật các file tài liệu `.md` tương ứng trong thư mục `docs/`**.
+AI trong dự án 3HD2Kcinema đóng vai trò là một **Trợ lý Lập trình (Pair Programmer)** cao cấp. AI giúp tăng tốc độ phát triển, duy trì tính nhất quán của kiến trúc và đồng bộ tài liệu, nhưng không thay thế sự kiểm duyệt và trách nhiệm kỹ thuật của lập trình viên.
 
----
-
-## 📋 3. Quy trình Bắt buộc TRƯỚC KHI Bắt đầu Làm việc (Pre-Work Checklist)
-
-!!! danger "Yêu cầu Bắt buộc"
-    AI Agent PHẢI thực hiện kiểm tra trạng thái Git và đọc lịch sử commit trước khi chỉnh sửa bất kỳ tệp tin nào để tránh gây xung đột (conflict).
-
-### Bước 1: Kiểm tra trạng thái Git
-```bash
-git fetch origin
-git status
+```mermaid
+flowchart LR
+    Dev[Lập trình viên / Developer] <-->|Đưa yêu cầu & Review Code| AI[AI Agent / Antigravity / Cursor]
+    AI -->|Sinh Code & Refactor| Code[Frontend Vanilla JS / Backend C#]
+    AI -->|Đồng bộ Tài liệu| Docs[Hệ thống Docs MkDocs Material]
+    Code -->|Kiểm thử E2E| Test[Playwright / Manual Test]
 ```
 
-### Bước 2: Đọc 10 commit gần nhất
-```bash
-git log origin/main --oneline -10
-```
-Giúp AI thấu hiểu các thay đổi vừa được thực hiện bởi người dùng hoặc Agent khác.
-
-### Bước 3: Kiểm tra tính đồng bộ
-```bash
-git log HEAD..origin/main --oneline
-```
-Nếu có kết quả trả về, remote đang đi trước local -> AI cần thực hiện `git pull origin main` (hoặc `dev2`) trước khi viết code.
+### Nguyên tắc Cốt lõi (Core Principles):
+1. **Code Đơn giản & Dạng Module**: Sử dụng thuần Vanilla ES6 Modules (`import`/`export`), thiết kế giao diện theo từng miền tính năng (Domain-Based), mã nguồn sạch sẽ và dễ bảo trì.
+2. **Tuyệt đối TRÁNH Over-Engineering**: Không tự ý cài đặt thêm các framework hoặc bundler phức tạp (React, Vue, Webpack, Vite, Babel) vào phân hệ Frontend Vanilla JS trừ khi có chỉ thị trực tiếp từ lập trình viên.
+3. **Code dễ đọc hơn code thông minh**: Ưu tiên sự rõ ràng, giữ nguyên tất cả comment/docstring hiện có và không abstract hóa quá mức.
 
 ---
 
-## 📝 4. Quy trình Bắt buộc SAU KHI Hoàn thành (Post-Work Checklist)
+## 🛡️ 2. Chính sách Sử dụng AI (AI Usage Policy - DOs & DON'Ts)
 
-Sau khi hoàn thành công việc và kiểm thử thành công, AI Agent phải thực hiện tạo commit message có định dạng chi tiết:
+!!! tip "Dành cho Lập trình viên & AI Agent"
+    Tuân thủ bảng quy tắc dưới đây để đảm bảo chất lượng mã nguồn và tránh phát sinh xung đột trong quá trình phát triển.
 
-### Định dạng Commit Message chuẩn dành cho AI Agent
+### ✅ Những điều NÊN LÀM (DOs)
+
+- **Đồng bộ hóa Tài liệu**: Mỗi khi thêm/sửa tính năng hoặc cấu trúc dữ liệu, AI Agent **phải tự động cập nhật** các tệp tài liệu `.md` tương ứng trong thư mục `docs/`.
+- **Tạo Cấu trúc Mẫu (Boilerplate)**: Sử dụng AI để sinh nhanh các mẫu trang HTML, module Javascript, DTO C# hoặc các bảng SQL Schema.
+- **Tối ưu & Tách nhỏ Code (Refactoring)**: Sử dụng AI để tách các tệp JS quá lớn thành các module Controller/Service nhỏ hơn theo nguyên tắc Clean Code.
+- **Phân tích & Tìm nguyên nhân Lỗi (Root Cause Debugging)**: Yêu cầu AI giải thích *tại sao* lỗi xảy ra (nguyên nhân gốc rễ) trước khi áp dụng giải pháp sửa lỗi.
+- **Hỗ trợ Viết Test**: Dùng AI để sinh các kịch bản kiểm thử E2E Playwright (`tests/e2e/`).
+
+### ❌ Những điều KHÔNG ĐƯỢC LÀM (DON'Ts)
+
+- **Không tạo tính năng quá lớn trong 1 lần Prompt**: Không yêu cầu AI sinh ra toàn bộ luồng nghiệp vụ phức tạp cùng lúc. Hãy chia nhỏ thành các bước: *Giao diện UI -> Mock Service -> Xử lý Event -> Đóng gói Hóa đơn*.
+- **Không tự ý cài đặt Dependencies**: Không cài các thư viện ngoài khi có thể giải quyết bằng JavaScript/CSS nguyên bản (Native HTML5/CSS3/Vanilla JS).
+- **Không phá vỡ API & Storage Contract**: Không tự ý đổi tên các storage key (`cinema_users`, `cinema_checkout`, `cinema_seat_locks`) hoặc signature của các hàm wrapper trong `storage.js`.
+- **Không che giấu lỗi thủ công**: Không sửa lỗi test bằng cách comment out các bài test Playwright đang thất bại hoặc bọc ngoại lệ bằng `catch` rỗng.
+
+---
+
+## 💻 3. Quy định Kỹ thuật dành riêng cho AI Agent
+
+Khi AI Agent thao tác với codebase, phải tuân thủ nghiêm ngặt các quy tắc kiến trúc sau:
+
+### Phân hệ Frontend (Client-side Engine)
+- **Tệp HTML**: Sử dụng thẻ ngữ nghĩa Semantic HTML5. Khai báo Script dạng module: `<script type="module" src="./controller.js"></script>`.
+- **Thao tác Storage**: **TUYỆT ĐỐI KHÔNG** gọi trực tiếp `localStorage.getItem()` hay `localStorage.setItem()` rải rác. Mọi truy xuất phải thông qua wrapper:
+  ```javascript
+  import { Storage, KEYS } from '../shared/utils/storage.js';
+  const user = Storage.get(KEYS.CURRENT_USER);
+  ```
+- **Realtime Seat Booking**: Sử dụng `BroadcastChannel` với kênh `seat_sync` để truyền thông điệp khóa/mở ghế giữa các tab. Tự động giải phóng ghế khóa khi nhận sự kiện `beforeunload`.
+
+### Phân hệ Backend (ASP.NET Core Scaffold)
+- Tuân thủ **Repository Pattern** và phân tầng rõ ràng: `Controllers` -> `Services` -> `Repositories` -> `EF Core DbContext`.
+- Đảm bảo chỉ mục duy nhất `{ ShowtimeId, SeatId }` trên bảng `booking_details` để chống đặt trùng ghế (Double-booking).
+
+---
+
+## 📋 4. Quy trình Bắt buộc dành cho AI Agent (Checklists)
+
+### 📤 Pre-Work Checklist (Trước khi thực hiện công việc)
+
+!!! danger "Ngăn chặn Conflict Git"
+    AI Agent PHẢI chạy các lệnh sau trong terminal trước khi viết hoặc sửa mã nguồn:
+
+1. **Kiểm tra trạng thái & đồng bộ với Remote**:
+   ```bash
+   git fetch origin
+   git status
+   ```
+2. **Đọc 10 commit gần nhất**:
+   ```bash
+   git log origin/main --oneline -10
+   ```
+   *Mục đích*: Thấu hiểu công việc mà lập trình viên hoặc Agent khác vừa hoàn thành.
+3. **Kiểm tra xem local có bị trễ nhịp không**:
+   ```bash
+   git log HEAD..origin/main --oneline
+   ```
+   Nếu có dữ liệu trả về -> Thực hiện `git pull origin main` (hoặc `dev2`) trước khi chỉnh sửa code.
+4. **Đọc tài liệu liên quan**:
+   - Sửa UI/Luồng tính năng -> Đọc [`docs/frontend.md`](frontend.md) & [`docs/architecture.md`](architecture.md)
+   - Sửa Storage/Data -> Đọc [`docs/database.md`](database.md)
+
+---
+
+### 📥 Post-Work Checklist (Sau khi hoàn thành công việc)
+
+1. **Kiểm thử ứng dụng**: Chạy thử web tĩnh hoặc Playwright test để đảm bảo không phát sinh Console Error.
+2. **Đồng bộ tài liệu**: Cập nhật các file `.md` trong `docs/` nếu có thay đổi về tính năng/Storage/API.
+3. **Format Commit Message chuẩn dành cho AI Agent**:
+   ```text
+   <prefix>(<scope>): <mô tả ngắn gọn bằng tiếng Anh hoặc tiếng Việt>
+
+   CHANGED: <danh sách các file đã thay đổi>
+   NOTE: <thông tin kỹ thuật quan trọng cho lập trình viên/AI khác đọc sau>
+   ```
+
+   *Ví dụ Commit Message chuẩn*:
+   ```text
+   fix(checkout): update Vercel deployment badges and resolve checkout session key
+
+   CHANGED: README.md, docs/index.md, docs/deployment.md
+   NOTE: updated live Vercel URL to https://32dk-web-app-project.vercel.app
+   ```
+
+---
+
+## 🧪 5. Triết lý Debugging với AI (AI Debugging Philosophy)
+
+Khi xảy ra sự cố kỹ thuật hoặc lỗi giao diện, AI Agent và Lập trình viên cần áp dụng quy trình chẩn đoán 3 bước:
+
 ```text
-<prefix>(<scope>): <mô tả ngắn gọn bằng tiếng Anh hoặc tiếng Việt>
-
-CHANGED: <danh sách các file đã thay đổi>
-NOTE: <thông tin kỹ thuật quan trọng để AI khác đọc sau>
+[BƯỚC 1: Đọc Log & Trraceback] -> [BƯỚC 2: Giải thích Nguyên nhân Gốc rễ] -> [BƯỚC 3: Đề xuất Sửa chữa Chi tiết]
 ```
 
-#### Ví dụ commit của AI Agent
-```text
-fix(checkout): resolve SessionStorage key mismatch for checkout flow
-
-CHANGED: frontend/src/booking/checkout/checkout.js, frontend/src/shared/utils/storage.js
-NOTE: replaced legacy key `pending_checkout` with unified `cinema_checkout`.
-```
+### Các khu vực thường phát sinh lỗi cần ưu tiên kiểm tra:
+1. **Lỗi Key Storage Mismatch**: Kiểm tra xem key đang gọi có đúng với định nghĩa trong `storage.js` không (`cinema_checkout` vs `pending_checkout`).
+2. **Lỗi Multi-tab BroadcastChannel**: Kiểm tra xem tab có quên đóng/hủy đăng ký Listener khi chuyển trang hay không.
+3. **Lỗi Null DOM Reference**: Kiểm tra xem phần tử DOM (`document.getElementById(...)`) có tồn tại trên trang trước khi gán sự kiện `addEventListener` hay không.
 
 ---
 
-## ⚖️ 5. Chính sách Sử dụng AI & An toàn Mã nguồn
+## 💡 6. Mẫu Prompt Chuẩn dành cho Lập trình viên (Prompt Recipes)
 
-- **Không tạo dữ liệu giả lập không nhất quán**: Sử dụng đúng các mock key đã được quy định tại [Cơ sở Dữ liệu](database.md).
-- **Không phá vỡ API Contract**: Giữ nguyên signature của các hàm tiện ích dùng chung.
-- **Không tự ý bỏ qua các bài test lỗi**: Không fix bug bằng cách comment out các bài test Playwright đang báo đỏ.
+Dưới đây là một số mẫu prompt được tối ưu hóa để làm việc với AI Agent trong dự án 3HD2Kcinema:
+
+??? recipe "Mẫu Prompt 1: Thêm tính năng UI mới"
+    ```text
+    Hãy thêm tính năng [Tên tính năng] vào phân hệ [explore/booking/user].
+    Yêu cầu:
+    1. Sử dụng Vanilla HTML5, CSS3 và ES6 Modules.
+    2. Đọc/ghi dữ liệu thông qua wrapper `frontend/src/shared/utils/storage.js`.
+    3. Đảm bảo giao diện mượt mượt trên mobile (responsive dưới 375px).
+    4. Cập nhật tài liệu tương ứng tại `docs/frontend.md` sau khi hoàn thành.
+    ```
+
+??? recipe "Mẫu Prompt 2: Debug & Phân tích lỗi"
+    ```text
+    Tôi gặp lỗi [Mô tả lỗi hoặc dán log lỗi tại đây].
+    Hãy phân tích:
+    1. Nguyên nhân gốc rễ (Root Cause) gây ra lỗi này.
+    2. Các bước sửa lỗi cụ thể theo đúng quy chuẩn dự án 3HD2Kcinema (dùng storage.js wrapper, không đổi API signature).
+    3. Đoạn code sửa hoàn chỉnh.
+    ```
+
+??? recipe "Mẫu Prompt 3: Đồng bộ Tài liệu Docs"
+    ```text
+    Tôi vừa thay đổi logic [Tên tính năng/thay đổi].
+    Hãy rà soát toàn bộ các tệp tin trong thư mục `docs/` và `README.md` để cập nhật lại thông tin đồng bộ chính xác với mã nguồn hiện tại.
+    ```
