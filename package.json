@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.10.1",
-    "@chromaui/chromatic-cli": "^11.25.0",
+    "chromatic": "^11.25.0",
     "@lhci/cli": "^0.14.0",
     "@playwright/test": "^1.61.1",
     "@storybook/html": "^8.5.0",
