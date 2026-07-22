@@ -60,9 +60,16 @@ var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
-    var services = scope.ServiceProvider;
-    var context = services.GetRequiredService<ApplicationDbContext>();
-    DbInitializer.Initialize(context);
+    try
+    {
+        var services = scope.ServiceProvider;
+        var context = services.GetRequiredService<ApplicationDbContext>();
+        DbInitializer.Initialize(context);
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"[DbInitializer Warning]: {ex.Message}");
+    }
 }
 
 // ĐƯA SWAGGER RA NGOÀI ĐỂ LUÔN HOẠT ĐỘNG KHI CHẠY DỰ ÁN
@@ -71,12 +78,6 @@ app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "App Web API V1");
 });
-
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
-}
 
 app.UseHttpsRedirection();
 app.UseStaticFiles(); // Default wwwroot

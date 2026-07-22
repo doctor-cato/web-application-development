@@ -36,8 +36,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     // -- SIGNALR SETUP --
     const API_URL = "/cinematchHub"; 
     const connection = new signalR.HubConnectionBuilder()
-        .withUrl(API_URL)
-        .withAutomaticReconnect()
+        .withUrl(API_URL, {
+            transport: signalR.HttpTransportType.WebSockets | signalR.HttpTransportType.LongPolling
+        })
+        .withAutomaticReconnect([0, 2000, 5000, 10000])
         .build();
 
     let sharedMovies = [];
@@ -62,13 +64,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     loadSharedMovies();
 
-    try {
-        await connection.start();
-        console.log("CineMatch Real-time Connected!");
-    } catch (err) {
-        console.error("SignalR Connection Error: ", err);
-        alert("Không thể kết nối đến máy chủ Ghép đôi thời gian thực. Hãy chắc chắn Backend đang chạy!");
+    async function startSignalRConnection(retries = 3) {
+        for (let i = 0; i < retries; i++) {
+            try {
+                await connection.start();
+                console.log("CineMatch Real-time Connected!");
+                return;
+            } catch (err) {
+                console.warn(`SignalR Connection attempt ${i + 1} failed, retrying in 2s...`, err);
+                if (i < retries - 1) await new Promise(r => setTimeout(r, 2000));
+            }
+        }
+        console.error("SignalR Connection failed after retries.");
     }
+
+    startSignalRConnection();
 
     // --- SIGNALR EVENTS ---
     

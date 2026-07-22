@@ -62,7 +62,6 @@ namespace appweb.Controllers
             }
             catch (Microsoft.EntityFrameworkCore.DbUpdateException ex)
             {
-                // Bắt lỗi UNIQUE constraint violation và trả về thông báo thân thiện
                 var innerMessage = ex.InnerException?.Message ?? ex.Message;
                 if (innerMessage.Contains("phone", StringComparison.OrdinalIgnoreCase) || innerMessage.Contains("UQ__users__A1936A6B", StringComparison.OrdinalIgnoreCase))
                 {
@@ -72,7 +71,12 @@ namespace appweb.Controllers
                 {
                     return BadRequest(new { message = "Email này đã được sử dụng." });
                 }
-                return BadRequest(new { message = "Đã xảy ra lỗi khi tạo tài khoản. Vui lòng thử lại." });
+                return BadRequest(new { message = "Đã xảy ra lỗi khi tạo tài khoản: " + innerMessage });
+            }
+            catch (Exception ex)
+            {
+                var msg = ex.InnerException?.Message ?? ex.Message;
+                return BadRequest(new { message = "Lỗi kết nối hoặc xử lý dữ liệu: " + msg });
             }
 
             return Ok(new { message = "Đăng ký thành công", user = new { user.Email, user.Fullname } });
