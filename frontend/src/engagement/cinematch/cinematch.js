@@ -51,16 +51,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const movies = await res.json();
                 sharedMovies = movies.slice(0, 5).map(m => ({
                     id: m.id,
-                    title: m.title,
-                    poster: m.posterUrl || m.poster || '../../shared/images/f1_movie.jpg'
+                    title: m.title || 'Phim Chưa Có Tiêu Đề',
+                    poster: m.posterUrl ? `/shared/images/${m.posterUrl.split('/').pop()}` : (m.poster || '')
                 }));
             }
         } catch (_) {}
-        if (sharedMovies.length === 0) {
-            sharedMovies = [
-                { id: '44abd72e-b280-4888-ad96-cd14248e38ee', title: 'Your Name (Tên cậu là gì?)', poster: '../../shared/images/f1_movie.jpg' }
-            ];
-        }
     }
     loadSharedMovies();
 
@@ -210,8 +205,19 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     function renderSharedMovies() {
         const container = document.getElementById('shared-movies-container');
+        if (!container) return;
         container.innerHTML = '';
         
+        if (!sharedMovies || sharedMovies.length === 0) {
+            container.innerHTML = `
+                <div style="grid-column: 1 / -1; width: 100%; padding: 30px; text-align: center; color: var(--text-muted);">
+                    <i class="fas fa-film" style="font-size: 2rem; margin-bottom: 10px; opacity: 0.5;"></i>
+                    <p>Hiện chưa có phim nào trong danh sách gợi ý.</p>
+                </div>
+            `;
+            return;
+        }
+
         sharedMovies.forEach(m => {
             const mCard = document.createElement('div');
             mCard.id = `movie-card-${m.id}`;

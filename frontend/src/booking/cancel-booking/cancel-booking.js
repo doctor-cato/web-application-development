@@ -32,8 +32,7 @@ function formatCurrency(amount) {
 
 // ---------- Lấy danh sách phim/suất chiếu từ storage ----------
 function getAvailableShowtimes() {
-  // Lấy từ cinema_movies nếu có, fallback dữ liệu mẫu
-  const movies = lsGet(KEYS.MOVIES, null);
+  const movies = lsGet(KEYS.MOVIES, null) || window.allMoviesData;
   if (movies && Array.isArray(movies)) {
     const showtimes = [];
     movies.forEach(movie => {
@@ -48,17 +47,9 @@ function getAvailableShowtimes() {
         });
       });
     });
-    if (showtimes.length > 0) return showtimes;
+    return showtimes;
   }
-
-  // Fallback mẫu nếu chưa có dữ liệu
-  return [
-    { id: 'st_sample_1', movie: 'Avengers: Hồi Kết', date: '2026-06-15', time: '14:30', room: 'Rạp 3' },
-    { id: 'st_sample_2', movie: 'Avengers: Hồi Kết', date: '2026-06-15', time: '17:00', room: 'Rạp 5' },
-    { id: 'st_sample_3', movie: 'Dune: Part Two', date: '2026-06-16', time: '19:00', room: 'Rạp 1' },
-    { id: 'st_sample_4', movie: 'Spider-Man: No Way Home', date: '2026-06-17', time: '20:00', room: 'Rạp 2' },
-    { id: 'st_sample_5', movie: 'Inception', date: '2026-06-18', time: '16:00', room: 'Rạp 7' },
-  ];
+  return [];
 }
 
 // ---------- Render danh sách vé ----------

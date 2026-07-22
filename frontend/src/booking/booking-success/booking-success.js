@@ -102,24 +102,25 @@ function init() {
         try { cmProcessed = JSON.parse(localStorage.getItem(CINE_MATCH_PROCESSED_KEY) || '[]'); } catch (_) {}
         
         if (!cmProcessed.includes(booking.id)) {
-            // Fake user id for now if auth is not implemented properly
-            const mockUserId = localStorage.getItem('currentUserId') || '11111111-1111-1111-1111-111111111111';
+            const activeUserId = localStorage.getItem('user_id') || localStorage.getItem('currentUserId') || localStorage.getItem('userId') || null;
             
-            fetch('/api/cinematch/create', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    userId: mockUserId, // Replace with real GUID
-                    showtimeId: parseInt(booking.showtimeId?.replace(/\D/g, '') || '200'),
-                    seatId: Array.isArray(booking.seats) ? booking.seats[0] : booking.seats,
-                    adjacentSeatId: booking.cineMatchAdjacentSeat || '',
-                    matchPreference: booking.cineMatchPreference || 'any'
-                })
-            }).then(res => res.json()).then(data => {
-                console.log('Cine-Match created:', data);
-                cmProcessed.push(booking.id);
-                localStorage.setItem(CINE_MATCH_PROCESSED_KEY, JSON.stringify(cmProcessed));
-            }).catch(err => console.error('Failed to create Cine-Match:', err));
+            if (activeUserId) {
+                fetch('/api/cinematch/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userId: activeUserId,
+                        showtimeId: parseInt(booking.showtimeId?.replace(/\D/g, '') || '0'),
+                        seatId: Array.isArray(booking.seats) ? booking.seats[0] : booking.seats,
+                        adjacentSeatId: booking.cineMatchAdjacentSeat || '',
+                        matchPreference: booking.cineMatchPreference || 'any'
+                    })
+                }).then(res => res.json()).then(data => {
+                    console.log('Cine-Match created:', data);
+                    cmProcessed.push(booking.id);
+                    localStorage.setItem(CINE_MATCH_PROCESSED_KEY, JSON.stringify(cmProcessed));
+                }).catch(err => console.error('Error creating Cine-Match:', err));
+            }
         }
     }
 

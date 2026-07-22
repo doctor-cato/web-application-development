@@ -25,40 +25,32 @@ async function fetchMovies() {
 
             return {
                 id: m.id,
-                title: m.title,
-                meta: `${new Date(m.releaseDate).getFullYear()} • ${m.genre} • ${m.duration}m`,
-                desc: m.description || "Nội dung phim đang cập nhật...",
-                synopsis: m.description || "Nội dung phim đang cập nhật...",
-                year: new Date(m.releaseDate).getFullYear(),
-                duration: m.duration + " phút",
-                age: m.ageRating,
-                genre: m.genre,
+                title: m.title || 'Phim Chưa Có Tiêu Đề',
+                meta: `${m.releaseDate ? new Date(m.releaseDate).getFullYear() : ''} ${m.genre ? '• ' + m.genre : ''} ${m.duration ? '• ' + m.duration + 'm' : ''}`.trim(),
+                desc: m.description || "Nội dung phim đang được cập nhật...",
+                synopsis: m.description || "Nội dung phim đang được cập nhật...",
+                year: m.releaseDate ? new Date(m.releaseDate).getFullYear() : 'N/A',
+                duration: m.duration ? `${Math.floor(m.duration / 60)}h ${m.duration % 60}m` : 'N/A',
+                age: m.ageRating || 'P',
+                genre: m.genre || 'Chưa phân loại',
                 status: m.status || 'now-showing',
                 poster: imgUrl,
                 bg: imgUrl,
                 backdrop: imgUrl,
-                language: "Tiếng Anh - Phụ đề Tiếng Việt",
-                rating: 8.5,
-                ratingCount: 1500,
-                director: "Joseph Kosinski",
-                cast: mockCast,
-                gallery: mockGallery,
+                language: m.language || "Chưa cập nhật",
+                rating: m.rating || 0,
+                ratingCount: m.ratingCount || 0,
+                director: m.director || "Chưa cập nhật",
+                cast: m.cast || [],
+                gallery: m.gallery || [],
                 trailer: m.trailerUrl || "",
                 trailerWatch: m.trailerUrl || "",
-                bg: imgUrl,
-                poster: imgUrl,
-                duration: `${Math.floor(m.duration / 60)}h ${m.duration % 60}m`,
-                tags: m.genre ? m.genre.split(',').map(s => s.trim()) : ["Phim"],
-                formats: ["2D", "IMAX"],
-                cinema: "ha-dong"
+                tags: m.genre ? m.genre.split(',').map(s => s.trim()) : [],
+                formats: m.formats ? (Array.isArray(m.formats) ? m.formats : m.formats.split(',').map(f=>f.trim())) : ["2D"],
+                cinema: m.cinemaId || m.cinema || ""
             };
         });
 
-        const featuredIds = [
-            "44abd72e-b280-4888-ad96-cd14248e38ee", // Your Name
-            "72c59b71-4fe1-4358-a850-90216c6a62af"  // Kẻ Kiến Tạo
-        ];
-        
         nowShowingMovies = allMoviesData.filter(m => m.status === 'now-showing');
         comingSoonMovies = allMoviesData.filter(m => m.status === 'coming-soon');
         
@@ -85,12 +77,11 @@ async function fetchCinemas() {
         const response = await fetch(`/api/cinemas`);
         if (response.ok) {
             cinemas = await response.json();
-            cinemas.forEach((c, idx) => {
-                c.lat = c.lat || (21.005 + (idx * 0.012));
-                c.lng = c.lng || (105.790 + (idx * 0.015));
-                c.distance = c.distance || "3.5 KM";
-                c.screens = c.screens || c.rooms?.length || 5;
-                c.features = c.features || ["2D", "3D"];
+            cinemas.forEach(c => {
+                c.lat = c.latitude || c.lat || null;
+                c.lng = c.longitude || c.lng || null;
+                c.screens = c.screens || (c.rooms ? c.rooms.length : 0);
+                c.features = c.features || [];
             });
             window.cinemas = cinemas;
         }

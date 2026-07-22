@@ -15,29 +15,62 @@ const trailerFallback = document.getElementById('trailer-fallback');
 const trailerYtLink = document.getElementById('trailer-yt-link');
 const btnBookNow = document.getElementById('btn-book-now');
 
-window.fetchMoviesPromise.then(() => {
-    // Set trailer mặc định cho phim đầu tiên khi trang load
-    if (heroMovies[0] && heroMovies[0].trailer) {
-        iframe.src = heroMovies[0].trailer + '?enablejsapi=1';
-        if (trailerYtLink && heroMovies[0].trailerWatch) {
-            trailerYtLink.href = heroMovies[0].trailerWatch;
+function renderHeroMovie(movie) {
+    if (!movie || (!movie.title && !movie.bg && !movie.poster)) {
+        // Trạng thái CHƯA CÓ PHIM trong Database
+        if (titleEl) titleEl.textContent = "CHƯA CÓ PHIM TRONG DATABASE";
+        if (metaEl) metaEl.innerHTML = '<i class="fas fa-info-circle" style="color: var(--primary-red); margin-right: 6px;"></i> Hệ thống chưa có dữ liệu phim';
+        if (descEl) descEl.textContent = "Hiện tại chưa có dữ liệu phim trong cơ sở dữ liệu. Khi cơ sở dữ liệu được cập nhật hình ảnh hoặc tiêu đề phim, phim mới sẽ tự động hiển thị để thay thế.";
+        if (ageEl) ageEl.style.display = 'none';
+        if (btnBookNow) btnBookNow.style.display = 'none';
+        if (btnWatch) btnWatch.style.display = 'none';
+        if (heroSection) heroSection.style.setProperty('--hero-bg-url', 'linear-gradient(135deg, #141414, #1f1f2e)');
+        if (btnPrev) btnPrev.style.display = 'none';
+        if (btnNext) btnNext.style.display = 'none';
+        return;
+    }
+
+    // Trạng thái ĐÃ CÓ PHIM từ Database
+    if (titleEl) titleEl.textContent = movie.title || 'Phim Không Tiêu Đề';
+    if (metaEl) metaEl.innerHTML = movie.meta ? movie.meta.replace(/•/g, '&bull;') : 'Thông tin đang cập nhật';
+    if (descEl) descEl.textContent = movie.desc || 'Nội dung phim đang được cập nhật...';
+    
+    if (ageEl) {
+        ageEl.textContent = movie.age || 'P';
+        ageEl.style.display = 'inline-block';
+    }
+
+    if (btnBookNow) {
+        btnBookNow.style.display = 'inline-flex';
+        if (movie.id) btnBookNow.href = `/explore/movie-details/index.html?id=${movie.id}`;
+    }
+
+    if (btnWatch) {
+        btnWatch.style.display = movie.trailer ? 'inline-flex' : 'none';
+    }
+
+    if (heroSection && (movie.bg || movie.poster)) {
+        const bgUrl = movie.bg || movie.poster;
+        heroSection.style.setProperty('--hero-bg-url', `url('${bgUrl}')`);
+    }
+
+    if (movie.trailer && iframe) {
+        iframe.src = movie.trailer + '?enablejsapi=1';
+        if (trailerYtLink && movie.trailerWatch) {
+            trailerYtLink.href = movie.trailerWatch;
         }
     }
-    if (btnBookNow && heroMovies[0] && heroMovies[0].id) {
-        btnBookNow.href = `/explore/movie-details/index.html?id=${heroMovies[0].id}`;
-    }
 
-    if (heroMovies[0] && heroMovies[0].bg) {
-        heroSection.style.setProperty('--hero-bg-url', `url('${heroMovies[0].bg}')`);
-    }
+    const hasMultiple = window.heroMovies && window.heroMovies.length > 1;
+    if (btnPrev) btnPrev.style.display = hasMultiple ? 'flex' : 'none';
+    if (btnNext) btnNext.style.display = hasMultiple ? 'flex' : 'none';
+}
 
-    // Force update text to match database on initial load without fading
-    if (heroMovies[0]) {
-        const movie = heroMovies[0];
-        titleEl.textContent = movie.title;
-        metaEl.innerHTML = movie.meta.replace(/•/g, '&bull;');
-        descEl.textContent = movie.desc;
-        ageEl.textContent = movie.age;
+window.fetchMoviesPromise.then(() => {
+    if (window.heroMovies && window.heroMovies.length > 0 && (window.heroMovies[0].title || window.heroMovies[0].bg)) {
+        renderHeroMovie(window.heroMovies[0]);
+    } else {
+        renderHeroMovie(null);
     }
 });
 
@@ -50,45 +83,27 @@ if (btnBookNow) {
 }
 
 function changeHeroSlide(direction = 1) {
-    if (!heroMovies || heroMovies.length === 0) return;
+    if (!window.heroMovies || window.heroMovies.length === 0) return;
     
-    currentHeroIndex = (currentHeroIndex + direction + heroMovies.length) % heroMovies.length;
-    const movie = heroMovies[currentHeroIndex];
+    currentHeroIndex = (currentHeroIndex + direction + window.heroMovies.length) % window.heroMovies.length;
+    const movie = window.heroMovies[currentHeroIndex];
 
-    // Fade out
-    heroContent.style.opacity = 0;
+    if (heroContent) heroContent.style.opacity = 0;
     
     setTimeout(() => {
-        // Update content
-        titleEl.textContent = movie.title;
-        metaEl.innerHTML = movie.meta.replace(/•/g, '&bull;');
-        descEl.textContent = movie.desc;
-        ageEl.textContent = movie.age;
-
-        // Update background
-        heroSection.style.setProperty('--hero-bg-url', `url('${movie.bg}')`);
-
-        // Update trailer link theo phim hiện tại
-        if (movie.trailer) {
-            iframe.src = movie.trailer + '?enablejsapi=1';
-            // Ẩn fallback, chuẩn bị cho phim mới
-            if (trailerFallback) trailerFallback.style.display = 'none';
+        renderHeroMovie(movie);
+        if (heroContent) {
+            heroContent.style.opacity = 1;
+            heroContent.style.transform = 'translateX(0)';
         }
-        if (trailerYtLink && movie.trailerWatch) {
-            trailerYtLink.href = movie.trailerWatch;
-        }
-        if (btnBookNow && movie.id) {
-            btnBookNow.href = `/explore/movie-details/index.html?id=${movie.id}`;
-        }
-
-        // Fade in
-        heroContent.style.opacity = 1;
-        heroContent.style.transform = 'translateX(0)';
     }, 500);
 }
 
-// Auto rotate every 5 seconds
-let slideInterval = setInterval(() => changeHeroSlide(1), 5000);
+let slideInterval = setInterval(() => {
+    if (window.heroMovies && window.heroMovies.length > 1) {
+        changeHeroSlide(1);
+    }
+}, 5000);
 
 function resetSlideInterval() {
     clearInterval(slideInterval);
@@ -219,15 +234,63 @@ function renderNowShowing(movies) {
     nowShowingGrid.innerHTML = cardsHtml;
 }
 
+function populateDynamicFilters() {
+    if (filterGenre && window.allMoviesData) {
+        const genres = new Set();
+        window.allMoviesData.forEach(m => {
+            if (m.genre) {
+                m.genre.split(',').forEach(g => genres.add(g.trim()));
+            }
+        });
+        genres.forEach(g => {
+            if (g && !filterGenre.querySelector(`option[value="${CSS.escape(g)}"]`)) {
+                const opt = document.createElement('option');
+                opt.value = g;
+                opt.textContent = g;
+                filterGenre.appendChild(opt);
+            }
+        });
+    }
+
+    if (filterFormat && window.allMoviesData) {
+        const formats = new Set();
+        window.allMoviesData.forEach(m => {
+            if (m.formats && Array.isArray(m.formats)) {
+                m.formats.forEach(f => formats.add(f));
+            }
+        });
+        formats.forEach(f => {
+            if (f && !filterFormat.querySelector(`option[value="${CSS.escape(f)}"]`)) {
+                const opt = document.createElement('option');
+                opt.value = f;
+                opt.textContent = f;
+                filterFormat.appendChild(opt);
+            }
+        });
+    }
+
+    if (filterCinema && window.cinemas) {
+        window.cinemas.forEach(c => {
+            const val = c.id || c.name;
+            if (val && !filterCinema.querySelector(`option[value="${CSS.escape(val)}"]`)) {
+                const opt = document.createElement('option');
+                opt.value = val;
+                opt.textContent = c.name || val;
+                filterCinema.appendChild(opt);
+            }
+        });
+    }
+}
+
 function applyFilters() {
     const genre = filterGenre ? filterGenre.value : 'all';
     const format = filterFormat ? filterFormat.value : 'all';
     const cinema = filterCinema ? filterCinema.value : 'all';
 
-    const filtered = nowShowingMovies.filter(movie => {
-        const matchGenre = genre === 'all' || movie.genre === genre;
-        const matchFormat = format === 'all' || movie.formats.includes(format);
-        const matchCinema = cinema === 'all' || movie.cinema === cinema;
+    const filtered = (window.nowShowingMovies || []).filter(movie => {
+        const matchGenre = genre === 'all' || (movie.genre && movie.genre.includes(genre));
+        const matchFormat = format === 'all' || (movie.formats && movie.formats.includes(format));
+        const matchCinema = cinema === 'all' || movie.cinema === cinema || movie.cinemaId === cinema;
         
         return matchGenre && matchFormat && matchCinema;
     });
@@ -245,6 +308,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (window.fetchMoviesPromise) {
         await window.fetchMoviesPromise;
     }
+    if (window.fetchCinemasPromise) {
+        await window.fetchCinemasPromise;
+    }
+
+    populateDynamicFilters();
 
     if (window.nowShowingMovies) {
         renderNowShowing(window.nowShowingMovies);
