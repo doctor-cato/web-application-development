@@ -51,7 +51,7 @@ Nếu có kết quả trả về, remote đang đi trước local -> AI cần th
 
 Sau khi hoàn thành công việc và kiểm thử thành công, AI Agent phải thực hiện tạo commit message có định dạng chi tiết:
 
-### Định dạng Commit Message chuẩn dành cho AI Agent:
+### Định dạng Commit Message chuẩn dành cho AI Agent
 ```text
 <prefix>(<scope>): <mô tả ngắn gọn bằng tiếng Anh hoặc tiếng Việt>
 
@@ -59,7 +59,7 @@ CHANGED: <danh sách các file đã thay đổi>
 NOTE: <thông tin kỹ thuật quan trọng để AI khác đọc sau>
 ```
 
-#### Ví dụ commit của AI Agent:
+#### Ví dụ commit của AI Agent
 ```text
 fix(checkout): resolve SessionStorage key mismatch for checkout flow
 

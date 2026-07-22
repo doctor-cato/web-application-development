@@ -71,7 +71,8 @@ Mã nguồn Frontend tại thư mục `frontend/src/` được tổ chức theo 
                                         └────────────────────────────────┘
 ```
 
-### Các nguyên tắc thiết kế Frontend:
+### Các nguyên tắc thiết kế Frontend
+
 - **ES6 Modules**: Mã JS được phân chia thành các tệp module rõ ràng (`<script type="module">`), không sử dụng biến toàn cục bừa bãi.
 - **Single Source of Truth cho Storage**: Mọi thao tác lưu trữ dữ liệu đều phải đi qua `frontend/src/shared/utils/storage.js`.
 - **Đồng bộ thời gian thực**: Sử dụng `BroadcastChannel` với tên kênh `seat_sync` để truyền phát các gói tin sự kiện khóa ghế giữa các trình duyệt đang mở cùng lúc.
@@ -82,7 +83,7 @@ Mã nguồn Frontend tại thư mục `frontend/src/` được tổ chức theo 
 
 Tầng Backend được thiết kế theo mô hình chuẩn **Layered Architecture** kết hợp **Repository Pattern**.
 
-### Chi tiết các lớp Backend:
+### Chi tiết các lớp Backend
 
 ```text
 backend/
@@ -106,7 +107,9 @@ backend/
     └── DbInitializer.cs        # Cơ chế Seeding nạp dữ liệu phim JSON ban đầu
 ```
 
-### Nguyên tắc xử lý nghiệp vụ Backend:
+### Nguyên tắc xử lý nghiệp vụ Backend
+
 1. **Controllers**: Tiếp nhận HTTP Request, kiểm tra Model Validation và chuyển giao cho Service.
 2. **Services**: Chịu trách nhiệm thực hiện các quy tắc nghiệp vụ (Business Rules), tính toán hệ số điểm VIP, áp mã giảm giá.
 3. **Repositories**: Tương tác trực tiếp với `ApplicationDbContext` để đọc/ghi dữ liệu SQL Server, cách ly hoàn toàn câu lệnh LINQ/EF Core khỏi Controller.
+

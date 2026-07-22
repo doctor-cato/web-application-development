@@ -14,7 +14,7 @@ Cấu hình kiểm thử nằm tại tệp `playwright.config.js` ở thư mục
 - **Base URL**: `http://localhost:3000` (Có thể thay đổi qua biến môi trường `PLAYWRIGHT_TEST_BASE_URL`).
 - **Test Directory**: `./tests/e2e`.
 
-### Các bước chạy E2E Tests:
+### Các bước chạy E2E Tests
 
 #### Bước 1: Mở Web Server Frontend (Terminal 1)
 ```bash

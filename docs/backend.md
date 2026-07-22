@@ -73,7 +73,7 @@ erDiagram
     Movie ||--o{ Showtime : "chiếu"
 ```
 
-### Các lớp Entity chính:
+### Các lớp Entity chính
 
 - **`User`**: Id, FullName, Email, PasswordHash, Role (`Customer` / `Admin`), LoyaltyPoints, Tier.
 - **`Movie`**: Id, Title, Description, Director, DurationMinutes, ReleaseDate, PosterUrl, TrailerUrl, Rating.

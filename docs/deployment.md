@@ -22,7 +22,7 @@ graph LR
     C -- No --> G[Fail Pipeline & Alert]
 ```
 
-### Các bước thực hiện thủ công (Manual Deploy):
+### Các bước thực hiện thủ công (Manual Deploy)
 
 Nếu bạn muốn deploy tài liệu thủ công từ máy cá nhân lên GitHub Pages:
 
@@ -42,12 +42,14 @@ Vì Frontend của 3HD2Kcinema là một Static Web Application (HTML, CSS, Vani
 
 👉 **Trực tuyến tại**: [https://32dk-web-app-project.vercel.app](https://32dk-web-app-project.vercel.app)
 
-### Dịch vụ khuyên dùng:
+### Dịch vụ khuyên dùng
+
 - **Vercel**: Tích hợp liên tục với GitHub Repo. Cấu hình root directory thành `frontend/src`.
 - **Netlify**: Đặt Build Command là rỗng (`none`) và Publish Directory là `frontend/src`.
 - **GitHub Pages**: Đặt thư mục nguồn là `/frontend/src`.
 
-#### File Cấu hình `vercel.json` mẫu:
+#### File Cấu hình `vercel.json` mẫu
+
 ```json
 {
   "version": 2,
@@ -86,7 +88,8 @@ EXPOSE 80
 ENTRYPOINT ["dotnet", "backend.dll"]
 ```
 
-### Lệnh chạy Docker:
+### Lệnh chạy Docker
+
 ```bash
 docker build -t 3hd2kcinema-backend .
 docker run -d -p 5000:80 --name cinema-backend 3hd2kcinema-backend

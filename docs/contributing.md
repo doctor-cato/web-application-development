@@ -33,7 +33,7 @@ Mỗi commit message phải tuân thủ định dạng tiêu chuẩn để toàn
 [NOTE: Ghi chú quan trọng cho các lập trình viên khác]
 ```
 
-### Danh sách các Tiền tố (Prefixes):
+### Danh sách các Tiền tố (Prefixes)
 
 | Prefix | Ý nghĩa & Phạm vi áp dụng |
 |---|---|
@@ -45,7 +45,7 @@ Mỗi commit message phải tuân thủ định dạng tiêu chuẩn để toàn
 | `chore:` | Thiết lập cấu hình dự án (`package.json`, `mkdocs.yml`, `.gitignore`,...). |
 | `test:` | Thêm mới hoặc chỉnh sửa các bài test Playwright / Unit tests. |
 
-#### Ví dụ commit message tốt:
+#### Ví dụ commit message tốt
 ```text
 feat(booking): add BroadcastChannel auto-reconnect on tab wake
 

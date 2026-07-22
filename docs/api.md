@@ -19,7 +19,7 @@ Toàn bộ các RESTful API của hệ thống hỗ trợ định dạng dữ li
 | `PUT` | `/api/movies/{id}` | Cập nhật thông tin bộ phim | Admin |
 | `DELETE` | `/api/movies/{id}` | Xóa bộ phim | Admin |
 
-#### Ví dụ Request Response (`GET /api/movies/1`):
+#### Ví dụ Request Response (`GET /api/movies/1`)
 ```json
 {
   "id": 1,
@@ -43,7 +43,7 @@ Toàn bộ các RESTful API của hệ thống hỗ trợ định dạng dữ li
 | `GET` | `/api/bookings/my-history` | Lấy danh sách lịch sử đặt vé của user hiện tại | Authenticated |
 | `POST` | `/api/bookings/{id}/cancel` | Hủy toàn bộ hoặc một phần ghế của hóa đơn | Authenticated |
 
-#### Ví dụ Payload Tạo đơn đặt vé (`POST /api/bookings`):
+#### Ví dụ Payload Tạo đơn đặt vé (`POST /api/bookings`)
 ```json
 {
   "showtimeId": 105,
