@@ -20,7 +20,7 @@ export function renderNavbar() {
                 <a href="${srcPrefix}/explore/cinema-map/index.html">Cụm Rạp</a>
                 <a href="${srcPrefix}/user/user-notifications/index.html?tab=promo">Khuyến Mãi</a>
                 <div class="booking-dropdown-wrapper" style="position:relative; display:inline-block; height:100%; align-items:center; display:flex;">
-                    <a href="#" style="cursor:pointer;" class="nav-booking-toggle">Đặt vé <i class="fas fa-chevron-down" style="font-size:0.8rem; margin-left:4px;"></i></a>
+                    <a href="${srcPrefix}/booking/seat-booking/booking.html" class="nav-booking-toggle">Đặt vé <i class="fas fa-chevron-down" style="font-size:0.8rem; margin-left:4px;"></i></a>
                     <div class="booking-dropdown-content" style="display:none; position:absolute; top:100%; left:50%; transform:translateX(-50%); background:var(--bg-elevated, #1a1a1a); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:10px 0; min-width:160px; z-index:1000; box-shadow:0 10px 30px rgba(0,0,0,0.5);">
                         <a href="${srcPrefix}/booking/seat-booking/booking.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; white-space:nowrap;">Mua vé</a>
                         <a href="${srcPrefix}/booking/booking-food/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; white-space:nowrap;">Đặt đồ ăn</a>
@@ -170,6 +170,12 @@ export function renderNavbar() {
 .nav-links a.active::after,
 .quick-book-toggle.active::after {
     transform: translateX(-50%) scaleX(1) !important;
+}
+
+/* Booking Dropdown Hover */
+.booking-dropdown-wrapper:hover .booking-dropdown-content,
+.booking-dropdown-wrapper:focus-within .booking-dropdown-content {
+    display: block !important;
 }
 
 /* Quick Book Modal */
@@ -1256,21 +1262,7 @@ export function renderNavbar() {
                     if (modalOverlay) modalOverlay.classList.remove('active');
                 }
             });
-        // Add logic for Đặt vé dropdown
-        const bookingToggle = document.querySelector('.nav-booking-toggle');
-        const bookingDropdownContent = document.querySelector('.booking-dropdown-content');
-        if (bookingToggle && bookingDropdownContent) {
-            bookingToggle.addEventListener('click', (e) => {
-                e.preventDefault();
-                bookingDropdownContent.style.display = bookingDropdownContent.style.display === 'block' ? 'none' : 'block';
-            });
-            // ponytail: native CSS :focus-within would be better long term
-            document.addEventListener('click', (e) => {
-                if (!e.target.closest('.booking-dropdown-wrapper')) {
-                    bookingDropdownContent.style.display = 'none';
-                }
-            });
-        }
+        // ponytail: dropdown display is handled natively via CSS (:hover & :focus-within)
 
         // --- AUTH LOGIC ---
         const session = getSession();

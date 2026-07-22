@@ -42,11 +42,12 @@ function renderHeroMovie(movie) {
 
     if (btnBookNow) {
         btnBookNow.style.display = 'inline-flex';
-        if (movie.id) btnBookNow.href = `/explore/movie-details/index.html?id=${movie.id}`;
+        if (movie.id) btnBookNow.href = `/booking/seat-booking/booking.html?movieId=${movie.id}`;
     }
 
     if (btnWatch) {
         btnWatch.style.display = movie.trailer ? 'inline-flex' : 'none';
+        // ponytail: href intentionally omitted — trailer opens modal (see btnWatch click listener below)
     }
 
     if (heroSection && (movie.bg || movie.poster)) {
