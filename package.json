@@ -1,8 +1,25 @@
 {
+  "name": "3hd2kcinema",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test:e2e": "playwright test",
+    "test:a11y": "playwright test tests/e2e/accessibility.spec.js",
+    "test:lighthouse": "lhci autorun",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
+    "chromatic": "chromatic --project-token=$CHROMATIC_PROJECT_TOKEN"
+  },
   "dependencies": {
     "puppeteer": "^25.2.0"
   },
   "devDependencies": {
-    "@playwright/test": "^1.61.1"
+    "@axe-core/playwright": "^4.10.1",
+    "@chromaui/chromatic-cli": "^11.25.0",
+    "@lhci/cli": "^0.14.0",
+    "@playwright/test": "^1.61.1",
+    "@storybook/html": "^8.5.0",
+    "@storybook/html-vite": "^8.5.0",
+    "storybook": "^8.5.0"
   }
 }

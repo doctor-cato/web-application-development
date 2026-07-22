@@ -1,0 +1,43 @@
+name: Playwright & axe-core E2E Tests
+
+on:
+  push:
+    branches: [ main, dev2 ]
+  pull_request:
+    branches: [ main, dev2 ]
+
+jobs:
+  test:
+    name: Playwright & axe-core Accessibility Tests
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci || npm install
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      - name: Start Local Frontend Server
+        run: |
+          cd frontend
+          python3 -m http.server 3000 -d src &
+          sleep 3
+
+      - name: Run Playwright Tests (E2E, axe-core, Visual Snapshots)
+        run: npx playwright test
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
