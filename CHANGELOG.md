@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [2.7.7] - 2026-07-22
 
 ### Added
 - **Loyalty & VIP Multiplier System**: Implemented dynamic reward points calculation based on user's Loyalty Tier (Silver: 1.25x, Gold: 1.5x, VIP: 1.75x, Diamond: 2.0x) or VIP Plan (Silver: 1.2x, Gold: 1.5x, Platinum: 2.0x), picking the highest multiplier.
