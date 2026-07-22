@@ -1260,12 +1260,15 @@ export function renderNavbar() {
         const bookingToggle = document.querySelector('.nav-booking-toggle');
         const bookingDropdownContent = document.querySelector('.booking-dropdown-content');
         if (bookingToggle && bookingDropdownContent) {
-            const wrapper = document.querySelector('.booking-dropdown-wrapper');
-            wrapper.addEventListener('mouseenter', () => {
-                bookingDropdownContent.style.display = 'block';
+            bookingToggle.addEventListener('click', (e) => {
+                e.preventDefault();
+                bookingDropdownContent.style.display = bookingDropdownContent.style.display === 'block' ? 'none' : 'block';
             });
-            wrapper.addEventListener('mouseleave', () => {
-                bookingDropdownContent.style.display = 'none';
+            // ponytail: native CSS :focus-within would be better long term
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.booking-dropdown-wrapper')) {
+                    bookingDropdownContent.style.display = 'none';
+                }
             });
         }
 
