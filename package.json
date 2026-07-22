@@ -1,6 +1,6 @@
 {
   "name": "3hd2kcinema",
-  "version": "1.0.0",
+  "version": "2.7.7",
   "private": true,
   "scripts": {
     "test:e2e": "playwright test",

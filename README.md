@@ -2,7 +2,8 @@
 
 Ứng dụng web mô phỏng toàn bộ luồng đặt vé rạp chiếu phim, từ xem phim, chọn ghế real-time, thanh toán đến hóa đơn QR code và quản lý tài khoản.
 
-![3HD2Kcinema Banner](https://img.shields.io/badge/3HD2Kcinema-v1.0.0-red?style=for-the-badge)
+![3HD2Kcinema Banner](https://img.shields.io/badge/3HD2Kcinema-v2.7.7-red?style=for-the-badge)
+![Git Commits](https://img.shields.io/badge/Commits-277-blue?style=for-the-badge)
 ![Vercel Deployment](https://img.shields.io/badge/Vercel-32dk--web--app--project.vercel.app-000000?style=for-the-badge&logo=vercel&logoColor=white)
 ![MkDocs](https://img.shields.io/badge/Docs-MkDocs--Material-009688?style=for-the-badge)
 ![GitHub Pages](https://img.shields.io/badge/Deploy-GitHub_Pages-blue?style=for-the-badge)
@@ -22,7 +23,12 @@
 Dự án được cấu trúc theo mô hình song song:
 
 1. **Frontend (Thư mục `/frontend`) - Nhánh chạy chính thức**: Ứng dụng client-side hoàn chỉnh được phát triển bằng HTML5, CSS3, Vanilla JS và Tailwind CSS. Để phục vụ việc chạy độc lập không phụ thuộc môi trường mạng, toàn bộ luồng dữ liệu (users, bookings, seat locks, rewards, notifications) được **giả lập qua LocalStorage và SessionStorage** cùng **BroadcastChannel API** để đồng bộ trạng thái khóa ghế thời gian thực giữa các tab.
-2. **Backend & Database (Thư mục `/backend`) - Khung mô hình**: Ứng dụng ASP.NET Core MVC (C#) sử dụng Entity Framework Core và SQL Server. Phần này đóng vai trò là khung kiến trúc mẫu (scaffold) phục vụ việc tích hợp Full-stack sau này.
+---
+
+## 📌 Phiên bản & Lịch sử Commit (Version Info)
+
+- **Tổng số commits**: **277 commits** (được kiểm tra tự động qua Git history).
+- **Phiên bản hiện tại**: **`v2.7.7`** (Chuyển đổi từ 277 commits theo chuẩn Semantic Versioning: `v2.7.7` ứng với Major 2, Minor 7, Patch 7 đại diện cho 277 bước hoàn thiện và cải tiến mã nguồn hệ thống).
 
 ---
 
