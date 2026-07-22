@@ -95,6 +95,15 @@ function resetSlideInterval() {
     slideInterval = setInterval(() => changeHeroSlide(1), 5000);
 }
 
+// Pause slider when tab is hidden to prevent background memory/CPU leaks
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+        clearInterval(slideInterval);
+    } else {
+        resetSlideInterval();
+    }
+});
+
 // --- MANUAL SLIDE LOGIC (HOVER ZONES) ---
 const btnPrev = document.getElementById('hero-prev');
 const btnNext = document.getElementById('hero-next');
@@ -152,7 +161,7 @@ function closeModal() {
     iframe.style.display = 'block';
     if (trailerFallback) trailerFallback.style.display = 'none';
     // Resume slider
-    slideInterval = setInterval(changeHeroSlide, 5000);
+    slideInterval = setInterval(() => changeHeroSlide(1), 5000);
 }
 
 if (btnClose) {
@@ -173,8 +182,6 @@ const filterCinema = document.getElementById('filter-cinema');
 function renderNowShowing(movies) {
     if (!nowShowingGrid) return;
     
-    nowShowingGrid.innerHTML = '';
-    
     if (movies.length === 0) {
         nowShowingGrid.innerHTML = `
             <div style="width:100%; padding: 40px; text-align:center; color: var(--text-muted);">
@@ -186,11 +193,10 @@ function renderNowShowing(movies) {
         return;
     }
 
-    movies.forEach(movie => {
+    const cardsHtml = movies.map(movie => {
         const tagsHtml = movie.tags.map(tag => `<span class="tag">${tag}</span>`).join('');
-        
         const detailUrl = `/explore/movie-details/index.html?id=${movie.id}`;
-        const cardHtml = `
+        return `
             <div class="movie-card" onclick="window.location.href='${detailUrl}'" style="cursor:pointer;">
                 <a href="${detailUrl}" class="poster" style="background-image: url('${movie.poster}')" aria-label="Xem chi tiết ${movie.title}">
                     <div class="poster-overlay">
@@ -208,9 +214,9 @@ function renderNowShowing(movies) {
                 </div>
             </div>
         `;
-        nowShowingGrid.innerHTML += cardHtml;
-    });
+    }).join('');
 
+    nowShowingGrid.innerHTML = cardsHtml;
 }
 
 function applyFilters() {
@@ -271,8 +277,6 @@ const comingSoonGrid = document.getElementById('coming-soon-grid');
 window.renderComingSoon = function(movies) {
     if (!comingSoonGrid) return;
     
-    comingSoonGrid.innerHTML = '';
-    
     if (!movies || movies.length === 0) {
         comingSoonGrid.innerHTML = `
             <div style="width:100%; padding: 40px; text-align:center; color: var(--text-muted);">
@@ -283,10 +287,10 @@ window.renderComingSoon = function(movies) {
         return;
     }
 
-    movies.forEach(movie => {
+    const cardsHtml = movies.map(movie => {
         const tagsHtml = movie.tags ? movie.tags.map(tag => `<span class="tag">${tag}</span>`).join('') : '';
         const detailUrl = `../movie-details/index.html?id=${movie.id}`;
-        const cardHtml = `
+        return `
             <div class="movie-card" onclick="window.location.href='${detailUrl}'" style="cursor:pointer;">
                 <a href="${detailUrl}" class="poster" style="background-image: url('${movie.poster}')" aria-label="Xem chi tiết ${movie.title}">
                     <div class="poster-overlay">
@@ -304,7 +308,7 @@ window.renderComingSoon = function(movies) {
                 </div>
             </div>
         `;
-        comingSoonGrid.innerHTML += cardHtml;
-    });
+    }).join('');
 
+    comingSoonGrid.innerHTML = cardsHtml;
 };

@@ -40,11 +40,27 @@ document.addEventListener('DOMContentLoaded', async () => {
         .withAutomaticReconnect()
         .build();
 
-    const mockMovies = [
-        { id: '44abd72e-b280-4888-ad96-cd14248e38ee', title: 'Your Name (Tên cậu là gì?)', poster: '../../shared/images/f1_movie.jpg' },
-        { id: '72c59b71-4fe1-4358-a850-90216c6a62af', title: 'Kẻ Kiến Tạo (The Creator)', poster: '../../shared/images/f2_movie.jpg' },
-        { id: '85e4d92b-8a8b-4a5c-9c71-c918341275d6', title: 'Oppenheimer', poster: '../../shared/images/f4_movie.jpg' }
-    ];
+    let sharedMovies = [];
+
+    async function loadSharedMovies() {
+        try {
+            const res = await fetch('/api/movies');
+            if (res.ok) {
+                const movies = await res.json();
+                sharedMovies = movies.slice(0, 5).map(m => ({
+                    id: m.id,
+                    title: m.title,
+                    poster: m.posterUrl || m.poster || '../../shared/images/f1_movie.jpg'
+                }));
+            }
+        } catch (_) {}
+        if (sharedMovies.length === 0) {
+            sharedMovies = [
+                { id: '44abd72e-b280-4888-ad96-cd14248e38ee', title: 'Your Name (Tên cậu là gì?)', poster: '../../shared/images/f1_movie.jpg' }
+            ];
+        }
+    }
+    loadSharedMovies();
 
     try {
         await connection.start();
@@ -186,7 +202,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const container = document.getElementById('shared-movies-container');
         container.innerHTML = '';
         
-        mockMovies.forEach(m => {
+        sharedMovies.forEach(m => {
             const mCard = document.createElement('div');
             mCard.id = `movie-card-${m.id}`;
             mCard.style.background = 'rgba(255,255,255,0.05)';

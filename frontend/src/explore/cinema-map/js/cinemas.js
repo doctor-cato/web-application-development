@@ -84,14 +84,13 @@ function updateHudCoords() {
 // --- RENDER CARDS ---
 function renderCinemas() {
     if (!cinemasList) return;
-    cinemasList.innerHTML = '';
 
-    cinemas.forEach((cinema, index) => {
+    const cardsHtml = cinemas.map((cinema, index) => {
         const featuresHtml = cinema.features
             .map(f => `<span class="cinema-feature-tag">${f}</span>`)
             .join('');
 
-        cinemasList.innerHTML += `
+        return `
             <div class="cinema-card ${index === 0 ? 'active' : ''}" data-cinema-id="${cinema.id}" data-index="${index}">
                 <div class="cinema-card-header">
                     <h2 class="cinema-name">${cinema.name}</h2>
@@ -110,7 +109,9 @@ function renderCinemas() {
                 </div>
             </div>
         `;
-    });
+    }).join('');
+
+    cinemasList.innerHTML = cardsHtml;
 
     document.querySelectorAll('.cinema-card').forEach(card => {
         card.addEventListener('click', () => setActiveCinema(card.dataset.cinemaId));

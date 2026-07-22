@@ -18,24 +18,6 @@ function renderRealHistory() {
     let bookings = getBookings();
     if (!Array.isArray(bookings)) bookings = [];
 
-    // --- MOCK TICKET INJECTION ---
-    const hasMockTicket = bookings.some(b => b.id === 'MOCK-INTERSTELLAR');
-    const hasAnyMock = bookings.some(b => b.id && b.id.includes('MOCK-INTERSTELLAR'));
-    if (!hasAnyMock) {
-        bookings.unshift({
-            id: 'MOCK-INTERSTELLAR',
-            movieTitle: 'Interstellar',
-            room: 'IMAX',
-            date: '20/06/2026',
-            time: '19:30',
-            seats: ['G1', 'G2', 'G3', 'G4'],
-            total: 500000,
-            poster: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=400&q=80'
-        });
-        saveBookings(bookings);
-    }
-    // -----------------------------
-
 
     // Assign missing IDs to legacy bookings and persist
     let needsSave = false;
