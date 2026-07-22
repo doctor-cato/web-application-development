@@ -47,7 +47,9 @@ erDiagram
 ```
 
 ### Bảng 1: `users`
+
 Lưu trữ tài khoản người dùng hệ thống.
+
 - `Id` (INT, PK, Auto Increment)
 - `Email` (NVARCHAR(100), Unique, Not Null)
 - `PasswordHash` (NVARCHAR(MAX), Not Null)
@@ -56,7 +58,9 @@ Lưu trữ tài khoản người dùng hệ thống.
 - `LoyaltyPoints` (INT, Default: 0)
 
 ### Bảng 2: `movies`
+
 Lưu danh mục bộ phim.
+
 - `Id` (INT, PK, Auto Increment)
 - `Title` (NVARCHAR(200), Not Null)
 - `Director` (NVARCHAR(100))
@@ -65,7 +69,9 @@ Lưu danh mục bộ phim.
 - `TrailerUrl` (NVARCHAR(500))
 
 ### Bảng 3: `showtimes`
+
 Lưu lịch chiếu phim.
+
 - `Id` (INT, PK, Auto Increment)
 - `MovieId` (INT, FK -> `movies.Id`)
 - `RoomId` (INT, FK -> `rooms.Id`)
@@ -73,7 +79,9 @@ Lưu lịch chiếu phim.
 - `TicketPrice` (DECIMAL(18,2), Not Null)
 
 ### Bảng 4: `bookings`
+
 Lưu hóa đơn đặt vé.
+
 - `Id` (INT, PK, Auto Increment)
 - `UserId` (INT, FK -> `users.Id`)
 - `ShowtimeId` (INT, FK -> `showtimes.Id`)
@@ -83,7 +91,9 @@ Lưu hóa đơn đặt vé.
 - `QRCode` (NVARCHAR(100))
 
 ### Bảng 5: `booking_details`
+
 Chi tiết ghế của từng đơn hàng.
+
 - `Id` (INT, PK, Auto Increment)
 - `BookingId` (INT, FK -> `bookings.Id`)
 - `SeatId` (NVARCHAR(10), Not Null)

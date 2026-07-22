@@ -46,6 +46,7 @@ Mỗi commit message phải tuân thủ định dạng tiêu chuẩn để toàn
 | `test:` | Thêm mới hoặc chỉnh sửa các bài test Playwright / Unit tests. |
 
 #### Ví dụ commit message tốt
+
 ```text
 feat(booking): add BroadcastChannel auto-reconnect on tab wake
 
@@ -58,11 +59,13 @@ NOTE: automatically syncs seat status when user re-opens background tab.
 ## 🎨 3. Quy chuẩn Mã nguồn (Code Style Standards)
 
 ### HTML & CSS Standards
+
 1. **Semantic HTML5**: Sử dụng đúng các thẻ `<header>`, `<nav>`, `<main>`, `<section>`, `<article>`, `<footer>`.
 2. **Không inline CSS**: Viết CSS tập trung trong file style của từng trang hoặc dùng Tailwind CSS.
 3. **Mobile First**: Thiết kế mặc định cho màn hình di động, sau đó dùng các prefix responsive (`md:`, `lg:`) của Tailwind CSS.
 
 ### JavaScript Standards
+
 1. **ES6 Modules**: Luôn dùng `import` / `export`. Khai báo script dạng `<script type="module">`.
 2. **Tuyệt đối không dùng biến toàn cục**: Tránh gán trực tiếp vào `window.*` trừ các trường hợp thực sự cần thiết.
 3. **Tương tác Storage tập trung**: Mọi thao tác đọc/ghi `LocalStorage` / `SessionStorage` **phải thông qua `Storage` wrapper** tại `frontend/src/shared/utils/storage.js`.

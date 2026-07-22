@@ -35,7 +35,7 @@ Trang tài liệu của hệ thống được xây dựng và xuất bản tự 
 - **GitHub Pages & Actions**: Tự động kiểm tra định dạng và xuất bản website tài liệu ngay trên GitHub qua tệp workflow `.github/workflows/docs.yml`.
 - **Markdownlint**: Tự động kiểm tra cú pháp và định dạng Markdown (`.markdownlint.yml`).
 
-### Xem Trước Website Tài liệu tại Local:
+### Xem Trước Website Tài liệu tại Local
 
 ```bash
 # Cài đặt MkDocs Material
@@ -44,6 +44,7 @@ pip install mkdocs-material
 # Khởi chạy server xem trước
 mkdocs serve
 ```
+
 > Truy cập tài liệu tại: `http://127.0.0.1:8000`
 
 ---

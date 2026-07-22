@@ -20,6 +20,7 @@ Toàn bộ các RESTful API của hệ thống hỗ trợ định dạng dữ li
 | `DELETE` | `/api/movies/{id}` | Xóa bộ phim | Admin |
 
 #### Ví dụ Request Response (`GET /api/movies/1`)
+
 ```json
 {
   "id": 1,
@@ -44,6 +45,7 @@ Toàn bộ các RESTful API của hệ thống hỗ trợ định dạng dữ li
 | `POST` | `/api/bookings/{id}/cancel` | Hủy toàn bộ hoặc một phần ghế của hóa đơn | Authenticated |
 
 #### Ví dụ Payload Tạo đơn đặt vé (`POST /api/bookings`)
+
 ```json
 {
   "showtimeId": 105,
@@ -73,16 +75,19 @@ Toàn bộ các RESTful API của hệ thống hỗ trợ định dạng dữ li
 Trong luồng chạy Frontend chính thức, các dịch vụ Javascript module sau đây đóng vai trò là "Virtual APIs":
 
 ### `shared/utils/storage.js` Wrapper APIs
+
 - `Storage.get(key, defaultValue)`: Đọc an toàn từ LocalStorage/SessionStorage với xử lý JSON fallback.
 - `Storage.set(key, value)`: Ghi dữ liệu dạng JSON stringify.
 - `Storage.remove(key)`: Xóa tệp key dữ liệu.
 
 ### `booking/seat-booking/bookingService.js`
+
 - `lockSeat(showtimeId, seatId, userId)`: Khóa tạm thời 15 phút.
 - `releaseSeat(showtimeId, seatId)`: Giải phóng khóa ghế.
 - `getLockedSeats(showtimeId)`: Lấy mảng ID các ghế đang bị khóa.
 
 ### `auth/auth-services/authService.js`
+
 - `login(email, password)`: Kiểm tra tài khoản trong `cinema_users` và lưu `cinema_current_user`.
 - `register(userData)`: Đăng ký tài khoản mới và lưu trữ bền vững.
 - `getCurrentUser()`: Lấy thông tin tài khoản phiên hiện tại.

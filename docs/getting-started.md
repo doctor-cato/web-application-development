@@ -9,10 +9,12 @@ Tài liệu này hướng dẫn bạn cách thiết lập môi trường phát t
 Tùy thuộc vào phần bạn muốn chạy, bạn cần cài đặt các công cụ sau:
 
 ### Cho phần Frontend (Ứng dụng chạy chính thức)
+
 - **Python 3.x** (Khuyên dùng cho HTTP static server đơn giản).
 - **Node.js** (Phiên bản 18+ trở lên, dùng để theo dõi & biên dịch lại Tailwind CSS hoặc chạy Playwright test).
 
 ### Cho phần Backend (Khung mô hình mẫu ASP.NET Core)
+
 - **.NET SDK 8.0** trở lên.
 - **SQL Server / SQL Express** hoặc **LocalDB**.
 - **Visual Studio 2022** hoặc **VS Code** (kèm C# Extension).

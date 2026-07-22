@@ -9,6 +9,7 @@ Tài liệu này hướng dẫn các phương pháp kiểm thử tự động (A
 Dự án tích hợp bộ công cụ **Playwright** (`@playwright/test`) để thực hiện kiểm thử tự động trên giao diện trình duyệt Chromium.
 
 ### Cấu hình Playwright
+
 Cấu hình kiểm thử nằm tại tệp `playwright.config.js` ở thư mục gốc:
 
 - **Base URL**: `http://localhost:3000` (Có thể thay đổi qua biến môi trường `PLAYWRIGHT_TEST_BASE_URL`).
@@ -17,12 +18,14 @@ Cấu hình kiểm thử nằm tại tệp `playwright.config.js` ở thư mục
 ### Các bước chạy E2E Tests
 
 #### Bước 1: Mở Web Server Frontend (Terminal 1)
+
 ```bash
 cd frontend
 python -m http.server 3000 -d src
 ```
 
 #### Bước 2: Chạy Playwright Tests (Terminal 2)
+
 ```bash
 # Cài đặt dependencies nếu chưa có
 npm install
@@ -44,11 +47,13 @@ npx playwright show-report
 Các tệp test nằm trong thư mục `tests/e2e/`:
 
 ### `tests/e2e/home.spec.js` (Kiểm thử Trang chủ)
+
 - Kiểm tra thanh tiêu đề trang chủ 3HD2Kcinema.
 - Kiểm tra khả năng hiển thị danh sách phim nổi bật và các thẻ phim.
 - Kiểm tra tính năng chuyển tab thể loại phim.
 
 ### `tests/e2e/somme.spec.js` (Kiểm thử Luồng Đặt vé)
+
 - Tự động click vào phim bất kỳ.
 - Chọn suất chiếu và kiểm tra chuyển sang trang đặt ghế.
 - Chọn ghế `A5`, kiểm tra giá tiền tổng cộng nhảy đúng.

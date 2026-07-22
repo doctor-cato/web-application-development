@@ -21,13 +21,13 @@ Chào mừng đến với tài liệu kỹ thuật chính thức của **3HD2Kci
 
 Dự án được xây dựng với chiến lược **Mô hình Song song Hai tầng Kiến trúc**:
 
-1. **Frontend (Tầng Chạy Thực tế - Client-Side Engine)**: 
-    - Xây dựng hoàn toàn bằng **HTML5, CSS3, Vanilla JS (ES6 Modules)** và **Tailwind CSS**.
-    - Sử dụng **LocalStorage & SessionStorage** đóng vai trò CSDL giả lập (Mock DB) để ứng dụng có thể chạy độc lập, mượt mà mà không phụ thuộc vào máy chủ backend.
-    - Tích hợp **BroadcastChannel API** để đồng bộ hóa trạng thái giữ ghế thời gian thực giữa các tab trình duyệt.
+1. **Frontend (Tầng Chạy Thực tế - Client-Side Engine)**:
+   - Xây dựng hoàn toàn bằng **HTML5, CSS3, Vanilla JS (ES6 Modules)** và **Tailwind CSS**.
+   - Sử dụng **LocalStorage & SessionStorage** đóng vai trò CSDL giả lập (Mock DB) để ứng dụng có thể chạy độc lập, mượt mà mà không phụ thuộc vào máy chủ backend.
+   - Tích hợp **BroadcastChannel API** để đồng bộ hóa trạng thái giữ ghế thời gian thực giữa các tab trình duyệt.
 2. **Backend (Tầng Kiến trúc Mẫu - Full-Stack Scaffold)**:
-    - Xây dựng bằng **ASP.NET Core MVC & Web API (C#)** kết hợp **Entity Framework Core** và **SQL Server**.
-    - Đóng vai trò làm bộ khung (scaffold) chuẩn mực cho giai đoạn kết nối tích hợp dữ liệu trung tâm trong tương lai.
+   - Xây dựng bằng **ASP.NET Core MVC & Web API (C#)** kết hợp **Entity Framework Core** và **SQL Server**.
+   - Đóng vai trò làm bộ khung (scaffold) chuẩn mực cho giai đoạn kết nối tích hợp dữ liệu trung tâm trong tương lai.
 
 ---
 
