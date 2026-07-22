@@ -1,24 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Users\\Le Minh Khuong 1\\web-application-development\\web-application-development\\backend\\appweb.csproj": {}
+    "D:\\projectnew\\web-application-development\\backend\\appweb.csproj": {}
   },
   "projects": {
-    "c:\\Users\\Le Minh Khuong 1\\web-application-development\\web-application-development\\backend\\appweb.csproj": {
+    "D:\\projectnew\\web-application-development\\backend\\appweb.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\Le Minh Khuong 1\\web-application-development\\web-application-development\\backend\\appweb.csproj",
+        "projectUniqueName": "D:\\projectnew\\web-application-development\\backend\\appweb.csproj",
         "projectName": "appweb",
-        "projectPath": "c:\\Users\\Le Minh Khuong 1\\web-application-development\\web-application-development\\backend\\appweb.csproj",
-        "packagesPath": "C:\\Users\\Le Minh Khuong 1\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\Le Minh Khuong 1\\web-application-development\\web-application-development\\backend\\obj\\",
+        "projectPath": "D:\\projectnew\\web-application-development\\backend\\appweb.csproj",
+        "packagesPath": "C:\\Users\\Huy Nguyen\\.nuget\\packages\\",
+        "outputPath": "D:\\projectnew\\web-application-development\\backend\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Le Minh Khuong 1\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\Huy Nguyen\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -26,7 +22,6 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -97,7 +92,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.300/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.302/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
