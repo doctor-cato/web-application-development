@@ -591,17 +591,24 @@ export function renderNavbar() {
 /* Portal Shortcut Icon Buttons for Admin & Staff */
 .portal-icon-btn {
     position: relative;
-    display: inline-flex;
+    display: inline-flex !important;
     align-items: center;
     justify-content: center;
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    text-decoration: none;
+    width: 36px !important;
+    height: 36px !important;
+    max-width: 36px !important;
+    max-height: 36px !important;
+    border-radius: 50% !important;
+    text-decoration: none !important;
     transition: all 0.3s ease;
     cursor: pointer;
-    font-size: 1.05rem;
+    font-size: 0 !important;
     flex-shrink: 0;
+    margin: 0 2px;
+}
+
+.portal-icon-btn i {
+    font-size: 1.05rem !important;
 }
 
 .portal-icon-btn::after {
@@ -615,7 +622,7 @@ export function renderNavbar() {
     padding: 6px 12px;
     border-radius: 6px;
     font-family: 'Inter', sans-serif;
-    font-size: 0.75rem;
+    font-size: 0.75rem !important;
     font-weight: 700;
     white-space: nowrap;
     opacity: 0;
