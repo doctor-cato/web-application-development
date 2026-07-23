@@ -588,46 +588,77 @@ export function renderNavbar() {
     transform: scale(1.15);
 }
 
-/* Portal Shortcut Buttons for Admin & Staff */
-.portal-nav-btn {
+/* Portal Shortcut Icon Buttons for Admin & Staff */
+.portal-icon-btn {
+    position: relative;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-family: 'Inter', sans-serif;
-    font-size: 0.825rem;
-    font-weight: 700;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
     text-decoration: none;
-    transition: all 0.25s ease;
-    white-space: nowrap;
+    transition: all 0.3s ease;
     cursor: pointer;
+    font-size: 1.05rem;
+    flex-shrink: 0;
 }
 
-.admin-badge-btn {
+.portal-icon-btn::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    top: 125%;
+    left: 50%;
+    transform: translateX(-50%) translateY(5px);
+    background: var(--bg-elevated, #1a1a1a);
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: all 0.25s ease;
+    border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.12));
+    box-shadow: 0 8px 24px rgba(0,0,0,0.8);
+    z-index: 10001;
+}
+
+.portal-icon-btn:hover::after {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+
+.admin-portal-icon {
     background: rgba(229, 9, 20, 0.15);
     color: var(--primary-red, #e50914);
     border: 1px solid rgba(229, 9, 20, 0.4);
 }
 
-.admin-badge-btn:hover {
-    background: rgba(229, 9, 20, 0.35);
+.admin-portal-icon:hover {
+    background: rgba(229, 9, 20, 0.9);
     color: #ffffff;
-    box-shadow: 0 0 12px rgba(229, 9, 20, 0.4);
-    transform: translateY(-1px);
+    border-color: #e50914;
+    box-shadow: 0 0 16px rgba(229, 9, 20, 0.6);
+    transform: scale(1.08);
 }
 
-.staff-badge-btn {
+.staff-portal-icon {
     background: rgba(0, 240, 255, 0.12);
     color: #00f0ff;
     border: 1px solid rgba(0, 240, 255, 0.35);
 }
 
-.staff-badge-btn:hover {
-    background: rgba(0, 240, 255, 0.25);
-    color: #ffffff;
-    box-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
-    transform: translateY(-1px);
+.staff-portal-icon:hover {
+    background: rgba(0, 240, 255, 0.9);
+    color: #000000;
+    border-color: #00f0ff;
+    box-shadow: 0 0 16px rgba(0, 240, 255, 0.6);
+    transform: scale(1.08);
 }
 
 /* Notification Button & Dropdown */
@@ -1420,11 +1451,11 @@ export function renderNavbar() {
 
                 if (userRole === 'ADMIN') {
                     portalNavButtonsHtml = `
-                        <a href="${srcPrefix}/management/admin.html" class="portal-nav-btn admin-badge-btn" title="Chuyển đến trang Admin Portal">
-                            <i class="fas fa-user-shield"></i> <span>Admin Portal</span>
+                        <a href="${srcPrefix}/management/admin.html" class="portal-icon-btn admin-portal-icon" data-tooltip="Admin Portal" title="Admin Portal">
+                            <i class="fas fa-user-shield"></i>
                         </a>
-                        <a href="${srcPrefix}/management/staff-sales.html" class="portal-nav-btn staff-badge-btn" title="Chuyển đến Quầy bán hàng Staff POS">
-                            <i class="fas fa-cash-register"></i> <span>Staff POS</span>
+                        <a href="${srcPrefix}/management/staff-sales.html" class="portal-icon-btn staff-portal-icon" data-tooltip="Staff POS" title="Staff POS Portal">
+                            <i class="fas fa-cash-register"></i>
                         </a>
                     `;
                     portalMenuItemsHtml = `
@@ -1441,8 +1472,8 @@ export function renderNavbar() {
                     `;
                 } else if (userRole === 'STAFF') {
                     portalNavButtonsHtml = `
-                        <a href="${srcPrefix}/management/staff-sales.html" class="portal-nav-btn staff-badge-btn" title="Chuyển đến Quầy bán hàng Staff POS">
-                            <i class="fas fa-cash-register"></i> <span>Staff POS</span>
+                        <a href="${srcPrefix}/management/staff-sales.html" class="portal-icon-btn staff-portal-icon" data-tooltip="Staff POS" title="Staff POS Portal">
+                            <i class="fas fa-cash-register"></i>
                         </a>
                     `;
                     portalMenuItemsHtml = `
