@@ -136,9 +136,12 @@ function applyMoviesFilters() {
             break;
         case 'duration':
             movies.sort((a, b) => {
-                const dA = parseInt(a.duration) || 0;
-                const dB = parseInt(b.duration) || 0;
-                return dB - dA;
+                const getMins = (m) => {
+                    if (m.durationMinutes) return m.durationMinutes;
+                    let val = parseInt(m.duration, 10) || 0;
+                    return (val > 0 && val < 10) ? val * 60 : val;
+                };
+                return getMins(b) - getMins(a);
             });
             break;
         default: // newest — keep original order

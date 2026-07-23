@@ -12,6 +12,40 @@ let comingSoonMovies = [];
 const mockGallery = [];
 const mockCast = [];
 
+function formatMovieDuration(rawDuration) {
+    if (rawDuration === undefined || rawDuration === null || rawDuration === '') return 'N/A';
+    let mins = 0;
+    if (typeof rawDuration === 'number') {
+        mins = rawDuration;
+    } else {
+        const str = rawDuration.toString().trim();
+        const hMatch = str.match(/(\d+)\s*h/i);
+        const mMatch = str.match(/(\d+)\s*m/i);
+        if (hMatch || mMatch) {
+            mins = (hMatch ? parseInt(hMatch[1], 10) * 60 : 0) + (mMatch ? parseInt(mMatch[1], 10) : 0);
+        } else {
+            mins = parseInt(str, 10) || 0;
+        }
+    }
+    if (mins <= 0) return 'N/A';
+    
+    // If duration stored as hours (< 10), convert to minutes (e.g. 2 -> 120)
+    if (mins < 10) {
+        mins = mins * 60;
+    }
+
+    const hours = Math.floor(mins / 60);
+    const remainder = mins % 60;
+
+    if (hours > 0 && remainder > 0) {
+        return `${hours}h ${remainder}m`;
+    } else if (hours > 0) {
+        return `${hours}h`;
+    } else {
+        return `${mins}m`;
+    }
+}
+
 async function fetchMovies() {
     try {
         const response = await fetch(`/api/movies`);
@@ -23,14 +57,28 @@ async function fetchMovies() {
                 ? `/shared/images/${m.posterUrl.split('/').pop()}`
                 : `https://via.placeholder.com/800x1200/222/aaa?text=${encodeURIComponent(m.title)}`;
 
+            const durationFormatted = formatMovieDuration(m.duration);
+            let durationMins = parseInt(m.duration, 10);
+            if (isNaN(durationMins) || durationMins <= 0) durationMins = 120;
+            else if (durationMins < 10) durationMins = durationMins * 60;
+
+            const metaParts = [];
+            if (m.releaseDate) {
+                const yr = new Date(m.releaseDate).getFullYear();
+                if (!isNaN(yr)) metaParts.push(yr);
+            }
+            if (m.genre) metaParts.push(m.genre);
+            if (durationFormatted && durationFormatted !== 'N/A') metaParts.push(durationFormatted);
+
             return {
                 id: m.id,
                 title: m.title || 'Phim Chưa Có Tiêu Đề',
-                meta: `${m.releaseDate ? new Date(m.releaseDate).getFullYear() : ''} ${m.genre ? '• ' + m.genre : ''} ${m.duration ? '• ' + m.duration + 'm' : ''}`.trim(),
+                meta: metaParts.join(' • '),
                 desc: m.description || "Nội dung phim đang được cập nhật...",
                 synopsis: m.description || "Nội dung phim đang được cập nhật...",
                 year: m.releaseDate ? new Date(m.releaseDate).getFullYear() : 'N/A',
-                duration: m.duration ? `${Math.floor(m.duration / 60)}h ${m.duration % 60}m` : 'N/A',
+                duration: durationFormatted,
+                durationMinutes: durationMins,
                 age: m.ageRating || 'P',
                 genre: m.genre || 'Chưa phân loại',
                 status: m.status || 'now-showing',
