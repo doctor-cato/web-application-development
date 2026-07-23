@@ -56,6 +56,13 @@ namespace appweb.Controllers
             return Ok(new { message = "Booking successful", bookingId = booking.Id });
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAllBookings()
+        {
+            var bookings = await _bookingRepository.GetAllAsync();
+            return Ok(bookings);
+        }
+
         [HttpGet("{email}")]
         public async Task<IActionResult> GetUserBookings(string email)
         {
