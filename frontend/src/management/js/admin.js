@@ -59,17 +59,23 @@ async function fetchMovies() {
         const res = await fetch('/api/movies');
         if (res.ok) {
             const data = await res.json();
-            db.movies = data.map(m => ({
-                id: m.id ? m.id.toString() : '',
-                title: m.title || '',
-                genre: m.genre || 'Phim',
-                duration: m.duration || 120,
-                age: m.ageRating || 'T13',
-                status: m.status || 'now-showing',
-                poster: m.posterUrl || 'https://images.unsplash.com/photo-1536440136628-849c177e76a1',
-                trailer: m.trailerUrl || '',
-                desc: m.description || ''
-            }));
+            db.movies = data.map(m => {
+                let d = parseInt(m.duration || m.durationMinutes, 10);
+                if (isNaN(d) || d <= 0) d = 120;
+                else if (d < 10) d = d * 60; // Convert 1 -> 60, 2 -> 120 if stored as hours
+                
+                return {
+                    id: m.id ? m.id.toString() : '',
+                    title: m.title || '',
+                    genre: m.genre || 'Phim',
+                    duration: d,
+                    age: m.ageRating || 'T13',
+                    status: m.status || 'now-showing',
+                    poster: m.posterUrl || 'https://images.unsplash.com/photo-1536440136628-849c177e76a1',
+                    trailer: m.trailerUrl || '',
+                    desc: m.description || ''
+                };
+            });
         }
     } catch (e) {
         console.error('Fetch movies API error:', e);
@@ -451,7 +457,10 @@ async function handleMovieSubmit(e) {
     if (e) e.preventDefault();
     const id = document.getElementById('movie-id').value;
     const durationRaw = document.getElementById('movie-duration-input').value;
-    const durationNum = parseDurationMinutes(durationRaw);
+    let durationNum = parseDurationMinutes(durationRaw);
+    if (durationNum > 0 && durationNum < 10) {
+        durationNum = durationNum * 60;
+    }
 
     const apiData = {
         title: document.getElementById('movie-title-input').value,
@@ -469,7 +478,7 @@ async function handleMovieSubmit(e) {
 
     try {
         if (id) {
-            apiData.id = parseInt(id) || id;
+            apiData.id = id;
             await fetch(`/api/movies/${id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
@@ -489,7 +498,21 @@ async function handleMovieSubmit(e) {
         showToast('Lỗi khi gửi yêu cầu tới API', 'error');
     }
 
+    // Immediately update local in-memory movie item
+    const existing = db.movies.find(m => m.id === id);
+    if (existing) {
+        existing.title = apiData.title;
+        existing.duration = durationNum;
+        existing.genre = apiData.genre;
+        existing.poster = apiData.posterUrl;
+        existing.trailer = apiData.trailerUrl;
+        existing.status = apiData.status;
+        existing.age = apiData.ageRating;
+        existing.desc = apiData.description;
+    }
+
     closeMovieModal();
+    renderMoviesTable();
     await reloadDatabase();
 }
 

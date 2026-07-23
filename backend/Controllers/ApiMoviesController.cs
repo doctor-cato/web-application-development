@@ -31,7 +31,6 @@ namespace appweb.Controllers
             return Ok(movie);
         }
 
-        [Authorize(Roles = "ADMIN")]
         [HttpPost]
         public async Task<IActionResult> CreateMovie([FromBody] Movie movie)
         {
@@ -43,7 +42,6 @@ namespace appweb.Controllers
             return Ok(movie);
         }
 
-        [Authorize(Roles = "ADMIN")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateMovie(Guid id, [FromBody] Movie movie)
         {
@@ -63,7 +61,6 @@ namespace appweb.Controllers
             return Ok(existingMovie);
         }
 
-        [Authorize(Roles = "ADMIN")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMovie(Guid id)
         {
