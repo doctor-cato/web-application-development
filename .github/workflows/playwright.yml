@@ -26,12 +26,6 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
 
-      - name: Start Local Frontend Server
-        run: |
-          cd frontend
-          python3 -m http.server 3000 -d src &
-          sleep 3
-
       - name: Run Playwright Tests (E2E, axe-core, Visual Snapshots)
         run: npx playwright test --update-snapshots || npx playwright test
 

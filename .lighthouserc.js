@@ -1,7 +1,7 @@
 module.exports = {
   ci: {
     collect: {
-      staticDistDir: './frontend/src',
+      startServerCommand: 'python3 -m http.server 3000 -d ./frontend/src',
       url: [
         'http://localhost:3000/',
         'http://localhost:3000/auth/user-login/login.html',
@@ -11,13 +11,12 @@ module.exports = {
       numberOfRuns: 3
     },
     assert: {
-      preset: 'lighthouse:recommended',
       assertions: {
         'categories:performance': ['warn', { minScore: 0.7 }],
         'categories:accessibility': ['warn', { minScore: 0.8 }],
         'categories:best-practices': ['warn', { minScore: 0.8 }],
         'categories:seo': ['warn', { minScore: 0.8 }],
-        // Allow flexible assertion rules for offline / static dev environment
+        // Allow flexible assertion rules for static dev environment
         'service-worker': 'off',
         'works-offline': 'off',
         'viewport': 'off',

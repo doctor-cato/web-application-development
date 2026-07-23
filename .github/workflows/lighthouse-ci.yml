@@ -22,12 +22,6 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Start Local Frontend Server
-        run: |
-          cd frontend
-          python3 -m http.server 3000 -d src &
-          sleep 3
-
       - name: Run Lighthouse CI
         run: npx lhci autorun
         env:
