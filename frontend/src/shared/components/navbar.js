@@ -19,12 +19,42 @@ export function renderNavbar() {
                 <a href="${srcPrefix}/explore/movie-search/index.html?tab=now-showing">Phim Đang Chiếu</a>
                 <a href="${srcPrefix}/explore/cinema-map/index.html">Cụm Rạp</a>
                 <a href="${srcPrefix}/user/user-notifications/index.html?tab=promo">Khuyến Mãi</a>
-                <div class="booking-dropdown-wrapper" style="position:relative; display:inline-block; height:100%; align-items:center; display:flex;">
-                    <a href="${srcPrefix}/booking/seat-booking/booking.html" class="nav-booking-toggle">Đặt vé <i class="fas fa-chevron-down" style="font-size:0.8rem; margin-left:4px;"></i></a>
-                    <div class="booking-dropdown-content" style="display:none; position:absolute; top:100%; left:50%; transform:translateX(-50%); background:var(--bg-elevated, #1a1a1a); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:10px 0; min-width:160px; z-index:1000; box-shadow:0 10px 30px rgba(0,0,0,0.5);">
-                        <a href="${srcPrefix}/booking/seat-booking/booking.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; white-space:nowrap;">Mua vé</a>
-                        <a href="${srcPrefix}/booking/booking-food/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; white-space:nowrap;">Đặt đồ ăn</a>
-                        <a href="${srcPrefix}/booking/group-booking/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; white-space:nowrap;">Thuê rạp</a>
+                <div class="quick-book-wrapper">
+                    <a href="#" class="quick-book-toggle" id="quick-book-toggle">Đặt vé <i class="fas fa-chevron-down" style="font-size:0.8rem; margin-left:4px;"></i></a>
+                    <div class="quick-book-dropdown" id="quick-book-dropdown">
+                        <div class="qb-title">ĐẶT VÉ NHANH</div>
+                        <div class="qb-step">
+                            <label><strong>1. Chọn Phim</strong></label>
+                            <div class="qb-custom-select" id="qb-movie-wrapper">
+                                <div class="qb-select-trigger" id="qb-movie-trigger">
+                                    <i class="fas fa-search" style="color:rgba(255,255,255,0.5); margin-right:8px; font-size:0.85rem;"></i>
+                                    <input type="text" id="qb-movie-search" placeholder="-- Chọn Phim --" autocomplete="off" />
+                                    <i class="fas fa-chevron-down" style="color:rgba(255,255,255,0.5); margin-left:auto; font-size:0.7rem;"></i>
+                                </div>
+                                <div class="qb-select-menu" id="qb-movie-menu">
+                                    <ul class="qb-options-list" id="qb-movie-list"></ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="qb-step">
+                            <label><strong>2. Chọn Rạp</strong></label>
+                            <select id="qb-cinema" disabled>
+                                <option value="" disabled selected>-- Chọn Rạp --</option>
+                            </select>
+                        </div>
+                        <div class="qb-step">
+                            <label><strong>3. Chọn Ngày</strong></label>
+                            <select id="qb-date" disabled>
+                                <option value="" disabled selected>-- Chọn Ngày --</option>
+                            </select>
+                        </div>
+                        <div class="qb-step">
+                            <label><strong>4. Chọn Suất</strong></label>
+                            <select id="qb-showtime" disabled>
+                                <option value="" disabled selected>-- Chọn Suất Chiếu --</option>
+                            </select>
+                        </div>
+                        <button class="qb-btn" id="qb-submit" disabled>Tiếp tục</button>
                     </div>
                 </div>
                 <div class="cine-match-wrapper" style="display:flex; height:100%; align-items:center;">
@@ -86,6 +116,7 @@ export function renderNavbar() {
             </div>
         </div>
     </header>
+    <div class="mobile-modal-overlay" id="mobile-modal-overlay"></div>
     <style>
 /* --- NAVBAR --- */
 .navbar {
@@ -172,10 +203,45 @@ export function renderNavbar() {
     transform: translateX(-50%) scaleX(1) !important;
 }
 
-/* Booking Dropdown Hover */
-.booking-dropdown-wrapper:hover .booking-dropdown-content,
-.booking-dropdown-wrapper:focus-within .booking-dropdown-content {
-    display: block !important;
+/* Quick Book Toggle */
+.quick-book-toggle {
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    color: rgba(255, 255, 255, 0.75);
+    position: relative;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    transition: color 0.3s ease, background 0.3s ease;
+    border-radius: 6px;
+    white-space: nowrap;
+    cursor: pointer;
+}
+.quick-book-toggle::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%) scaleX(0);
+    width: 60%;
+    height: 2px;
+    background: var(--primary-red);
+    border-radius: 2px;
+    transition: transform 0.3s ease;
+    box-shadow: 0 0 8px rgba(229, 9, 20, 0.4);
+}
+.quick-book-toggle:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.05);
+}
+.quick-book-toggle.active {
+    color: var(--primary-red);
+}
+.quick-book-toggle.active::after {
+    transform: translateX(-50%) scaleX(1);
 }
 
 /* Quick Book Modal */
@@ -1262,10 +1328,11 @@ export function renderNavbar() {
                     if (modalOverlay) modalOverlay.classList.remove('active');
                 }
             });
-        // ponytail: dropdown display is handled natively via CSS (:hover & :focus-within)
+        }
 
         // --- AUTH LOGIC ---
         const session = getSession();
+        if (session) {
             const navActions = document.querySelector('.nav-actions');
             if (navActions) {
                 // Xóa nút chưa đăng nhập hiện tại
