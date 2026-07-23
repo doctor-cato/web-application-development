@@ -439,7 +439,23 @@ function submitComment() {
     showToast('Bình luận của bạn đã được gửi!');
 }
 
-
+// ── YOUTUBE EMBED HELPER ────────────────────────────────────
+function getYouTubeEmbedUrl(url) {
+    if (!url) return '';
+    let cleanUrl = url.trim();
+    if (cleanUrl.includes('embed/')) return cleanUrl;
+    
+    let videoId = '';
+    if (cleanUrl.includes('v=')) {
+        videoId = cleanUrl.split('v=')[1]?.split('&')[0];
+    } else if (cleanUrl.includes('youtu.be/')) {
+        videoId = cleanUrl.split('youtu.be/')[1]?.split('?')[0];
+    } else if (cleanUrl.match(/^[a-zA-Z0-9_-]{11}$/)) {
+        videoId = cleanUrl;
+    }
+    
+    return videoId ? `https://www.youtube.com/embed/${videoId}` : cleanUrl;
+}
 
 // ── MEDIA GALLERY ────────────────────────────────────────────
 function renderGallery(movie) {
@@ -447,12 +463,15 @@ function renderGallery(movie) {
     const iframe = document.getElementById('detail-trailer-iframe');
     const fallback = document.getElementById('detail-trailer-fallback');
     const ytLink = document.getElementById('detail-trailer-yt-link');
-    if (iframe && movie.trailer) {
-        iframe.src = movie.trailer + '?rel=0&modestbranding=1&enablejsapi=1';
+    const trailerUrl = movie.trailer || movie.trailerUrl || '';
+    if (iframe && trailerUrl) {
+        const embedUrl = getYouTubeEmbedUrl(trailerUrl);
+        const sep = embedUrl.includes('?') ? '&' : '?';
+        iframe.src = embedUrl + `${sep}rel=0&modestbranding=1&enablejsapi=1`;
         if (fallback) fallback.style.display = 'none';
         iframe.style.display = 'block';
-        if (ytLink && movie.trailerWatch) {
-            ytLink.href = movie.trailerWatch;
+        if (ytLink) {
+            ytLink.href = movie.trailerWatch || trailerUrl;
         }
     }
 
@@ -547,14 +566,21 @@ function openTrailerModal(embedUrl, watchUrl) {
     const fallback = document.getElementById('trailer-fallback');
     const ytLink = document.getElementById('trailer-yt-link');
     if (!modal || !iframe) return;
-    
-    iframe.src = embedUrl + '?autoplay=1&rel=0&enablejsapi=1';
+
+    const rawUrl = embedUrl || watchUrl || '';
+    if (!rawUrl) {
+        showToast('Chưa có link trailer cho phim này');
+        return;
+    }
+    const formattedEmbed = getYouTubeEmbedUrl(rawUrl);
+    const sep = formattedEmbed.includes('?') ? '&' : '?';
+    iframe.src = formattedEmbed + `${sep}autoplay=1&rel=0&enablejsapi=1`;
     if (fallback) fallback.style.display = 'none';
     iframe.style.display = 'block';
-    if (ytLink && watchUrl) {
-        ytLink.href = watchUrl;
+    if (ytLink) {
+        ytLink.href = watchUrl || rawUrl;
     }
-    
+
     modal.style.display = 'flex';
     document.body.style.overflow = 'hidden';
 }

@@ -320,6 +320,53 @@ function renderDashboard() {
     }
 }
 
+// --- YOUTUBE TRAILER HELPER & MODAL ---
+function getYouTubeEmbedUrl(url) {
+    if (!url) return '';
+    if (url.includes('embed/')) return url;
+    
+    let videoId = '';
+    if (url.includes('v=')) {
+        videoId = url.split('v=')[1]?.split('&')[0];
+    } else if (url.includes('youtu.be/')) {
+        videoId = url.split('youtu.be/')[1]?.split('?')[0];
+    } else if (url.match(/^[a-zA-Z0-9_-]{11}$/)) {
+        videoId = url;
+    }
+    
+    return videoId ? `https://www.youtube.com/embed/${videoId}?autoplay=1` : url;
+}
+
+function openTrailerModal(url, title = 'Trailer Phim') {
+    if (!url || !url.trim()) {
+        showToast('Phim này chưa có link trailer YouTube!', 'warning');
+        return;
+    }
+    const modal = document.getElementById('trailer-modal');
+    const iframe = document.getElementById('trailer-iframe');
+    const titleEl = document.getElementById('trailer-modal-title');
+    const embedUrl = getYouTubeEmbedUrl(url);
+    if (modal && iframe) {
+        iframe.src = embedUrl;
+        if (titleEl) titleEl.innerHTML = `<i class="fab fa-youtube" style="color: var(--primary-red); font-size: 1.5rem;"></i> Xem Trailer: ${title}`;
+        modal.style.display = 'flex';
+    }
+}
+
+function closeTrailerModal() {
+    const modal = document.getElementById('trailer-modal');
+    const iframe = document.getElementById('trailer-iframe');
+    if (iframe) iframe.src = '';
+    if (modal) modal.style.display = 'none';
+}
+
+function parseDurationMinutes(val) {
+    if (typeof val === 'number') return val;
+    if (!val) return 120;
+    const match = val.toString().match(/\d+/);
+    return match ? parseInt(match[0], 10) : 120;
+}
+
 // ================= 2. TAB: MOVIES =================
 function renderMoviesTable() {
     const searchEl = document.getElementById('movie-search');
@@ -346,6 +393,10 @@ function renderMoviesTable() {
         const badge = m.status === 'now-showing' 
             ? `<span class="badge badge-green">Đang chiếu</span>` 
             : `<span class="badge badge-yellow">Sắp chiếu</span>`;
+        const trailerLink = m.trailer || m.trailerUrl || '';
+        const safeTitle = (m.title || '').replace(/'/g, "\\'");
+        const safeTrailer = trailerLink.replace(/'/g, "\\'");
+
         tbody.innerHTML += `
             <tr>
                 <td class="poster-td"><img src="${m.poster || 'https://via.placeholder.com/150'}" alt="poster" style="width:45px; height:60px; object-fit:cover; border-radius:4px;"></td>
@@ -354,8 +405,9 @@ function renderMoviesTable() {
                 <td>${m.duration} phút</td>
                 <td>${badge}</td>
                 <td>
-                    <button class="btn-mini" onclick="openEditMovieModal('${m.id}')" title="Sửa"><i class="fas fa-edit"></i></button>
-                    <button class="btn-mini" onclick="deleteMovie('${m.id}')" title="Xóa" style="border-color:var(--primary-red); color:var(--primary-red);"><i class="fas fa-trash-alt"></i></button>
+                    <button class="btn-mini" onclick="openTrailerModal('${safeTrailer}', '${safeTitle}')" title="Xem Trailer YouTube" style="border-color: rgba(229,9,20,0.4); color: #ff4d4d;"><i class="fab fa-youtube"></i> Trailer</button>
+                    <button class="btn-mini" onclick="openEditMovieModal('${m.id}')" title="Sửa"><i class="fas fa-edit"></i> Sửa</button>
+                    <button class="btn-mini" onclick="deleteMovie('${m.id}')" title="Xóa" style="border-color:var(--primary-red); color:var(--primary-red);"><i class="fas fa-trash-alt"></i> Xóa</button>
                 </td>
             </tr>
         `;
@@ -369,6 +421,7 @@ function filterMoviesTable() {
 function openAddMovieModal() {
     document.getElementById('movie-id').value = '';
     document.getElementById('movie-form').reset();
+    document.getElementById('movie-duration-input').value = 120;
     document.getElementById('movie-modal-title').textContent = "Thêm phim mới";
     document.getElementById('movie-modal').style.display = 'flex';
 }
@@ -377,13 +430,13 @@ function openEditMovieModal(id) {
     const m = db.movies.find(item => item.id === id);
     if (m) {
         document.getElementById('movie-id').value = m.id;
-        document.getElementById('movie-title-input').value = m.title;
-        document.getElementById('movie-genre-input').value = m.genre;
-        document.getElementById('movie-duration-input').value = m.duration;
+        document.getElementById('movie-title-input').value = m.title || '';
+        document.getElementById('movie-genre-input').value = m.genre || '';
+        document.getElementById('movie-duration-input').value = m.duration || 120;
         document.getElementById('movie-age-input').value = m.age || 'T13';
-        document.getElementById('movie-status-input').value = m.status;
+        document.getElementById('movie-status-input').value = m.status || 'now-showing';
         document.getElementById('movie-poster-input').value = m.poster || '';
-        document.getElementById('movie-trailer-input').value = m.trailer || '';
+        document.getElementById('movie-trailer-input').value = m.trailer || m.trailerUrl || '';
         document.getElementById('movie-desc-input').value = m.desc || '';
         document.getElementById('movie-modal-title').textContent = "Sửa thông tin phim";
         document.getElementById('movie-modal').style.display = 'flex';
@@ -397,10 +450,13 @@ function closeMovieModal() {
 async function handleMovieSubmit(e) {
     if (e) e.preventDefault();
     const id = document.getElementById('movie-id').value;
+    const durationRaw = document.getElementById('movie-duration-input').value;
+    const durationNum = parseDurationMinutes(durationRaw);
+
     const apiData = {
         title: document.getElementById('movie-title-input').value,
         description: document.getElementById('movie-desc-input').value,
-        duration: parseInt(document.getElementById('movie-duration-input').value) || 120,
+        duration: durationNum,
         releaseDate: new Date().toISOString(),
         genre: document.getElementById('movie-genre-input').value,
         director: "Đang cập nhật",
@@ -1251,7 +1307,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const userHistoryModal = document.getElementById('user-history-modal');
         const adminRestockModal = document.getElementById('admin-restock-modal');
         
+        const trailerModal = document.getElementById('trailer-modal');
+        
         if (e.target === movieModal) closeMovieModal();
+        if (e.target === trailerModal) closeTrailerModal();
         if (e.target === showtimeModal) closeShowtimeModal();
         if (e.target === comboModal) closeComboModal();
         if (e.target === userHistoryModal) closeUserHistoryModal();
@@ -1271,6 +1330,8 @@ window.openEditMovieModal = openEditMovieModal;
 window.closeMovieModal = closeMovieModal;
 window.handleMovieSubmit = handleMovieSubmit;
 window.deleteMovie = deleteMovie;
+window.openTrailerModal = openTrailerModal;
+window.closeTrailerModal = closeTrailerModal;
 
 window.filterShowtimesTable = filterShowtimesTable;
 window.openAddShowtimeModal = openAddShowtimeModal;

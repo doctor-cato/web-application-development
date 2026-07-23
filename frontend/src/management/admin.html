@@ -1705,8 +1705,8 @@
                         <input type="text" id="movie-genre-input" required placeholder="Hành Động, Viễn Tưởng...">
                     </div>
                     <div class="form-group">
-                        <label for="movie-duration-input">Thời lượng (phút/giờ):</label>
-                        <input type="text" id="movie-duration-input" required placeholder="Ví dụ: 120 phút hoặc 2h">
+                        <label for="movie-duration-input">Thời lượng (số phút):</label>
+                        <input type="number" id="movie-duration-input" min="1" max="600" value="120" required placeholder="Số phút (ví dụ: 120)">
                     </div>
                 </div>
 
@@ -1750,6 +1750,19 @@
                     <button type="submit" class="btn btn-primary">Lưu phim</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- 1B. YOUTUBE TRAILER PREVIEW MODAL -->
+    <div id="trailer-modal" class="modal-admin">
+        <div class="modal-admin-content glass-panel" style="max-width: 800px; padding: 25px; border-radius: 12px;">
+            <span class="close-admin-modal" onclick="closeTrailerModal()" style="float: right; cursor: pointer; font-size: 1.6rem; color: #fff;">&times;</span>
+            <h3 id="trailer-modal-title" style="margin-bottom: 15px; color: var(--btn-cyan-color); display: flex; align-items: center; gap: 10px;">
+                <i class="fab fa-youtube" style="color: var(--primary-red); font-size: 1.5rem;"></i> Xem Trailer Phim
+            </h3>
+            <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; background: #000; border: 1px solid var(--glass-border);">
+                <iframe id="trailer-iframe" style="position: absolute; top:0; left:0; width:100%; height:100%; border:0;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
         </div>
     </div>
 
