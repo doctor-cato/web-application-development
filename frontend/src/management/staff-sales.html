@@ -1208,7 +1208,7 @@
             { id: "QR-3HD2K-77182", customerName: "Đỗ Minh", phone: "0911223344", itemsText: "1 Combo Đôi (2 Bắp + 2 Pepsi)", items: [{ prodId: "PROD-007", name: "Combo Đôi (2 Bắp + 2 Pepsi)", qty: 1 }], totalAmount: 110000, dateCreated: "2026-06-18T14:35:00Z" }
         ];
 
-        const SALE_PRODUCTS = [
+        let SALE_PRODUCTS = [
             { id: "PROD-001", name: "Bắp Ngọt (Lớn)", price: 45000, category: "Bắp", image: "https://images.unsplash.com/photo-1578242173167-73d84cbcd29d?auto=format&fit=crop&w=300&q=80", deduct: [{ id: "INV-001", qty: 1 }, { id: "INV-007", qty: 1 }] },
             { id: "PROD-002", name: "Bắp Phô Mai (Lớn)", price: 55000, category: "Bắp", image: "https://images.unsplash.com/photo-1585647347483-22b66260dffd?auto=format&fit=crop&w=300&q=80", deduct: [{ id: "INV-002", qty: 1 }, { id: "INV-007", qty: 1 }] },
             { id: "PROD-008", name: "Bắp Caramel (Lớn)", price: 55000, category: "Bắp", image: "https://images.unsplash.com/photo-1578242173167-73d84cbcd29d?auto=format&fit=crop&w=300&q=80", deduct: [{ id: "INV-008", qty: 1 }, { id: "INV-007", qty: 1 }] },
@@ -1253,6 +1253,25 @@
                     { time: new Date().toLocaleTimeString("vi-VN"), text: "Hệ thống POS khởi động thành công." }
                 ]));
             }
+
+            // Sync with backend API combos dynamically
+            fetch('/api/combos')
+                .then(res => res.json())
+                .then(combos => {
+                    if (Array.isArray(combos) && combos.length > 0) {
+                        const apiProducts = combos.map(c => ({
+                            id: c.id ? c.id.toString() : 'CB-' + Math.random().toString(36).substr(2, 5),
+                            name: c.name,
+                            price: c.price,
+                            category: "Combo",
+                            image: c.image || "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=300&q=80",
+                            deduct: [{ id: "INV-001", qty: 1 }, { id: "INV-003", qty: 1 }]
+                        }));
+                        SALE_PRODUCTS = [...apiProducts, ...SALE_PRODUCTS.filter(p => p.category !== "Combo")];
+                        renderPOSProducts();
+                    }
+                })
+                .catch(err => console.warn("API combos sync warning:", err));
         }
 
         // --- Live Clock ---

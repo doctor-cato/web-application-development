@@ -1098,30 +1098,43 @@ export function renderNavbar() {
             const qbMovieList = document.getElementById('qb-movie-list');
             let selectedMovieId = null;
 
-            // Load phim into Custom Dropdown
-            const moviesData = typeof nowShowingMovies !== 'undefined' ? nowShowingMovies : [{id: 'dummy', title: 'Phim Demo (Hardcoded)'}];
+            // Load phim into Custom Dropdown dynamically from API
+            let moviesData = typeof nowShowingMovies !== 'undefined' && nowShowingMovies.length > 0 ? nowShowingMovies : [];
             
-            function renderMovieOptions(filterText = '') {
-                qbMovieList.innerHTML = '';
-                const filtered = moviesData.filter(m => m.title.toLowerCase().includes(filterText.toLowerCase()));
-                
-                if (filtered.length === 0) {
-                    qbMovieList.innerHTML = '<li class="no-results">Không tìm thấy phim</li>';
-                    return;
-                }
+            function getActiveMovies() {
+                if (moviesData.length > 0) return Promise.resolve(moviesData);
+                return fetch('/api/movies')
+                    .then(res => res.json())
+                    .then(data => {
+                        moviesData = data.map(m => ({ id: m.id, title: m.title }));
+                        return moviesData;
+                    })
+                    .catch(() => []);
+            }
 
-                filtered.forEach(m => {
-                    const li = document.createElement('li');
-                    li.textContent = m.title;
-                    li.dataset.value = m.id;
-                    li.addEventListener('click', () => {
-                        selectedMovieId = m.id;
-                        qbMovieSearch.value = m.title;
-                        qbMovieMenu.classList.remove('active');
-                        qbMovieTrigger.classList.remove('active');
-                        triggerMovieSelection();
+            function renderMovieOptions(filterText = '') {
+                getActiveMovies().then(list => {
+                    qbMovieList.innerHTML = '';
+                    const filtered = list.filter(m => m.title.toLowerCase().includes(filterText.toLowerCase()));
+                    
+                    if (filtered.length === 0) {
+                        qbMovieList.innerHTML = '<li class="no-results">Không tìm thấy phim</li>';
+                        return;
+                    }
+
+                    filtered.forEach(m => {
+                        const li = document.createElement('li');
+                        li.textContent = m.title;
+                        li.dataset.value = m.id;
+                        li.addEventListener('click', () => {
+                            selectedMovieId = m.id;
+                            qbMovieSearch.value = m.title;
+                            qbMovieMenu.classList.remove('active');
+                            qbMovieTrigger.classList.remove('active');
+                            triggerMovieSelection();
+                        });
+                        qbMovieList.appendChild(li);
                     });
-                    qbMovieList.appendChild(li);
                 });
             }
 
