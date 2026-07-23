@@ -85,7 +85,7 @@ export async function logout() {
         console.error('Logout error:', error);
     }
     clearCurrentUser();
-    window.location.href = '/explore/home-page/index.html';
+    window.location.href = '/auth/user-login/login.html';
 }
 
 export function getSession() {

@@ -1,6 +1,6 @@
 import { getBookings, saveBookings } from '/shared/utils/storage.js';
 import { getCurrentUser, clearCurrentUser, setCurrentUser } from '/auth/auth-services/storage.js';
-import { updateProfile } from '/auth/auth-services/authService.js';
+import { updateProfile, logout } from '/auth/auth-services/authService.js';
 import { setupProfileUI } from './profile-ui.js';
 
 function formatPrice(amount) {
@@ -297,17 +297,7 @@ function initLogout() {
         logoutBtn.addEventListener('click', (e) => {
             e.preventDefault();
             if (confirm('Bạn có chắc chắn muốn đăng xuất?')) {
-                try {
-                    clearCurrentUser();
-                } catch(e) {}
-                localStorage.removeItem('isLoggedIn');
-                localStorage.removeItem('userName');
-                localStorage.removeItem('userEmail');
-                localStorage.removeItem('userAvatar');
-                localStorage.removeItem('is_vip');
-                localStorage.removeItem('vip_plan');
-                localStorage.removeItem('userPhone');
-                window.location.href = '../../index.html';
+                logout();
             }
         });
     }
