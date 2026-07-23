@@ -588,6 +588,48 @@ export function renderNavbar() {
     transform: scale(1.15);
 }
 
+/* Portal Shortcut Buttons for Admin & Staff */
+.portal-nav-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.825rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.admin-badge-btn {
+    background: rgba(229, 9, 20, 0.15);
+    color: var(--primary-red, #e50914);
+    border: 1px solid rgba(229, 9, 20, 0.4);
+}
+
+.admin-badge-btn:hover {
+    background: rgba(229, 9, 20, 0.35);
+    color: #ffffff;
+    box-shadow: 0 0 12px rgba(229, 9, 20, 0.4);
+    transform: translateY(-1px);
+}
+
+.staff-badge-btn {
+    background: rgba(0, 240, 255, 0.12);
+    color: #00f0ff;
+    border: 1px solid rgba(0, 240, 255, 0.35);
+}
+
+.staff-badge-btn:hover {
+    background: rgba(0, 240, 255, 0.25);
+    color: #ffffff;
+    box-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
+    transform: translateY(-1px);
+}
+
 /* Notification Button & Dropdown */
 .notif-btn {
     position: relative;
@@ -1372,7 +1414,48 @@ export function renderNavbar() {
 
                 const borderClass = 'avatar-border-' + (localStorage.getItem('userAvatarBorder') || 'member');
 
+                const userRole = (session.role || '').toUpperCase();
+                let portalNavButtonsHtml = '';
+                let portalMenuItemsHtml = '';
+
+                if (userRole === 'ADMIN') {
+                    portalNavButtonsHtml = `
+                        <a href="${srcPrefix}/management/admin.html" class="portal-nav-btn admin-badge-btn" title="Chuyển đến trang Admin Portal">
+                            <i class="fas fa-user-shield"></i> <span>Admin Portal</span>
+                        </a>
+                        <a href="${srcPrefix}/management/staff-sales.html" class="portal-nav-btn staff-badge-btn" title="Chuyển đến Quầy bán hàng Staff POS">
+                            <i class="fas fa-cash-register"></i> <span>Staff POS</span>
+                        </a>
+                    `;
+                    portalMenuItemsHtml = `
+                        <li style="border-top: 1px dashed rgba(229, 9, 20, 0.4); margin-top: 6px; padding-top: 6px;">
+                            <a href="${srcPrefix}/management/admin.html" style="color: var(--primary-red, #e50914); font-weight: 700;">
+                                <i class="fas fa-user-shield" style="color: var(--primary-red, #e50914);"></i> Admin Portal
+                            </a>
+                        </li>
+                        <li>
+                            <a href="${srcPrefix}/management/staff-sales.html" style="color: #00f0ff; font-weight: 700;">
+                                <i class="fas fa-cash-register" style="color: #00f0ff;"></i> Staff POS Portal
+                            </a>
+                        </li>
+                    `;
+                } else if (userRole === 'STAFF') {
+                    portalNavButtonsHtml = `
+                        <a href="${srcPrefix}/management/staff-sales.html" class="portal-nav-btn staff-badge-btn" title="Chuyển đến Quầy bán hàng Staff POS">
+                            <i class="fas fa-cash-register"></i> <span>Staff POS</span>
+                        </a>
+                    `;
+                    portalMenuItemsHtml = `
+                        <li style="border-top: 1px dashed rgba(0, 240, 255, 0.4); margin-top: 6px; padding-top: 6px;">
+                            <a href="${srcPrefix}/management/staff-sales.html" style="color: #00f0ff; font-weight: 700;">
+                                <i class="fas fa-cash-register" style="color: #00f0ff;"></i> Staff POS Portal
+                            </a>
+                        </li>
+                    `;
+                }
+
                 const loggedInHtml = `
+                    ${portalNavButtonsHtml}
                     <div class="notif-btn" id="notif-btn">
                         <i class="fas fa-bell"></i>
                         <span class="notif-dot" id="notif-dot" style="display: none;"></span>
@@ -1410,6 +1493,7 @@ export function renderNavbar() {
                                 <li><a href="${srcPrefix}/user/user-profile/profile.html?tab=history"><i class="fas fa-ticket-alt"></i> Lịch sử đặt vé</a></li>
                                 <li><a href="${srcPrefix}/user/user-profile/profile.html?tab=offers"><i class="fas fa-gift"></i> Ưu đãi của tôi</a></li>
                                 <li><a href="${srcPrefix}/user/user-profile/profile.html?tab=settings"><i class="fas fa-cog"></i> Cài đặt</a></li>
+                                ${portalMenuItemsHtml}
                             </ul>
                             <div class="user-menu-footer">
                                 <a href="#" class="logout-btn" id="logout-action"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
