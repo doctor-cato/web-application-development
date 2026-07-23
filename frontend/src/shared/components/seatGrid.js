@@ -116,8 +116,12 @@ export function clearSelection() {
 }
 
 function _createSeatEl(seatId, seatInfo) {
+  /* PONYTAIL: Prevent text selection & double-tap zoom issues on mobile screens */
   const el = document.createElement('div');
   el.className = 'seat seat--available';
+  el.style.userSelect = 'none';
+  el.style.webkitUserSelect = 'none';
+  el.style.touchAction = 'manipulation';
   el.innerText = seatId;
   el.dataset.id = seatId;
 

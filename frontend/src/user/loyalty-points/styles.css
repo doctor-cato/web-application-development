@@ -1415,3 +1415,12 @@ a { color: inherit; text-decoration: none; }
     min-width: auto;
   }
 }
+
+/* ponytail: responsive fixes for mobile <= 480px */
+@media (max-width: 480px) {
+  .points { font-size: 36px; }
+  .rewards-card-inner { padding: 18px 16px; }
+  .privileges-card { padding: 18px 16px; }
+  .earn-grid { grid-template-columns: 1fr; }
+}
+

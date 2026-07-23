@@ -892,6 +892,58 @@
             transform: translateY(0);
             opacity: 1;
         }
+
+        /* ponytail: responsive fixes for mobile & tablet */
+        @media (max-width: 900px) {
+            body {
+                height: auto;
+                overflow: auto;
+                flex-direction: column;
+            }
+            .admin-sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            .admin-wrapper {
+                margin-left: 0;
+                height: auto;
+                overflow: visible;
+            }
+            .checkout-panel {
+                flex-direction: column;
+                height: auto;
+                gap: 16px;
+            }
+            .cart-section, .loyalty-section, .actions-section {
+                width: 100%;
+                border-right: none;
+                padding-right: 0;
+            }
+            #toast-notification {
+                left: 20px;
+                bottom: 20px;
+            }
+        }
+        @media (max-width: 480px) {
+            .admin-header {
+                padding: 12px 16px;
+                flex-direction: column;
+                gap: 10px;
+                height: auto;
+            }
+            .header-right {
+                width: 100%;
+                justify-content: space-between;
+            }
+            .pos-tabs {
+                padding: 10px 16px;
+                overflow-x: auto;
+            }
+            .pos-grid-container {
+                padding: 10px 16px;
+            }
+        }
     </style>
     <script>
         // Auth check for Staff Sales

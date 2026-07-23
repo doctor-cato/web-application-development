@@ -1,0 +1,24 @@
+# 3HD2Kcinema AI Agent Guidelines & Skill Configuration
+
+## Active Skill Routing
+This project relies on the following 13 filtered skills:
+1. `modern-web-guidance`: Best practices for HTML5, Vanilla ES6 JS, CSS3, Tailwind.
+2. `a11y-debugging`: Accessibility testing with Playwright & Axe-core (`npm run test:a11y`).
+3. `chrome-devtools`: DOM, network inspection, browser automation via DevTools.
+4. `debug-optimize-lcp`: Core Web Vitals & LCP image loading optimizations.
+5. `memory-leak-debugging`: BroadcastChannel & LocalStorage event listener leak checking.
+6. `troubleshooting`: Chrome DevTools MCP connection diagnostics.
+7. `antigravity-guide`: Reference for Google Antigravity CLI/IDE/SDK.
+8. `google-antigravity-sdk`: AI agent orchestration.
+9-13. `ponytail` family (`ponytail`, `ponytail-audit`, `ponytail-gain`, `ponytail-help`, `ponytail-review`): Code quality & anti-overengineering audits.
+
+## Excluded Skills (DO NOT USE)
+- Android CLI (`android-cli`)
+- Chrome Extensions (`chrome-extensions`)
+- All Flutter / Dart skills (`dart-*`, `flutter-*`)
+
+## Architecture & Code Guidelines
+- **Frontend**: Vanilla ES6 JS modules + Semantic HTML5 + CSS/Tailwind. No heavy JS frameworks (React/Vue).
+- **Storage**: Must use `Storage` wrapper in `frontend/src/shared/utils/storage.js`. Never use direct `localStorage` calls across components.
+- **Commands**: Always use `rtk <cmd>` for shell operations to minimize token usage.
+- **Docs**: Keep markdown files under `docs/` in sync whenever code/APIs change.

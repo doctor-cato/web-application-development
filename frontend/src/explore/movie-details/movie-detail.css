@@ -1473,25 +1473,28 @@
 }
 
 /* ── RESPONSIVE ───────────────────────────────────────────── */
+/* ponytail: consolidated responsive layout for movie details */
 @media (max-width: 1024px) {
     .detail-metadata { grid-template-columns: 180px 1fr; gap: 30px; }
     .ratings-layout { grid-template-columns: 200px 1fr; }
     .gallery-grid { grid-template-columns: repeat(3, 1fr); }
-    .lightbox-prev { left: -50px; }
-    .lightbox-next { right: -50px; }
+    .lightbox-prev { left: 10px; }
+    .lightbox-next { right: 10px; }
 }
 
 @media (max-width: 768px) {
     .detail-hero { height: auto; min-height: 0; max-height: none; padding-top: 0; }
     .detail-hero-content {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: center;
+        text-align: center;
         padding: 20px 20px 36px;
         gap: 20px;
     }
-    .detail-hero-poster { width: 120px; transform: none; }
+    .detail-hero-poster { width: 140px; transform: none; }
     .detail-hero-poster:hover { transform: none; }
     .detail-hero-title { font-size: 1.8rem; }
+    .detail-hero-actions { justify-content: center; }
     .detail-metadata { grid-template-columns: 1fr; }
     .detail-sidebar { flex-direction: row; flex-wrap: wrap; align-items: flex-start; }
     .detail-sidebar-poster { width: 130px; flex-shrink: 0; }
@@ -1501,31 +1504,33 @@
     .rating-score-panel { flex-direction: row; flex-wrap: wrap; justify-content: center; padding: 20px; }
     .gallery-grid { grid-template-columns: repeat(2, 1fr); }
     .promo-grid { grid-template-columns: 1fr; }
-    .lightbox-prev { left: -10px; }
-    .lightbox-next { right: -10px; }
+    .lightbox-prev { left: 10px; }
+    .lightbox-next { right: 10px; }
     .carousel-scroll-btn { display: none; }
     .detail-main { padding: 0 16px 60px; }
     .detail-breadcrumb { padding: 12px 16px; font-size: 0.75rem; }
-    .showtime-filters-row { gap: 8px; }
+    .showtime-filters-row { flex-direction: column; gap: 10px; }
+    .showtime-filter-select { width: 100%; }
+    .showtime-date-tabs { overflow-x: auto; white-space: nowrap; flex-wrap: nowrap; }
     .float-support { bottom: 20px; right: 16px; }
     /* Combined section responsive */
     .detail-combined-content {
         flex-direction: column;
+        align-items: center;
+        text-align: center;
         padding: 24px 20px 36px;
         gap: 24px;
     }
-    .detail-combined-poster { width: 140px; }
+    .detail-combined-poster { width: 100%; max-width: 200px; }
 }
 
 @media (max-width: 480px) {
     .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-    .detail-hero-badges { gap: 5px; }
-    .detail-hero-actions { flex-direction: column; }
+    .detail-hero-badges { gap: 5px; justify-content: center; }
+    .detail-hero-actions { flex-direction: column; width: 100%; }
     .btn-buy-ticket, .btn-trailer { width: 100%; justify-content: center; }
-    .cinema-showtime-header { flex-direction: column; }
+    .cinema-showtime-header { flex-direction: column; gap: 10px; }
     .cinema-features-tags { justify-content: flex-start; }
-    /* Combined section small screen */
-    .detail-combined-poster { width: 110px; }
+    .detail-combined-poster { width: 130px; }
+    .detail-hero-title { font-size: 1.5rem; }
 }
-
-@media (max-width: 768px) { .detail-combined-content { flex-direction: column; align-items: center; text-align: center; padding: 20px 5%; gap: 20px; } .detail-combined-poster { width: 100%; max-width: 250px; } .detail-hero-actions { justify-content: center; } .showtime-filters-row { flex-direction: column; gap: 10px; } .showtime-filter-select { width: 100%; } .showtime-date-tabs { overflow-x: auto; white-space: nowrap; flex-wrap: nowrap; } }

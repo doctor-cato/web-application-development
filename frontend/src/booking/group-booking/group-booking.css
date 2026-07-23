@@ -1334,3 +1334,13 @@ body {
     .summary-total-price { font-size: 1.8rem !important; }
     .btn-continue { font-size: 1rem !important; padding: 0.5rem !important; }
 }
+
+/* PONYTAIL: Group booking mobile screen adjustments for <= 480px */
+@media (max-width: 480px) {
+    .panel-section { padding: 1.25rem 1rem !important; border-radius: 1rem !important; }
+    .panel-title { font-size: 1.4rem !important; margin-bottom: 1.25rem !important; }
+    .hero-title { font-size: 2.2rem !important; }
+    .price-value { font-size: 1.75rem !important; }
+    .seat { width: 2.2rem !important; height: 2.2rem !important; font-size: 0.7rem !important; }
+}
+

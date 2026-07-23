@@ -441,3 +441,59 @@ body {
 .hidden {
     display: none;
 }
+
+/* ponytail: responsive form rows and layout adjustments for auth pages */
+.form-row-2col {
+    display: flex;
+    gap: 10px;
+}
+
+.gender-options {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    color: white;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+    .auth-header {
+        padding: 0 1.5rem;
+    }
+    .auth-logo {
+        font-size: 36px;
+    }
+}
+
+@media (max-width: 540px) {
+    .form-row-2col {
+        flex-direction: column;
+        gap: 1.25rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .auth-header {
+        padding: 0 1rem;
+        height: 60px;
+    }
+    .auth-main {
+        padding-top: 60px;
+    }
+    .auth-logo {
+        font-size: 32px;
+    }
+    .auth-content {
+        padding: 1rem 0.75rem;
+    }
+    .auth-box {
+        padding: 1.25rem 1rem;
+        border-radius: 10px;
+    }
+    .auth-tab {
+        font-size: 1.1rem;
+    }
+    .gender-options {
+        gap: 12px;
+    }
+}

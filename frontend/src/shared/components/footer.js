@@ -84,7 +84,13 @@ export function renderFooter() {
         color: var(--primary-red) !important;
     }
     @media (max-width: 768px) {
-        .footer-content { flex-direction: column; }
+        .footer-content { flex-direction: column; gap: 30px; }
+        .footer-brand .logo { font-size: 2.2rem !important; }
+        .footer-links { gap: 30px !important; }
+    }
+    @media (max-width: 480px) {
+        footer { padding: 30px 16px; }
+        .footer-links { flex-direction: column; gap: 24px !important; }
     }
     </style>
     `;

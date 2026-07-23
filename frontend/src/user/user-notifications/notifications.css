@@ -298,3 +298,11 @@
         gap: 16px;
     }
 }
+
+/* ponytail: responsive fixes for mobile <= 480px */
+@media (max-width: 480px) {
+    .notif-card { flex-direction: column; gap: 12px; }
+    .notif-card-actions { position: absolute; top: 12px; right: 12px; }
+    .notif-page-title { font-size: 1.6rem; }
+}
+

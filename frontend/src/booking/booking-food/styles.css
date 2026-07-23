@@ -723,3 +723,20 @@ input[type="radio"][hidden] {
   .food-tabs { gap: 8px; }
   .food-tab { padding: 8px 16px; font-size: 13px; }
 }
+
+/* PONYTAIL: Clean mobile layout for booking-food under 480px */
+@media (max-width: 480px) {
+  .page { padding: 90px 12px 40px; }
+  .section-title { font-size: 18px; flex-wrap: wrap; gap: 8px; }
+  .section-title span { font-size: 9px; padding: 2px 8px; }
+  .card { flex: 0 0 220px; min-width: 220px; min-height: 370px; }
+  .media { height: 150px; }
+  .body { padding: 14px 16px 18px; }
+  .body h3 { font-size: 13px; }
+  .price { font-size: 16px; }
+  .promo-input-wrap { flex-direction: column; }
+  .btn-apply-promo { width: 100%; text-align: center; }
+  .summary-card { padding: 16px; }
+  .total strong { font-size: 22px; }
+}
+

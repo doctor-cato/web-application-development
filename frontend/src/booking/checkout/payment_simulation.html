@@ -115,6 +115,25 @@
         .sim-btn:hover {
             opacity: 0.9;
         }
+
+        /* PONYTAIL: Mobile <= 480px responsive styling for payment simulator */
+        @media (max-width: 480px) {
+            .sim-container {
+                width: 92%;
+                margin: 1.5rem auto;
+                box-sizing: border-box;
+            }
+            .sim-body {
+                padding: 1.25rem 1rem;
+            }
+            .sim-amount {
+                font-size: 1.8rem;
+            }
+            #qr-code-img {
+                width: 140px !important;
+                height: 140px !important;
+            }
+        }
     </style>
 </head>
 

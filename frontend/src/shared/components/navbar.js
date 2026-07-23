@@ -203,6 +203,29 @@ export function renderNavbar() {
     transform: translateX(-50%) scaleX(1) !important;
 }
 
+/* Cine-Match Nav Button Style */
+.cine-match-nav {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 14px !important;
+    border-radius: 20px !important;
+    background: rgba(229, 9, 20, 0.15) !important;
+    border: 1px solid rgba(229, 9, 20, 0.4) !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    font-size: 0.9rem !important;
+    height: auto !important;
+    transition: all 0.3s ease !important;
+}
+.cine-match-nav::after {
+    display: none !important;
+}
+.cine-match-nav:hover {
+    background: var(--primary-red, #e50914) !important;
+    border-color: #ff2a5f !important;
+    box-shadow: 0 0 12px rgba(229, 9, 20, 0.5) !important;
+}
+
 /* Quick Book Toggle */
 .quick-book-toggle {
     font-family: 'Inter', sans-serif;
@@ -1034,8 +1057,7 @@ export function renderNavbar() {
     .mobile-only { display: none !important; }
 }
 @media (max-width: 1024px) {
-    .nav-links { position: absolute; width: 0; height: 0; overflow: visible; }
-    .nav-links > a { display: none !important; }
+    .nav-links { display: none !important; }
     .navbar { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; background: rgba(8, 8, 8, 0.98) !important; }
     .quick-book-wrapper { position: static !important; }
     .quick-book-toggle { display: none !important; }
@@ -1046,6 +1068,8 @@ export function renderNavbar() {
         transform: translate(-50%, -50%) scale(0.95) !important;
         width: 90% !important;
         max-width: 400px !important;
+        max-height: 85vh !important;
+        overflow-y: auto !important;
         z-index: 10000 !important;
     }
     .quick-book-dropdown.active {
@@ -1065,13 +1089,52 @@ export function renderNavbar() {
     .nav-left { gap: 15px; }
     .logo { font-size: 1.8rem; }
     .search-pill span { display: none; }
-    .search-pill { padding: 10px 14px; }
+    .search-pill { padding: 8px 12px; }
 }
 @media (max-width: 600px) {
-    .nav-actions { gap: 10px; }
-    .search-pill.active #search-input { width: 100px; }
-    .user-dropdown { right: -50px; }
-    .notif-dropdown { right: -50px; width: 300px; }
+    /* ponytail: navbar dropdowns use fixed viewport positioning on mobile; ceiling: max screen height under 400px may cause vertical scrolling inside dropdowns; upgrade path: convert dropdowns to bottom-sheet drawers */
+    .navbar { height: 64px; padding: 0 16px; }
+    .logo { font-size: 1.5rem; }
+    .nav-actions { gap: 8px; }
+    
+    /* Hide portal icon buttons from top bar on small screens to prevent action bar overflow; accessible via Hamburger menu */
+    .portal-icon-btn { display: none !important; }
+    
+    .search-pill.active #search-input { width: 90px; }
+    #search-suggestions {
+        width: calc(100vw - 32px) !important;
+        max-width: 340px !important;
+        right: -8px !important;
+    }
+    
+    .user-dropdown {
+        position: fixed !important;
+        top: 64px !important;
+        left: 16px !important;
+        right: 16px !important;
+        width: auto !important;
+        max-width: 320px !important;
+        margin: 0 0 0 auto !important;
+    }
+    .user-dropdown::before { display: none !important; }
+    
+    .notif-dropdown {
+        position: fixed !important;
+        top: 64px !important;
+        left: 16px !important;
+        right: 16px !important;
+        width: auto !important;
+        max-width: 360px !important;
+        margin: 0 0 0 auto !important;
+    }
+    .notif-dropdown::before { display: none !important; }
+    
+    #hamburger-dropdown {
+        width: calc(100vw - 32px) !important;
+        max-width: 280px !important;
+        right: 0 !important;
+        top: 54px !important;
+    }
 }
     </style>
     `;

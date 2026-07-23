@@ -371,6 +371,82 @@
             color: white;
         }
 
+        /* Responsive Breakpoints for Mobile & Tablet */
+        @media (max-width: 768px) {
+            /* ponytail: compact mobile glass-panel & radar for cinematch; ceiling: screen width < 320px requires smaller fonts; upgrade path: fluid clamp typography */
+            .premium-container {
+                margin: 90px 16px 40px !important;
+                max-width: 100% !important;
+            }
+            .glass-panel {
+                padding: 30px 20px !important;
+                border-radius: 20px !important;
+            }
+            .header-title {
+                font-size: 2.2rem !important;
+                letter-spacing: 1px !important;
+            }
+            .header-subtitle {
+                font-size: 1rem !important;
+                margin-bottom: 25px !important;
+            }
+            .premium-form {
+                grid-template-columns: 1fr !important;
+                gap: 16px !important;
+                margin-bottom: 25px !important;
+            }
+            .btn-neon {
+                padding: 14px 24px !important;
+                font-size: 1rem !important;
+                letter-spacing: 1px !important;
+            }
+            .radar-circle {
+                width: 240px !important;
+                height: 240px !important;
+            }
+            .radar-beam {
+                width: 120px !important;
+                height: 120px !important;
+            }
+            .match-card {
+                padding: 24px 16px !important;
+                border-radius: 16px !important;
+            }
+            .mc-avatar-wrapper {
+                width: 100px !important;
+                height: 100px !important;
+            }
+            .mc-avatar {
+                font-size: 2.5rem !important;
+            }
+            .mc-title {
+                font-size: 1.5rem !important;
+            }
+            .mc-tags {
+                flex-wrap: wrap !important;
+                gap: 6px !important;
+            }
+            .action-links {
+                flex-direction: column !important;
+                align-items: center !important;
+                gap: 12px !important;
+            }
+        }
+        @media (max-width: 480px) {
+            .premium-container {
+                margin: 80px 12px 30px !important;
+            }
+            .glass-panel {
+                padding: 20px 14px !important;
+            }
+            .header-title {
+                font-size: 1.8rem !important;
+            }
+            .form-select {
+                padding: 12px 16px !important;
+                font-size: 0.95rem !important;
+            }
+        }
     </style>
 </head>
 <body>

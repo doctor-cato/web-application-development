@@ -1,0 +1,126 @@
+{
+  "project": {
+    "name": "3HD2Kcinema",
+    "version": "2.7.7",
+    "type": "web-application",
+    "tech_stack": {
+      "frontend": ["HTML5", "CSS3", "Vanilla ES6 JavaScript", "Tailwind CSS", "Playwright", "Storybook", "Axe-core"],
+      "backend": ["ASP.NET Core", "C#", "SQL Server", "EF Core"],
+      "docs": ["MkDocs Material", "Markdownlint"]
+    }
+  },
+  "skills": {
+    "filter_summary": {
+      "total_evaluated": 37,
+      "active_count": 13,
+      "inactive_count": 24,
+      "primary_stack": "Web Application (HTML/CSS/JS/Node/Python/C#)"
+    },
+    "active": [
+      {
+        "name": "modern-web-guidance",
+        "category": "Frontend Web Development",
+        "description": "Tra cứu & áp dụng best practices cho HTML5, CSS3, Glassmorphism, animations, responsive design, Vanilla JS.",
+        "trigger": "Khi chỉnh sửa giao diện UI, layout, CSS, HTML5 semantic, form validation hoặc ES6 JS modules."
+      },
+      {
+        "name": "a11y-debugging",
+        "category": "Web Accessibility",
+        "description": "Kiểm thử và tối ưu khả năng truy cập (a11y) theo tiêu chuẩn WCAG / web.dev bằng Playwright & Axe-core.",
+        "trigger": "Khi chạy test:a11y, kiểm tra ARIA labels, focus states, tap targets, hoặc contrast UI."
+      },
+      {
+        "name": "chrome-devtools",
+        "category": "Web Debugging & Automation",
+        "description": "Sử dụng Chrome DevTools MCP để debug DOM, network requests, console errors và tự động hóa trình duyệt.",
+        "trigger": "Khi debug lỗi client-side, kiểm tra network payloads, hoặc chạy browser automation."
+      },
+      {
+        "name": "debug-optimize-lcp",
+        "category": "Web Performance",
+        "description": "Chẩn đoán và tối ưu Largest Contentful Paint (LCP) và Core Web Vitals cho web app.",
+        "trigger": "Khi tối ưu tốc độ tải trang, poster phim, banner hoặc Core Web Vitals."
+      },
+      {
+        "name": "memory-leak-debugging",
+        "category": "Web Debugging",
+        "description": "Chẩn đoán leak bộ nhớ JS, event listeners rải rác, BroadcastChannel không unsubscribe.",
+        "trigger": "Khi kiểm tra BroadcastChannel seat sync, LocalStorage wrapper hoặc memory leaks."
+      },
+      {
+        "name": "troubleshooting",
+        "category": "DevTools & Environment",
+        "description": "Xử lý sự cố kết nối Chrome DevTools MCP server và target issues.",
+        "trigger": "Khi gặp lỗi kết nối browser inspection hoặc DevTools server."
+      },
+      {
+        "name": "antigravity-guide",
+        "category": "AI Development Platform",
+        "description": "Tra cứu tài liệu, sitemap và hướng dẫn cấu hình Google Antigravity CLI/IDE/SDK.",
+        "trigger": "Khi cần tra cứu cú pháp slash commands, settings, hoặc cấu hình Antigravity."
+      },
+      {
+        "name": "google-antigravity-sdk",
+        "category": "AI Agent SDK",
+        "description": "Thiết kế, triển khai và debug các AI agents và multi-agent system.",
+        "trigger": "Khi cấu hình hoặc điều phối subagents."
+      },
+      {
+        "name": "ponytail",
+        "category": "Code Quality",
+        "description": "Điều chỉnh mức độ tối ưu ponytail (lite/full/ultra/off) để tránh over-engineering.",
+        "trigger": "Khi cấu hình mức độ tối giản code."
+      },
+      {
+        "name": "ponytail-audit",
+        "category": "Code Quality",
+        "description": "Audit toàn bộ repo để phát hiện code thừa, over-engineering và code cần xóa.",
+        "trigger": "Khi thực hiện đợt dọn dẹp refactor repo."
+      },
+      {
+        "name": "ponytail-gain",
+        "category": "Code Quality",
+        "description": "Đo lường lượng token và dòng code đã tiết kiệm.",
+        "trigger": "Khi đánh giá hiệu quả tối ưu code/token."
+      },
+      {
+        "name": "ponytail-help",
+        "category": "Code Quality",
+        "description": "Tra cứu nhanh các lệnh và mức độ ponytail.",
+        "trigger": "Khi cần trợ giúp các lệnh ponytail."
+      },
+      {
+        "name": "ponytail-review",
+        "category": "Code Quality",
+        "description": "Review pull request / diff để ngăn ngừa over-engineering.",
+        "trigger": "Khi review code trước khi commit."
+      }
+    ],
+    "inactive": [
+      { "name": "android-cli", "reason": "Dự án là Web Application, không chứa Android native code." },
+      { "name": "chrome-extensions", "reason": "Dự án là Web Application, không phải Chrome Extension." },
+      { "name": "dart-add-unit-test", "reason": "Không dùng ngôn ngữ Dart/Flutter." },
+      { "name": "dart-build-cli-app", "reason": "Không dùng ngôn ngữ Dart/Flutter." },
+      { "name": "dart-collect-coverage", "reason": "Không dùng ngôn ngữ Dart/Flutter." },
+      { "name": "dart-fix-runtime-errors", "reason": "Không dùng ngôn ngữ Dart/Flutter." },
+      { "name": "dart-generate-test-mocks", "reason": "Không dùng ngôn ngữ Dart/Flutter." },
+      { "name": "dart-migrate-to-checks-package", "reason": "Không dùng ngôn ngữ Dart/Flutter." },
+      { "name": "dart-resolve-package-conflicts", "reason": "Không dùng ngôn ngữ Dart/Flutter." },
+      { "name": "dart-run-static-analysis", "reason": "Không dùng ngôn ngữ Dart/Flutter." },
+      { "name": "dart-setup-ffi-assets", "reason": "Không dùng ngôn ngữ Dart/Flutter." },
+      { "name": "dart-use-ffigen", "reason": "Không dùng ngôn ngữ Dart/Flutter." },
+      { "name": "dart-use-pattern-matching", "reason": "Không dùng ngôn ngữ Dart/Flutter." },
+      { "name": "dart-use-primary-constructors", "reason": "Không dùng ngôn ngữ Dart/Flutter." },
+      { "name": "flutter-add-integration-test", "reason": "Không dùng framework Flutter." },
+      { "name": "flutter-add-widget-preview", "reason": "Không dùng framework Flutter." },
+      { "name": "flutter-add-widget-test", "reason": "Không dùng framework Flutter." },
+      { "name": "flutter-apply-architecture-best-practices", "reason": "Không dùng framework Flutter." },
+      { "name": "flutter-build-responsive-layout", "reason": "Không dùng framework Flutter." },
+      { "name": "flutter-fix-layout-issues", "reason": "Không dùng framework Flutter." },
+      { "name": "flutter-implement-json-serialization", "reason": "Không dùng framework Flutter." },
+      { "name": "flutter-setup-declarative-routing", "reason": "Không dùng framework Flutter." },
+      { "name": "flutter-setup-localization", "reason": "Không dùng framework Flutter." },
+      { "name": "flutter-use-http-package", "reason": "Không dùng framework Flutter." }
+    ]
+  }
+}

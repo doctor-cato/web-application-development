@@ -1218,7 +1218,10 @@ input:checked + .slider:before {
     .modal-content {
         padding: 20px 15px;
     }
+    /* ponytail: responsive fixes for mobile ticket modal & cards */
+    .ticket-wrapper { width: 100% !important; max-width: 320px; margin: 0 auto; }
 }
+
 
 /* --- AVATAR BORDERS --- */
 .avatar-border-options {

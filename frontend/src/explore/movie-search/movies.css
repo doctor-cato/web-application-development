@@ -433,6 +433,7 @@
 }
 
 /* --- RESPONSIVE ADJUSTMENTS --- */
+/* ponytail: responsive layout fixes for movie search page */
 @media (max-width: 1200px) {
     .movies-grid { grid-template-columns: repeat(4, 1fr); }
 }
@@ -440,23 +441,29 @@
 @media (max-width: 1024px) {
     .movies-grid { grid-template-columns: repeat(3, 1fr); }
     .page-header h1 { font-size: 2.8rem; }
+    .page-tabs { gap: 24px; }
 }
 
 @media (max-width: 768px) {
     .movies-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
     .page-header h1 { font-size: 2.2rem; }
-    .filters-bar { flex-direction: column; align-items: stretch; gap: 15px; }
-    .search-box { width: 100%; max-width: 100%; }
-    .filter-dropdowns { flex-wrap: wrap; width: 100%; justify-content: space-between; }
-    .filter-select { flex: 1; min-width: 45%; }
+    .movies-filters { flex-direction: column; align-items: stretch; gap: 12px; }
+    .filter-pills { width: 100%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .filter-pill { width: 100%; justify-content: center; padding: 8px 10px; font-size: 0.8125rem; }
+    .sort-pill { width: 100%; justify-content: center; }
     .movies-grid .poster { height: 260px; }
+    .page-tabs { gap: 20px; }
+    .page-tabs .tab { font-size: 1.05rem; }
 }
 
 @media (max-width: 480px) {
     .movies-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
     .movies-grid .movie-card { max-width: 100%; margin: 0; }
-    .filter-select { flex: 100%; min-width: 100%; }
+    .filter-pills { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+    .filter-pill { padding: 8px 4px; font-size: 0.75rem; }
     .movies-grid .poster { height: 210px; }
-    .movies-grid .info h3 { font-size: 0.9rem; }
+    .movies-grid .info h3 { font-size: 0.85rem; }
     .movies-grid .movie-meta-row { font-size: 0.75rem; }
+    .page-tabs { gap: 16px; justify-content: center; }
+    .page-tabs .tab { font-size: 0.95rem; padding-bottom: 10px; }
 }

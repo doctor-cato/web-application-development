@@ -841,3 +841,12 @@ body {
     .vip-modal { padding: 2rem; }
     .vip-modal h2 { font-size: 1.6rem; }
 }
+
+/* ponytail: responsive fixes for mobile <= 480px */
+@media (max-width: 480px) {
+    .vip-badge-top { font-size: 0.75rem; padding: 8px 16px; }
+    .payment-options { grid-template-columns: 1fr; }
+    .modal-card { padding: 1.2rem; }
+    .modal-card-user { font-size: 1.1rem; }
+}
+

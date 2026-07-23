@@ -473,3 +473,30 @@
   gap: 5px;
   margin-top: 2px;
 }
+
+/* PONYTAIL: Mobile <= 480px responsive styling for cancel booking page */
+@media (max-width: 480px) {
+  .page-wrapper {
+    margin: 80px auto 30px;
+    padding: 0 12px;
+  }
+  .page-header h1 {
+    font-size: 1.5rem;
+  }
+  .tabs {
+    gap: 4px;
+  }
+  .tab-btn {
+    padding: 9px 6px;
+    font-size: 0.78rem;
+    gap: 4px;
+  }
+  .ticket-card {
+    padding: 16px;
+  }
+  .modal-box {
+    padding: 20px 16px;
+    width: 95%;
+  }
+}
+

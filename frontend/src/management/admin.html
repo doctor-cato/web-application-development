@@ -1014,6 +1014,51 @@
             }
         }
 
+        /* ponytail: responsive layout fixes for mobile & tablet */
+        @media (max-width: 768px) {
+            .admin-sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            .admin-wrapper {
+                margin-left: 0;
+            }
+            .admin-header {
+                padding: 0 16px;
+                flex-direction: column;
+                height: auto;
+                gap: 10px;
+                padding-top: 15px;
+                padding-bottom: 15px;
+            }
+            .admin-content {
+                padding: 16px;
+            }
+            .action-bar {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+            }
+            .search-box {
+                width: 100%;
+            }
+            .modal-admin-content {
+                width: 95% !important;
+                max-width: 100% !important;
+                padding: 20px 15px;
+            }
+        }
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+
         /* ================= CUSTOM INVENTORY & SWITCH STYLES ================= */
         .switch {
             position: relative;

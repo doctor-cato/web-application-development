@@ -47,7 +47,6 @@
     line-height: 1.3;
     margin-bottom: 8px;
     text-transform: uppercase;
-    white-space: nowrap;
 }
 
 .cinemas-header p {
@@ -677,6 +676,7 @@
 }
 
 /* --- RESPONSIVE ADJUSTMENTS --- */
+/* ponytail: responsive adjustments for cinema map page */
 @media (max-width: 1024px) {
     .cinemas-layout {
         grid-template-columns: 350px 1fr;
@@ -698,6 +698,9 @@
         padding: 20px;
         overflow-y: visible;
     }
+    .cinemas-header h1 {
+        font-size: 1.6rem;
+    }
     .cinemas-map-panel {
         height: 50vh;
         min-height: 300px;
@@ -714,6 +717,28 @@
     .hud-bottom-bar {
         padding: 8px 12px;
         font-size: 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .cinemas-list-panel {
+        padding: 16px 12px;
+    }
+    .cinemas-header h1 {
+        font-size: 1.35rem;
+    }
+    .cinema-card {
+        padding: 16px 12px;
+    }
+    .cinema-name {
+        font-size: 0.95rem;
+    }
+    .hud-coordinates {
+        display: none;
+    }
+    .btn-my-location {
+        bottom: 70px;
+        left: 12px;
     }
 }
 

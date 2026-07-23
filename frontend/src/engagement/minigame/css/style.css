@@ -841,6 +841,18 @@ body {
     }
 }
 
+/* ponytail: responsive fixes for mobile <= 480px */
+@media (max-width: 480px) {
+    .hero-title { font-size: 36px; letter-spacing: 2px; }
+    .hero-subtitle { font-size: 1.1rem !important; }
+    .hero-desc { font-size: 0.95rem !important; padding: 10px 14px !important; }
+    .section-header-row { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .countdown-box { width: 100%; justify-content: center; }
+    .wallet-bar-container { position: relative; transform: none; margin-top: -30px; }
+    .main-content-area { margin-top: 30px; }
+}
+
+
 /* ENDED EVENTS STYLES */
 .ended-card {
     opacity: 0.7;

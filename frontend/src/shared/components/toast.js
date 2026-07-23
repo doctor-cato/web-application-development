@@ -29,6 +29,23 @@ function _createContainer() {
             width: calc(100% - 48px);
             pointer-events: none;
         `;
+        // ponytail: responsive inline style tag for mobile toast container
+        if (!document.getElementById('toast-responsive-style')) {
+            const style = document.createElement('style');
+            style.id = 'toast-responsive-style';
+            style.textContent = `
+                @media (max-width: 600px) {
+                    #toast-container {
+                        top: 12px !important;
+                        right: 12px !important;
+                        left: 12px !important;
+                        width: auto !important;
+                        max-width: none !important;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
         document.body.appendChild(container);
     }
     return container;

@@ -99,7 +99,8 @@ python3 -m http.server 3000 -d src
 │   ├── deployment.md          # Hướng dẫn triển khai GitHub Pages, Vercel & Docker
 │   ├── testing.md             # Kịch bản kiểm thử tự động Playwright & Thủ công
 │   ├── contributing.md        # Quy trình đóng góp & Quy ước Commit
-│   └── ai-contribution.md     # Hướng dẫn & Quy định dành cho AI Agent
+│   ├── ai-contribution.md     # Hướng dẫn & Quy định dành cho AI Agent
+│   └── ai-skills-config.md    # Chi tiết sàng lọc & Cấu hình Skills AI Cục bộ
 ├── frontend/                  # Mã nguồn ứng dụng Frontend (Client-side)
 │   ├── src/                   # Thư mục giao diện & logic (auth, booking, explore, user,...)
 │   └── package.json           # Các npm scripts (tailwind watch, serve)
@@ -126,3 +127,4 @@ Tham khảo thư mục [`docs/`](./docs/) hoặc website MkDocs để xem nội 
 - [🔗 Kiểm thử (`docs/testing.md`)](./docs/testing.md)
 - [🔗 Quy trình Đóng góp (`docs/contributing.md`)](./docs/contributing.md)
 - [🔗 Hướng dẫn AI Agent (`docs/ai-contribution.md`)](./docs/ai-contribution.md)
+- [🔗 Cấu hình Skills AI (`docs/ai-skills-config.md`)](./docs/ai-skills-config.md)
