@@ -1,25 +1,81 @@
+# Environment & Sensitive Config Files
+.env
+.env.*
+!.env.example
+appsettings.Development.json
+appsettings.Local.json
+*.pem
+*.key
+*.pfx
+
+# Node.js & Caches
 node_modules/
-.npm
-.vscode/
-.vs/
-*.py
-*.bat
+.npm/
+.pnpm-store/
+.yarn/
+package-lock.json.log
+
+# Build & Compilation Outputs
 backend/bin/
 backend/obj/
 backend/publish/
-*.zip
-*.dll
-*.exe
-*.log
-tunnel_*.txt
-booking_screenshot.png
+backend/publish_output/
+migrate_users_app/bin/
+migrate_users_app/obj/
 **/bin/
 **/obj/
-appsettings.Development.json
-backend/publish_output/
-
-# MkDocs build directory
+**/publish/
+**/publish_output/
+dist/
+build/
 site/
-.venv/
-__pycache__/
 
+# Compiled Binaries & Archives
+*.dll
+*.exe
+*.pdb
+*.zip
+*.tar
+*.tar.gz
+*.gz
+*.rar
+*.7z
+*.iso
+*.dmg
+*.so
+*.dylib
+*.o
+*.class
+*.pyc
+
+# IDEs & Editor Metadata
+.vscode/
+.vs/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Test & Automation Artifacts
+test-results/
+playwright-report/
+blob-report/
+coverage/
+.nyc_output/
+
+# Logs, Screenshots & Temporary Files
+*.log
+*.tmp
+*.swp
+*.bak
+tunnel_*.txt
+booking_screenshot.png
+
+# OS System Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Deployment State
+.vercel

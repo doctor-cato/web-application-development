@@ -324,6 +324,57 @@ function renderDashboard() {
             });
         }
     }
+
+    // --- Dynamic Top Movie Calculation (BÁN CHẠY NHẤT) ---
+    const movieSalesMap = {};
+    paidBookings.forEach(b => {
+        const title = b.movieTitle;
+        if (title) {
+            let seatCount = 1;
+            if (Array.isArray(b.seats)) {
+                seatCount = b.seats.length;
+            } else if (typeof b.seats === 'string' && b.seats.trim()) {
+                seatCount = b.seats.split(',').filter(Boolean).length;
+            }
+            movieSalesMap[title] = (movieSalesMap[title] || 0) + seatCount;
+        }
+    });
+
+    let topMovieTitle = '';
+    let maxTickets = -1;
+    for (const title in movieSalesMap) {
+        if (movieSalesMap[title] > maxTickets) {
+            maxTickets = movieSalesMap[title];
+            topMovieTitle = title;
+        }
+    }
+
+    let topMovieObj = null;
+    if (topMovieTitle) {
+        topMovieObj = db.movies.find(m => m.title.toLowerCase().trim() === topMovieTitle.toLowerCase().trim());
+    }
+
+    if (!topMovieObj && db.movies.length > 0) {
+        topMovieObj = db.movies[0];
+        topMovieTitle = topMovieObj.title;
+        maxTickets = movieSalesMap[topMovieObj.title] || 0;
+    }
+
+    const topMovieTitleEl = document.getElementById('top-movie-title');
+    const topMovieStatsEl = document.getElementById('top-movie-stats');
+    const topMovieBgEl = document.getElementById('top-movie-bg') || document.querySelector('#dashboard-top-movie .top-movie-bg');
+
+    if (topMovieTitleEl) {
+        topMovieTitleEl.textContent = topMovieObj ? topMovieObj.title : (topMovieTitle || 'Chưa có phim');
+    }
+    if (topMovieStatsEl) {
+        const tickets = maxTickets > 0 ? maxTickets : 0;
+        topMovieStatsEl.innerHTML = `<i class="fas fa-ticket-alt"></i> ${tickets} vé đã bán`;
+    }
+    if (topMovieBgEl && topMovieObj) {
+        const posterUrl = topMovieObj.poster || 'https://images.unsplash.com/photo-1536440136628-849c177e76a1';
+        topMovieBgEl.style.backgroundImage = `url('${posterUrl}')`;
+    }
 }
 
 // --- YOUTUBE TRAILER HELPER & MODAL ---
@@ -1113,17 +1164,46 @@ function renderStatsDashboard() {
     const listEl = document.getElementById('top-selling-combos-list');
     if (listEl) {
         listEl.innerHTML = '';
-        db.combos.slice(0, 4).forEach(c => {
-            listEl.innerHTML += `
-                <div class="stat-item">
-                    <div>
-                        <span class="stat-item-name">${c.name}</span>
-                        <span class="stat-item-qty">Tồn kho ${c.stock} cái</span>
+        if (db.combos.length === 0) {
+            listEl.innerHTML = '<div style="text-align: center; padding: 15px;" class="text-muted">Chưa có dữ liệu combo</div>';
+        } else {
+            const comboSalesMap = {};
+            const logs = JSON.parse(localStorage.getItem("cinema_activity_log")) || [];
+            logs.forEach(log => {
+                if (log.text) {
+                    db.combos.forEach(c => {
+                        if (log.text.includes(c.name)) {
+                            const reg = new RegExp(`(\\d+)x\\s*${c.name.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')}`, 'i');
+                            const match = log.text.match(reg);
+                            const qty = match ? parseInt(match[1], 10) : 1;
+                            comboSalesMap[c.id] = (comboSalesMap[c.id] || 0) + qty;
+                        }
+                    });
+                }
+            });
+
+            const sortedCombos = [...db.combos].sort((a, b) => {
+                const salesA = comboSalesMap[a.id] || 0;
+                const salesB = comboSalesMap[b.id] || 0;
+                if (salesB !== salesA) return salesB - salesA;
+                return b.stock - a.stock;
+            });
+
+            sortedCombos.slice(0, 4).forEach(c => {
+                const soldQty = comboSalesMap[c.id] || 0;
+                const revenue = soldQty * c.price;
+                const revText = soldQty > 0 ? formatVND(revenue) : formatVND(c.price);
+                listEl.innerHTML += `
+                    <div class="stat-item">
+                        <div>
+                            <span class="stat-item-name">${c.name}</span>
+                            <span class="stat-item-qty">${soldQty > 0 ? `Đã bán ${soldQty} cái` : `Tồn kho ${c.stock} cái`}</span>
+                        </div>
+                        <span class="stat-item-revenue">${revText}</span>
                     </div>
-                    <span class="stat-item-revenue">${formatVND(c.price * 15)}</span>
-                </div>
-            `;
-        });
+                `;
+            });
+        }
     }
 }
 
