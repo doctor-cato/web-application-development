@@ -13,7 +13,7 @@ test.describe('Visual Regression Testing (Playwright Visual Comparison)', () => 
   });
 
   test('Movie Explore grid visual snapshot', async ({ page }) => {
-    await page.goto('/explore/movies.html');
+    await page.goto('/explore/movie-search/index.html');
     await page.waitForLoadState('networkidle');
 
     await expect(page).toHaveScreenshot('movies-explore.png', {
@@ -22,7 +22,7 @@ test.describe('Visual Regression Testing (Playwright Visual Comparison)', () => 
   });
 
   test('Booking seat selection visual snapshot', async ({ page }) => {
-    await page.goto('/booking/booking.html?id=1');
+    await page.goto('/booking/seat-booking/booking.html?id=1');
     await page.waitForLoadState('networkidle');
 
     await expect(page).toHaveScreenshot('booking-seat-selection.png', {

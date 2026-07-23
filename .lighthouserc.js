@@ -4,9 +4,9 @@ module.exports = {
       staticDistDir: './frontend/src',
       url: [
         'http://localhost:3000/',
-        'http://localhost:3000/auth/login.html',
-        'http://localhost:3000/explore/movies.html',
-        'http://localhost:3000/booking/booking.html?id=1'
+        'http://localhost:3000/auth/user-login/login.html',
+        'http://localhost:3000/explore/movie-search/index.html',
+        'http://localhost:3000/booking/seat-booking/booking.html?id=1'
       ],
       numberOfRuns: 3
     },

@@ -18,7 +18,7 @@ test.describe('Automated Accessibility (axe-core) Audit', () => {
   });
 
   test('Movie Explore page accessibility check', async ({ page }) => {
-    await page.goto('/explore/movies.html');
+    await page.goto('/explore/movie-search/index.html');
 
     const accessibilityScanResults = await new AxeBuilder({ page })
       .withTags(['wcag2a', 'wcag2aa'])
@@ -32,7 +32,7 @@ test.describe('Automated Accessibility (axe-core) Audit', () => {
   });
 
   test('Login modal / page accessibility check', async ({ page }) => {
-    await page.goto('/auth/login.html');
+    await page.goto('/auth/user-login/login.html');
 
     const accessibilityScanResults = await new AxeBuilder({ page })
       .withTags(['wcag2a', 'wcag2aa'])
