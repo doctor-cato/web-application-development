@@ -2,46 +2,50 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://github.com/doctor-cato/web-application-development/</loc>
-         <lastmod>2026-07-22</lastmod>
+         <lastmod>2026-07-23</lastmod>
     </url>
     <url>
          <loc>https://github.com/doctor-cato/web-application-development/ai-contribution/</loc>
-         <lastmod>2026-07-22</lastmod>
+         <lastmod>2026-07-23</lastmod>
+    </url>
+    <url>
+         <loc>https://github.com/doctor-cato/web-application-development/ai-skills-config/</loc>
+         <lastmod>2026-07-23</lastmod>
     </url>
     <url>
          <loc>https://github.com/doctor-cato/web-application-development/api/</loc>
-         <lastmod>2026-07-22</lastmod>
+         <lastmod>2026-07-23</lastmod>
     </url>
     <url>
          <loc>https://github.com/doctor-cato/web-application-development/architecture/</loc>
-         <lastmod>2026-07-22</lastmod>
+         <lastmod>2026-07-23</lastmod>
     </url>
     <url>
          <loc>https://github.com/doctor-cato/web-application-development/backend/</loc>
-         <lastmod>2026-07-22</lastmod>
+         <lastmod>2026-07-23</lastmod>
     </url>
     <url>
          <loc>https://github.com/doctor-cato/web-application-development/contributing/</loc>
-         <lastmod>2026-07-22</lastmod>
+         <lastmod>2026-07-23</lastmod>
     </url>
     <url>
          <loc>https://github.com/doctor-cato/web-application-development/database/</loc>
-         <lastmod>2026-07-22</lastmod>
+         <lastmod>2026-07-23</lastmod>
     </url>
     <url>
          <loc>https://github.com/doctor-cato/web-application-development/deployment/</loc>
-         <lastmod>2026-07-22</lastmod>
+         <lastmod>2026-07-23</lastmod>
     </url>
     <url>
          <loc>https://github.com/doctor-cato/web-application-development/frontend/</loc>
-         <lastmod>2026-07-22</lastmod>
+         <lastmod>2026-07-23</lastmod>
     </url>
     <url>
          <loc>https://github.com/doctor-cato/web-application-development/getting-started/</loc>
-         <lastmod>2026-07-22</lastmod>
+         <lastmod>2026-07-23</lastmod>
     </url>
     <url>
          <loc>https://github.com/doctor-cato/web-application-development/testing/</loc>
-         <lastmod>2026-07-22</lastmod>
+         <lastmod>2026-07-23</lastmod>
     </url>
 </urlset>
