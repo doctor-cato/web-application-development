@@ -15,6 +15,24 @@ const trailerFallback = document.getElementById('trailer-fallback');
 const trailerYtLink = document.getElementById('trailer-yt-link');
 const btnBookNow = document.getElementById('btn-book-now');
 
+// --- YOUTUBE EMBED HELPER ---
+function getYouTubeEmbedUrl(url) {
+    if (!url) return '';
+    let cleanUrl = url.trim();
+    if (cleanUrl.includes('embed/')) return cleanUrl;
+    
+    let videoId = '';
+    if (cleanUrl.includes('v=')) {
+        videoId = cleanUrl.split('v=')[1]?.split('&')[0];
+    } else if (cleanUrl.includes('youtu.be/')) {
+        videoId = cleanUrl.split('youtu.be/')[1]?.split('?')[0];
+    } else if (cleanUrl.match(/^[a-zA-Z0-9_-]{11}$/)) {
+        videoId = cleanUrl;
+    }
+    
+    return videoId ? `https://www.youtube.com/embed/${videoId}` : cleanUrl;
+}
+
 function renderHeroMovie(movie) {
     if (!movie || (!movie.title && !movie.bg && !movie.poster)) {
         // Trạng thái CHƯA CÓ PHIM trong Database
@@ -47,7 +65,6 @@ function renderHeroMovie(movie) {
 
     if (btnWatch) {
         btnWatch.style.display = movie.trailer ? 'inline-flex' : 'none';
-        // ponytail: href intentionally omitted — trailer opens modal (see btnWatch click listener below)
     }
 
     if (heroSection && (movie.bg || movie.poster)) {
@@ -56,9 +73,11 @@ function renderHeroMovie(movie) {
     }
 
     if (movie.trailer && iframe) {
-        iframe.src = movie.trailer + '?enablejsapi=1';
-        if (trailerYtLink && movie.trailerWatch) {
-            trailerYtLink.href = movie.trailerWatch;
+        const embedUrl = getYouTubeEmbedUrl(movie.trailer);
+        const sep = embedUrl.includes('?') ? '&' : '?';
+        iframe.src = embedUrl + `${sep}enablejsapi=1`;
+        if (trailerYtLink) {
+            trailerYtLink.href = movie.trailerWatch || movie.trailer;
         }
     }
 
@@ -153,27 +172,24 @@ window.addEventListener('message', (e) => {
 if (btnWatch) {
     btnWatch.addEventListener('click', (e) => {
         e.preventDefault();
-        // Reset fallback mỗi lần mở
+        const currentMovie = (window.heroMovies && window.heroMovies.length > 0) ? window.heroMovies[currentHeroIndex] : null;
+        const rawTrailer = (currentMovie && currentMovie.trailer) ? currentMovie.trailer : iframe.src;
+        if (!rawTrailer) return;
+
+        const formattedEmbed = getYouTubeEmbedUrl(rawTrailer);
+        const sep = formattedEmbed.includes('?') ? '&' : '?';
+        iframe.src = formattedEmbed + `${sep}autoplay=1&enablejsapi=1`;
+
         if (trailerFallback) trailerFallback.style.display = 'none';
         iframe.style.display = 'block';
         modal.style.display = 'flex';
-        // Play video by appending autoplay
-        const src = iframe.src;
-        if (!src.includes('autoplay=1')) {
-            iframe.src = src + (src.includes('?') ? '&' : '?') + 'autoplay=1';
-        }
-        // Pause slider when watching trailer
         clearInterval(slideInterval);
     });
 }
 
 function closeModal() {
     modal.style.display = 'none';
-    // Stop video & reset
-    const currentMovie = heroMovies[currentHeroIndex];
-    if (currentMovie && currentMovie.trailer) {
-        iframe.src = currentMovie.trailer + '?enablejsapi=1';
-    }
+    iframe.src = '';
     iframe.style.display = 'block';
     if (trailerFallback) trailerFallback.style.display = 'none';
     // Resume slider
