@@ -2,7 +2,7 @@
  * pages/booking.js — Trang chọn ghế
  */
 
-import { getSeatMap, lockSeat, unlockSeat, subscribeSeatUpdates } from './bookingService.js';
+import { getSeatMap, lockSeat, unlockSeat, subscribeSeatUpdates, closeSeatSyncChannel } from './bookingService.js';
 import { renderSeatGrid, updateSeat, getSelectedSeats, getSeatType, setGroupSize, setCineMatchMode, getCineMatchAdjacentSeat } from '../../shared/components/seatGrid.js';
 import { saveCheckout } from '../../shared/utils/storage.js';
 import { requireAuth } from '../../shared/utils/authGuard.js';
@@ -19,7 +19,6 @@ if (!requireAuth('Bạn cần đăng nhập để đặt vé xem phim. Hãy đă
 let currentBasePrice = 80000;
 
 let countdownTimer = null;
-let simulationTimer = null;
 let currentShowtimeId = null;
 let currentUserId = localStorage.getItem('user_id') || localStorage.getItem('currentUserId') || null;
 let movieData = null;
@@ -190,7 +189,17 @@ async function init() {
   document.getElementById('btn-continue')?.addEventListener('click', handleContinue);
 
   updatePricesTable();
-  simulateActivity();
+
+  // Attach lifecycle cleanup to prevent memory leaks (Issue #61)
+  const cleanupLifecycle = () => {
+    if (countdownTimer) {
+      clearInterval(countdownTimer);
+      countdownTimer = null;
+    }
+    closeSeatSyncChannel();
+  };
+  window.addEventListener('beforeunload', cleanupLifecycle);
+  window.addEventListener('pagehide', cleanupLifecycle);
 }
 
 function renderMovieInfo() {
@@ -295,9 +304,6 @@ function startCountdown(seconds) {
   }, 1000);
 }
 
-function simulateActivity() {
-  // Simulate other users randomly locking seats
-  // simulationTimer = setInterval(() => { ... }, 10000); // Đã tắt tính năng tự động khóa ghế ảo
 }
 
 function handleContinue() {

@@ -1,11 +1,28 @@
 /**
- * bookingService.js — seat locking with BroadcastChannel API
+ * bookingService.js — Real-time Seat Locking Service
+ * 
+ * --- Scope & Architectural Demarcation ---
+ * 1. Local Multi-Tab Synchronization (Same Device / Same Origin):
+ *    Handled natively via BroadcastChannel API ('seat_sync') with 0 external dependencies.
+ * 2. Cross-Device Synchronization (Different Devices / Remote Users):
+ *    Handled via ASP.NET Core SignalR / WebSocket Notification Hub (/notificationHub).
  */
 
 import { lsGet, lsSet, getBookings, saveBookings, KEYS } from '../../shared/utils/storage.js';
 
 const LOCK_DURATION_MS = 15 * 60 * 1000; // 15 minutes
-const channel = new BroadcastChannel('seat_sync');
+let channel = null;
+
+function getChannel() {
+  if (!channel) {
+    try {
+      channel = new BroadcastChannel('seat_sync');
+    } catch (e) {
+      console.warn('BroadcastChannel initialization warning:', e);
+    }
+  }
+  return channel;
+}
 
 function makeBookingId() {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -25,9 +42,25 @@ function _saveLocksMap(m) {
 }
 
 export function subscribeSeatUpdates(callback) {
-  channel.onmessage = (event) => {
-    callback(event.data);
-  };
+  const ch = getChannel();
+  if (ch) {
+    ch.onmessage = (event) => {
+      callback(event.data);
+    };
+  }
+}
+
+export function closeSeatSyncChannel() {
+  if (channel) {
+    try {
+      channel.onmessage = null;
+      channel.close();
+    } catch (e) {
+      console.warn('Error closing seat_sync channel:', e);
+    } finally {
+      channel = null;
+    }
+  }
 }
 
 export function getSeatMap(showtimeId) {
@@ -61,7 +94,7 @@ export function lockSeat(showtimeId, seatId, userId) {
   map[showtimeId][seatId] = { seatId, userId, expiresAt };
   _saveLocksMap(map);
 
-  try { channel.postMessage({ type: 'seat_locked', showtimeId, seatId, userId, expiresAt }); } catch (e) {}
+  try { getChannel()?.postMessage({ type: 'seat_locked', showtimeId, seatId, userId, expiresAt }); } catch (e) {}
 
   // schedule local cleanup (best-effort)
   setTimeout(() => {
@@ -69,7 +102,7 @@ export function lockSeat(showtimeId, seatId, userId) {
     if (m[showtimeId] && m[showtimeId][seatId] && m[showtimeId][seatId].expiresAt <= Date.now()) {
       delete m[showtimeId][seatId];
       _saveLocksMap(m);
-      try { channel.postMessage({ type: 'seat_unlocked', showtimeId, seatId }); } catch (e) {}
+      try { getChannel()?.postMessage({ type: 'seat_unlocked', showtimeId, seatId }); } catch (e) {}
     }
   }, LOCK_DURATION_MS + 1000);
 
@@ -81,7 +114,7 @@ export function unlockSeat(showtimeId, seatId, userId) {
   if (map[showtimeId] && map[showtimeId][seatId]) {
     delete map[showtimeId][seatId];
     _saveLocksMap(map);
-    try { channel.postMessage({ type: 'seat_unlocked', showtimeId, seatId }); } catch (e) {}
+    try { getChannel()?.postMessage({ type: 'seat_unlocked', showtimeId, seatId }); } catch (e) {}
     return true;
   }
   return false;
@@ -95,7 +128,7 @@ export function releaseExpiredLocks() {
     Object.keys(map[showId]).forEach(seat => {
       if (map[showId][seat].expiresAt <= now) {
         delete map[showId][seat];
-        try { channel.postMessage({ type: 'seat_unlocked', showtimeId: showId, seatId: seat }); } catch (e) {}
+        try { getChannel()?.postMessage({ type: 'seat_unlocked', showtimeId: showId, seatId: seat }); } catch (e) {}
         changed = true;
       }
     });
@@ -157,7 +190,7 @@ export async function confirmBooking(checkoutData) {
           if (map[booking.showtimeId] && map[booking.showtimeId][s]) {
             delete map[booking.showtimeId][s];
           }
-          try { channel.postMessage({ type: 'seat_booked', showtimeId: booking.showtimeId, seatId: s }); } catch (e) {}
+          try { getChannel()?.postMessage({ type: 'seat_booked', showtimeId: booking.showtimeId, seatId: s }); } catch (e) {}
         });
         _saveLocksMap(map);
 
