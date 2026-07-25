@@ -337,7 +337,8 @@ function getFallbackMovies() {
 async function fetchMovies() {
     try {
         const response = await fetch(`/api/movies`);
-        if (response.ok) {
+        const contentType = response.headers.get('content-type') || '';
+        if (response.ok && contentType.includes('application/json')) {
             const data = await response.json();
             if (Array.isArray(data) && data.length > 0) {
                 allMoviesData = data.map(m => mapMovieObj(m));
@@ -349,6 +350,10 @@ async function fetchMovies() {
         }
     } catch (e) {
         console.warn("Failed to fetch movies from API, using default/localStorage fallbacks:", e);
+        allMoviesData = getFallbackMovies();
+    }
+
+    if (!Array.isArray(allMoviesData) || allMoviesData.length === 0) {
         allMoviesData = getFallbackMovies();
     }
 
@@ -380,9 +385,11 @@ async function fetchMovies() {
     window.heroMovies = heroMovies;
     window.nowShowingMovies = nowShowingMovies;
     window.comingSoonMovies = comingSoonMovies;
+
+    return allMoviesData;
 }
 
-window.fetchMoviesPromise = fetchMovies();
+window.fetchMoviesPromise = fetchMovies().catch(() => getFallbackMovies());
 
 // ── CINEMAS ──────────────────────────────────────────────────
 let cinemas = [];
@@ -390,7 +397,8 @@ let cinemas = [];
 async function fetchCinemas() {
     try {
         const response = await fetch(`/api/cinemas`);
-        if (response.ok) {
+        const contentType = response.headers.get('content-type') || '';
+        if (response.ok && contentType.includes('application/json')) {
             cinemas = await response.json();
             cinemas.forEach(c => {
                 c.lat = c.latitude || c.lat || null;
@@ -403,8 +411,9 @@ async function fetchCinemas() {
     } catch (e) {
         console.error("Failed to fetch cinemas:", e);
     }
+    return cinemas;
 }
-window.fetchCinemasPromise = fetchCinemas();
+window.fetchCinemasPromise = fetchCinemas().catch(() => []);
 
 // ── SHOWTIMES API ─────────────────────────────────
 async function fetchShowtimesByMovie(movieId) {

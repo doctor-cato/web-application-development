@@ -280,7 +280,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.fetchMoviesPromise) {
         window.fetchMoviesPromise.then(() => {
             switchTab(initialTab);
-        });
+        }).catch(() => switchTab(initialTab));
     } else {
         switchTab(initialTab);
     }

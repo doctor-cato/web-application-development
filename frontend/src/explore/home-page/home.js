@@ -88,13 +88,21 @@ function renderHeroMovie(movie) {
     if (btnNext) btnNext.style.display = hasMultiple ? 'flex' : 'none';
 }
 
-window.fetchMoviesPromise.then(() => {
+const handleHeroRender = () => {
     if (window.heroMovies && window.heroMovies.length > 0 && (window.heroMovies[0].title || window.heroMovies[0].bg)) {
         renderHeroMovie(window.heroMovies[0]);
+    } else if (window.allMoviesData && window.allMoviesData.length > 0) {
+        renderHeroMovie(window.allMoviesData[0]);
     } else {
         renderHeroMovie(null);
     }
-});
+};
+
+if (window.fetchMoviesPromise) {
+    window.fetchMoviesPromise.then(handleHeroRender).catch(handleHeroRender);
+} else {
+    handleHeroRender();
+}
 
 if (btnBookNow) {
     btnBookNow.addEventListener('click', (e) => {
@@ -337,21 +345,21 @@ if (filterCinema) filterCinema.addEventListener('change', applyFilters);
 
 // Initial render
 document.addEventListener('DOMContentLoaded', async () => {
-    if (window.fetchMoviesPromise) {
-        await window.fetchMoviesPromise;
-    }
-    if (window.fetchCinemasPromise) {
-        await window.fetchCinemasPromise;
-    }
+    try {
+        if (window.fetchMoviesPromise) await window.fetchMoviesPromise;
+    } catch (_) {}
+    try {
+        if (window.fetchCinemasPromise) await window.fetchCinemasPromise;
+    } catch (_) {}
 
     populateDynamicFilters();
 
-    if (window.nowShowingMovies) {
-        renderNowShowing(window.nowShowingMovies);
-    }
-    
-    if (typeof window.renderComingSoon === 'function' && window.comingSoonMovies) {
-        window.renderComingSoon(window.comingSoonMovies);
+    const nowShowing = window.nowShowingMovies || (window.allMoviesData ? window.allMoviesData.filter(m => m.status === 'now-showing') : []);
+    const comingSoon = window.comingSoonMovies || (window.allMoviesData ? window.allMoviesData.filter(m => m.status === 'coming-soon') : []);
+
+    renderNowShowing(nowShowing);
+    if (typeof window.renderComingSoon === 'function') {
+        window.renderComingSoon(comingSoon);
     }
 
     // --- VIP LOGIC FOR REWARDS BUTTON ---
