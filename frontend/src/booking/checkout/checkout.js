@@ -455,6 +455,8 @@ function handlePayClick(e) {
     return;
   }
   
+  const co = getCheckout();
+  
   // read final total (including discount & combo) from DOM data attribute
   const totalEl = document.getElementById('order-total');
   const total = parseDataAmount(totalEl);
@@ -464,15 +466,18 @@ function handlePayClick(e) {
   let customFood = customFoodStr ? JSON.parse(customFoodStr) : [];
 
   const checkoutData = {
-    // minimal fields used by payment/booking
-    movieTitle: document.querySelector('#order-summary-movie')?.innerText || 'Unknown',
-    showtimeText: document.querySelector('#order-summary-showtime')?.innerText || '',
-    room: document.querySelector('#order-summary-room')?.innerText || '',
-    seats: Array.from(document.querySelectorAll('#order-summary-seats .seat-badge')).map(s => s.innerText) || [],
+    // Preserve original fields from session (movieId, showtimeId, poster, etc.)
+    ...co,
+    // Override với các giá trị mới nhất từ UI
+    movieTitle: document.querySelector('#order-summary-movie')?.innerText || co?.movieTitle || 'Unknown',
+    showtimeText: document.querySelector('#order-summary-showtime')?.innerText || co?.showtimeText || '',
+    room: document.querySelector('#order-summary-room')?.innerText || co?.room || '',
+    seats: Array.from(document.querySelectorAll('#order-summary-seats .seat-badge')).map(s => s.innerText) || co?.seats || [],
     combo: combo.id,
     customFood: customFood,
     total,
-    provider: getSelectedPayment()
+    provider: getSelectedPayment(),
+    createdAt: new Date().toISOString()
   };
 
   // save checkout into session in case needed later

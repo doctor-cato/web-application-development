@@ -43,7 +43,8 @@ function awardLoyaltyPoints(booking) {
     const multiplierLabel = finalMultiplier > 1 ? (finalMultiplier === loyaltyMultiplier && loyaltyMultiplier > vipMultiplier ? `[${loyaltyTierName} x${finalMultiplier}]` : `[VIP x${finalMultiplier}]`) : '';
 
     // Tính điểm: 50-150 PTS mỗi vé, tùy số ghế, nhân với hệ số VIP hoặc Hạng Thẻ
-    const seatCount = Array.isArray(booking.seats) ? booking.seats.length : 1;
+    const seatCount = Array.isArray(booking.seats) ? booking.seats.length
+                    : (typeof booking.seats === 'string' && booking.seats.trim() !== '' ? booking.seats.split(',').length : 1);
     const ptsPerSeat = Math.floor(Math.random() * 101) + 50; // 50~150
     const totalPts = Math.floor(ptsPerSeat * seatCount * finalMultiplier);
 
@@ -190,29 +191,61 @@ function init() {
     const dateEl = document.getElementById('bs-date');
     if (dateEl) {
         // Format date: "Thứ Sáu, 15 Th12, 2024"
-        const d = new Date(booking.createdAt);
-        const days = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
-        const dayName = days[d.getDay()];
-        const day = String(d.getDate()).padStart(2, '0');
-        const month = String(d.getMonth() + 1).padStart(2, '0');
-        const year = d.getFullYear();
-        dateEl.textContent = `${dayName}, ${day} Th${month}, ${year}`;
+        // Ưu tiên booking.createdAt, fallback về Date.now()
+        const rawDate = booking.createdAt || booking.bookingDate || new Date().toISOString();
+        const d = new Date(rawDate);
+        const isValid = !isNaN(d.getTime());
+        if (isValid) {
+            const days = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
+            const dayName = days[d.getDay()];
+            const day = String(d.getDate()).padStart(2, '0');
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const year = d.getFullYear();
+            dateEl.textContent = `${dayName}, ${day} Th${month}, ${year}`;
+        } else {
+            const now = new Date();
+            const days = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
+            dateEl.textContent = `${days[now.getDay()]}, ${String(now.getDate()).padStart(2,'0')} Th${String(now.getMonth()+1).padStart(2,'0')}, ${now.getFullYear()}`;
+        }
     }
 
     const timeEl = document.getElementById('bs-time');
     if (timeEl) {
-        timeEl.textContent = booking.showtimeText || '--:--';
+        // Ưu tiên showtimeText, fallback về giờ trong createdAt
+        let timeStr = booking.showtimeText || '';
+        if (!timeStr || timeStr.trim() === '') {
+            const rawDate = booking.createdAt || null;
+            if (rawDate) {
+                const d = new Date(rawDate);
+                if (!isNaN(d.getTime())) {
+                    timeStr = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+                }
+            }
+        }
+        timeEl.textContent = timeStr || '--:--';
     }
 
     const seatsEl = document.getElementById('bs-seats');
     if (seatsEl) {
-        const seats = Array.isArray(booking.seats) ? booking.seats.join(', ') : booking.seats;
-        seatsEl.textContent = seats || 'Chưa chọn ghế';
+        let seatsDisplay = 'Chưa chọn ghế';
+        if (booking.seats) {
+            if (Array.isArray(booking.seats) && booking.seats.length > 0) {
+                seatsDisplay = booking.seats.join(', ');
+            } else if (typeof booking.seats === 'string' && booking.seats.trim() !== '') {
+                seatsDisplay = booking.seats;
+            }
+        }
+        seatsEl.textContent = seatsDisplay;
     }
 
     const codeEl = document.getElementById('bs-ticket-code');
     if (codeEl) {
-        let displayCode = booking.id || 'UNKNOWN';
+        // Ưu tiên: booking.id → booking.transactionId → tạo code từ timestamp
+        let displayCode = booking.id || booking.transactionId || ('TK-' + Date.now().toString(36).toUpperCase());
+        // Nếu code quá dài (là UUID) thì rút gọn lấy 8 ký tự cuối
+        if (typeof displayCode === 'string' && displayCode.length > 20) {
+            displayCode = displayCode.replace(/-/g, '').slice(-10).toUpperCase();
+        }
         codeEl.textContent = displayCode;
 
         // Generate actual QR Code dynamically

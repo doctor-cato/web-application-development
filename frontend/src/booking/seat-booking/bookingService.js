@@ -131,16 +131,16 @@ export async function confirmBooking(checkoutData) {
             id: finalId,
             movieTitle: checkoutData.movieTitle || 'Unknown Movie',
             showtimeId: checkoutData.showtimeId || null,
-            showtimeText: checkoutData.showtimeText || '',
+            showtimeText: checkoutData.showtimeText || checkoutData.selectedShowtime || '',
             room: checkoutData.room || '',
-            seats: checkoutData.seats || [],
+            seats: Array.isArray(checkoutData.seats) ? checkoutData.seats : (checkoutData.seats ? [checkoutData.seats] : []),
             combo: checkoutData.combo || 'none',
             total: payload.TotalPrice,
             userId: checkoutData.userId || null,
             transactionId: checkoutData.transactionId || null,
             paymentMethod: checkoutData.paymentMethod || null,
             poster: checkoutData.poster || '',
-            createdAt: new Date().toISOString()
+            createdAt: checkoutData.createdAt || new Date().toISOString()
         };
 
         // remove locks for booked seats and notify
