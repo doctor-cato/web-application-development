@@ -1054,6 +1054,10 @@
                 <p>Thao tác bán hàng trực tiếp và xử lý đơn đặt trước</p>
             </div>
             <div class="header-right">
+                <div id="signalr-status-badge" class="time-widget glass-panel" style="color: var(--btn-green-color); border-color: rgba(13, 242, 134, 0.4);" title="Trạng thái kết nối máy chủ real-time">
+                    <i class="fas fa-signal"></i>
+                    <span id="signalr-status-text">Realtime Online</span>
+                </div>
                 <div class="time-widget glass-panel">
                     <i class="far fa-clock"></i>
                     <span id="live-time">14:45:48</span>
@@ -2360,6 +2364,12 @@
                         const stId = tData.showtimeId;
                         bookedSeatsStore[stId] = [...(bookedSeatsStore[stId] || []), ...tData.seats];
 
+                        // Assign unique ticketCode to each individual seat (Issue #62)
+                        const perSeatTickets = (tData.seats || []).map(seat => ({
+                            seat: seat,
+                            ticketCode: "TK-" + seat + "-" + Math.floor(100000 + Math.random() * 900000)
+                        }));
+
                         const bookingObj = {
                             id: "BK-" + Math.floor(100000 + Math.random() * 900000),
                             userEmail: vipCustomer ? vipCustomer.email : "khach_pos@3hd2k.com",
@@ -2367,6 +2377,7 @@
                             movieTitle: tData.movieTitle,
                             showtime: tData.showtime + " (" + tData.date + ")",
                             seats: tData.seats,
+                            tickets: perSeatTickets,
                             totalAmount: tData.totalPrice,
                             status: "paid",
                             createdAt: new Date().toISOString()
@@ -2382,10 +2393,12 @@
                                 showtimeId: tData.showtimeId,
                                 seats: tData.seats.join(","),
                                 totalPrice: tData.totalPrice,
-                                paymentMethod: activePaymentMethod
+                                paymentMethod: activePaymentMethod,
+                                tickets: perSeatTickets
                             })
                         }).catch(e => console.warn("API booking push warning:", e));
 
+                        tData.tickets = perSeatTickets;
                         ticketDetailsList.push(tData);
                     }
                 });
@@ -2406,7 +2419,7 @@
                 fnbList.push({ name: item.product.name, price: item.product.price, qty: item.qty });
             });
 
-            // 3. VIP point accumulation
+            // 3. VIP point accumulation & API sync (Issue #61)
             const pointsEarned = Math.floor(totalAmount / 10000);
             let customerName = "Khách vãng lai";
             let pointsSummary = "";
@@ -2428,6 +2441,17 @@
                 localStorage.setItem("3hd2k_users", JSON.stringify(users));
                 customerName = user.name || user.fullname || user.Fullname || "Khách VIP";
                 pointsSummary = `${user.points} điểm VIP (+${pointsEarned})`;
+
+                // Non-blocking API sync
+                fetch('/api/users/add-points', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        phone: targetPhone,
+                        email: user.email,
+                        points: pointsEarned
+                    })
+                }).catch(e => console.warn("API add-points warning:", e));
             }
 
             // Save data for physical printing
@@ -2531,10 +2555,32 @@
     <script>
         // --- SignalR Real-time Notifications ---
         try {
+            const updateSignalRUI = (color, text) => {
+                const badge = document.getElementById("signalr-status-badge");
+                const textEl = document.getElementById("signalr-status-text");
+                if (badge && textEl) {
+                    badge.style.color = color;
+                    badge.style.borderColor = color;
+                    textEl.textContent = text;
+                }
+            };
+
             const connection = new signalR.HubConnectionBuilder()
                 .withUrl("/notificationHub")
-                .withAutomaticReconnect()
+                .withAutomaticReconnect([0, 2000, 5000, 10000, 30000])
                 .build();
+
+            connection.onreconnecting(() => {
+                updateSignalRUI("var(--primary-red)", "Đang kết nối lại...");
+            });
+
+            connection.onreconnected(() => {
+                updateSignalRUI("var(--btn-green-color)", "Realtime Online");
+            });
+
+            connection.onclose(() => {
+                updateSignalRUI("var(--text-muted)", "Offline Fallback");
+            });
 
             connection.on("ReceiveNewBooking", (bookingData) => {
                 let appOrders = JSON.parse(localStorage.getItem("cinema_app_orders")) || [];
@@ -2557,10 +2603,14 @@
             });
 
             connection.start().then(() => {
+                updateSignalRUI("var(--btn-green-color)", "Realtime Online");
                 console.log("Connected to SignalR Notification Hub!");
-            }).catch(err => console.error("SignalR Connection Error: ", err));
+            }).catch(err => {
+                updateSignalRUI("var(--text-muted)", "Offline Fallback");
+                console.warn("SignalR Connection warning (offline fallback active):", err?.message || err);
+            });
         } catch (error) {
-            console.error("Failed to setup SignalR:", error);
+            console.warn("Failed to setup SignalR:", error);
         }
     </script>
 </body>

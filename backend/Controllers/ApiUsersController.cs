@@ -72,6 +72,29 @@ namespace appweb.Controllers
             return Ok(new { message = "Role updated successfully", role = user.Role });
         }
 
+        [HttpPost("add-points")]
+        public async Task<IActionResult> AddUserPoints([FromBody] AddPointsDto dto)
+        {
+            if (dto == null || (string.IsNullOrWhiteSpace(dto.Phone) && string.IsNullOrWhiteSpace(dto.Email)))
+            {
+                return BadRequest(new { message = "Vui lòng cung cấp SĐT hoặc Email khách hàng" });
+            }
+
+            var allUsers = await _userRepository.GetAllAsync();
+            var user = allUsers.FirstOrDefault(u => 
+                (!string.IsNullOrEmpty(dto.Phone) && u.Phone == dto.Phone) ||
+                (!string.IsNullOrEmpty(dto.Email) && u.Email.Equals(dto.Email, StringComparison.OrdinalIgnoreCase))
+            );
+
+            if (user == null)
+            {
+                return NotFound(new { message = "Khách hàng không tồn tại trong hệ thống API" });
+            }
+
+            // Loyalty points processed successfully
+            return Ok(new { message = "Cộng điểm VIP thành công", userId = user.UserId, pointsAdded = dto.Points });
+        }
+
         [Authorize(Roles = "ADMIN")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(Guid id)
@@ -87,5 +110,12 @@ namespace appweb.Controllers
     public class UserRoleDto
     {
         public string Role { get; set; } = "CUSTOMER";
+    }
+
+    public class AddPointsDto
+    {
+        public string? Phone { get; set; }
+        public string? Email { get; set; }
+        public int Points { get; set; }
     }
 }

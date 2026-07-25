@@ -63,11 +63,18 @@
 
           <div class="btn-group" style="display: flex; gap: 1rem; margin-top: 1.5rem; border-top: 1px solid var(--glass-border); padding-top: 1.5rem;">
             <a href="../../user/user-profile/profile.html?tab=history" class="btn-primary" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; border-radius: 8px; font-weight: 600; background: var(--primary-red); color: white; transition: all 0.2s;"><i class="fas fa-ticket-alt"></i> XEM VÉ CỦA TÔI</a>
+            <button onclick="window.printIndividualTickets()" class="btn-outline" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; border-radius: 8px; font-weight: 600; background: rgba(0, 240, 255, 0.1); border: 1px solid rgba(0, 240, 255, 0.4); color: #00f0ff; transition: all 0.2s;"><i class="fas fa-print"></i> IN VÉ TỪNG GHẾ</button>
             <button class="btn-outline" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; border-radius: 8px; font-weight: 600; background: transparent; border: 1px solid rgba(255,255,255,0.2); color: white; transition: all 0.2s;"><i class="fas fa-share-alt"></i> CHIA SẺ</button>
           </div>
+
+          <!-- Per-Seat Individual Ticket QR Codes List -->
+          <div id="per-seat-tickets-wrapper" style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px dashed var(--glass-border);">
+            <h3 style="font-size: 0.95rem; font-weight: 700; color: #fff; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+              <i class="fas fa-qrcode" style="color: var(--primary-red);"></i> Danh Sách Mã Vé Từng Ghế
+            </h3>
+            <div id="per-seat-tickets-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px;"></div>
+          </div>
         </div>
-
-
       </div>
 
       <!-- RIGHT COLUMN: QR Code -->

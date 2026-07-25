@@ -33,13 +33,18 @@ async function handleSuccess(txId) {
         let booking = await confirmBooking(checkoutData);
         // Fallback nếu backend lỗi — tạo booking object local
         if (!booking) {
+            const seatsArr = Array.isArray(checkoutData.seats) ? checkoutData.seats : (checkoutData.seats ? [checkoutData.seats] : []);
             booking = {
                 id: txId,
                 movieTitle: checkoutData.movieTitle || 'Unknown Movie',
                 showtimeId: checkoutData.showtimeId || null,
                 showtimeText: checkoutData.showtimeText || '',
                 room: checkoutData.room || '',
-                seats: Array.isArray(checkoutData.seats) ? checkoutData.seats : (checkoutData.seats ? [checkoutData.seats] : []),
+                seats: seatsArr,
+                tickets: seatsArr.map(s => ({
+                    seat: s,
+                    ticketCode: 'TK-' + s + '-' + Math.floor(100000 + Math.random() * 900000)
+                })),
                 combo: checkoutData.combo || 'none',
                 total: checkoutData.total || 0,
                 poster: checkoutData.poster || '',

@@ -86,5 +86,12 @@ namespace appweb.Controllers
         public string Seats { get; set; } = string.Empty;
         public decimal TotalPrice { get; set; }
         public string PaymentMethod { get; set; } = string.Empty;
+        public List<TicketItemDto>? Tickets { get; set; }
+    }
+
+    public class TicketItemDto
+    {
+        public string Seat { get; set; } = string.Empty;
+        public string TicketCode { get; set; } = string.Empty;
     }
 }

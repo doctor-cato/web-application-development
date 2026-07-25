@@ -108,11 +108,18 @@ import { API_BASE_URL, getHeaders } from '../../shared/utils/apiConfig.js?v=4';
 
 export async function confirmBooking(checkoutData) {
   try {
+    const seatsArr = Array.isArray(checkoutData.seats) ? checkoutData.seats : (checkoutData.seats ? [checkoutData.seats] : []);
+    const perSeatTickets = seatsArr.map(s => ({
+        seat: s,
+        ticketCode: 'TK-' + s + '-' + Math.floor(100000 + Math.random() * 900000)
+    }));
+
     const payload = {
         Email: checkoutData.userId || 'guest@example.com',
         ShowtimeId: checkoutData.showtimeId || 1, // fallback
         MovieId: checkoutData.movieId || 1,       // fallback
-        Seats: (checkoutData.seats || []).join(','),
+        Seats: seatsArr.join(','),
+        Tickets: perSeatTickets,
         TotalPrice: checkoutData.total || checkoutData.amount || 0,
         PaymentMethod: checkoutData.paymentMethod || 'Credit Card'
     };
@@ -133,7 +140,8 @@ export async function confirmBooking(checkoutData) {
             showtimeId: checkoutData.showtimeId || null,
             showtimeText: checkoutData.showtimeText || checkoutData.selectedShowtime || '',
             room: checkoutData.room || '',
-            seats: Array.isArray(checkoutData.seats) ? checkoutData.seats : (checkoutData.seats ? [checkoutData.seats] : []),
+            seats: seatsArr,
+            tickets: perSeatTickets,
             combo: checkoutData.combo || 'none',
             total: payload.TotalPrice,
             userId: checkoutData.userId || null,

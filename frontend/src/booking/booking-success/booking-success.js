@@ -79,6 +79,17 @@ function awardLoyaltyPoints(booking) {
     processed.push(booking.id);
     localStorage.setItem(PROCESSED_KEY, JSON.stringify(processed));
 
+    // Sync points to API backend when available (Issue #61)
+    const userEmail = localStorage.getItem('user_email') || localStorage.getItem('email') || booking.userEmail || '';
+    const userPhone = localStorage.getItem('user_phone') || localStorage.getItem('phone') || booking.userPhone || '';
+    if (userEmail || userPhone) {
+        fetch('/api/users/add-points', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ phone: userPhone, email: userEmail, points: totalPts })
+        }).catch(e => console.warn('API award points sync warning:', e));
+    }
+
     // Hiển thị thông báo tích điểm trên giao diện (nếu có element)
     const pointsBadge = document.getElementById('bs-points-earned');
     if (pointsBadge) {
@@ -289,6 +300,63 @@ function init() {
             }, 100);
         }
     }
+
+    // Render Per-Seat Individual Ticket QR Codes (Issue #62)
+    const seatsList = Array.isArray(booking.seats) 
+        ? booking.seats 
+        : (typeof booking.seats === 'string' && booking.seats.trim() !== '' ? booking.seats.split(',').map(s => s.trim()).filter(Boolean) : []);
+    
+    if (seatsList.length > 0) {
+        if (!booking.tickets || !Array.isArray(booking.tickets) || booking.tickets.length < seatsList.length) {
+            booking.tickets = seatsList.map(seat => ({
+                seat: seat,
+                ticketCode: 'TK-' + seat + '-' + Math.floor(100000 + Math.random() * 900000)
+            }));
+            try {
+                localStorage.setItem('3hd2k_last_booking', JSON.stringify(booking));
+            } catch (_) {}
+        }
+
+        const perSeatContainer = document.getElementById('per-seat-tickets-list');
+        if (perSeatContainer) {
+            perSeatContainer.innerHTML = '';
+            booking.tickets.forEach((t, idx) => {
+                const item = document.createElement('div');
+                item.className = 'per-seat-ticket-card';
+                item.style.cssText = 'background: rgba(255,255,255,0.04); border: 1px solid var(--glass-border); border-radius: 8px; padding: 10px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px;';
+                
+                const qrDivId = `qr-seat-${idx}`;
+                item.innerHTML = `
+                    <span style="font-weight: 800; font-size: 0.9rem; color: #ff3b45;"><i class="fas fa-chair"></i> Ghế ${t.seat}</span>
+                    <div id="${qrDivId}" style="width: 100px; height: 100px; background: white; border-radius: 6px; padding: 4px; display: flex; align-items: center; justify-content: center;"></div>
+                    <span style="font-family: 'Oswald', sans-serif; font-size: 0.8rem; color: #aaa; letter-spacing: 0.5px;">${t.ticketCode}</span>
+                `;
+                perSeatContainer.appendChild(item);
+
+                if (typeof QRCode !== 'undefined') {
+                    setTimeout(() => {
+                        const target = document.getElementById(qrDivId);
+                        if (target) {
+                            target.innerHTML = '';
+                            new QRCode(target, {
+                                text: t.ticketCode,
+                                width: 92,
+                                height: 92,
+                                colorDark: "#111111",
+                                colorLight: "#ffffff",
+                                correctLevel: QRCode.CorrectLevel.M
+                            });
+                        }
+                    }, 50 * idx);
+                }
+            });
+        }
+    }
+
+    // Attach global function for printing individual tickets
+    window.printIndividualTickets = function() {
+        window.print();
+    };
 
     // Tích điểm tự động sau khi hiển thị thông tin booking
     awardLoyaltyPoints(booking);
