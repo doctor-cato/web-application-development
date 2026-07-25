@@ -574,7 +574,9 @@
             display: flex;
             gap: 24px;
             align-items: stretch;
-            height: 220px;
+            min-height: 220px;
+            height: auto;
+            flex-wrap: wrap;
         }
 
         /* Cart Column */
@@ -949,42 +951,51 @@
     <script>
         // Auth check for Staff Sales
         (function() {
-            const token = localStorage.getItem('auth_token');
+            const token = localStorage.getItem('auth_token') || localStorage.getItem('3hd2k_user');
             if (!token) {
                 window.location.href = '/auth/user-login/login.html';
                 return;
             }
             let user = null;
             try {
-                user = JSON.parse(decodeURIComponent(atob(token)));
-                if (user.role !== 'ADMIN' && user.role !== 'STAFF') {
+                if (token.startsWith('{')) {
+                    user = JSON.parse(token);
+                } else if (token.includes('.')) {
+                    const payloadBase64 = token.split('.')[1];
+                    const base64 = payloadBase64.replace(/-/g, '+').replace(/_/g, '/');
+                    user = JSON.parse(decodeURIComponent(escape(window.atob(base64))));
+                } else {
+                    user = JSON.parse(decodeURIComponent(atob(token)));
+                }
+                
+                const role = (user.role || user.Role || '').toUpperCase();
+                if (role !== 'ADMIN' && role !== 'STAFF') {
                     window.location.href = '../explore/home-page/index.html';
                     return;
                 }
             } catch (e) {
+                console.error("Auth Token Parse Error:", e);
                 window.location.href = '/auth/user-login/login.html';
                 return;
             }
             
-            // Hide Admin link if not Admin
+            // Hide Admin link if not Admin & load profile
             document.addEventListener('DOMContentLoaded', function() {
-                if (user && user.role !== 'ADMIN') {
-                    const adminBtn = document.getElementById('btn-switch-admin');
-                    if (adminBtn) adminBtn.style.display = 'none';
-                }
-
-                // Bug #7 fix: Load tên & avatar nhân viên từ token vào sidebar
-                const nameEl = document.querySelector('.admin-name');
-                const avatarEl = document.querySelector('.admin-avatar');
-                const roleEl = document.querySelector('.admin-role');
                 if (user) {
-                    if (nameEl && user.fullname) nameEl.textContent = user.fullname;
-                    if (avatarEl && user.fullname) {
-                        avatarEl.textContent = user.fullname.charAt(0).toUpperCase();
+                    const role = (user.role || user.Role || '').toUpperCase();
+                    if (role !== 'ADMIN') {
+                        const adminBtn = document.getElementById('btn-switch-admin');
+                        if (adminBtn) adminBtn.style.display = 'none';
                     }
-                    if (roleEl) {
-                        roleEl.textContent = user.role === 'ADMIN' ? 'Quản trị viên' : 'Nhân viên POS';
-                    }
+
+                    const name = user.fullname || user.Fullname || user.name || user.email || 'Nhân viên POS';
+                    const nameEl = document.querySelector('.admin-name');
+                    const avatarEl = document.querySelector('.admin-avatar');
+                    const roleEl = document.querySelector('.admin-role');
+                    
+                    if (nameEl) nameEl.textContent = name;
+                    if (avatarEl) avatarEl.textContent = name.charAt(0).toUpperCase();
+                    if (roleEl) roleEl.textContent = role === 'ADMIN' ? 'Quản trị viên' : 'Nhân viên POS';
                 }
             });
         })();
@@ -1330,12 +1341,12 @@
                 .then(combos => {
                     if (Array.isArray(combos) && combos.length > 0) {
                         const apiProducts = combos.map(c => ({
-                            id: c.id ? c.id.toString() : 'CB-' + Math.random().toString(36).substr(2, 5),
-                            name: c.name,
-                            price: c.price,
+                            id: (c.id || c.Id || '').toString(),
+                            name: c.name || c.Name || 'Combo Ưu Đãi',
+                            price: c.price || c.Price || 0,
                             category: "Combo",
-                            image: c.image || "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=300&q=80",
-                            deduct: [{ id: "INV-001", qty: 1 }, { id: "INV-003", qty: 1 }]
+                            image: c.image || c.Image || "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=300&q=80",
+                            deduct: [{ id: "INV-001", qty: 1 }, { id: "INV-003", qty: 1 }, { id: "INV-007", qty: 1 }]
                         }));
                         SALE_PRODUCTS = [...apiProducts, ...SALE_PRODUCTS.filter(p => p.category !== "Combo")];
                         renderPOSProducts();
@@ -1423,15 +1434,17 @@
 
             // Compile the list of ingredients to deduct
             const deductList = {};
-            order.items.forEach(item => {
-                const prod = SALE_PRODUCTS.find(p => p.id === item.prodId);
-                if (prod && prod.deduct) {
-                    prod.deduct.forEach(d => {
-                        const totalQtyNeeded = d.qty * item.qty;
-                        deductList[d.id] = (deductList[d.id] || 0) + totalQtyNeeded;
-                    });
-                }
-            });
+            if (Array.isArray(order.items)) {
+                order.items.forEach(item => {
+                    const prod = SALE_PRODUCTS.find(p => p.id === item.prodId || p.name === item.name);
+                    if (prod && Array.isArray(prod.deduct)) {
+                        prod.deduct.forEach(d => {
+                            const totalQtyNeeded = d.qty * (item.qty || 1);
+                            deductList[d.id] = (deductList[d.id] || 0) + totalQtyNeeded;
+                        });
+                    }
+                });
+            }
 
             // Verify stock levels
             for (const invId in deductList) {
@@ -1675,8 +1688,10 @@
         }
 
         // --- VIP Customer Phone Lookup ---
-        window.lookupVIPCustomer = function() {
-            const phone = document.getElementById("loyalty-phone-input").value.trim();
+        window.lookupVIPCustomer = async function() {
+            const phoneInput = document.getElementById("loyalty-phone-input");
+            if (!phoneInput) return;
+            const phone = phoneInput.value.trim();
             const container = document.getElementById("loyalty-status-container");
             
             if (!container) return;
@@ -1688,15 +1703,28 @@
             }
 
             const users = JSON.parse(localStorage.getItem("3hd2k_users")) || [];
-            // Match user by phone number
-            const user = users.find(u => u.phone === phone);
+            let user = users.find(u => (u.phone || u.Phone) === phone);
+
+            if (!user) {
+                try {
+                    const res = await fetch('/api/users');
+                    if (res.ok) {
+                        const apiUsers = await res.json();
+                        user = apiUsers.find(u => (u.phone || u.Phone) === phone || (u.email && u.email.includes(phone)));
+                    }
+                } catch (e) {
+                    console.warn("User lookup API error:", e);
+                }
+            }
 
             if (user) {
                 vipCustomer = user;
+                const name = user.name || user.fullname || user.Fullname || 'Khách VIP';
+                const pts = user.points || user.Points || 0;
                 container.innerHTML = `
                     <div>
-                        <div class="loyalty-status-name"><i class="fas fa-crown"></i> VIP: ${user.name}</div>
-                        <div class="loyalty-status-points"><i class="fas fa-coins"></i> Tích lũy: ${user.points || 0} điểm</div>
+                        <div class="loyalty-status-name"><i class="fas fa-crown"></i> VIP: ${name}</div>
+                        <div class="loyalty-status-points"><i class="fas fa-coins"></i> Tích lũy: ${pts} điểm</div>
                     </div>
                 `;
             } else {
@@ -1756,6 +1784,8 @@
 
             // Select this new user in POS
             vipCustomer = newUser;
+            const loyaltyInput = document.getElementById("loyalty-phone-input");
+            if (loyaltyInput) loyaltyInput.value = phone;
             lookupVIPCustomer();
             closeVIPModal();
             showToast("Đã kích hoạt thẻ VIP mới!");
@@ -1871,13 +1901,22 @@
             let pointsSummary = "";
 
             if (vipCustomer) {
-                const user = users.find(u => u.phone === vipCustomer.phone);
-                if (user) {
-                    user.points = (user.points || 0) + pointsEarned;
-                    localStorage.setItem("3hd2k_users", JSON.stringify(users));
-                    customerName = user.name;
-                    pointsSummary = `${user.points} điểm VIP (+${pointsEarned})`;
+                const targetPhone = vipCustomer.phone || vipCustomer.Phone;
+                let user = users.find(u => (u.phone || u.Phone) === targetPhone);
+                if (!user) {
+                    user = {
+                        username: vipCustomer.username || "vip_" + targetPhone,
+                        name: vipCustomer.name || vipCustomer.fullname || vipCustomer.Fullname || "Khách VIP",
+                        email: vipCustomer.email || "",
+                        phone: targetPhone,
+                        points: 0
+                    };
+                    users.push(user);
                 }
+                user.points = (user.points || user.Points || 0) + pointsEarned;
+                localStorage.setItem("3hd2k_users", JSON.stringify(users));
+                customerName = user.name || user.fullname || user.Fullname || "Khách VIP";
+                pointsSummary = `${user.points} điểm VIP (+${pointsEarned})`;
             }
 
             // 3. Log sale transaction to activity logs
@@ -1892,7 +1931,7 @@
             // 4. Show success modal receipt
             const receiptId = "POS-" + Math.floor(10000 + Math.random() * 90000);
             document.getElementById("modal-receipt-id").textContent = receiptId;
-            document.getElementById("modal-receipt-customer").textContent = `${customerName} ${vipCustomer ? '(' + vipCustomer.phone + ')' : ''}`;
+            document.getElementById("modal-receipt-customer").textContent = `${customerName} ${vipCustomer ? '(' + (vipCustomer.phone || vipCustomer.Phone || '') + ')' : ''}`;
             document.getElementById("modal-receipt-details").textContent = itemsText;
             document.getElementById("modal-receipt-total").textContent = totalAmount.toLocaleString('vi-VN') + "đ";
 
@@ -1909,7 +1948,6 @@
             cart = [];
             document.getElementById("loyalty-phone-input").value = "";
             vipCustomer = null;
-            // Bug #5 fix: Reset UI trực tiếp thay vì gọi lookupVIPCustomer() thừa
             const loyaltyContainer = document.getElementById("loyalty-status-container");
             if (loyaltyContainer) {
                 loyaltyContainer.innerHTML = `<div style="color: var(--text-muted); text-align: center; font-style: italic;">Chưa nhập SĐT tích điểm</div>`;
@@ -1926,6 +1964,17 @@
             playBeep('click');
             document.getElementById("success-modal").classList.remove("active");
         }
+
+        // Close modal when clicking on backdrop
+        window.addEventListener('click', (e) => {
+            const successModal = document.getElementById('success-modal');
+            const qrModal = document.getElementById('qr-modal');
+            const vipModal = document.getElementById('vip-modal');
+            
+            if (e.target === successModal) closeSuccessModal();
+            if (e.target === qrModal) qrModal.style.display = 'none';
+            if (e.target === vipModal) closeVIPModal();
+        });
 
         // --- Custom Toasts ---
         function showToast(msg) {
@@ -1962,27 +2011,23 @@
                 .build();
 
             connection.on("ReceiveNewBooking", (bookingData) => {
-                // Bug #4 fix: Normalize object với đầy đủ fields mà renderAppOrders() cần
                 let appOrders = JSON.parse(localStorage.getItem("cinema_app_orders")) || [];
-                appOrders.unshift({
+                const newOrder = {
                     id: "ORD-" + Math.floor(100000 + Math.random() * 900000),
                     customerName: bookingData.customerName || bookingData.customerEmail || "Khách hàng",
                     phone: bookingData.customerPhone || "N/A",
-                    itemsText: Array.isArray(bookingData.seats)
-                        ? bookingData.seats.join(", ")
-                        : (bookingData.seats || "Vé xem phim"),
-                    items: [],
+                    itemsText: typeof bookingData.seats === 'string' ? bookingData.seats : (Array.isArray(bookingData.seats) ? bookingData.seats.join(", ") : "Vé xem phim"),
+                    items: bookingData.items || [{ prodId: "PROD-001", name: "Bắp Ngọt (Lớn)", qty: 1 }],
                     totalAmount: bookingData.totalAmount || 0,
                     dateCreated: bookingData.time || new Date().toISOString()
-                });
+                };
+                appOrders.unshift(newOrder);
                 localStorage.setItem("cinema_app_orders", JSON.stringify(appOrders));
                 
-                // Cập nhật UI
                 renderAppOrders();
 
-                // Hiển thị toast
                 playBeep('success');
-                showToast("🚀 CÓ ĐƠN HÀNG MỚI TỪ KHÁCH HÀNG: " + (bookingData.customerName || bookingData.customerEmail));
+                showToast("🚀 CÓ ĐƠN HÀNG MỚI TỪ KHÁCH HÀNG: " + newOrder.customerName);
             });
 
             connection.start().then(() => {

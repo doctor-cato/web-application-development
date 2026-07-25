@@ -47,6 +47,8 @@ namespace appweb.Controllers
 
             var bookingData = new {
                 customerEmail = request.Email,
+                customerName = user?.Fullname ?? request.Email,
+                customerPhone = user?.Phone ?? "N/A",
                 seats = request.Seats,
                 totalAmount = request.TotalPrice,
                 time = DateTime.Now.ToString("HH:mm:ss")
