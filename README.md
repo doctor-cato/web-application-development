@@ -1,10 +1,11 @@
 # 3HD2Kcinema — Hệ thống Đặt Vé Rạp Chiếu Phim
 
-Ứng dụng web mô phỏng toàn bộ luồng đặt vé rạp chiếu phim, từ xem phim, chọn ghế real-time, thanh toán đến hóa đơn QR code và quản lý tài khoản.
+Ứng dụng web mô phỏng toàn bộ luồng đặt vé rạp chiếu phim chuyên nghiệp: xem phim, chọn ghế real-time, combo đồ ăn, thanh toán QR code, mini-game Cine-Match, chương trình VIP & Đổi thưởng, và quản lý tài khoản.
 
-![3HD2Kcinema Banner](https://img.shields.io/badge/3HD2Kcinema-v2.7.7-red?style=for-the-badge)
-![Git Commits](https://img.shields.io/badge/Commits-277-blue?style=for-the-badge)
+![3HD2Kcinema Banner](https://img.shields.io/badge/3HD2Kcinema-v3.0.5-red?style=for-the-badge)
+![Git Commits](https://img.shields.io/badge/Commits-305-blue?style=for-the-badge)
 ![Vercel Deployment](https://img.shields.io/badge/Vercel-32dk--web--app--project.vercel.app-000000?style=for-the-badge&logo=vercel&logoColor=white)
+![Playwright Tests](https://img.shields.io/badge/Playwright-8%2F8%20Passed-brightgreen?style=for-the-badge&logo=playwright)
 ![MkDocs](https://img.shields.io/badge/Docs-MkDocs--Material-009688?style=for-the-badge)
 ![GitHub Pages](https://img.shields.io/badge/Deploy-GitHub_Pages-blue?style=for-the-badge)
 
@@ -12,109 +13,112 @@
 
 ## 🌐 Trải nghiệm Trực tuyến (Live Demo)
 
-Ứng dụng Frontend đã được triển khai trực tiếp trên Vercel:
+Ứng dụng Frontend đã được triển khai và hoàn thiện trên Vercel:
 
-👉 **Link Web App**: [https://32dk-web-app-project.vercel.app](https://32dk-web-app-project.vercel.app)
-
----
-
-## 🚀 Trạng thái Hiện tại của Dự án
-
-Dự án được cấu trúc theo mô hình song song:
-
-1. **Frontend (Thư mục `/frontend`) - Nhánh chạy chính thức**: Ứng dụng client-side hoàn chỉnh được phát triển bằng HTML5, CSS3, Vanilla JS và Tailwind CSS. Để phục vụ việc chạy độc lập không phụ thuộc môi trường mạng, toàn bộ luồng dữ liệu (users, bookings, seat locks, rewards, notifications) được **giả lập qua LocalStorage và SessionStorage** cùng **BroadcastChannel API** để đồng bộ trạng thái khóa ghế thời gian thực giữa các tab.
----
-
-## 📌 Phiên bản & Lịch sử Commit (Version Info)
-
-- **Tổng số commits**: **277 commits** (được kiểm tra tự động qua Git history).
-- **Phiên bản hiện tại**: **`v2.7.7`** (Chuyển đổi từ 277 commits theo chuẩn Semantic Versioning: `v2.7.7` ứng với Major 2, Minor 7, Patch 7 đại diện cho 277 bước hoàn thiện và cải tiến mã nguồn hệ thống).
+👉 **Link Web App Trực tiếp**: [https://32dk-web-app-project.vercel.app](https://32dk-web-app-project.vercel.app)
 
 ---
 
-## 🛠️ Stack Công nghệ Tài liệu (Documentation Stack)
+## 🚀 Trạng thái Hiện tại của Dự án (Current Status & Version)
 
-Trang tài liệu của hệ thống được xây dựng và xuất bản tự động theo stack tiêu chuẩn chuyên nghiệp:
+- **Tổng số commits**: **305 commits** (được kiểm tra tự động qua Git history).
+- **Phiên bản hiện tại**: **`v3.0.5`** (Tuân thủ Semantic Versioning: Major 3, Minor 0, Patch 5).
+- **Kiểm thử E2E (Playwright)**: **8/8 test suites PASS 100%** (bao gồm Responsive layout, Visual regression, Booking flow, Minigame, và Profile).
+- **Kiểm định Product Readiness**: Đã hoàn thành đợt kiểm tra toàn diện với các skill audit chuyên sâu (`ponytail-audit`, `modern-web-guidance`, `memory-leak-debugging`, `a11y-debugging`).
 
-- **MkDocs**: Framework tạo website tài liệu tĩnh từ định dạng Markdown.
-- **Material for MkDocs**: Giao diện hiện đại (Cinematic Noir / Light Mode toggle), hỗ trợ tìm kiếm, tabs, code highlight và admonition.
-- **GitHub Pages & Actions**: Tự động kiểm tra định dạng và xuất bản website tài liệu ngay trên GitHub qua tệp workflow `.github/workflows/docs.yml`.
-- **Markdownlint**: Tự động kiểm tra cú pháp và định dạng Markdown (`.markdownlint.yml`).
+---
 
-### Xem Trước Website Tài liệu tại Local
+## 📋 Đánh giá Product Readiness & Hạng mục Issues (#56 - #60)
+
+Dự án đã được rà soát chất lượng mã nguồn để chuẩn bị cho môi trường sản xuất. Các hạng mục cải tiến đã được ghi nhận trực tiếp trên GitHub Issues:
+
+1. **[#56 - Cleanup Dead Code]**(https://github.com/doctor-cato/web-application-development/issues/56): Dọn dẹp tệp log `build-storybook.log`, script phụ backend `fix_encoding.js`, và xóa các file trùng lặp trong sub-folder `/js/` (`booking-food`, `loyalty-points`, `cinema-map`, `movie-search`).
+2. **[#57 - Storage Architecture]**(https://github.com/doctor-cato/web-application-development/issues/57): Hợp nhất 2 module `storage.js` độc lập, loại bỏ các hàm deprecated `escape()` / `unescape()` để sử dụng chuẩn `TextEncoder/TextDecoder`.
+3. **[#58 - Modern Web & a11y]**(https://github.com/doctor-cato/web-application-development/issues/58): Bổ sung `loading="lazy"` cho hình ảnh/poster, `fetchpriority="high"` cho Hero Banner và chuẩn hóa ARIA labels cho Accessibility.
+4. **[#59 - Memory Leak Prevention]**(https://github.com/doctor-cato/web-application-development/issues/59): Quản lý vòng đời Event Listeners (`scroll`, `keydown`), Timers đếm ngược chọn ghế và đóng `BroadcastChannel` khi tab bị unload.
+5. **[#60 - Docker & DevOps]**(https://github.com/doctor-cato/web-application-development/issues/60): Xây dựng `Dockerfile` đa tầng cho ASP.NET Core 8 và file `docker-compose.yml` khởi chạy toàn bộ full-stack app.
+
+---
+
+## 🛠️ Stack Công nghệ Tài liệu & Kiểm thử (Testing & Docs Stack)
+
+- **Playwright Test Suite**: Kiểm thử tự động giao diện End-to-End, Visual Regression Snapshots và Accessibility (`npx playwright test`).
+- **Lighthouse CI**: Tự động đánh giá hiệu năng (Performance), PWA, SEO và Best Practices (`.lighthouserc.js`).
+- **Storybook HTML/Vite**: Xây dựng và kiểm định UI components độc lập (`npm run storybook`).
+- **MkDocs Material**: Framework xuất bản trang tài liệu tĩnh (`mkdocs serve`).
+- **Markdownlint**: Kiểm tra cú pháp Markdown tự động (`.markdownlint.yml`).
+
+---
+
+## 💻 Cách Chạy Ứng Dụng (Local Setup)
+
+### 1. Khởi chạy Frontend (Client Mock Engine)
+
+Mở terminal tại thư mục gốc hoặc thư mục `frontend`:
 
 ```bash
-# Cài đặt MkDocs Material
-pip install mkdocs-material
+# Cài đặt các gói phụ thuộc testing/storybook
+npm install
 
-# Khởi chạy server xem trước
-mkdocs serve
-```
-
-> Truy cập tài liệu tại: `http://127.0.0.1:8000`
-
----
-
-## 💻 Cách Chạy Ứng Dụng (Local)
-
-Hiện tại bạn có thể trải nghiệm trực tiếp qua link Vercel ở trên hoặc khởi chạy thủ công thư mục Frontend:
-
-### Khởi chạy Frontend (Giao diện Client)
-
-Mở terminal, chuyển vào thư mục `frontend` và chạy server tĩnh:
-
-```bash
+# Khởi chạy Frontend Dev Server
 cd frontend
-
-# Sử dụng Python để chạy web tĩnh (khuyên dùng):
+npm run dev
+# Hoặc sử dụng Python static server:
 python -m http.server 3000 -d src
-# Hoặc nếu dùng python3:
-python3 -m http.server 3000 -d src
 ```
 
-> Truy cập trình duyệt tại: `http://localhost:3000`.
+> Truy cập ứng dụng tại: `http://localhost:3000`
+
+### 2. Chạy Bộ Kiểm Thử (Testing Suite)
+
+```bash
+# Chạy toàn bộ Playwright E2E tests
+npm run test:e2e
+
+# Kiểm tra Accessibility (a11y)
+npm run test:a11y
+
+# Khởi chạy Storybook UI
+npm run storybook
+```
 
 ---
 
-## 📁 Cấu trúc Thư mục Hệ thống
+## 📁 Cấu trúc Thư mục Hệ thống (Directory Structure)
 
 ```text
 3HD2Kcinema/
-├── README.md                  # Tổng quan dự án & Hướng dẫn khởi chạy
+├── README.md                  # Tổng quan dự án, Trạng thái Audit & Hướng dẫn khởi chạy
 ├── LICENSE                    # Giấy phép bản quyền MIT
-├── .gitignore                 # Các tệp/thư mục bỏ qua khi commit git
+├── package.json               # Cấu hình npm scripts (Playwright, Storybook, Lighthouse CI)
+├── playwright.config.js       # Cấu hình bộ kiểm thử Playwright E2E & Visual Regression
+├── .lighthouserc.js           # Cấu hình kiểm thử hiệu năng Lighthouse CI
 ├── mkdocs.yml                 # Cấu hình website tài liệu MkDocs Material
-├── .markdownlint.yml          # Cấu hình quy tắc kiểm tra cú pháp Markdown
 ├── .github/
-│   └── workflows/
-│       └── docs.yml           # GitHub Actions workflow tự động build & deploy docs
-├── docs/                      # Thư mục chứa toàn bộ trang tài liệu chuyên nghiệp
-│   ├── index.md               # Tổng quan dự án & lộ trình
-│   ├── getting-started.md     # Hướng dẫn thiết lập môi trường & khởi chạy
-│   ├── architecture.md        # Kiến trúc Client-side Mock Engine & ASP.NET Core
-│   ├── frontend.md            # Chi tiết mã nguồn Frontend, ES6 Modules & UI/UX
-│   ├── backend.md             # Chi tiết mã nguồn Backend ASP.NET Core & EF Core
-│   ├── api.md                 # Tài liệu RESTful API Endpoints & Client Mock Services
-│   ├── database.md            # Cấu trúc Storage trình duyệt & CSDL SQL Server
-│   ├── deployment.md          # Hướng dẫn triển khai GitHub Pages, Vercel & Docker
-│   ├── testing.md             # Kịch bản kiểm thử tự động Playwright & Thủ công
-│   ├── contributing.md        # Quy trình đóng góp & Quy ước Commit
-│   ├── ai-contribution.md     # Hướng dẫn & Quy định dành cho AI Agent
-│   └── ai-skills-config.md    # Chi tiết sàng lọc & Cấu hình Skills AI Cục bộ
+│   └── workflows/             # Workflows CI/CD GitHub Actions
+├── docs/                      # Thư mục tài liệu chi tiết (Architecture, API, DB, Testing,...)
+├── tests/                     # Các kịch bản kiểm thử E2E và Accessibility
 ├── frontend/                  # Mã nguồn ứng dụng Frontend (Client-side)
-│   ├── src/                   # Thư mục giao diện & logic (auth, booking, explore, user,...)
-│   └── package.json           # Các npm scripts (tailwind watch, serve)
+│   ├── src/
+│   │   ├── auth/              # Đăng nhập, Đăng ký, Quên mật khẩu & Auth Services
+│   │   ├── booking/           # Chọn ghế, Đồ ăn combo, Checkout, Hóa đơn & Hủy vé
+│   │   ├── explore/           # Trang chủ, Tìm kiếm phim, Chi tiết phim, Cụm rạp
+│   │   ├── user/              # Hồ sơ người dùng, Gói VIP, Đổi thưởng, Thông báo
+│   │   ├── engagement/        # Minigame CinePredict & CineMatch
+│   │   ├── management/        # Giao diện Quản lý Admin & Nhân viên bán vé
+│   │   └── shared/            # Shared Components (Navbar, Footer), CSS & Storage Utils
+│   └── package.json           # Tailwind CSS build scripts & serve
 └── backend/                   # Khung mã nguồn Backend (ASP.NET Core C#)
     ├── Controllers/           # Controllers MVC & Web API
     ├── Models/                # Entity Framework Models
-    └── Services/              # Lớp Business Logic Services
+    ├── Repositories/          # Data Access Layer Repositories
+    ├── Services/              # Business Logic Services
+    └── Program.cs             # ASP.NET Core App Startup Config
 ```
 
 ---
 
 ## 📚 Hệ thống Tài liệu Chi tiết (Docs Directory)
-
-Tham khảo thư mục [`docs/`](./docs/) hoặc website MkDocs để xem nội dung đầy đủ:
 
 - [🔗 Tổng quan (`docs/index.md`)](./docs/index.md)
 - [🔗 Bắt đầu (`docs/getting-started.md`)](./docs/getting-started.md)
@@ -126,5 +130,3 @@ Tham khảo thư mục [`docs/`](./docs/) hoặc website MkDocs để xem nội 
 - [🔗 Triển khai (`docs/deployment.md`)](./docs/deployment.md)
 - [🔗 Kiểm thử (`docs/testing.md`)](./docs/testing.md)
 - [🔗 Quy trình Đóng góp (`docs/contributing.md`)](./docs/contributing.md)
-- [🔗 Hướng dẫn AI Agent (`docs/ai-contribution.md`)](./docs/ai-contribution.md)
-- [🔗 Cấu hình Skills AI (`docs/ai-skills-config.md`)](./docs/ai-skills-config.md)
