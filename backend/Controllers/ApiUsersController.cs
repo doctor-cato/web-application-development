@@ -1,5 +1,6 @@
 using appweb.Models;
 using appweb.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
@@ -31,7 +32,7 @@ namespace appweb.Controllers
                 role = u.Role ?? "CUSTOMER",
                 dateOfBirth = u.DateOfBirth,
                 gender = u.Gender,
-                avatar = u.Avatar
+                avatar = u.AvatarUrl
             });
             return Ok(result);
         }
@@ -50,13 +51,19 @@ namespace appweb.Controllers
                 role = u.Role ?? "CUSTOMER",
                 dateOfBirth = u.DateOfBirth,
                 gender = u.Gender,
-                avatar = u.Avatar
+                avatar = u.AvatarUrl
             });
         }
 
+        private static readonly string[] ValidRoles = { "ADMIN", "STAFF", "CUSTOMER", "VIP" };
+
+        [Authorize(Roles = "ADMIN")]
         [HttpPut("{id}/role")]
         public async Task<IActionResult> UpdateUserRole(Guid id, [FromBody] UserRoleDto dto)
         {
+            if (string.IsNullOrWhiteSpace(dto.Role) || !ValidRoles.Contains(dto.Role.ToUpper()))
+                return BadRequest(new { message = $"Role không hợp lệ. Chỉ chấp nhận: {string.Join(", ", ValidRoles)}" });
+
             var user = await _userRepository.GetByIdAsync(id);
             if (user == null) return NotFound(new { message = "User not found" });
 
@@ -65,6 +72,7 @@ namespace appweb.Controllers
             return Ok(new { message = "Role updated successfully", role = user.Role });
         }
 
+        [Authorize(Roles = "ADMIN")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(Guid id)
         {

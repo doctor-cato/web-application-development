@@ -19,6 +19,7 @@
             --neon-red-glow: 0 0 10px rgba(229, 9, 20, 0.4);
             --btn-green-color: #0df286;
             --btn-green-glow: 0 0 15px rgba(13, 242, 134, 0.4);
+            --btn-cyan-glow: 0 0 15px rgba(0, 240, 255, 0.4);
             --bg-color: #0c0c0c;
             --bg-elevated: #1a1a1a;
             --text-main: #f5f5f5;
@@ -971,6 +972,20 @@
                     const adminBtn = document.getElementById('btn-switch-admin');
                     if (adminBtn) adminBtn.style.display = 'none';
                 }
+
+                // Bug #7 fix: Load tên & avatar nhân viên từ token vào sidebar
+                const nameEl = document.querySelector('.admin-name');
+                const avatarEl = document.querySelector('.admin-avatar');
+                const roleEl = document.querySelector('.admin-role');
+                if (user) {
+                    if (nameEl && user.fullname) nameEl.textContent = user.fullname;
+                    if (avatarEl && user.fullname) {
+                        avatarEl.textContent = user.fullname.charAt(0).toUpperCase();
+                    }
+                    if (roleEl) {
+                        roleEl.textContent = user.role === 'ADMIN' ? 'Quản trị viên' : 'Nhân viên POS';
+                    }
+                }
             });
         })();
     </script>
@@ -1894,7 +1909,11 @@
             cart = [];
             document.getElementById("loyalty-phone-input").value = "";
             vipCustomer = null;
-            lookupVIPCustomer();
+            // Bug #5 fix: Reset UI trực tiếp thay vì gọi lookupVIPCustomer() thừa
+            const loyaltyContainer = document.getElementById("loyalty-status-container");
+            if (loyaltyContainer) {
+                loyaltyContainer.innerHTML = `<div style="color: var(--text-muted); text-align: center; font-style: italic;">Chưa nhập SĐT tích điểm</div>`;
+            }
             renderCart();
             renderPOSProducts();
 
@@ -1943,15 +1962,18 @@
                 .build();
 
             connection.on("ReceiveNewBooking", (bookingData) => {
-                // Thêm vào danh sách đơn hàng online
+                // Bug #4 fix: Normalize object với đầy đủ fields mà renderAppOrders() cần
                 let appOrders = JSON.parse(localStorage.getItem("cinema_app_orders")) || [];
                 appOrders.unshift({
                     id: "ORD-" + Math.floor(100000 + Math.random() * 900000),
-                    status: "new",
-                    customerName: bookingData.customerEmail,
-                    time: bookingData.time,
-                    items: bookingData.seats,
-                    total: bookingData.totalAmount
+                    customerName: bookingData.customerName || bookingData.customerEmail || "Khách hàng",
+                    phone: bookingData.customerPhone || "N/A",
+                    itemsText: Array.isArray(bookingData.seats)
+                        ? bookingData.seats.join(", ")
+                        : (bookingData.seats || "Vé xem phim"),
+                    items: [],
+                    totalAmount: bookingData.totalAmount || 0,
+                    dateCreated: bookingData.time || new Date().toISOString()
                 });
                 localStorage.setItem("cinema_app_orders", JSON.stringify(appOrders));
                 
@@ -1960,7 +1982,7 @@
 
                 // Hiển thị toast
                 playBeep('success');
-                showToast("🚀 CÓ ĐƠN HÀNG MỚI TỪ KHÁCH HÀNG: " + bookingData.customerEmail);
+                showToast("🚀 CÓ ĐƠN HÀNG MỚI TỪ KHÁCH HÀNG: " + (bookingData.customerName || bookingData.customerEmail));
             });
 
             connection.start().then(() => {
