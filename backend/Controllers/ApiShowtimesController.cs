@@ -57,7 +57,7 @@ namespace appweb.Controllers
             existing.MovieId = showtime.MovieId;
             existing.RoomId = showtime.RoomId;
             existing.StartTime = showtime.StartTime;
-            existing.Price = showtime.Price;
+            existing.TicketPrice = showtime.TicketPrice;
 
             await _showtimeRepository.UpdateAsync(id, existing);
             return Ok(existing);

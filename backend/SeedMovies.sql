@@ -13,7 +13,7 @@ INSERT INTO movies (title, description, duration_minutes, age_rating, genres, po
 (N'Gran Turismo - Tay Đua Cự Phách', N'Dựa trên câu chuyện có thật về Jann Mardenborough, một game thủ thiếu niên giành chiến thắng trong cuộc thi của Nissan, biến ước mơ trở thành tay đua chuyên nghiệp thành hiện thực trên đường đua thật sự.', 134, N'T13', N'Hành Động, Thể Thao', N'/images/movies/Gran_Turismo.jpg', N'https://www.youtube.com/embed/GkXeVIfbGOw', N'2023-08-25');
 
 INSERT INTO movies (title, description, duration_minutes, age_rating, genres, poster_url, trailer_url, release_date) VALUES 
-(N'Iron Man 2', N'Tony Stark đối mặt với áp lực từ chính phủ đòi giao nộp công nghệ Iron Man, trong khi một kẻ thù mới Ivan Vanko xuất hiện với vũ khí khủng khiếp.', 124, N'T13', N'Hành Động, Khoa Học Viễn Tưởng', N'/images/movies/iron_man2.jpg', N'https://www.youtube.com/embed/BoohRoVA9WQ', N'2010-05-07');
+(N'Iron Man 2', N'Tony Stark đối mặt với áp lực từ chính phủ đòi giao nộp công nghệ Iron Man, trong khi một kẻ thù mới Ivan Vanko xuất hiện với vũ khí khủng khiếp.', 124, N'T13', N'Hành Động, Viễn Tưởng', N'/images/movies/iron_man2.jpg', N'https://www.youtube.com/embed/BoohRoVA9WQ', N'2010-05-07');
 
 INSERT INTO movies (title, description, duration_minutes, age_rating, genres, poster_url, trailer_url, release_date) VALUES 
 (N'F1: The Movie', N'Một cựu tay đua bất ngờ quay trở lại đường đua Công thức 1 sau nhiều năm vắng bóng, đồng đội với một tài năng trẻ đầy triển vọng tại đội đua cuối bảng.', 130, N'T16', N'Hành Động, Thể Thao', N'/images/movies/f1_movie.jpg', N'https://www.youtube.com/embed/a8gEGuE_7_o', N'2025-06-27');

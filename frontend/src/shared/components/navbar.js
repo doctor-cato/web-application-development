@@ -1251,18 +1251,22 @@ export function renderNavbar() {
             const qbMovieList = document.getElementById('qb-movie-list');
             let selectedMovieId = null;
 
-            // Load phim into Custom Dropdown dynamically from API
-            let moviesData = typeof nowShowingMovies !== 'undefined' && nowShowingMovies.length > 0 ? nowShowingMovies : [];
-            
             function getActiveMovies() {
-                if (moviesData.length > 0) return Promise.resolve(moviesData);
+                if (window.allMoviesData && window.allMoviesData.length > 0) {
+                    return Promise.resolve(window.allMoviesData);
+                }
+                if (window.fetchMoviesPromise) {
+                    return window.fetchMoviesPromise.then(() => {
+                        return (window.allMoviesData && window.allMoviesData.length > 0) ? window.allMoviesData : (window.nowShowingMovies || []);
+                    });
+                }
                 return fetch('/api/movies')
                     .then(res => res.json())
                     .then(data => {
-                        moviesData = data.map(m => ({ id: m.id, title: m.title }));
-                        return moviesData;
+                        const mapped = data.map(m => ({ id: m.id || m.movieId, title: m.title }));
+                        return mapped.length > 0 ? mapped : (window.allMoviesData || []);
                     })
-                    .catch(() => []);
+                    .catch(() => (window.allMoviesData || []));
             }
 
             function renderMovieOptions(filterText = '') {

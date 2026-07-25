@@ -22,6 +22,7 @@ namespace appweb.Controllers
                     description = "Dự đoán điểm số IMDb của bom tấn 'F1: The Movie' sau tuần công chiếu đầu tiên.",
                     reward = "Voucher Bỏng ngô Lớn",
                     options = new[] { "Trên 8.0 ↑", "Dưới 8.0 ↓" },
+                    winnerIndex = -1,
                     fee = 50
                 },
                 new {
@@ -35,6 +36,7 @@ namespace appweb.Controllers
                     description = "Kẻ Kiến Tạo 2 có vượt mốc 50 triệu USD doanh thu phòng vé trong tuần đầu ra mắt?",
                     reward = "Voucher Đồ uống",
                     options = new[] { "Trên 50 Triệu", "Dưới 50 Triệu" },
+                    winnerIndex = -1,
                     fee = 50
                 },
                 new {
@@ -48,6 +50,7 @@ namespace appweb.Controllers
                     description = "Đánh giá về Gran Turismo đang cực kỳ khả quan, điểm IMDb có vượt 8.5?",
                     reward = "Voucher Đồ uống",
                     options = new[] { "Trên 8.5 ↑", "Dưới 8.5 ↓" },
+                    winnerIndex = -1,
                     fee = 50
                 },
                 new {
