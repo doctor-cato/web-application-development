@@ -1187,19 +1187,43 @@
     <script>
         // Auth check for Admin
         (function() {
-            const token = localStorage.getItem('auth_token');
+            const token = localStorage.getItem('auth_token') || localStorage.getItem('3hd2k_user');
             if (!token) {
                 window.location.href = '/auth/user-login/login.html';
                 return;
             }
+            let user = null;
             try {
-                const user = JSON.parse(decodeURIComponent(atob(token)));
-                if (user.role !== 'ADMIN') {
+                if (token.startsWith('{')) {
+                    user = JSON.parse(token);
+                } else if (token.includes('.')) {
+                    const payloadBase64 = token.split('.')[1];
+                    const base64 = payloadBase64.replace(/-/g, '+').replace(/_/g, '/');
+                    user = JSON.parse(decodeURIComponent(escape(window.atob(base64))));
+                } else {
+                    user = JSON.parse(decodeURIComponent(atob(token)));
+                }
+                
+                const role = (user.role || user.Role || '').toUpperCase();
+                if (role !== 'ADMIN') {
                     window.location.href = '../explore/home-page/index.html';
+                    return;
                 }
             } catch (e) {
+                console.error("Auth Token Parse Error:", e);
                 window.location.href = '/auth/user-login/login.html';
+                return;
             }
+
+            document.addEventListener('DOMContentLoaded', function() {
+                if (user) {
+                    const name = user.fullname || user.Fullname || user.name || user.email || 'Admin 3HD2K';
+                    const nameEl = document.querySelector('.admin-name');
+                    const avatarEl = document.querySelector('.admin-avatar');
+                    if (nameEl) nameEl.textContent = name;
+                    if (avatarEl) avatarEl.textContent = name.charAt(0).toUpperCase();
+                }
+            });
         })();
     </script>
 </head>
