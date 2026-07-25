@@ -13,7 +13,6 @@ namespace appweb.Repositories
             _context = context;
         }
 
-        // Sửa u.UserId thành u.Id
         public async Task<User?> GetByIdAsync(Guid id)
         {
             return await _context.Users.FirstOrDefaultAsync(u => u.UserId == id);

@@ -92,9 +92,9 @@ if (Directory.Exists(frontendPath))
     });
 }
 
-app.UseCors("AllowAll");
-
 app.UseRouting();
+
+app.UseCors("AllowAll");
 
 app.UseAuthentication();
 app.UseAuthorization();
