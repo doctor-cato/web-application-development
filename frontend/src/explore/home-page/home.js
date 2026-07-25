@@ -70,6 +70,8 @@ function renderHeroMovie(movie) {
     if (heroSection && (movie.bg || movie.poster)) {
         const bgUrl = movie.bg || movie.poster;
         heroSection.style.setProperty('--hero-bg-url', `url('${bgUrl}')`);
+        const bgOverlay = document.getElementById('hero-bg-overlay');
+        if (bgOverlay) bgOverlay.style.backgroundImage = `url('${bgUrl}')`;
     }
 
     if (movie.trailer && iframe) {
@@ -108,7 +110,16 @@ function changeHeroSlide(direction = 1) {
     currentHeroIndex = (currentHeroIndex + direction + window.heroMovies.length) % window.heroMovies.length;
     const movie = window.heroMovies[currentHeroIndex];
 
-    if (heroContent) heroContent.style.opacity = 0;
+    const bgOverlay = document.getElementById('hero-bg-overlay');
+
+    if (heroContent) {
+        heroContent.style.opacity = 0;
+        heroContent.style.transform = direction > 0 ? 'translateX(20px)' : 'translateX(-20px)';
+    }
+    if (bgOverlay) {
+        bgOverlay.style.opacity = 0.3;
+        bgOverlay.style.transform = 'scale(1.02)';
+    }
     
     setTimeout(() => {
         renderHeroMovie(movie);
@@ -116,7 +127,11 @@ function changeHeroSlide(direction = 1) {
             heroContent.style.opacity = 1;
             heroContent.style.transform = 'translateX(0)';
         }
-    }, 500);
+        if (bgOverlay) {
+            bgOverlay.style.opacity = 1;
+            bgOverlay.style.transform = 'scale(1)';
+        }
+    }, 400);
 }
 
 let slideInterval = setInterval(() => {

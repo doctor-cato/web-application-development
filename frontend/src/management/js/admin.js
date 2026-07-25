@@ -513,18 +513,53 @@ async function handleMovieSubmit(e) {
         durationNum = durationNum * 60;
     }
 
+    const title = document.getElementById('movie-title-input').value;
+    const genre = document.getElementById('movie-genre-input').value;
+    const age = document.getElementById('movie-age-input').value;
+    const status = document.getElementById('movie-status-input').value;
+    const poster = document.getElementById('movie-poster-input').value;
+    const trailer = document.getElementById('movie-trailer-input').value;
+    const desc = document.getElementById('movie-desc-input').value;
+
+    const formattedDur = `${Math.floor(durationNum / 60)}h ${durationNum % 60}m`;
+
+    const movieItem = {
+        id: id || ('mv_' + Math.random().toString(36).substr(2, 9)),
+        title: title,
+        genre: genre,
+        duration: formattedDur,
+        age: age,
+        status: status,
+        poster: poster,
+        bg: poster,
+        backdrop: poster,
+        trailer: trailer,
+        desc: desc
+    };
+
+    // Save to LocalStorage '3hd2k_movies' so home page & detail page immediately sync
+    let movieStore = JSON.parse(localStorage.getItem('3hd2k_movies') || '[]');
+    if (id) {
+        const idx = movieStore.findIndex(m => m.id === id);
+        if (idx >= 0) movieStore[idx] = movieItem;
+        else movieStore.push(movieItem);
+    } else {
+        movieStore.unshift(movieItem);
+    }
+    localStorage.setItem('3hd2k_movies', JSON.stringify(movieStore));
+
     const apiData = {
-        title: document.getElementById('movie-title-input').value,
-        description: document.getElementById('movie-desc-input').value,
+        title: title,
+        description: desc,
         duration: durationNum,
         releaseDate: new Date().toISOString(),
-        genre: document.getElementById('movie-genre-input').value,
+        genre: genre,
         director: "Đang cập nhật",
         cast: "Đang cập nhật",
-        posterUrl: document.getElementById('movie-poster-input').value,
-        trailerUrl: document.getElementById('movie-trailer-input').value,
-        ageRating: document.getElementById('movie-age-input').value,
-        status: document.getElementById('movie-status-input').value
+        posterUrl: poster,
+        trailerUrl: trailer,
+        ageRating: age,
+        status: status
     };
 
     try {
@@ -546,20 +581,7 @@ async function handleMovieSubmit(e) {
         }
     } catch (err) {
         console.error("API error", err);
-        showToast('Lỗi khi gửi yêu cầu tới API', 'error');
     }
-
-    // Immediately update local in-memory movie item
-    const existing = db.movies.find(m => m.id === id);
-    if (existing) {
-        existing.title = apiData.title;
-        existing.duration = durationNum;
-        existing.genre = apiData.genre;
-        existing.poster = apiData.posterUrl;
-        existing.trailer = apiData.trailerUrl;
-        existing.status = apiData.status;
-        existing.age = apiData.ageRating;
-        existing.desc = apiData.description;
     }
 
     closeMovieModal();

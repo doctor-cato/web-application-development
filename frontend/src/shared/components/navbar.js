@@ -57,9 +57,9 @@ export function renderNavbar() {
                         <button class="qb-btn" id="qb-submit" disabled>Tiếp tục</button>
                     </div>
                 </div>
-                <div class="cine-match-wrapper" style="display:flex; height:100%; align-items:center;">
+                <div class="cine-match-wrapper" style="display:flex; height:100%; align-items:center; margin-left: 8px; margin-right: 20px;">
                     <a href="${srcPrefix}/engagement/cinematch/index.html" class="cine-match-nav">
-                        Cine-Match <i class="fas fa-heart" style="color: var(--primary-red, #e50914); font-size:0.9rem; margin-left:4px; animation: heartbeat 1.5s infinite;"></i>
+                        Cine-Match <i class="fas fa-heart" style="color: var(--primary-red, #e50914); font-size:0.85rem; animation: heartbeat 1.5s infinite;"></i>
                     </a>
                 </div>
             </nav>
@@ -140,7 +140,7 @@ export function renderNavbar() {
 .nav-left {
     display: flex;
     align-items: center;
-    gap: 40px;
+    gap: 24px;
     height: 100%;
 }
 
@@ -203,29 +203,6 @@ export function renderNavbar() {
     transform: translateX(-50%) scaleX(1) !important;
 }
 
-/* Cine-Match Nav Button Style */
-.cine-match-nav {
-    display: inline-flex;
-    align-items: center;
-    padding: 6px 14px !important;
-    border-radius: 20px !important;
-    background: rgba(229, 9, 20, 0.15) !important;
-    border: 1px solid rgba(229, 9, 20, 0.4) !important;
-    color: #ffffff !important;
-    font-weight: 600 !important;
-    font-size: 0.9rem !important;
-    height: auto !important;
-    transition: all 0.3s ease !important;
-}
-.cine-match-nav::after {
-    display: none !important;
-}
-.cine-match-nav:hover {
-    background: var(--primary-red, #e50914) !important;
-    border-color: #ff2a5f !important;
-    box-shadow: 0 0 12px rgba(229, 9, 20, 0.5) !important;
-}
-
 /* Quick Book Toggle */
 .quick-book-toggle {
     font-family: 'Inter', sans-serif;
@@ -265,6 +242,39 @@ export function renderNavbar() {
 }
 .quick-book-toggle.active::after {
     transform: translateX(-50%) scaleX(1);
+}
+
+/* Cine-Match pill button - compact fit around text */
+.nav-links a.cine-match-nav {
+    height: auto !important;
+    padding: 5px 12px !important;
+    border-radius: 20px !important;
+    background: rgba(229, 9, 20, 0.12) !important;
+    border: 1px solid rgba(229, 9, 20, 0.35) !important;
+    color: #ffffff !important;
+    font-size: 0.875rem !important;
+    font-weight: 600 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    transition: all 0.3s ease !important;
+}
+
+.nav-links a.cine-match-nav:hover {
+    background: rgba(229, 9, 20, 0.25) !important;
+    border-color: var(--primary-red) !important;
+    box-shadow: 0 0 10px rgba(229, 9, 20, 0.35) !important;
+}
+
+.nav-links a.cine-match-nav::after {
+    display: none !important;
+}
+
+/* Booking Dropdown Hover */
+.booking-dropdown-wrapper:hover .booking-dropdown-content,
+.booking-dropdown-wrapper:focus-within .booking-dropdown-content {
+    display: block !important;
+}
 }
 
 /* Quick Book Modal */

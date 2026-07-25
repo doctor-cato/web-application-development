@@ -38,3 +38,6 @@ INSERT INTO movies (title, description, duration_minutes, age_rating, genres, po
 
 INSERT INTO movies (title, description, duration_minutes, age_rating, genres, poster_url, trailer_url, release_date) VALUES 
 (N'BATTLESHIP - CHIẾN HẠM', N'Cuộc chiến khốc liệt trên biển khơi nổ ra khi hạm đội hải quân quốc tế bất ngờ chạm trán với một hạm đội tàu chiến của người ngoài hành tinh.', 131, N'T13', N'Hành Động, Viễn Tưởng', N'/images/movies/battle_la.jpg', N'https://www.youtube.com/embed/cp3646Z1H6U', N'2012-05-18');
+
+INSERT INTO movies (title, description, duration_minutes, age_rating, genres, poster_url, trailer_url, release_date) VALUES 
+(N'OBSESSION', N'Hãy cẩn thận với những gì bạn ước mơ... Một câu chuyện giật gân, đầy ám ảnh và kịch tính.', 60, N'T18', N'Kinh Dị, Lãng Mạn', N'/images/movies/obsession.jpg', N'https://www.youtube.com/embed/dQw4w9WgXcQ', N'2026-05-15');
