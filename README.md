@@ -2,8 +2,8 @@
 
 Ứng dụng web mô phỏng toàn bộ luồng đặt vé rạp chiếu phim chuyên nghiệp: xem phim, chọn ghế real-time, combo đồ ăn, thanh toán QR code, mini-game Cine-Match, chương trình VIP & Đổi thưởng, và quản lý tài khoản.
 
-![3HD2Kcinema Banner](https://img.shields.io/badge/3HD2Kcinema-v3.0.5-red?style=for-the-badge)
-![Git Commits](https://img.shields.io/badge/Commits-305-blue?style=for-the-badge)
+![3HD2Kcinema Banner](https://img.shields.io/badge/3HD2Kcinema-v3.0.6-red?style=for-the-badge)
+![Git Commits](https://img.shields.io/badge/Commits-306-blue?style=for-the-badge)
 ![Vercel Deployment](https://img.shields.io/badge/Vercel-32dk--web--app--project.vercel.app-000000?style=for-the-badge&logo=vercel&logoColor=white)
 ![Playwright Tests](https://img.shields.io/badge/Playwright-8%2F8%20Passed-brightgreen?style=for-the-badge&logo=playwright)
 ![MkDocs](https://img.shields.io/badge/Docs-MkDocs--Material-009688?style=for-the-badge)
@@ -21,8 +21,8 @@
 
 ## 🚀 Trạng thái Hiện tại của Dự án (Current Status & Version)
 
-- **Tổng số commits**: **305 commits** (được kiểm tra tự động qua Git history).
-- **Phiên bản hiện tại**: **`v3.0.5`** (Tuân thủ Semantic Versioning: Major 3, Minor 0, Patch 5).
+- **Tổng số commits**: **306 commits** (được kiểm tra tự động qua Git history).
+- **Phiên bản hiện tại**: **`v3.0.6`** (Tuân thủ Semantic Versioning: Major 3, Minor 0, Patch 6).
 - **Kiểm thử E2E (Playwright)**: **8/8 test suites PASS 100%** (bao gồm Responsive layout, Visual regression, Booking flow, Minigame, và Profile).
 - **Kiểm định Product Readiness**: Đã hoàn thành đợt kiểm tra toàn diện với các skill audit chuyên sâu (`ponytail-audit`, `modern-web-guidance`, `memory-leak-debugging`, `a11y-debugging`).
 
@@ -37,6 +37,27 @@ Dự án đã được rà soát chất lượng mã nguồn để chuẩn bị 
 3. **[#58 - Modern Web & a11y]**(https://github.com/doctor-cato/web-application-development/issues/58): Bổ sung `loading="lazy"` cho hình ảnh/poster, `fetchpriority="high"` cho Hero Banner và chuẩn hóa ARIA labels cho Accessibility.
 4. **[#59 - Memory Leak Prevention]**(https://github.com/doctor-cato/web-application-development/issues/59): Quản lý vòng đời Event Listeners (`scroll`, `keydown`), Timers đếm ngược chọn ghế và đóng `BroadcastChannel` khi tab bị unload.
 5. **[#60 - Docker & DevOps]**(https://github.com/doctor-cato/web-application-development/issues/60): Xây dựng `Dockerfile` đa tầng cho ASP.NET Core 8 và file `docker-compose.yml` khởi chạy toàn bộ full-stack app.
+
+---
+
+## 💻 Stack Công Nghệ Hiện Tại (Current Tech Stack)
+
+Hệ thống được thiết kế theo mô hình **Hybrid Client Mock & ASP.NET Core Backend ready**, bao gồm đầy đủ các tầng công nghệ hiện đại:
+
+| Phân tầng (Layer) | Công nghệ Sử dụng | Mô tả & Chi tiết Vai trò |
+| :--- | :--- | :--- |
+| **Frontend Core** | HTML5, CSS3 (Vanilla), ES6+ Modules | Mã nguồn giao diện chính, thiết kế theo chuẩn Modular ES Modules, hỗ trợ `async/await`, custom CSS variables & keyframe animations. |
+| **Styling & UI** | Tailwind CSS v4, Glassmorphism, FontAwesome 6 | Hệ thống style linh hoạt kết hợp hiệu ứng kính mờ (Glassmorphism), phong cách Cinematic Dark Mode và icons FontAwesome. |
+| **Client Storage Engine** | Web Storage (LocalStorage & SessionStorage) | Giả lập cơ sở dữ liệu Client-side hoàn chỉnh (người dùng, đặt vé, điểm thưởng, khóa ghế) cho môi trường demo không cần backend server. |
+| **Real-time Sync** | BroadcastChannel API | Đồng bộ trạng thái giữ ghế & khóa ghế (Seat Locks) theo thời gian thực giữa nhiều tab trình duyệt đang mở. |
+| **Backend Core** | ASP.NET Core 8.0 (C#) | Web API & Controllers MVC xử lý nghiệp vụ chính cho hệ thống sản xuất. |
+| **Database & ORM** | Entity Framework Core 8.0 & SQL Server | Quản trị CSDL quan hệ SQL Server, mã nguồn khởi tạo `SeedMovies.sql` & `movie_booking_db.sql`. |
+| **Real-time Engine** | SignalR Core | Hub kết nối Socket real-time phục vụ khóa ghế & thông báo đa người dùng khi kết nối backend. |
+| **E2E & Visual Testing** | Playwright Test (`@playwright/test` v1.61) | Bộ test tự động End-to-End, chụp snapshot so sánh giao diện (Visual Regression) & kiểm định các luồng đặt vé. |
+| **Accessibility Testing** | Axe-core (`@axe-core/playwright` v4.10) | Audit tự động tiêu chuẩn truy cập WCAG / ARIA Accessibility. |
+| **Performance Audit** | Lighthouse CI (`@lhci/cli` v0.14) | Tự động đánh giá chỉ số Core Web Vitals (LCP, INP, CLS), PWA, SEO & Best Practices. |
+| **Component Testing** | Storybook (`@storybook/html-vite` v8.5) & Chromatic | Phát triển và kiểm thử từng UI Component cô lập. |
+| **Documentation & CI/CD** | MkDocs Material, Markdownlint, GitHub Actions, Vercel | Xuất bản website tài liệu tĩnh tự động trên GitHub Pages & Triển khai web app trực tiếp trên Vercel CDN. |
 
 ---
 
