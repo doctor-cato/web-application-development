@@ -29,7 +29,24 @@ async function handleSuccess(txId) {
         }
         const checkoutData = getCheckout();
         checkoutData.transactionId = txId;
-        const booking = await confirmBooking(checkoutData);
+        checkoutData.createdAt = new Date().toISOString();
+        let booking = await confirmBooking(checkoutData);
+        // Fallback nếu backend lỗi — tạo booking object local
+        if (!booking) {
+            booking = {
+                id: txId,
+                movieTitle: checkoutData.movieTitle || 'Unknown Movie',
+                showtimeId: checkoutData.showtimeId || null,
+                showtimeText: checkoutData.showtimeText || '',
+                room: checkoutData.room || '',
+                seats: Array.isArray(checkoutData.seats) ? checkoutData.seats : (checkoutData.seats ? [checkoutData.seats] : []),
+                combo: checkoutData.combo || 'none',
+                total: checkoutData.total || 0,
+                poster: checkoutData.poster || '',
+                transactionId: txId,
+                createdAt: checkoutData.createdAt
+            };
+        }
         // Lưu ID booking vào session để trang invoice hiển thị
         lsSet(KEYS.LAST_BOOKING, booking);
         localStorage.removeItem('cinematch_active');

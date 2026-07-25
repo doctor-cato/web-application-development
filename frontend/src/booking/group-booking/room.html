@@ -702,19 +702,38 @@
         el.querySelector('input').checked = true;
     }
 
-    function checkCompletion() {
+    async function checkCompletion() {
         const activeSeats = (groupData?.checkoutData?.seats || []).filter(s => !groupData.cancelledSeats.includes(s));
         const allPaid = activeSeats.every(s => groupData.paidSeats.includes(s));
         
         if (activeSeats.length > 0 && allPaid) {
-            // LƯU VÉ VÀO LỊCH SỬ
-            const finalCheckoutData = { ...groupData.checkoutData };
-            finalCheckoutData.seats = activeSeats; // Chỉ lấy các ghế chưa bị hủy
-            finalCheckoutData.transactionId = 'GROUP-' + orderId;
-            const booking = confirmBooking(finalCheckoutData);
-            
-            // Lưu Session ID để qua trang Chi tiết vé (Booking Success) có thể lấy được
-            lsSet(KEYS.LAST_BOOKING, booking);
+            // LƯU VÉ RIÊNG TỪNG GHẾ — mỗi ghế một mã vé độc lập
+            const bookings = [];
+            for (const seat of activeSeats) {
+                const seatCheckoutData = {
+                    ...groupData.checkoutData,
+                    seats: [seat],                          // chỉ 1 ghế cho mỗi vé
+                    total: pricePerSeat,                    // giá 1 ghế
+                    seatAmount: pricePerSeat,
+                    transactionId: 'GROUP-' + orderId + '-' + seat,
+                    createdAt: new Date().toISOString()
+                };
+                const booking = await confirmBooking(seatCheckoutData);
+                if (booking) {
+                    // Đảm bảo createdAt luôn có giá trị
+                    if (!booking.createdAt) booking.createdAt = new Date().toISOString();
+                    bookings.push(booking);
+                }
+            }
+
+            if (bookings.length === 0) return;
+
+            // Tìm booking của người dùng hiện tại (theo ghế của họ)
+            const myBooking = bookings.find(b => b.seats && b.seats.includes(window.mySeat))
+                           || bookings[0];
+
+            // Lưu booking của mình để hiển thị ở trang success
+            lsSet(KEYS.LAST_BOOKING, myBooking);
 
             setTimeout(() => {
                 alert("Tất cả thành viên đã thanh toán! Vé của bạn đang được xuất.");
@@ -770,7 +789,7 @@
                 
                 loadOrderData();
                 renderLobby();
-                checkCompletion();
+                await checkCompletion();
                 return;
             }
 
@@ -908,7 +927,7 @@
         
         showToast(`Đã hủy ghế ${seatToCancel} thành công!`, 'success');
         
-        checkCompletion();
+        await checkCompletion();
     });
 
     // --- Countdown Timer Logic ---
@@ -968,7 +987,7 @@
         });
         
         // Check if returning from a successful payment caused the order to complete
-        checkCompletion();
+        await checkCompletion();
     }
 </script>
 </body>
