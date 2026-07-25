@@ -1073,7 +1073,10 @@
 
         <!-- POS Filter Tab Bar -->
         <div class="pos-tabs" id="pos-category-tabs">
-            <button class="pos-tab active" data-cat="all" onclick="filterPOSCategory('all')">Tất cả</button>
+            <button class="pos-tab active" data-cat="tickets" onclick="filterPOSCategory('tickets')" style="border-color: var(--primary-red); color: #fff; background: rgba(229, 9, 20, 0.15); box-shadow: var(--neon-red-glow);">
+                <i class="fas fa-ticket-alt" style="color: var(--primary-red);"></i> 🎟️ Bán Vé Phim
+            </button>
+            <button class="pos-tab" data-cat="all" onclick="filterPOSCategory('all')">Tất cả F&B</button>
             <button class="pos-tab" data-cat="Bắp" onclick="filterPOSCategory('Bắp')">Bắp Popcorn</button>
             <button class="pos-tab" data-cat="Nước" onclick="filterPOSCategory('Nước')">Nước Giải Khát</button>
             <button class="pos-tab" data-cat="Combo" onclick="filterPOSCategory('Combo')">Combo Ưu Đãi</button>
@@ -1148,6 +1151,9 @@
                 <div style="display: flex; justify-content: space-between;"><span style="color: var(--text-muted);">Tổng thanh toán:</span><strong id="modal-receipt-total" style="color: var(--btn-green-color); font-size: 1rem;">-</strong></div>
                 <div style="display: flex; justify-content: space-between;" id="modal-points-wrapper"><span style="color: var(--text-muted);">Điểm thành viên:</span><strong id="modal-receipt-points" style="color: var(--btn-cyan-color);">-</strong></div>
             </div>
+            <button class="btn" style="background-color: var(--btn-cyan-color); color: #000; font-weight: 700; width: 100%; margin-bottom: 8px;" onclick="openPhysicalPrintModal()">
+                <i class="fas fa-print"></i> 🖨️ IN VÉ VẬT LÝ (TÁCH VÉ PHIM & F&B)
+            </button>
             <button class="btn" style="background-color: var(--btn-green-color); color: #000; font-weight: 700; width: 100%;" onclick="closeSuccessModal()">HOÀN THÀNH</button>
         </div>
     </div>
@@ -1208,6 +1214,88 @@
                 </div>
             </div>
             <button class="btn" style="background-color: var(--btn-cyan-color); color: #000; font-weight: 700; width: 100%;" onclick="submitVIPRegister()">KÍCH HOẠT THẺ VIP</button>
+        </div>
+    </div>
+
+    <!-- POS SEAT SELECTION MODAL -->
+    <div class="modal" id="pos-ticket-seat-modal">
+        <div class="modal-content glass-panel" style="max-width: 720px; width: 95%; border-color: var(--primary-red); box-shadow: var(--neon-red-glow);">
+            <button class="modal-close-btn" onclick="closePOSSeatModal()">&times;</button>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--glass-border); padding-bottom: 12px; margin-bottom: 15px;">
+                <div>
+                    <h3 id="seat-modal-movie-title" style="color: #fff; font-size: 1.2rem; display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-film" style="color: var(--primary-red);"></i> <span>Tên Phim</span>
+                    </h3>
+                    <p id="seat-modal-showtime-info" style="color: var(--text-muted); font-size: 0.85rem; margin-top: 2px;">Suất: 19:00 | Phòng chiếu 1 | 3HD2K Hà Đông</p>
+                </div>
+                <div style="text-align: right;">
+                    <span style="font-size: 0.75rem; color: var(--text-muted); display: block;">GIÁ VÉ TỪ</span>
+                    <strong style="color: var(--btn-green-color); font-size: 1.1rem;" id="seat-modal-base-price">80.000đ</strong>
+                </div>
+            </div>
+
+            <!-- Seat legend -->
+            <div style="display: flex; justify-content: center; gap: 18px; font-size: 0.8rem; margin-bottom: 15px; flex-wrap: wrap;">
+                <div style="display: flex; align-items: center; gap: 6px;"><span style="width: 16px; height: 16px; background: rgba(255,255,255,0.15); border: 1px solid var(--glass-border); border-radius: 3px; display: inline-block;"></span> Thường (80k)</div>
+                <div style="display: flex; align-items: center; gap: 6px;"><span style="width: 16px; height: 16px; background: rgba(245, 158, 11, 0.3); border: 1px solid #f59e0b; border-radius: 3px; display: inline-block;"></span> VIP (100k)</div>
+                <div style="display: flex; align-items: center; gap: 6px;"><span style="width: 16px; height: 16px; background: rgba(236, 72, 153, 0.3); border: 1px solid #ec4899; border-radius: 3px; display: inline-block;"></span> Đôi (160k)</div>
+                <div style="display: flex; align-items: center; gap: 6px;"><span style="width: 16px; height: 16px; background: var(--primary-red); border-radius: 3px; display: inline-block;"></span> Đang chọn</div>
+                <div style="display: flex; align-items: center; gap: 6px;"><span style="width: 16px; height: 16px; background: #222; opacity: 0.5; border: 1px solid #333; border-radius: 3px; display: inline-block;"></span> Đã đặt / Khóa</div>
+            </div>
+
+            <!-- Screen indicator -->
+            <div style="text-align: center; margin-bottom: 20px;">
+                <div style="height: 4px; background: linear-gradient(90deg, transparent, var(--btn-cyan-color), transparent); border-radius: 2px; width: 80%; margin: 0 auto 6px auto; box-shadow: 0 0 10px var(--btn-cyan-color);"></div>
+                <span style="font-size: 0.7rem; color: var(--text-muted); letter-spacing: 3px; text-transform: uppercase;">MÀN CHIẾU (SCREEN)</span>
+            </div>
+
+            <!-- Seating Grid -->
+            <div style="overflow-x: auto; padding: 10px 0; display: flex; justify-content: center;">
+                <div id="pos-seating-grid" style="display: grid; gap: 6px; user-select: none;">
+                    <!-- Rendered dynamically -->
+                </div>
+            </div>
+
+            <!-- Footer / Cart add -->
+            <div style="border-top: 1px solid var(--glass-border); margin-top: 15px; padding-top: 15px; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <span style="font-size: 0.8rem; color: var(--text-muted);">Ghế đã chọn:</span>
+                    <strong id="seat-modal-selected-list" style="color: #fff; display: block; font-size: 0.95rem;">Chưa chọn ghế nào</strong>
+                </div>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div style="text-align: right;">
+                        <span style="font-size: 0.75rem; color: var(--text-muted); display: block;">TỔNG TIỀN VÉ</span>
+                        <strong id="seat-modal-total-price" style="color: var(--btn-green-color); font-size: 1.3rem;">0đ</strong>
+                    </div>
+                    <button class="btn" style="background-color: var(--primary-red); color: #fff; font-weight: 700;" onclick="confirmAddTicketsToCart()">XÁC NHẬN CHỌN VÉ</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PHYSICAL PRINT PREVIEW MODAL -->
+    <div class="modal" id="physical-print-modal">
+        <div class="modal-content glass-panel" style="max-width: 540px; border-color: var(--btn-cyan-color); box-shadow: var(--btn-cyan-glow);">
+            <button class="modal-close-btn" onclick="document.getElementById('physical-print-modal').classList.remove('active')">&times;</button>
+            <h3 style="color: #fff; text-align: center; margin-bottom: 5px;"><i class="fas fa-print"></i> XEM TRƯỚC VÉ IN VẬT LÝ</h3>
+            <p style="color: var(--text-muted); font-size: 0.8rem; text-align: center; margin-bottom: 15px;">Vé được tách riêng biệt chuẩn máy in POS nhiệt 80mm</p>
+            
+            <!-- Print Ticket Tabs -->
+            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                <button class="pos-tab active" id="print-tab-movie" onclick="switchPrintTab('movie')" style="flex: 1;">🎟️ VÉ XEM PHIM</button>
+                <button class="pos-tab" id="print-tab-fnb" onclick="switchPrintTab('fnb')" style="flex: 1;">🍿 PHIẾU BẮP NƯỚC F&B</button>
+            </div>
+
+            <!-- Print Content Area -->
+            <div id="print-ticket-preview-area" style="background: #fff; color: #000; padding: 20px; border-radius: 8px; font-family: monospace; max-height: 380px; overflow-y: auto;">
+                <!-- Rendered dynamically -->
+            </div>
+
+            <div style="display: flex; gap: 12px; margin-top: 15px;">
+                <button class="btn" style="background: #333; color: #fff; flex: 1;" onclick="document.getElementById('physical-print-modal').classList.remove('active')">ĐÓNG</button>
+                <button class="btn" style="background: var(--btn-green-color); color: #000; font-weight: 800; flex: 2;" onclick="triggerPhysicalPrint()"><i class="fas fa-print"></i> IN CẢ 2 VÉ VẬT LÝ</button>
+            </div>
         </div>
     </div>
 
@@ -1305,9 +1393,57 @@
 
         // Global variables for POS state
         let cart = [];
-        let activePOSCategory = "all";
+        let activePOSCategory = "tickets";
         let activePaymentMethod = "cash";
         let vipCustomer = null;
+
+        // Global variables for Ticket Booking at Counter
+        let activeTicketMovie = null;
+        let activeTicketShowtime = null;
+        let selectedTicketSeats = [];
+        let activePrintTab = "movie";
+        let lastTransactionPrintData = null;
+
+        // Sample Movies & Showtimes Database for POS Counter
+        const DEFAULT_MOVIES = [
+            { id: "MV-001", title: "Lật Mặt 7: Một Điều Ước", genre: "Tình cảm, Gia đình", duration: 138, age: "T13", poster: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=300&q=80" },
+            { id: "MV-002", title: "Deadpool & Wolverine", genre: "Hành động, Hài", duration: 128, age: "T18", poster: "https://images.unsplash.com/photo-1578242173167-73d84cbcd29d?auto=format&fit=crop&w=300&q=80" },
+            { id: "MV-003", title: "Doraemon: Bản Tình Ca Địa Cầu", genre: "Hoạt hình, Phiêu lưu", duration: 115, age: "P", poster: "https://images.unsplash.com/photo-1585647347483-22b66260dffd?auto=format&fit=crop&w=300&q=80" },
+            { id: "MV-004", title: "Godzilla x Kong: Đế Chế Mới", genre: "Hành động, Viễn tưởng", duration: 115, age: "T13", poster: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=300&q=80" }
+        ];
+
+        const DEFAULT_SHOWTIMES = [
+            { id: "ST-101", movieId: "MV-001", movieTitle: "Lật Mặt 7: Một Điều Ước", cinemaName: "3HD2K HÀ ĐÔNG", roomName: "Phòng chiếu 1 (2D)", time: "14:30", date: "Hôm nay", price: 80000 },
+            { id: "ST-102", movieId: "MV-001", movieTitle: "Lật Mặt 7: Một Điều Ước", cinemaName: "3HD2K HÀ ĐÔNG", roomName: "Phòng chiếu IMAX", time: "19:00", date: "Hôm nay", price: 100000 },
+            { id: "ST-103", movieId: "MV-002", movieTitle: "Deadpool & Wolverine", cinemaName: "3HD2K HÀ ĐÔNG", roomName: "Phòng chiếu 2 (2D)", time: "16:00", date: "Hôm nay", price: 85000 },
+            { id: "ST-104", movieId: "MV-002", movieTitle: "Deadpool & Wolverine", cinemaName: "3HD2K HÀ ĐÔNG", roomName: "Phòng chiếu IMAX", time: "20:30", date: "Hôm nay", price: 110000 },
+            { id: "ST-105", movieId: "MV-003", movieTitle: "Doraemon: Bản Tình Ca Địa Cầu", cinemaName: "3HD2K HÀ ĐÔNG", roomName: "Phòng chiếu 1 (2D)", time: "10:15", date: "Hôm nay", price: 75000 },
+            { id: "ST-106", movieId: "MV-004", movieTitle: "Godzilla x Kong: Đế Chế Mới", cinemaName: "3HD2K HÀ ĐÔNG", roomName: "Phòng chiếu 3 (3D)", time: "18:15", date: "Hôm nay", price: 95000 }
+        ];
+
+        function getPOSMovies() {
+            let local = JSON.parse(localStorage.getItem("3hd2k_movies")) || [];
+            if (local.length > 0) {
+                return local.map(m => ({
+                    id: m.id || 'MV-' + Math.random().toString(36).substr(2, 4),
+                    title: m.title || 'Phim Chiếu Rạp',
+                    genre: m.genre || 'Hành động',
+                    duration: m.duration || 120,
+                    age: m.age || 'T13',
+                    poster: m.poster || m.bg || 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=300&q=80'
+                }));
+            }
+            return DEFAULT_MOVIES;
+        }
+
+        function getPOSShowtimes(movieId) {
+            let local = JSON.parse(localStorage.getItem("3hd2k_showtimes")) || [];
+            let all = local.length > 0 ? local : DEFAULT_SHOWTIMES;
+            if (movieId) {
+                return all.filter(s => s.movieId === movieId || s.movieId === parseInt(movieId));
+            }
+            return all;
+        }
 
         // Initialize LocalStorage Database if empty
         function dbInit() {
@@ -1546,9 +1682,61 @@
             return maxAvailable;
         }
 
+        function renderPOSTicketFlow() {
+            const grid = document.getElementById("pos-products-grid");
+            if (!grid) return;
+
+            const movies = getPOSMovies();
+            const showtimes = getPOSShowtimes();
+
+            grid.innerHTML = `
+                <div style="grid-column: 1 / -1; margin-bottom: 5px;">
+                    <div style="background: rgba(229, 9, 20, 0.12); border: 1px solid var(--primary-red); padding: 12px 18px; border-radius: 8px; display: flex; align-items: center; justify-content: space-between;">
+                        <div>
+                            <h3 style="color: #fff; font-size: 1rem;"><i class="fas fa-film" style="color: var(--primary-red);"></i> BÁN VÉ XEM PHIM TẠI QUẦY (STEP 1: CHỌN PHIM)</h3>
+                            <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 2px;">Vui lòng chọn Phim ➔ Chọn Suất Chiếu ➔ Sơ Đồ Ghế để đặt vé cho khách hàng</p>
+                        </div>
+                    </div>
+                </div>
+            ` + movies.map(m => {
+                const movieSts = showtimes.filter(s => s.movieId === m.id || s.movieId === parseInt(m.id) || (s.movieTitle && s.movieTitle.toLowerCase() === m.title.toLowerCase()));
+                const showtimesList = movieSts.length > 0 ? movieSts : [
+                    { id: "ST-" + m.id + "-1", movieId: m.id, movieTitle: m.title, cinemaName: "3HD2K HÀ ĐÔNG", roomName: "Phòng chiếu 1", time: "14:30", date: "Hôm nay", price: 80000 },
+                    { id: "ST-" + m.id + "-2", movieId: m.id, movieTitle: m.title, cinemaName: "3HD2K HÀ ĐÔNG", roomName: "Phòng chiếu IMAX", time: "19:00", date: "Hôm nay", price: 100000 }
+                ];
+
+                return `
+                    <div class="pos-item-card" style="border-color: rgba(229,9,20,0.3);">
+                        <img src="${m.poster}" alt="${m.title}" class="pos-item-img" style="height: 140px;">
+                        <div class="pos-item-info">
+                            <div class="pos-item-name" style="font-size: 0.9rem; font-weight: 800;">${m.title}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px;">
+                                ⏱️ ${m.duration} phút | <span class="badge badge-red" style="padding: 1px 4px; font-size: 0.65rem;">${m.age}</span>
+                            </div>
+                            <div style="border-top: 1px dashed var(--glass-border); padding-top: 8px; margin-top: 4px;">
+                                <span style="font-size: 0.7rem; color: var(--btn-cyan-color); font-weight: 700; display: block; margin-bottom: 6px;">CHỌN SUẤT CHIẾU:</span>
+                                <div style="display: flex; flex-wrap: wrap; gap: 4px;">
+                                    ${showtimesList.map(st => `
+                                        <button class="btn-mini" onclick="event.stopPropagation(); openPOSSeatModal('${st.id}', '${m.id}')" style="padding: 4px 8px; font-size: 0.75rem; background: rgba(0, 240, 255, 0.1); border-color: var(--btn-cyan-color); color: #fff;">
+                                            ⏱️ ${st.time}
+                                        </button>
+                                    `).join("")}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join("");
+        }
+
         function renderPOSProducts() {
             const grid = document.getElementById("pos-products-grid");
             if (!grid) return;
+
+            if (activePOSCategory === "tickets") {
+                renderPOSTicketFlow();
+                return;
+            }
 
             const filtered = SALE_PRODUCTS.filter(p => {
                 return activePOSCategory === "all" || p.category === activePOSCategory;
@@ -1839,6 +2027,274 @@
             }, 800);
         }
 
+        // --- Ticket Seat Selection Modal Functions ---
+        window.openPOSSeatModal = function(showtimeId, movieId) {
+            playBeep('click');
+            const allMovies = getPOSMovies();
+            const allShowtimes = getPOSShowtimes();
+
+            let showtime = allShowtimes.find(s => s.id === showtimeId);
+            let movie = allMovies.find(m => m.id === movieId || m.id === showtime?.movieId);
+
+            if (!movie && showtime) {
+                movie = { id: showtime.movieId, title: showtime.movieTitle, duration: 120, age: 'T13' };
+            }
+
+            if (!showtime) {
+                showtime = { id: showtimeId || 'ST-DEFAULT', movieId: movieId, movieTitle: movie?.title || 'Phim Chiếu Rạp', roomName: 'Phòng chiếu 1', time: '19:00', price: 80000 };
+            }
+
+            activeTicketMovie = movie;
+            activeTicketShowtime = showtime;
+            selectedTicketSeats = [];
+
+            document.getElementById("seat-modal-movie-title").innerHTML = `<i class="fas fa-film" style="color: var(--primary-red);"></i> ${movie ? movie.title : showtime.movieTitle}`;
+            document.getElementById("seat-modal-showtime-info").textContent = `Suất: ${showtime.time} | ${showtime.roomName} | ${showtime.cinemaName || '3HD2K HÀ ĐÔNG'}`;
+            document.getElementById("seat-modal-base-price").textContent = (showtime.price || 80000).toLocaleString('vi-VN') + "đ";
+
+            renderPOSSeatingGrid();
+
+            document.getElementById("pos-ticket-seat-modal").classList.add("active");
+        };
+
+        window.closePOSSeatModal = function() {
+            playBeep('click');
+            document.getElementById("pos-ticket-seat-modal").classList.remove("active");
+        };
+
+        function renderPOSSeatingGrid() {
+            const grid = document.getElementById("pos-seating-grid");
+            if (!grid || !activeTicketShowtime) return;
+
+            const roomKey = (activeTicketShowtime.cinemaId || "ha-dong") + "_" + (activeTicketShowtime.roomName || "Phòng chiếu 1");
+            const layouts = JSON.parse(localStorage.getItem('3hd2k_rooms_layouts')) || {};
+            const layout = layouts[roomKey] || { rows: 8, cols: 12, vipRows: [3, 4, 5], doubleRows: [7], brokenSeats: [] };
+
+            const rows = layout.rows || 8;
+            const cols = layout.cols || 12;
+            const vipRows = layout.vipRows || [3, 4, 5];
+            const doubleRows = layout.doubleRows || [7];
+            const brokenSeats = layout.brokenSeats || [];
+
+            const bookedSeatsStore = JSON.parse(localStorage.getItem("cinema_booked_seats")) || {};
+            const bookedForShowtime = bookedSeatsStore[activeTicketShowtime.id] || [];
+
+            grid.style.gridTemplateColumns = `repeat(${cols}, 32px)`;
+            grid.innerHTML = "";
+
+            let totalSeatPrice = 0;
+            const basePrice = activeTicketShowtime.price || 80000;
+
+            for (let r = 0; r < rows; r++) {
+                const rowLabel = String.fromCharCode(65 + r);
+                for (let c = 1; c <= cols; c++) {
+                    const seatCode = `${rowLabel}${c.toString().padStart(2, '0')}`;
+                    let seatType = 'standard';
+                    let seatPrice = basePrice;
+
+                    if (vipRows.includes(r)) {
+                        seatType = 'vip';
+                        seatPrice = basePrice * 1.25;
+                    } else if (doubleRows.includes(r)) {
+                        seatType = 'double';
+                        seatPrice = basePrice * 2;
+                    }
+
+                    const isBroken = brokenSeats.includes(seatCode);
+                    const isBooked = bookedForShowtime.includes(seatCode);
+                    const isSelected = selectedTicketSeats.includes(seatCode);
+
+                    if (isSelected) {
+                        totalSeatPrice += seatPrice;
+                    }
+
+                    let btnClass = `pos-seat-btn ${seatType}`;
+                    if (isBroken || isBooked) btnClass += ' disabled';
+                    if (isSelected) btnClass += ' selected';
+
+                    const seatBtn = document.createElement('button');
+                    seatBtn.className = btnClass;
+                    seatBtn.textContent = seatCode;
+                    seatBtn.style.cssText = `
+                        width: 32px; height: 32px; font-size: 0.65rem; font-weight: 800; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s ease;
+                        ${isSelected ? 'background: var(--primary-red); color: #fff; border: 1px solid var(--primary-red); box-shadow: var(--neon-red-glow);' : 
+                          isBooked || isBroken ? 'background: #222; color: #555; border: 1px solid #333; cursor: not-allowed; opacity: 0.4;' :
+                          seatType === 'vip' ? 'background: rgba(245, 158, 11, 0.2); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.4);' :
+                          seatType === 'double' ? 'background: rgba(236, 72, 153, 0.2); color: #ec4899; border: 1px solid rgba(236, 72, 153, 0.4);' :
+                          'background: rgba(255,255,255,0.06); color: #ccc; border: 1px solid var(--glass-border);'}
+                    `;
+
+                    if (!isBroken && !isBooked) {
+                        seatBtn.onclick = () => {
+                            playBeep('click');
+                            if (selectedTicketSeats.includes(seatCode)) {
+                                selectedTicketSeats = selectedTicketSeats.filter(s => s !== seatCode);
+                            } else {
+                                selectedTicketSeats.push(seatCode);
+                            }
+                            renderPOSSeatingGrid();
+                        };
+                    }
+
+                    grid.appendChild(seatBtn);
+                }
+            }
+
+            document.getElementById("seat-modal-selected-list").textContent = selectedTicketSeats.length > 0 ? selectedTicketSeats.join(", ") : "Chưa chọn ghế nào";
+            document.getElementById("seat-modal-total-price").textContent = totalSeatPrice.toLocaleString('vi-VN') + "đ";
+        }
+
+        window.confirmAddTicketsToCart = function() {
+            if (selectedTicketSeats.length === 0) {
+                showToast("Vui lòng chọn ít nhất 1 ghế!");
+                return;
+            }
+
+            playBeep('success');
+
+            const basePrice = activeTicketShowtime.price || 80000;
+            let totalSeatPrice = 0;
+
+            const roomKey = (activeTicketShowtime.cinemaId || "ha-dong") + "_" + (activeTicketShowtime.roomName || "Phòng chiếu 1");
+            const layouts = JSON.parse(localStorage.getItem('3hd2k_rooms_layouts')) || {};
+            const layout = layouts[roomKey] || { rows: 8, cols: 12, vipRows: [3, 4, 5], doubleRows: [7] };
+            const vipRows = layout.vipRows || [3, 4, 5];
+            const doubleRows = layout.doubleRows || [7];
+
+            selectedTicketSeats.forEach(seatCode => {
+                const rowChar = seatCode.charAt(0);
+                const rIndex = rowChar.charCodeAt(0) - 65;
+                if (vipRows.includes(rIndex)) totalSeatPrice += basePrice * 1.25;
+                else if (doubleRows.includes(rIndex)) totalSeatPrice += basePrice * 2;
+                else totalSeatPrice += basePrice;
+            });
+
+            const ticketProd = {
+                id: "TICKET-" + activeTicketShowtime.id + "-" + Date.now(),
+                name: `Vé xem phim: ${activeTicketMovie.title}`,
+                price: totalSeatPrice,
+                category: "Vé Phim",
+                isTicket: true,
+                ticketData: {
+                    movieId: activeTicketMovie.id,
+                    movieTitle: activeTicketMovie.title,
+                    showtimeId: activeTicketShowtime.id,
+                    showtime: activeTicketShowtime.time,
+                    date: activeTicketShowtime.date || "Hôm nay",
+                    roomName: activeTicketShowtime.roomName || "Phòng chiếu 1",
+                    cinemaName: activeTicketShowtime.cinemaName || "3HD2K HÀ ĐÔNG",
+                    seats: [...selectedTicketSeats],
+                    totalPrice: totalSeatPrice
+                }
+            };
+
+            cart.push({ product: ticketProd, qty: 1 });
+            renderCart();
+            closePOSSeatModal();
+            showToast(`Đã thêm ${selectedTicketSeats.length} vé phim vào giỏ hàng!`);
+        };
+
+        // --- Physical Print Modal Functions ---
+        window.openPhysicalPrintModal = function() {
+            playBeep('click');
+            const area = document.getElementById("print-ticket-preview-area");
+            if (!area || !lastTransactionPrintData) return;
+
+            renderPhysicalPrintContent("movie");
+            document.getElementById("physical-print-modal").classList.add("active");
+        };
+
+        window.switchPrintTab = function(type) {
+            playBeep('click');
+            activePrintTab = type;
+            document.getElementById("print-tab-movie").classList.remove("active");
+            document.getElementById("print-tab-fnb").classList.remove("active");
+            
+            if (type === 'movie') document.getElementById("print-tab-movie").classList.add("active");
+            if (type === 'fnb') document.getElementById("print-tab-fnb").classList.add("active");
+
+            renderPhysicalPrintContent(type);
+        };
+
+        function renderPhysicalPrintContent(type) {
+            const area = document.getElementById("print-ticket-preview-area");
+            if (!area || !lastTransactionPrintData) return;
+
+            const data = lastTransactionPrintData;
+
+            if (type === "movie") {
+                if (!data.tickets || data.tickets.length === 0) {
+                    area.innerHTML = `<div style="text-align:center; padding: 30px; color: #888;">Giao dịch này không chứa Vé xem phim.</div>`;
+                    return;
+                }
+
+                area.innerHTML = data.tickets.map(t => `
+                    <div style="border-bottom: 2px dashed #000; padding-bottom: 15px; margin-bottom: 15px; text-align: center;">
+                        <h2 style="margin: 0; font-size: 1.4rem; letter-spacing: 2px;">3HD2K CINEMA</h2>
+                        <p style="margin: 2px 0 10px 0; font-size: 0.75rem;">--- VÉ XEM PHIM VẬT LÝ ---</p>
+                        
+                        <div style="text-align: left; font-size: 0.85rem; line-height: 1.5;">
+                            <div><strong>PHIM:</strong> ${t.movieTitle}</div>
+                            <div><strong>SUẤT:</strong> ${t.showtime} (${t.date})</div>
+                            <div><strong>RẠP:</strong> ${t.cinemaName}</div>
+                            <div><strong>PHÒNG:</strong> ${t.roomName}</div>
+                            <div style="font-size: 1.1rem; margin: 8px 0; padding: 6px; background: #eee; text-align: center; border: 1px solid #000;">
+                                <strong>GHẾ: ${t.seats.join(", ")}</strong>
+                            </div>
+                            <div><strong>KHÁCH HÀNG:</strong> ${data.customerName}</div>
+                            <div><strong>GIÁ VÉ:</strong> ${t.totalPrice.toLocaleString('vi-VN')}đ</div>
+                            <div><strong>MÃ HÓA ĐƠN:</strong> ${data.receiptId}</div>
+                        </div>
+
+                        <div style="margin-top: 10px;">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${data.receiptId}" alt="QR" style="width: 90px; height: 90px;">
+                            <p style="font-size: 0.65rem; margin-top: 2px;">Quét mã soát vé tại cửa phòng chiếu</p>
+                        </div>
+                    </div>
+                `).join("");
+            } else {
+                if (!data.fnbItems || data.fnbItems.length === 0) {
+                    area.innerHTML = `<div style="text-align:center; padding: 30px; color: #888;">Giao dịch này không chứa Bắp Nước F&B.</div>`;
+                    return;
+                }
+
+                area.innerHTML = `
+                    <div style="text-align: center;">
+                        <h2 style="margin: 0; font-size: 1.4rem; letter-spacing: 2px;">3HD2K POS SERVICE</h2>
+                        <p style="margin: 2px 0 10px 0; font-size: 0.75rem;">--- PHIẾU XUẤT KHO / GIAO ĐỒ F&B ---</p>
+                        
+                        <div style="text-align: left; font-size: 0.85rem; line-height: 1.5;">
+                            <div><strong>MÃ ĐƠN:</strong> ${data.receiptId}</div>
+                            <div><strong>THỜI GIAN:</strong> ${new Date().toLocaleTimeString('vi-VN')}</div>
+                            <div><strong>KHÁCH HÀNG:</strong> ${data.customerName}</div>
+                            <div style="border-top: 1px solid #000; border-bottom: 1px solid #000; padding: 8px 0; margin: 8px 0;">
+                                <strong>DANH SÁCH MÓN:</strong>
+                                ${data.fnbItems.map(item => `
+                                    <div style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-top: 4px;">
+                                        <span>${item.qty}x ${item.name}</span>
+                                        <span>${(item.price * item.qty).toLocaleString('vi-VN')}đ</span>
+                                    </div>
+                                `).join("")}
+                            </div>
+                            <div style="display: flex; justify-content: space-between; font-size: 1rem; font-weight: bold;">
+                                <span>TỔNG F&B:</span>
+                                <span>${data.fnbTotal.toLocaleString('vi-VN')}đ</span>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 15px; border-top: 1px dashed #000; padding-top: 10px;">
+                            <p style="font-size: 0.75rem; margin: 0;">Vui lòng đưa phiếu này cho nhân viên quầy trả đồ</p>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        window.triggerPhysicalPrint = function() {
+            playBeep('success');
+            window.print();
+        };
+
         window.submitPOSSale = function(skipMethodCheck = false) {
             if (cart.length === 0) return;
 
@@ -1856,10 +2312,14 @@
 
             const inventory = JSON.parse(localStorage.getItem("cinema_inventory")) || [];
             const users = JSON.parse(localStorage.getItem("3hd2k_users")) || [];
+
+            // Separate ticket items and F&B items
+            const ticketItems = cart.filter(item => item.product.isTicket);
+            const fnbItems = cart.filter(item => !item.product.isTicket);
             
-            // 1. Deduct ingredients
+            // 1. Deduct ingredients for F&B items
             const deductList = {};
-            cart.forEach(item => {
+            fnbItems.forEach(item => {
                 if (item.product.deduct) {
                     item.product.deduct.forEach(d => {
                         deductList[d.id] = (deductList[d.id] || 0) + (d.qty * item.qty);
@@ -1867,7 +2327,6 @@
                 }
             });
 
-            // Double check stock levels
             let canDeduct = true;
             let missingItems = [];
             for (const invId in deductList) {
@@ -1879,23 +2338,75 @@
             }
 
             if (!canDeduct) {
-                alert(`Không đủ nguyên vật liệu để thanh toán: ${missingItems.join(", ")}`);
+                alert(`Không đủ nguyên vật liệu để thanh toán F&B: ${missingItems.join(", ")}`);
                 return;
             }
 
-            // Perform deductions
             for (const invId in deductList) {
                 const invItem = inventory.find(i => i.id === invId);
                 invItem.qty = parseFloat((invItem.qty - deductList[invId]).toFixed(2));
             }
             localStorage.setItem("cinema_inventory", JSON.stringify(inventory));
 
+            // 2. Process Ticket Bookings & Save Booked Seats
+            const ticketDetailsList = [];
+            if (ticketItems.length > 0) {
+                const bookedSeatsStore = JSON.parse(localStorage.getItem("cinema_booked_seats")) || {};
+                const localBookings = JSON.parse(localStorage.getItem("cinema_bookings")) || [];
+
+                ticketItems.forEach(tItem => {
+                    const tData = tItem.product.ticketData;
+                    if (tData) {
+                        const stId = tData.showtimeId;
+                        bookedSeatsStore[stId] = [...(bookedSeatsStore[stId] || []), ...tData.seats];
+
+                        const bookingObj = {
+                            id: "BK-" + Math.floor(100000 + Math.random() * 900000),
+                            userEmail: vipCustomer ? vipCustomer.email : "khach_pos@3hd2k.com",
+                            customerName: customerName || "Khách hàng",
+                            movieTitle: tData.movieTitle,
+                            showtime: tData.showtime + " (" + tData.date + ")",
+                            seats: tData.seats,
+                            totalAmount: tData.totalPrice,
+                            status: "paid",
+                            createdAt: new Date().toISOString()
+                        };
+                        localBookings.unshift(bookingObj);
+
+                        fetch('/api/bookings', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                email: bookingObj.userEmail,
+                                movieId: tData.movieId,
+                                showtimeId: tData.showtimeId,
+                                seats: tData.seats.join(","),
+                                totalPrice: tData.totalPrice,
+                                paymentMethod: activePaymentMethod
+                            })
+                        }).catch(e => console.warn("API booking push warning:", e));
+
+                        ticketDetailsList.push(tData);
+                    }
+                });
+
+                localStorage.setItem("cinema_booked_seats", JSON.stringify(bookedSeatsStore));
+                localStorage.setItem("cinema_bookings", JSON.stringify(localBookings));
+            }
+
             // Calculate total price
             let totalAmount = 0;
             const itemsText = cart.map(item => `${item.qty} ${item.product.name}`).join(" + ");
             cart.forEach(item => { totalAmount += (item.product.price * item.qty); });
 
-            // 2. VIP point accumulation (1 point per 10k)
+            let fnbTotal = 0;
+            const fnbList = [];
+            fnbItems.forEach(item => {
+                fnbTotal += (item.product.price * item.qty);
+                fnbList.push({ name: item.product.name, price: item.product.price, qty: item.qty });
+            });
+
+            // 3. VIP point accumulation
             const pointsEarned = Math.floor(totalAmount / 10000);
             let customerName = "Khách vãng lai";
             let pointsSummary = "";
@@ -1919,17 +2430,28 @@
                 pointsSummary = `${user.points} điểm VIP (+${pointsEarned})`;
             }
 
-            // 3. Log sale transaction to activity logs
+            // Save data for physical printing
+            const receiptId = "POS-" + Math.floor(10000 + Math.random() * 90000);
+            window.lastTransactionPrintData = {
+                receiptId: receiptId,
+                customerName: customerName,
+                paymentMethod: activePaymentMethod,
+                totalAmount: totalAmount,
+                tickets: ticketDetailsList,
+                fnbItems: fnbList,
+                fnbTotal: fnbTotal
+            };
+
+            // 4. Log sale transaction to activity logs
             const logs = JSON.parse(localStorage.getItem("cinema_activity_log")) || [];
             const methodLabel = activePaymentMethod === 'cash' ? "Tiền mặt" : (activePaymentMethod === 'card' ? "Thẻ ATM" : "Quét QR");
             logs.unshift({
                 time: new Date().toLocaleTimeString("vi-VN"),
-                text: `POS bán trực tiếp: ${customerName} - ${itemsText} - Thanh toán: ${methodLabel} - Tổng tiền: ${totalAmount.toLocaleString('vi-VN')}đ.`
+                text: `POS bán hàng: ${customerName} - ${itemsText} - Thanh toán: ${methodLabel} - Tổng tiền: ${totalAmount.toLocaleString('vi-VN')}đ.`
             });
             localStorage.setItem("cinema_activity_log", JSON.stringify(logs.slice(0, 50)));
 
-            // 4. Show success modal receipt
-            const receiptId = "POS-" + Math.floor(10000 + Math.random() * 90000);
+            // 5. Show success modal receipt
             document.getElementById("modal-receipt-id").textContent = receiptId;
             document.getElementById("modal-receipt-customer").textContent = `${customerName} ${vipCustomer ? '(' + (vipCustomer.phone || vipCustomer.Phone || '') + ')' : ''}`;
             document.getElementById("modal-receipt-details").textContent = itemsText;
@@ -1944,7 +2466,7 @@
 
             document.getElementById("success-modal").classList.add("active");
 
-            // 5. Reset POS checkout panel
+            // 6. Reset POS checkout panel
             cart = [];
             document.getElementById("loyalty-phone-input").value = "";
             vipCustomer = null;
@@ -1970,10 +2492,14 @@
             const successModal = document.getElementById('success-modal');
             const qrModal = document.getElementById('qr-modal');
             const vipModal = document.getElementById('vip-modal');
+            const seatModal = document.getElementById('pos-ticket-seat-modal');
+            const printModal = document.getElementById('physical-print-modal');
             
             if (e.target === successModal) closeSuccessModal();
             if (e.target === qrModal) qrModal.style.display = 'none';
             if (e.target === vipModal) closeVIPModal();
+            if (e.target === seatModal) closePOSSeatModal();
+            if (e.target === printModal) printModal.classList.remove('active');
         });
 
         // --- Custom Toasts ---
