@@ -1243,9 +1243,6 @@
             <button class="menu-item" data-tab="movies">
                 <i class="fas fa-film"></i> <span>Quản lý phim</span>
             </button>
-            <button class="menu-item" data-tab="showtimes">
-                <i class="fas fa-calendar-alt"></i> <span>Quản lý lịch chiếu</span>
-            </button>
             <button class="menu-item" data-tab="rooms">
                 <i class="fas fa-chair"></i> <span>Quản lý phòng & ghế</span>
             </button>
@@ -1381,7 +1378,6 @@
                             <h3><i class="fas fa-bolt"></i> Thao tác nhanh</h3>
                             <div class="quick-buttons">
                                 <button class="btn btn-primary" onclick="openAddMovieModal()"><i class="fas fa-plus"></i> Thêm phim</button>
-                                <button class="btn btn-outline" style="border-color: var(--glass-border);" onclick="openAddShowtimeModal()"><i class="fas fa-calendar-plus"></i> Lên lịch chiếu</button>
                                 <button class="btn btn-outline" style="border-color: var(--glass-border);" onclick="openAddComboModal()"><i class="fas fa-cookie-bite"></i> Thêm combo</button>
                             </div>
                         </div>
@@ -1438,67 +1434,7 @@
                 </div>
             </section>
 
-            <!-- ================= QUẢN LÝ LỊCH CHIẾU TAB ================= -->
-            <section id="tab-content-showtimes" class="tab-section">
-                <div class="action-bar glass-panel">
-                    <div class="search-box">
-                        <i class="fas fa-search"></i>
-                        <input type="text" id="showtime-search" placeholder="Tìm theo tên phim..." oninput="filterShowtimesTable()">
-                    </div>
-                    <div class="filter-actions">
-                        <input type="date" id="matrix-date-picker" onchange="renderAvailabilityMatrix()" style="background: rgba(0,0,0,0.5); border: 1px solid var(--glass-border); color: #fff; padding: 8px 12px; border-radius: 6px; font-family: 'Inter', sans-serif;">
-                        <select id="showtime-filter-cinema" onchange="filterShowtimesTable(); renderAvailabilityMatrix();">
-                            <option value="all">Tất cả rạp (6 Cụm Rạp)</option>
-                            <!-- Rendered dynamically -->
-                        </select>
-                        <button class="btn btn-outline" style="border-color: var(--primary-red); color: var(--primary-red);" onclick="purgeAllMovieData()" title="Xóa toàn bộ dữ liệu phim & lịch chiếu cũ">
-                            <i class="fas fa-trash-can"></i> Reset Data Phim Cũ
-                        </button>
-                        <button class="btn btn-primary" onclick="openAddShowtimeModal()">
-                            <i class="fas fa-calendar-plus"></i> Thêm lịch chiếu
-                        </button>
-                    </div>
-                </div>
 
-                <!-- MA TRẬN RẠP & PHÒNG CHIẾU TRỐNG (AVAILABILITY MATRIX) -->
-                <div class="glass-panel" style="padding: 24px; margin-bottom: 24px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                        <div>
-                            <h3 style="font-size: 1.1rem; color: #fff; display: flex; align-items: center; gap: 8px;">
-                                <i class="fas fa-th-large" style="color: var(--primary-red);"></i> MA TRẬN RẠP & PHÒNG CHIẾU TRỐNG (6 CỤM RẠP)
-                            </h3>
-                            <p style="font-size: 0.8125rem; color: var(--text-muted); margin-top: 4px;">
-                                Ô xanh lá <span style="display:inline-block; padding: 2px 6px; background: rgba(13,242,134,0.15); color: #0df286; border-radius: 4px; border:1px solid rgba(13,242,134,0.3); font-weight: bold;">[ + Trống ]</span> là phòng trống khả dụng. Click ô trống để xếp lịch chiếu cho phim ngay lập tức.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div id="availability-matrix-container" style="overflow-x: auto; scrollbar-width: thin;">
-                        <!-- Rendered dynamically by JS -->
-                    </div>
-                </div>
-
-                <div class="table-card glass-panel">
-                    <div class="table-container">
-                        <table class="admin-table">
-                            <thead>
-                                <tr>
-                                    <th>Phim</th>
-                                    <th>Cụm Rạp</th>
-                                    <th>Phòng</th>
-                                    <th>Ngày chiếu</th>
-                                    <th>Giờ chiếu</th>
-                                    <th>Giá vé</th>
-                                    <th>Hành động</th>
-                                </tr>
-                            </thead>
-                            <tbody id="showtimes-tbody">
-                                <!-- Rendered dynamically -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
 
             <!-- ================= QUẢN LÝ PHÒNG & GHẾ TAB ================= -->
             <section id="tab-content-rooms" class="tab-section">
@@ -1920,57 +1856,7 @@
         </div>
     </div>
 
-    <!-- 2. SHOWTIME MODAL (ADD) -->
-    <div id="showtime-modal" class="modal-admin">
-        <div class="modal-admin-content glass-panel">
-            <span class="close-admin-modal" onclick="closeShowtimeModal()">&times;</span>
-            <h3>Thêm lịch chiếu mới</h3>
-            <form id="showtime-form" onsubmit="handleShowtimeSubmit(event)">
-                <div class="form-group">
-                    <label for="st-movie-select">Chọn Phim:</label>
-                    <select id="st-movie-select" required>
-                        <!-- Rendered dynamically -->
-                    </select>
-                </div>
 
-                <div class="form-group">
-                    <label for="st-cinema-select">Cụm Rạp:</label>
-                    <select id="st-cinema-select" required onchange="populateModalRooms()">
-                        <!-- Rendered dynamically -->
-                    </select>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="st-room-select">Phòng chiếu:</label>
-                        <select id="st-room-select" required>
-                            <!-- Rendered dynamically -->
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="st-price-input">Giá vé gốc (VNĐ):</label>
-                        <input type="number" id="st-price-input" min="50000" max="300000" step="5000" value="80000" required>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="st-date-input">Ngày chiếu:</label>
-                        <input type="date" id="st-date-input" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="st-time-input">Giờ chiếu:</label>
-                        <input type="time" id="st-time-input" required>
-                    </div>
-                </div>
-
-                <div class="form-actions">
-                    <button type="button" class="btn btn-outline" style="border-color: var(--glass-border);" onclick="closeShowtimeModal()">Hủy</button>
-                    <button type="submit" class="btn btn-primary">Tạo lịch chiếu</button>
-                </div>
-            </form>
-        </div>
-    </div>
 
     <!-- 3. COMBO MODAL (ADD / EDIT) -->
     <div id="combo-modal" class="modal-admin">
