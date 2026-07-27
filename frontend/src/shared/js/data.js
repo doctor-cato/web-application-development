@@ -92,8 +92,65 @@ function mapMovieObj(m) {
 }
 
 function getFallbackMovies() {
-    // Purged: All old movie data removed. Returns empty array until Admin adds new movies.
-    return [];
+    return [
+        {
+            id: 'mv_kimi_no_na_wa',
+            title: 'Your Name',
+            titleEn: 'Kimi no Na wa',
+            description: 'Hai người xa lạ tìm thấy nhau qua một phép màu kỳ lạ. Họ hoán đổi cơ thể trong giấc mơ và bắt đầu một hành trình tìm kiếm nhau giữa không gian và thời gian.',
+            meta: '2016 • Anime, Tình Cảm • 1h 46m',
+            releaseDate: '2016-08-26',
+            age: 'T13',
+            genre: 'Anime, Tình Cảm, Kỳ Ảo',
+            duration: 106,
+            status: 'now-showing',
+            posterUrl: 'https://image.tmdb.org/t/p/w500/q719jXXEzOoYaps6babgKnONONX.jpg',
+            backdropUrl: 'https://image.tmdb.org/t/p/original/dIWwZW7dJJtqC6CgWzYkNVKIUm8.jpg',
+            rating: 4.9,
+            ratingCount: 15420,
+            director: 'Makoto Shinkai',
+            trailer: 'https://www.youtube.com/embed/xU47nhruN-Q',
+            formats: ['2D Lồng tiếng', '2D Phụ đề']
+        },
+        {
+            id: 'mv_avengers_endgame',
+            title: 'Avengers: Endgame',
+            titleEn: 'Avengers: Endgame',
+            description: 'Sau sự kiện tàn khốc của Infinity War, vũ trụ đang chìm trong đống đổ nát. Với sự giúp đỡ của các đồng minh còn lại, Avengers tập hợp một lần nữa để đảo ngược hành động của Thanos.',
+            meta: '2019 • Hành Động, Viễn Tưởng • 3h 1m',
+            releaseDate: '2019-04-26',
+            age: 'T13',
+            genre: 'Hành Động, Viễn Tưởng',
+            duration: 181,
+            status: 'now-showing',
+            posterUrl: 'https://image.tmdb.org/t/p/w500/or06FN3Dka5tukK1e9sl16pB3iy.jpg',
+            backdropUrl: 'https://image.tmdb.org/t/p/original/7RyHsO4yDXtBv1zUU3mTpHeQ0d5.jpg',
+            rating: 4.8,
+            ratingCount: 23150,
+            director: 'Anthony Russo, Joe Russo',
+            trailer: 'https://www.youtube.com/embed/TcMBFSGVi1c',
+            formats: ['IMAX', '3D', '4DX']
+        },
+        {
+            id: 'mv_dune_part_two',
+            title: 'Dune: Hành Tinh Cát - Phần 2',
+            titleEn: 'Dune: Part Two',
+            description: 'Paul Atreides hợp sức với Chani và người Fremen để trả thù những kẻ đã phá hoại gia đình anh, đồng thời cố gắng ngăn chặn một tương lai khủng khiếp mà chỉ mình anh thấy được.',
+            meta: '2024 • Khoa Học Viễn Tưởng • 2h 46m',
+            releaseDate: '2024-03-01',
+            age: 'T16',
+            genre: 'Khoa Học Viễn Tưởng, Hành Động',
+            duration: 166,
+            status: 'coming-soon',
+            posterUrl: 'https://image.tmdb.org/t/p/w500/1pdfLvkbY9ohJlCjQH2JGvw7po.jpg',
+            backdropUrl: 'https://image.tmdb.org/t/p/original/xOMo8BRK7PfcJv9JCnx7s5hj0PX.jpg',
+            rating: 4.7,
+            ratingCount: 5240,
+            director: 'Denis Villeneuve',
+            trailer: 'https://www.youtube.com/embed/Way9Dexny3w',
+            formats: ['IMAX', '4DX']
+        }
+    ];
 }
 
 async function fetchMovies() {
