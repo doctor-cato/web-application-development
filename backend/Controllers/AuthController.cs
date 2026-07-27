@@ -67,7 +67,7 @@ namespace appweb.Controllers
             catch (Microsoft.EntityFrameworkCore.DbUpdateException ex)
             {
                 var innerMessage = ex.InnerException?.Message ?? ex.Message;
-                if (innerMessage.Contains("phone", StringComparison.OrdinalIgnoreCase) || innerMessage.Contains("UQ__users__A1936A6B", StringComparison.OrdinalIgnoreCase))
+                if (innerMessage.Contains("phone", StringComparison.OrdinalIgnoreCase) || innerMessage.Contains("phone_number", StringComparison.OrdinalIgnoreCase))
                 {
                     return BadRequest(new { message = "Số điện thoại này đã được sử dụng." });
                 }

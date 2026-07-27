@@ -69,7 +69,7 @@ registerForm.addEventListener('submit', async function (e) {
     const phoneRegex = /^(0|\+84)[3|5|7|8|9][0-9]{8}$/;
     if (!phoneRegex.test(phone)) {
         phoneInput.classList.add('error');
-        phoneError.textContent = 'SĐT không hợp lệ (VD: 0987654321).';
+        phoneError.textContent = 'SĐT không hợp lệ (VD: 0901234567).';
         phoneError.classList.add('show');
         isValid = false;
     }
