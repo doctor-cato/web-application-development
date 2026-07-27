@@ -105,15 +105,21 @@ async function init() {
   }
 
   const urlParams = new URLSearchParams(window.location.search);
-  const movieId = urlParams.get('id');
-  currentShowtimeId = urlParams.get('showtimeId') || 'st_200';
-  
-  if ((urlParams.get('cinematch') === 'true' || localStorage.getItem('cinematch_active') === 'true') && toggleCineMatch) {
-      toggleCineMatch.checked = true;
-      toggleCineMatch.dispatchEvent(new Event('change'));
-  }
-  
-  console.log("[DEBUG] movieId from URL:", movieId);
+    const movieId = urlParams.get('id');
+    currentShowtimeId = urlParams.get('showtimeId') || 'st_200';
+    
+    if ((urlParams.get('cinematch') === 'true' || localStorage.getItem('cinematch_active') === 'true') && toggleCineMatch) {
+        toggleCineMatch.checked = true;
+        toggleCineMatch.dispatchEvent(new Event('change'));
+    }
+    
+    if (localStorage.getItem('group_booking_active') === 'true' && toggleGroup) {
+        toggleGroup.checked = true;
+        toggleGroup.dispatchEvent(new Event('change'));
+        localStorage.removeItem('group_booking_active');
+    }
+    
+    console.log("[DEBUG] movieId from URL:", movieId);
 
   if (movieId) {
     // Fetch all movies directly from API — guaranteed to work, no race conditions

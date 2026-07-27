@@ -368,14 +368,26 @@ document.addEventListener('DOMContentLoaded', async () => {
         const isVip = localStorage.getItem('is_vip') === 'true';
         const vipPlan = localStorage.getItem('vip_plan'); // e.g., 'silver', 'gold', 'platinum'
         
-        if (isLogged && isVip) {
-            btnVip.textContent = 'XEM QUYỀN LỢI VIP';
-            btnVip.href = '/user/loyalty-points/index.html'; 
+        if (session && (session.role === 'vip' || localStorage.getItem('is_vip') === 'true')) {
+            btnVip.href = '../../user/user-profile/index.html';
+            btnVip.textContent = 'TRANG TÀI KHOẢN VIP';
         } else {
-            // Default logic if not logged in or not VIP
+            btnVip.href = '../../user/vip-registration/index.html';
             btnVip.textContent = 'ĐĂNG KÝ THÀNH VIÊN VIP';
         }
     }
+
+    // Kiểm tra xem có cần auto-open Quick Book cho Group Booking không
+    setTimeout(() => {
+        if (localStorage.getItem('show_quickbook') === 'true') {
+            localStorage.removeItem('show_quickbook');
+            const quickBookToggle = document.querySelector('.quick-book-toggle');
+            if (quickBookToggle) {
+                quickBookToggle.click(); // Mở Quick Book
+            }
+        }
+    }, 500);
+
 });
 
 // Define comingSoonGrid
