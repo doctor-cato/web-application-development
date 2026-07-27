@@ -172,30 +172,43 @@ async function fetchBookings() {
     } catch (e) {
         console.error('Fetch bookings API error:', e);
     }
-    const local = JSON.parse(localStorage.getItem('3hd2k_bookings') || '[]');
-    if (Array.isArray(local) && local.length > 0) {
-        db.bookings = local;
-    } else {
-        const lastBooking = JSON.parse(localStorage.getItem('3hd2k_last_booking') || 'null');
-        if (lastBooking && lastBooking.id) {
-            db.bookings = [{
-                id: lastBooking.id,
-                username: lastBooking.userEmail || lastBooking.username || 'Khách hàng',
-                customerName: lastBooking.customerName || lastBooking.userEmail || 'Khách hàng',
-                movieTitle: lastBooking.movieTitle || 'Vé xem phim',
-                showtime: lastBooking.showtimeText || lastBooking.showtime || '19:00',
-                seats: Array.isArray(lastBooking.seats) ? lastBooking.seats : (lastBooking.seats ? lastBooking.seats.split(',') : ['A01']),
-                totalAmount: lastBooking.total || lastBooking.totalPrice || 80000,
+    const allB = [];
+    const local1 = JSON.parse(localStorage.getItem('3hd2k_bookings') || '[]');
+    const local2 = JSON.parse(localStorage.getItem('cinema_bookings') || '[]');
+    if (Array.isArray(local1)) allB.push(...local1);
+    if (Array.isArray(local2)) allB.push(...local2);
+
+    const last1 = JSON.parse(localStorage.getItem('3hd2k_last_booking') || 'null');
+    const last2 = JSON.parse(localStorage.getItem('cinema_last_booking') || 'null');
+
+    [last1, last2].forEach(lb => {
+        if (lb && lb.id) {
+            allB.push({
+                id: lb.id,
+                username: lb.userEmail || lb.username || 'Khách hàng',
+                customerName: lb.customerName || lb.userEmail || 'Khách hàng',
+                movieTitle: lb.movieTitle || 'Vé xem phim',
+                showtime: lb.showtimeText || lb.showtime || '19:00',
+                seats: Array.isArray(lb.seats) ? lb.seats : (lb.seats ? lb.seats.split(',') : ['A01']),
+                totalAmount: lb.total || lb.totalPrice || 80000,
                 status: 'paid',
-                dateCreated: lastBooking.createdAt || new Date().toISOString(),
-                cinemaId: lastBooking.cinemaId || 'ha-dong',
-                roomName: lastBooking.room || 'Phòng chiếu 1',
-                showtimeId: lastBooking.showtimeId || ''
-            }];
-        } else {
-            db.bookings = [];
+                dateCreated: lb.createdAt || new Date().toISOString(),
+                cinemaId: lb.cinemaId || 'ha-dong',
+                roomName: lb.room || 'Phòng chiếu 1',
+                showtimeId: lb.showtimeId || ''
+            });
         }
-    }
+    });
+
+    const uniqueB = [];
+    const seenIds = new Set();
+    allB.forEach(b => {
+        if (b.id && !seenIds.has(b.id)) {
+            seenIds.add(b.id);
+            uniqueB.push(b);
+        }
+    });
+    db.bookings = uniqueB;
 }
 
 async function fetchUsers() {
@@ -219,7 +232,24 @@ async function fetchUsers() {
     }
 
     if (usersList.length === 0) {
-        const registered = JSON.parse(localStorage.getItem('registeredUsers') || localStorage.getItem('3hd2k_users') || '[]');
+        const r1 = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+        const r2 = JSON.parse(localStorage.getItem('3hd2k_users') || '[]');
+        const r3 = JSON.parse(localStorage.getItem('cinema_users') || '[]');
+        
+        let allRegistered = [];
+        if (Array.isArray(r1)) allRegistered = allRegistered.concat(r1);
+        if (Array.isArray(r2)) allRegistered = allRegistered.concat(r2);
+        if (Array.isArray(r3)) allRegistered = allRegistered.concat(r3);
+        
+        const registered = [];
+        const seenEmails = new Set();
+        allRegistered.forEach(u => {
+            const e = u.email || u.username;
+            if (e && !seenEmails.has(e)) {
+                seenEmails.add(e);
+                registered.push(u);
+            }
+        });
         if (Array.isArray(registered)) {
             registered.forEach(u => {
                 const email = u.email || u.username || '';
@@ -273,7 +303,7 @@ async function fetchCombos() {
                     desc: c.desc || c.description || '',
                     price: c.price || 0,
                     stock: c.stock || 100,
-                    image: c.image || c.imageUrl || '/src/assets/combos/combo_solo.jpg'
+                    image: c.image || c.imageUrl || '../assets/combos/combo_solo.jpg'
                 }));
                 return;
             }
@@ -286,9 +316,9 @@ async function fetchCombos() {
         db.combos = local;
     } else {
         db.combos = [
-            { id: "cb_solo", name: "Combo Solo", desc: "1 Bắp Ngọt (L) + 1 Nước Ngọt (L)", price: 89000, stock: 150, image: "/src/assets/combos/combo_solo.jpg" },
-            { id: "cb_couple", name: "Combo Couple", desc: "1 Bắp Ngọt (XL) + 2 Nước Ngọt (L)", price: 129000, stock: 120, image: "/src/assets/combos/combo_couple.jpg" },
-            { id: "cb_family", name: "Combo Family", desc: "2 Bắp Ngọt (XL) + 4 Nước Ngọt (L) + 1 Snack", price: 219000, stock: 80, image: "/src/assets/combos/combo_family.jpg" }
+            { id: "cb_solo", name: "Combo Solo", desc: "1 Bắp Ngọt (L) + 1 Nước Ngọt (L)", price: 89000, stock: 150, image: "../assets/combos/combo_solo.jpg" },
+            { id: "cb_couple", name: "Combo Couple", desc: "1 Bắp Ngọt (XL) + 2 Nước Ngọt (L)", price: 129000, stock: 120, image: "../assets/combos/combo_couple.jpg" },
+            { id: "cb_family", name: "Combo Family", desc: "2 Bắp Ngọt (XL) + 4 Nước Ngọt (L) + 1 Snack", price: 219000, stock: 80, image: "../assets/combos/combo_family.jpg" }
         ];
     }
 }
@@ -638,7 +668,7 @@ async function handleMovieSubmit(e) {
         id: id || ('mv_' + Math.random().toString(36).substr(2, 9)),
         title: title,
         genre: genre,
-        duration: formattedDur,
+        duration: durationNum,
         age: age,
         status: status,
         poster: poster,
@@ -1033,6 +1063,8 @@ async function purgeAllMovieData() {
         localStorage.removeItem('3hd2k_showtimes');
         localStorage.removeItem('3hd2k_bookings');
         localStorage.removeItem('3hd2k_last_booking');
+        localStorage.removeItem('cinema_bookings');
+        localStorage.removeItem('cinema_last_booking');
         localStorage.removeItem('cinema_activity_log');
         
         db.movies = [];
@@ -1846,6 +1878,7 @@ window.handleShowtimeSubmit = handleShowtimeSubmit;
 window.deleteShowtime = deleteShowtime;
 
 window.loadRoomSeatMap = loadRoomSeatMap;
+window.renderSeatingGrid = renderSeatingGrid;
 window.updateRoomGridSize = updateRoomGridSize;
 window.saveCurrentRoomLayout = saveCurrentRoomLayout;
 

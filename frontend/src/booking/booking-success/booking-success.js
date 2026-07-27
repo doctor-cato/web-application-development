@@ -371,33 +371,44 @@ function init() {
 function saveBookingToAdminStore(booking) {
     if (!booking || !booking.id) return;
     try {
-        let bookings = JSON.parse(localStorage.getItem('3hd2k_bookings') || '[]');
-        if (!Array.isArray(bookings)) bookings = [];
+        const userEmail = localStorage.getItem('userEmail') || localStorage.getItem('userName') || booking.userEmail || booking.username || 'khach';
+        const userName = localStorage.getItem('userName') || booking.customerName || userEmail;
         
-        if (!bookings.some(b => b.id === booking.id)) {
-            const userEmail = localStorage.getItem('user_email') || localStorage.getItem('email') || booking.userEmail || booking.username || 'khach';
-            const userName = localStorage.getItem('userName') || localStorage.getItem('user_name') || booking.customerName || userEmail;
-            
-            bookings.unshift({
-                id: booking.id,
-                username: userEmail,
-                customerName: userName,
-                movieTitle: booking.movieTitle || 'Vé xem phim',
-                showtime: booking.showtimeText || booking.showtime || '19:00',
-                seats: Array.isArray(booking.seats) ? booking.seats : (booking.seats ? booking.seats.split(',') : ['A01']),
-                totalAmount: booking.total || booking.totalPrice || booking.totalAmount || 80000,
-                status: 'paid',
-                dateCreated: booking.createdAt || new Date().toISOString(),
-                cinemaId: booking.cinemaId || 'ha-dong',
-                roomName: booking.room || booking.roomName || 'Phòng chiếu 1',
-                showtimeId: booking.showtimeId || ''
-            });
-            localStorage.setItem('3hd2k_bookings', JSON.stringify(bookings));
+        const entry = {
+            id: booking.id,
+            username: userEmail,
+            customerName: userName,
+            movieTitle: booking.movieTitle || 'Vé xem phim',
+            showtime: booking.showtimeText || booking.showtime || '19:00',
+            seats: Array.isArray(booking.seats) ? booking.seats : (booking.seats ? booking.seats.split(',').map(s => s.trim()) : ['A01']),
+            totalAmount: booking.total || booking.totalPrice || booking.totalAmount || 80000,
+            status: 'paid',
+            dateCreated: booking.createdAt || new Date().toISOString(),
+            cinemaId: booking.cinemaId || 'ha-dong',
+            roomName: booking.room || booking.roomName || 'Phòng chiếu 1',
+            showtimeId: booking.showtimeId || ''
+        };
+
+        // Save to 3hd2k_bookings (admin portal reads this)
+        let bookings3hd2k = JSON.parse(localStorage.getItem('3hd2k_bookings') || '[]');
+        if (!Array.isArray(bookings3hd2k)) bookings3hd2k = [];
+        if (!bookings3hd2k.some(b => b.id === booking.id)) {
+            bookings3hd2k.unshift(entry);
+            localStorage.setItem('3hd2k_bookings', JSON.stringify(bookings3hd2k));
+        }
+
+        // Also save to cinema_bookings (profile, navbar, staff-sales read this)
+        let bookingsCinema = JSON.parse(localStorage.getItem('cinema_bookings') || '[]');
+        if (!Array.isArray(bookingsCinema)) bookingsCinema = [];
+        if (!bookingsCinema.some(b => b.id === booking.id)) {
+            bookingsCinema.unshift(entry);
+            localStorage.setItem('cinema_bookings', JSON.stringify(bookingsCinema));
         }
     } catch (e) {
         console.error("Error saving booking to admin store:", e);
     }
 }
+
 
 function createBookingNotification(booking) {
     if (!booking || !booking.id) return;
