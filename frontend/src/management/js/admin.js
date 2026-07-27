@@ -59,26 +59,33 @@ async function fetchMovies() {
         const res = await fetch('/api/movies');
         if (res.ok) {
             const data = await res.json();
-            db.movies = data.map(m => {
-                let d = parseInt(m.duration || m.durationMinutes, 10);
-                if (isNaN(d) || d <= 0) d = 120;
-                else if (d < 10) d = d * 60; // Convert 1 -> 60, 2 -> 120 if stored as hours
-                
-                return {
-                    id: m.id ? m.id.toString() : '',
-                    title: m.title || '',
-                    genre: m.genre || 'Phim',
-                    duration: d,
-                    age: m.ageRating || 'T13',
-                    status: m.status || 'now-showing',
-                    poster: m.posterUrl || 'https://images.unsplash.com/photo-1536440136628-849c177e76a1',
-                    trailer: m.trailerUrl || '',
-                    desc: m.description || ''
-                };
-            });
+            if (Array.isArray(data) && data.length > 0) {
+                db.movies = data.map(m => {
+                    let d = parseInt(m.duration || m.durationMinutes, 10);
+                    if (isNaN(d) || d <= 0) d = 120;
+                    else if (d < 10) d = d * 60;
+                    
+                    return {
+                        id: m.id ? m.id.toString() : '',
+                        title: m.title || '',
+                        genre: m.genre || 'Phim',
+                        duration: d,
+                        age: m.ageRating || 'T13',
+                        status: m.status || 'now-showing',
+                        poster: m.posterUrl || 'https://images.unsplash.com/photo-1536440136628-849c177e76a1',
+                        trailer: m.trailerUrl || '',
+                        desc: m.description || ''
+                    };
+                });
+                return;
+            }
         }
     } catch (e) {
         console.error('Fetch movies API error:', e);
+    }
+    const local = JSON.parse(localStorage.getItem('3hd2k_movies') || '[]');
+    if (local.length > 0) {
+        db.movies = local;
     }
 }
 
@@ -87,23 +94,30 @@ async function fetchShowtimes() {
         const res = await fetch('/api/showtimes');
         if (res.ok) {
             const data = await res.json();
-            db.showtimes = data.map(s => {
-                const movie = db.movies.find(m => m.id === (s.movieId ? s.movieId.toString() : '')) || {};
-                return {
-                    id: s.id ? s.id.toString() : '',
-                    movieId: s.movieId ? s.movieId.toString() : '',
-                    movieTitle: s.movieTitle || movie.title || 'Phim #' + s.movieId,
-                    cinemaId: s.cinemaId || 'ha-dong',
-                    cinemaName: s.cinemaName || '3HD2K HÀ ĐÔNG',
-                    roomName: s.roomName || 'Phòng chiếu 1',
-                    date: s.startTime ? s.startTime.split('T')[0] : (s.date || ''),
-                    time: s.startTime ? s.startTime.split('T')[1]?.substring(0,5) : (s.time || '19:00'),
-                    price: s.price || 80000
-                };
-            });
+            if (Array.isArray(data) && data.length > 0) {
+                db.showtimes = data.map(s => {
+                    const movie = db.movies.find(m => m.id === (s.movieId ? s.movieId.toString() : '')) || {};
+                    return {
+                        id: s.id ? s.id.toString() : '',
+                        movieId: s.movieId ? s.movieId.toString() : '',
+                        movieTitle: s.movieTitle || movie.title || 'Phim #' + s.movieId,
+                        cinemaId: s.cinemaId || 'ha-dong',
+                        cinemaName: s.cinemaName || '3HD2K HÀ ĐÔNG',
+                        roomName: s.roomName || 'Phòng chiếu 1',
+                        date: s.startTime ? s.startTime.split('T')[0] : (s.date || ''),
+                        time: s.startTime ? s.startTime.split('T')[1]?.substring(0,5) : (s.time || '19:00'),
+                        price: s.price || 80000
+                    };
+                });
+                return;
+            }
         }
     } catch (e) {
         console.error('Fetch showtimes API error:', e);
+    }
+    const local = JSON.parse(localStorage.getItem('3hd2k_showtimes') || '[]');
+    if (local.length > 0) {
+        db.showtimes = local;
     }
 }
 
@@ -111,15 +125,24 @@ async function fetchCinemas() {
     try {
         const res = await fetch('/api/cinemas');
         if (res.ok) {
-            db.cinemas = await res.json();
-        } else if (db.cinemas.length === 0) {
-            db.cinemas = [
-                { id: "ha-dong", name: "3HD2K HÀ ĐÔNG", address: "Tầng 5, AEON Mall Hà Đông, Hà Nội", screens: 9 },
-                { id: "my-dinh", name: "3HD2K MỸ ĐÌNH", address: "Tầng 6, The Garden Shopping Center, Mỹ Đình, Hà Nội", screens: 8 }
-            ];
+            const data = await res.json();
+            if (Array.isArray(data) && data.length > 0) {
+                db.cinemas = data;
+                return;
+            }
         }
     } catch (e) {
         console.error('Fetch cinemas API error:', e);
+    }
+    if (!db.cinemas || db.cinemas.length === 0) {
+        db.cinemas = [
+            { id: "ha-dong", name: "3HD2K HÀ ĐÔNG", address: "Tầng 5, AEON Mall Hà Đông, Hà Nội", screens: 9 },
+            { id: "le-trong-tan", name: "3HD2K LÊ TRỌNG TẤN", address: "Tầng 3, Artemis Lê Trọng Tấn, Hà Nội", screens: 6 },
+            { id: "cau-giay", name: "3HD2K CẦU GIẤY", address: "Tầng 6, Discovery Complex Cầu Giấy, Hà Nội", screens: 7 },
+            { id: "my-dinh", name: "3HD2K MỸ ĐÌNH", address: "Tầng 6, The Garden Shopping Center, Mỹ Đình, Hà Nội", screens: 8 },
+            { id: "lang-ha", name: "3HD2K LÁNG HẠ", address: "87 Láng Hạ, Đống Đa, Hà Nội", screens: 5 },
+            { id: "royal-city", name: "3HD2K ROYAL CITY", address: "B2-R3, Vincom Mega Mall Royal City, Hà Nội", screens: 10 }
+        ];
     }
 }
 
@@ -128,20 +151,27 @@ async function fetchBookings() {
         const res = await fetch('/api/bookings');
         if (res.ok) {
             const data = await res.json();
-            db.bookings = data.map(b => ({
-                id: b.id ? b.id.toString() : 'BK-' + Math.floor(Math.random()*90000),
-                username: b.userEmail || b.customerEmail || 'khach',
-                customerName: b.customerName || b.userEmail || 'Khách hàng',
-                movieTitle: b.movieTitle || 'Vé xem phim',
-                showtime: b.showtime || (b.createdAt ? new Date(b.createdAt).toLocaleString('vi-VN') : '19:00'),
-                seats: Array.isArray(b.seats) ? b.seats : (b.seats ? b.seats.split(',') : ['A01']),
-                totalAmount: b.totalPrice || b.totalAmount || 80000,
-                status: b.status || 'paid',
-                dateCreated: b.createdAt || new Date().toISOString()
-            }));
+            if (Array.isArray(data) && data.length > 0) {
+                db.bookings = data.map(b => ({
+                    id: b.id ? b.id.toString() : 'BK-' + Math.floor(Math.random()*90000),
+                    username: b.userEmail || b.customerEmail || 'khach',
+                    customerName: b.customerName || b.userEmail || 'Khách hàng',
+                    movieTitle: b.movieTitle || 'Vé xem phim',
+                    showtime: b.showtime || (b.createdAt ? new Date(b.createdAt).toLocaleString('vi-VN') : '19:00'),
+                    seats: Array.isArray(b.seats) ? b.seats : (b.seats ? b.seats.split(',') : ['A01']),
+                    totalAmount: b.totalPrice || b.totalAmount || 80000,
+                    status: b.status || 'paid',
+                    dateCreated: b.createdAt || new Date().toISOString()
+                }));
+                return;
+            }
         }
     } catch (e) {
         console.error('Fetch bookings API error:', e);
+    }
+    const local = JSON.parse(localStorage.getItem('3hd2k_bookings') || '[]');
+    if (local.length > 0) {
+        db.bookings = local;
     }
 }
 
@@ -150,16 +180,26 @@ async function fetchUsers() {
         const res = await fetch('/api/users');
         if (res.ok) {
             const data = await res.json();
-            db.users = data.map(u => ({
-                username: u.username || u.email,
-                name: u.fullname || u.name || u.username || 'Thành viên',
-                email: u.email || '',
-                role: (u.role || 'CUSTOMER').toLowerCase() === 'admin' ? 'admin' : 'customer',
-                status: u.isLocked ? 'banned' : 'active'
-            }));
+            if (Array.isArray(data) && data.length > 0) {
+                db.users = data.map(u => ({
+                    username: u.username || u.email,
+                    name: u.fullname || u.name || u.username || 'Thành viên',
+                    email: u.email || '',
+                    role: (u.role || 'CUSTOMER').toLowerCase() === 'admin' ? 'admin' : 'customer',
+                    status: u.isLocked ? 'banned' : 'active'
+                }));
+                return;
+            }
         }
     } catch (e) {
         console.error('Fetch users API error:', e);
+    }
+    if (!db.users || db.users.length === 0) {
+        db.users = [
+            { username: "admin", name: "Quản trị viên", email: "admin@3hd2k.com", role: "admin", status: "active" },
+            { username: "khachhang1", name: "Nguyễn Văn A", email: "nguyenvana@gmail.com", role: "customer", status: "active" },
+            { username: "khachhang2", name: "Trần Thị B", email: "tranthib@gmail.com", role: "customer", status: "active" }
+        ];
     }
 }
 
@@ -168,17 +208,30 @@ async function fetchCombos() {
         const res = await fetch('/api/combos');
         if (res.ok) {
             const data = await res.json();
-            db.combos = data.map(c => ({
-                id: c.id ? c.id.toString() : '',
-                name: c.name || '',
-                desc: c.desc || c.description || '',
-                price: c.price || 0,
-                stock: c.stock || 100,
-                image: c.image || c.imageUrl || '/images/F&B/combo_single.png'
-            }));
+            if (Array.isArray(data) && data.length > 0) {
+                db.combos = data.map(c => ({
+                    id: c.id ? c.id.toString() : '',
+                    name: c.name || '',
+                    desc: c.desc || c.description || '',
+                    price: c.price || 0,
+                    stock: c.stock || 100,
+                    image: c.image || c.imageUrl || '/images/F&B/combo_single.png'
+                }));
+                return;
+            }
         }
     } catch (e) {
         console.error('Fetch combos API error:', e);
+    }
+    const local = JSON.parse(localStorage.getItem('cinema_combos') || '[]');
+    if (local.length > 0) {
+        db.combos = local;
+    } else if (!db.combos || db.combos.length === 0) {
+        db.combos = [
+            { id: "cb_solo", name: "Combo Solo", desc: "1 Bắp Ngọt (L) + 1 Nước Ngọt (L)", price: 89000, stock: 150, image: "/images/F&B/combo_single.png" },
+            { id: "cb_couple", name: "Combo Couple", desc: "1 Bắp Ngọt (XL) + 2 Nước Ngọt (L)", price: 129000, stock: 120, image: "/images/F&B/combo_couple.png" },
+            { id: "cb_family", name: "Combo Family", desc: "2 Bắp Ngọt (XL) + 4 Nước Ngọt (L) + 1 Snack", price: 219000, stock: 80, image: "/images/F&B/combo_family.png" }
+        ];
     }
 }
 
@@ -581,7 +634,6 @@ async function handleMovieSubmit(e) {
         }
     } catch (err) {
         console.error("API error", err);
-    }
     }
 
     closeMovieModal();
@@ -1695,6 +1747,8 @@ window.toggleUserStatus = toggleUserStatus;
 window.viewUserHistory = viewUserHistory;
 window.closeUserHistoryModal = closeUserHistoryModal;
 
+window.purgeAllMovieData = purgeAllMovieData;
+window.openQuickShowtimeModal = openQuickShowtimeModal;
 window.filterAdminInventoryTable = filterAdminInventoryTable;
 window.openAdminRestockModal = openAdminRestockModal;
 window.closeAdminRestockModal = closeAdminRestockModal;
