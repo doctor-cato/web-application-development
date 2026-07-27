@@ -161,7 +161,10 @@ async function fetchBookings() {
                     seats: Array.isArray(b.seats) ? b.seats : (b.seats ? b.seats.split(',') : ['A01']),
                     totalAmount: b.totalPrice || b.totalAmount || 80000,
                     status: b.status || 'paid',
-                    dateCreated: b.createdAt || new Date().toISOString()
+                    dateCreated: b.createdAt || new Date().toISOString(),
+                    cinemaId: b.cinemaId || 'ha-dong',
+                    roomName: b.roomName || b.room || 'Phòng chiếu 1',
+                    showtimeId: b.showtimeId || ''
                 }));
                 return;
             }
@@ -170,37 +173,92 @@ async function fetchBookings() {
         console.error('Fetch bookings API error:', e);
     }
     const local = JSON.parse(localStorage.getItem('3hd2k_bookings') || '[]');
-    if (local.length > 0) {
+    if (Array.isArray(local) && local.length > 0) {
         db.bookings = local;
+    } else {
+        const lastBooking = JSON.parse(localStorage.getItem('3hd2k_last_booking') || 'null');
+        if (lastBooking && lastBooking.id) {
+            db.bookings = [{
+                id: lastBooking.id,
+                username: lastBooking.userEmail || lastBooking.username || 'Khách hàng',
+                customerName: lastBooking.customerName || lastBooking.userEmail || 'Khách hàng',
+                movieTitle: lastBooking.movieTitle || 'Vé xem phim',
+                showtime: lastBooking.showtimeText || lastBooking.showtime || '19:00',
+                seats: Array.isArray(lastBooking.seats) ? lastBooking.seats : (lastBooking.seats ? lastBooking.seats.split(',') : ['A01']),
+                totalAmount: lastBooking.total || lastBooking.totalPrice || 80000,
+                status: 'paid',
+                dateCreated: lastBooking.createdAt || new Date().toISOString(),
+                cinemaId: lastBooking.cinemaId || 'ha-dong',
+                roomName: lastBooking.room || 'Phòng chiếu 1',
+                showtimeId: lastBooking.showtimeId || ''
+            }];
+        } else {
+            db.bookings = [];
+        }
     }
 }
 
 async function fetchUsers() {
+    let usersList = [];
     try {
         const res = await fetch('/api/users');
         if (res.ok) {
             const data = await res.json();
             if (Array.isArray(data) && data.length > 0) {
-                db.users = data.map(u => ({
+                usersList = data.map(u => ({
                     username: u.username || u.email,
                     name: u.fullname || u.name || u.username || 'Thành viên',
                     email: u.email || '',
                     role: (u.role || 'CUSTOMER').toLowerCase() === 'admin' ? 'admin' : 'customer',
                     status: u.isLocked ? 'banned' : 'active'
                 }));
-                return;
             }
         }
     } catch (e) {
         console.error('Fetch users API error:', e);
     }
-    if (!db.users || db.users.length === 0) {
-        db.users = [
-            { username: "admin", name: "Quản trị viên", email: "admin@3hd2k.com", role: "admin", status: "active" },
-            { username: "khachhang1", name: "Nguyễn Văn A", email: "nguyenvana@gmail.com", role: "customer", status: "active" },
-            { username: "khachhang2", name: "Trần Thị B", email: "tranthib@gmail.com", role: "customer", status: "active" }
-        ];
+
+    if (usersList.length === 0) {
+        const registered = JSON.parse(localStorage.getItem('registeredUsers') || localStorage.getItem('3hd2k_users') || '[]');
+        if (Array.isArray(registered)) {
+            registered.forEach(u => {
+                const email = u.email || u.username || '';
+                if (email && !usersList.some(x => x.email === email)) {
+                    usersList.push({
+                        username: u.username || email,
+                        name: u.name || u.fullname || email.split('@')[0],
+                        email: email,
+                        role: (u.role || 'customer').toLowerCase() === 'admin' ? 'admin' : 'customer',
+                        status: u.status || 'active'
+                    });
+                }
+            });
+        }
     }
+
+    const activeToken = localStorage.getItem('auth_token') || localStorage.getItem('3hd2k_user');
+    if (activeToken) {
+        try {
+            let activeUser = null;
+            if (activeToken.startsWith('{')) activeUser = JSON.parse(activeToken);
+            else {
+                const payloadBase64 = activeToken.split('.')[1] || activeToken;
+                activeUser = JSON.parse(decodeURIComponent(escape(atob(payloadBase64.replace(/-/g, '+').replace(/_/g, '/')))));
+            }
+            if (activeUser && (activeUser.email || activeUser.name) && !usersList.some(x => x.email === (activeUser.email || activeUser.name))) {
+                const userEmail = activeUser.email || (activeUser.name + '@3hd2k.com');
+                usersList.unshift({
+                    username: activeUser.username || userEmail,
+                    name: activeUser.fullname || activeUser.name || 'Admin 3HD2K',
+                    email: userEmail,
+                    role: (activeUser.role || 'ADMIN').toLowerCase(),
+                    status: 'active'
+                });
+            }
+        } catch (_) {}
+    }
+
+    db.users = usersList;
 }
 
 async function fetchCombos() {
@@ -215,7 +273,7 @@ async function fetchCombos() {
                     desc: c.desc || c.description || '',
                     price: c.price || 0,
                     stock: c.stock || 100,
-                    image: c.image || c.imageUrl || '/images/F&B/combo_single.png'
+                    image: c.image || c.imageUrl || '/src/assets/combos/combo_solo.jpg'
                 }));
                 return;
             }
@@ -226,11 +284,11 @@ async function fetchCombos() {
     const local = JSON.parse(localStorage.getItem('cinema_combos') || '[]');
     if (local.length > 0) {
         db.combos = local;
-    } else if (!db.combos || db.combos.length === 0) {
+    } else {
         db.combos = [
-            { id: "cb_solo", name: "Combo Solo", desc: "1 Bắp Ngọt (L) + 1 Nước Ngọt (L)", price: 89000, stock: 150, image: "/images/F&B/combo_single.png" },
-            { id: "cb_couple", name: "Combo Couple", desc: "1 Bắp Ngọt (XL) + 2 Nước Ngọt (L)", price: 129000, stock: 120, image: "/images/F&B/combo_couple.png" },
-            { id: "cb_family", name: "Combo Family", desc: "2 Bắp Ngọt (XL) + 4 Nước Ngọt (L) + 1 Snack", price: 219000, stock: 80, image: "/images/F&B/combo_family.png" }
+            { id: "cb_solo", name: "Combo Solo", desc: "1 Bắp Ngọt (L) + 1 Nước Ngọt (L)", price: 89000, stock: 150, image: "/src/assets/combos/combo_solo.jpg" },
+            { id: "cb_couple", name: "Combo Couple", desc: "1 Bắp Ngọt (XL) + 2 Nước Ngọt (L)", price: 129000, stock: 120, image: "/src/assets/combos/combo_couple.jpg" },
+            { id: "cb_family", name: "Combo Family", desc: "2 Bắp Ngọt (XL) + 4 Nước Ngọt (L) + 1 Snack", price: 219000, stock: 80, image: "/src/assets/combos/combo_family.jpg" }
         ];
     }
 }
@@ -974,6 +1032,8 @@ async function purgeAllMovieData() {
         localStorage.removeItem('3hd2k_movies');
         localStorage.removeItem('3hd2k_showtimes');
         localStorage.removeItem('3hd2k_bookings');
+        localStorage.removeItem('3hd2k_last_booking');
+        localStorage.removeItem('cinema_activity_log');
         
         db.movies = [];
         db.showtimes = [];
@@ -999,8 +1059,23 @@ function populateRoomDropdown() {
 }
 
 function loadRoomSeatMap() {
-    const roomKey = document.getElementById('room-select').value;
+    const roomKey = document.getElementById('room-select')?.value;
     if (!roomKey) return;
+
+    const parts = roomKey.split('_');
+    const cinemaId = parts[0] || '';
+    const roomName = parts[1] || '';
+
+    const showtimeSelect = document.getElementById('room-showtime-select');
+    if (showtimeSelect) {
+        const matchingShowtimes = db.showtimes.filter(s => 
+            (s.cinemaId === cinemaId || s.cinemaName?.includes(cinemaId)) &&
+            (s.roomName === roomName || roomName.includes(s.roomName))
+        );
+
+        showtimeSelect.innerHTML = `<option value="all">Tất cả suất chiếu trong ngày (Ghế đã đặt thực tế)</option>` + 
+            matchingShowtimes.map(st => `<option value="${st.id}">${st.movieTitle} (${st.time} - ${st.date})</option>`).join('');
+    }
 
     const layout = db.roomLayouts[roomKey] || { rows: 8, cols: 12, vipRows: [4,5], doubleRows: [7], brokenSeats: [] };
     currentRoomRows = layout.rows;
@@ -1009,8 +1084,10 @@ function loadRoomSeatMap() {
     currentDoubleRows = layout.doubleRows || [];
     currentBrokenSeats = layout.brokenSeats || [];
 
-    document.getElementById('room-rows').value = currentRoomRows;
-    document.getElementById('room-cols').value = currentRoomCols;
+    const rowsInput = document.getElementById('room-rows');
+    const colsInput = document.getElementById('room-cols');
+    if (rowsInput) rowsInput.value = currentRoomRows;
+    if (colsInput) colsInput.value = currentRoomCols;
 
     renderSeatingGrid();
 }
@@ -1018,6 +1095,32 @@ function loadRoomSeatMap() {
 function renderSeatingGrid() {
     const grid = document.getElementById('admin-seating-grid');
     if (!grid) return;
+
+    const roomKey = document.getElementById('room-select')?.value || '';
+    const parts = roomKey.split('_');
+    const cinemaId = parts[0] || '';
+    const roomName = parts[1] || '';
+    const selectedShowtimeId = document.getElementById('room-showtime-select')?.value || 'all';
+
+    // Cross-reference real-time booked seats for this room and showtime
+    const bookedSeatMap = {};
+    db.bookings.forEach(b => {
+        if (b.status === 'paid') {
+            const matchesCinema = !b.cinemaId || b.cinemaId === cinemaId || cinemaId === '' || b.cinemaId === 'all';
+            const matchesRoom = !b.roomName || b.roomName === roomName || roomName.includes(b.roomName) || b.roomName.includes(roomName);
+            const matchesShowtime = selectedShowtimeId === 'all' || b.showtimeId === selectedShowtimeId || (b.showtime && b.showtime.includes(selectedShowtimeId));
+
+            if (matchesCinema && matchesRoom && matchesShowtime) {
+                const seatsList = Array.isArray(b.seats) ? b.seats : (typeof b.seats === 'string' ? b.seats.split(',') : []);
+                seatsList.forEach(s => {
+                    const cleanSeat = s.trim().toUpperCase();
+                    if (cleanSeat) {
+                        bookedSeatMap[cleanSeat] = b.customerName || b.username || 'Khách hàng';
+                    }
+                });
+            }
+        }
+    });
     
     grid.style.gridTemplateColumns = `repeat(${currentRoomCols}, 32px)`;
     grid.innerHTML = '';
@@ -1026,16 +1129,31 @@ function renderSeatingGrid() {
         const rowLabel = String.fromCharCode(65 + r);
         for (let c = 1; c <= currentRoomCols; c++) {
             const seatCode = `${rowLabel}${c.toString().padStart(2, '0')}`;
+            const isBooked = !!bookedSeatMap[seatCode];
             let seatType = 'standard';
             
-            if (currentBrokenSeats.includes(seatCode)) seatType = 'broken';
+            if (isBooked) seatType = 'occupied';
+            else if (currentBrokenSeats.includes(seatCode)) seatType = 'broken';
             else if (currentDoubleRows.includes(r)) seatType = 'double';
             else if (currentVipRows.includes(r)) seatType = 'vip';
 
             const seatBtn = document.createElement('button');
             seatBtn.className = `seat-btn-admin ${seatType}`;
             seatBtn.textContent = seatCode;
-            seatBtn.addEventListener('click', () => toggleSeatProperty(seatCode, r));
+
+            if (isBooked) {
+                seatBtn.title = `Đã được đặt thực tế bởi: ${bookedSeatMap[seatCode]}`;
+                seatBtn.style.backgroundColor = '#E50914';
+                seatBtn.style.color = '#ffffff';
+                seatBtn.style.boxShadow = '0 0 10px rgba(229, 9, 20, 0.9)';
+                seatBtn.style.fontWeight = 'bold';
+                seatBtn.style.cursor = 'not-allowed';
+                seatBtn.addEventListener('click', () => {
+                    showToast(`Ghế ${seatCode} đã được ${bookedSeatMap[seatCode]} đặt vé thực tế!`, 'warning');
+                });
+            } else {
+                seatBtn.addEventListener('click', () => toggleSeatProperty(seatCode, r));
+            }
             grid.appendChild(seatBtn);
         }
     }

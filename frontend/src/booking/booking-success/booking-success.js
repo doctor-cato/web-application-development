@@ -358,11 +358,45 @@ function init() {
         window.print();
     };
 
+    // Lưu đơn vé vào danh sách 3hd2k_bookings cho Admin Portal
+    saveBookingToAdminStore(booking);
+
     // Tích điểm tự động sau khi hiển thị thông tin booking
     awardLoyaltyPoints(booking);
     
     // Thêm thông báo đặt vé
     createBookingNotification(booking);
+}
+
+function saveBookingToAdminStore(booking) {
+    if (!booking || !booking.id) return;
+    try {
+        let bookings = JSON.parse(localStorage.getItem('3hd2k_bookings') || '[]');
+        if (!Array.isArray(bookings)) bookings = [];
+        
+        if (!bookings.some(b => b.id === booking.id)) {
+            const userEmail = localStorage.getItem('user_email') || localStorage.getItem('email') || booking.userEmail || booking.username || 'khach';
+            const userName = localStorage.getItem('userName') || localStorage.getItem('user_name') || booking.customerName || userEmail;
+            
+            bookings.unshift({
+                id: booking.id,
+                username: userEmail,
+                customerName: userName,
+                movieTitle: booking.movieTitle || 'Vé xem phim',
+                showtime: booking.showtimeText || booking.showtime || '19:00',
+                seats: Array.isArray(booking.seats) ? booking.seats : (booking.seats ? booking.seats.split(',') : ['A01']),
+                totalAmount: booking.total || booking.totalPrice || booking.totalAmount || 80000,
+                status: 'paid',
+                dateCreated: booking.createdAt || new Date().toISOString(),
+                cinemaId: booking.cinemaId || 'ha-dong',
+                roomName: booking.room || booking.roomName || 'Phòng chiếu 1',
+                showtimeId: booking.showtimeId || ''
+            });
+            localStorage.setItem('3hd2k_bookings', JSON.stringify(bookings));
+        }
+    } catch (e) {
+        console.error("Error saving booking to admin store:", e);
+    }
 }
 
 function createBookingNotification(booking) {

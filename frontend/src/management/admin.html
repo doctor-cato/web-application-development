@@ -1514,6 +1514,13 @@
                                 <!-- Dynamically populated rooms -->
                             </select>
                         </div>
+
+                        <div class="form-group" style="margin-top: 10px;">
+                            <label for="room-showtime-select" style="color: var(--btn-cyan-color);"><i class="fas fa-clock"></i> Suất chiếu thời gian thực:</label>
+                            <select id="room-showtime-select" onchange="renderSeatingGrid()">
+                                <option value="all">Tất cả suất chiếu trong ngày (Ghế đã đặt thực tế)</option>
+                            </select>
+                        </div>
                         
                         <div class="form-row">
                             <div class="form-group">
