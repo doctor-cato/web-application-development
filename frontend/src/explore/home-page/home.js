@@ -89,10 +89,9 @@ function renderHeroMovie(movie) {
 }
 
 const handleHeroRender = () => {
-    if (window.heroMovies && window.heroMovies.length > 0 && (window.heroMovies[0].title || window.heroMovies[0].bg)) {
-        renderHeroMovie(window.heroMovies[0]);
-    } else if (window.allMoviesData && window.allMoviesData.length > 0) {
-        renderHeroMovie(window.allMoviesData[0]);
+    const validHeroMovies = (window.heroMovies || []).filter(m => m.status === 'now-showing');
+    if (validHeroMovies.length > 0 && (validHeroMovies[0].title || validHeroMovies[0].bg)) {
+        renderHeroMovie(validHeroMovies[0]);
     } else {
         renderHeroMovie(null);
     }

@@ -378,8 +378,8 @@ async function fetchMovies() {
     nowShowingMovies = allMoviesData.filter(m => m.status === 'now-showing');
     comingSoonMovies = allMoviesData.filter(m => m.status === 'coming-soon');
     
+    // Strict Rule: Hero Banner ONLY displays Now-Showing movies
     heroMovies = nowShowingMovies.slice(0, 5);
-    if (heroMovies.length === 0) heroMovies = allMoviesData.slice(0, 4);
 
     window.allMoviesData = allMoviesData;
     window.heroMovies = heroMovies;

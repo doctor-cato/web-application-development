@@ -1444,13 +1444,35 @@
                         <input type="text" id="showtime-search" placeholder="Tìm theo tên phim..." oninput="filterShowtimesTable()">
                     </div>
                     <div class="filter-actions">
-                        <select id="showtime-filter-cinema" onchange="filterShowtimesTable()">
-                            <option value="all">Tất cả rạp</option>
+                        <input type="date" id="matrix-date-picker" onchange="renderAvailabilityMatrix()" style="background: rgba(0,0,0,0.5); border: 1px solid var(--glass-border); color: #fff; padding: 8px 12px; border-radius: 6px; font-family: 'Inter', sans-serif;">
+                        <select id="showtime-filter-cinema" onchange="filterShowtimesTable(); renderAvailabilityMatrix();">
+                            <option value="all">Tất cả rạp (6 Cụm Rạp)</option>
                             <!-- Rendered dynamically -->
                         </select>
+                        <button class="btn btn-outline" style="border-color: var(--primary-red); color: var(--primary-red);" onclick="purgeAllMovieData()" title="Xóa toàn bộ dữ liệu phim & lịch chiếu cũ">
+                            <i class="fas fa-trash-can"></i> Reset Data Phim Cũ
+                        </button>
                         <button class="btn btn-primary" onclick="openAddShowtimeModal()">
                             <i class="fas fa-calendar-plus"></i> Thêm lịch chiếu
                         </button>
+                    </div>
+                </div>
+
+                <!-- MA TRẬN RẠP & PHÒNG CHIẾU TRỐNG (AVAILABILITY MATRIX) -->
+                <div class="glass-panel" style="padding: 24px; margin-bottom: 24px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                        <div>
+                            <h3 style="font-size: 1.1rem; color: #fff; display: flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-th-large" style="color: var(--primary-red);"></i> MA TRẬN RẠP & PHÒNG CHIẾU TRỐNG (6 CỤM RẠP)
+                            </h3>
+                            <p style="font-size: 0.8125rem; color: var(--text-muted); margin-top: 4px;">
+                                Ô xanh lá <span style="display:inline-block; padding: 2px 6px; background: rgba(13,242,134,0.15); color: #0df286; border-radius: 4px; border:1px solid rgba(13,242,134,0.3); font-weight: bold;">[ + Trống ]</span> là phòng trống khả dụng. Click ô trống để xếp lịch chiếu cho phim ngay lập tức.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div id="availability-matrix-container" style="overflow-x: auto; scrollbar-width: thin;">
+                        <!-- Rendered dynamically by JS -->
                     </div>
                 </div>
 

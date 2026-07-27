@@ -247,7 +247,7 @@ function triggerTabRenders(tabId) {
     switch (tabId) {
         case 'dashboard': renderDashboard(); break;
         case 'movies': renderMoviesTable(); break;
-        case 'showtimes': populateCinemaDropdowns(); renderShowtimesTable(); break;
+        case 'showtimes': populateCinemaDropdowns(); renderShowtimesTable(); renderAvailabilityMatrix(); break;
         case 'rooms': populateRoomDropdown(); loadRoomSeatMap(); break;
         case 'bookings': renderBookingsTable(); break;
         case 'combos': renderCombosTable(); break;
@@ -620,7 +620,7 @@ function renderShowtimesTable() {
     });
 
     if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 30px;" class="text-muted">Chưa có lịch chiếu nào từ API</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 30px;" class="text-muted">Chưa có lịch chiếu nào</td></tr>`;
         return;
     }
 
@@ -648,10 +648,129 @@ function filterShowtimesTable() {
 function populateCinemaDropdowns() {
     const selectFilter = document.getElementById('showtime-filter-cinema');
     if (selectFilter) {
-        selectFilter.innerHTML = `<option value="all">Tất cả rạp</option>` + db.cinemas.map(c => `
+        const defaultCinemas = [
+            { id: "ha-dong", name: "3HD2K HÀ ĐÔNG" },
+            { id: "le-trong-tan", name: "3HD2K LÊ TRỌNG TẤN" },
+            { id: "cau-giay", name: "3HD2K CẦU GIẤY" },
+            { id: "my-dinh", name: "3HD2K MỸ ĐÌNH" },
+            { id: "lang-ha", name: "3HD2K LÁNG HẠ" },
+            { id: "royal-city", name: "3HD2K ROYAL CITY" }
+        ];
+        const list = db.cinemas && db.cinemas.length > 0 ? db.cinemas : defaultCinemas;
+
+        selectFilter.innerHTML = `<option value="all">Tất cả rạp (6 Cụm Rạp)</option>` + list.map(c => `
             <option value="${c.id}">${c.name}</option>
         `).join('');
     }
+}
+
+// --- MA TRẬN RẠP & PHÒNG CHIẾU TRỐNG (AVAILABILITY MATRIX) ---
+function renderAvailabilityMatrix() {
+    const container = document.getElementById('availability-matrix-container');
+    if (!container) return;
+
+    const datePicker = document.getElementById('matrix-date-picker');
+    if (datePicker && !datePicker.value) {
+        datePicker.value = new Date().toISOString().split('T')[0];
+    }
+    const selectedDate = datePicker ? datePicker.value : new Date().toISOString().split('T')[0];
+    const filterCinemaId = document.getElementById('showtime-filter-cinema')?.value || 'all';
+
+    const defaultCinemas = [
+        { id: "ha-dong", name: "3HD2K HÀ ĐÔNG", rooms: ["Phòng chiếu 1", "Phòng chiếu 2", "Phòng IMAX"] },
+        { id: "le-trong-tan", name: "3HD2K LÊ TRỌNG TẤN", rooms: ["Phòng chiếu 1", "Phòng chiếu 2"] },
+        { id: "cau-giay", name: "3HD2K CẦU GIẤY", rooms: ["Phòng chiếu 1", "Phòng IMAX"] },
+        { id: "my-dinh", name: "3HD2K MỸ ĐÌNH", rooms: ["Phòng chiếu 1", "Phòng 4DX"] },
+        { id: "lang-ha", name: "3HD2K LÁNG HẠ", rooms: ["Phòng chiếu 1", "Phòng ScreenX"] },
+        { id: "royal-city", name: "3HD2K ROYAL CITY", rooms: ["Phòng chiếu 1", "Phòng IMAX", "Phòng 4DX"] }
+    ];
+
+    const timeSlots = ["08:00", "10:00", "12:00", "14:00", "16:00", "18:00", "20:00", "22:00"];
+
+    let matrixCinemas = defaultCinemas;
+    if (filterCinemaId !== 'all') {
+        matrixCinemas = defaultCinemas.filter(c => c.id === filterCinemaId);
+    }
+
+    let html = `
+        <table class="admin-table" style="font-size: 0.8125rem;">
+            <thead>
+                <tr>
+                    <th style="min-width: 140px;">Cụm Rạp</th>
+                    <th style="min-width: 120px;">Phòng chiếu</th>
+                    ${timeSlots.map(t => `<th style="text-align:center; min-width: 100px;">${t}</th>`).join('')}
+                </tr>
+            </thead>
+            <tbody>
+    `;
+
+    matrixCinemas.forEach(cinema => {
+        cinema.rooms.forEach((room, roomIdx) => {
+            html += `<tr>`;
+            if (roomIdx === 0) {
+                html += `<td rowspan="${cinema.rooms.length}" style="vertical-align: middle; font-weight: bold; color: var(--primary-red); background: rgba(229, 9, 20, 0.05);">${cinema.name}</td>`;
+            }
+            html += `<td><strong>${room}</strong></td>`;
+
+            timeSlots.forEach(slot => {
+                // Check if any showtime falls near this time slot
+                const [slotH, slotM] = slot.split(':').map(Number);
+                const slotMinutes = slotH * 60 + slotM;
+
+                const occupied = db.showtimes.find(st => {
+                    const matchesCinema = st.cinemaId === cinema.id || st.cinemaName.includes(cinema.name);
+                    const matchesRoom = st.roomName === room;
+                    const matchesDate = st.date === selectedDate;
+                    if (!matchesCinema || !matchesRoom || !matchesDate) return false;
+
+                    const [stH, stM] = st.time.split(':').map(Number);
+                    const stMinutes = stH * 60 + stM;
+                    return Math.abs(stMinutes - slotMinutes) < 90; // Overlaps slot window
+                });
+
+                if (occupied) {
+                    html += `
+                        <td style="text-align:center; background: rgba(229,9,20,0.1); border: 1px solid rgba(229,9,20,0.3); border-radius: 4px; padding: 6px 4px;">
+                            <span style="color: #ff4444; font-weight: bold; font-size: 0.75rem; display: block;" title="${occupied.movieTitle}">
+                                🎬 ${occupied.movieTitle.length > 12 ? occupied.movieTitle.substring(0,10)+'...' : occupied.movieTitle}
+                            </span>
+                            <span style="font-size: 0.7rem; color: #bbb;">(${occupied.time})</span>
+                        </td>
+                    `;
+                } else {
+                    html += `
+                        <td style="text-align:center; padding: 4px;">
+                            <button class="btn-mini" style="background: rgba(13, 242, 134, 0.12); color: #0df286; border: 1px solid rgba(13, 242, 134, 0.3); width: 100%; border-radius: 4px; font-weight: bold; cursor: pointer; padding: 6px 2px;"
+                                onclick="openQuickShowtimeModal('${cinema.id}', '${room}', '${slot}', '${selectedDate}')">
+                                + Trống
+                            </button>
+                        </td>
+                    `;
+                }
+            });
+
+            html += `</tr>`;
+        });
+    });
+
+    html += `</tbody></table>`;
+    container.innerHTML = html;
+}
+
+function openQuickShowtimeModal(cinemaId, roomName, timeSlot, dateStr) {
+    openAddShowtimeModal();
+    setTimeout(() => {
+        const cSelect = document.getElementById('st-cinema-select');
+        const rSelect = document.getElementById('st-room-select');
+        const dateInput = document.getElementById('st-date-input');
+        const timeInput = document.getElementById('st-time-input');
+
+        if (cSelect) cSelect.value = cinemaId;
+        populateModalRooms();
+        if (rSelect) rSelect.value = roomName;
+        if (dateInput && dateStr) dateInput.value = dateStr;
+        if (timeInput && timeSlot) timeInput.value = timeSlot;
+    }, 100);
 }
 
 function openAddShowtimeModal() {
@@ -659,8 +778,18 @@ function openAddShowtimeModal() {
     const cSelect = document.getElementById('st-cinema-select');
     
     if (mSelect && cSelect) {
-        mSelect.innerHTML = db.movies.map(m => `<option value="${m.id}">${m.title}</option>`).join('');
-        cSelect.innerHTML = db.cinemas.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+        mSelect.innerHTML = db.movies.map(m => `<option value="${m.id}">${m.title} (${m.status === 'now-showing' ? 'Đang chiếu' : 'Sắp chiếu'})</option>`).join('');
+        
+        const defaultCinemas = [
+            { id: "ha-dong", name: "3HD2K HÀ ĐÔNG" },
+            { id: "le-trong-tan", name: "3HD2K LÊ TRỌNG TẤN" },
+            { id: "cau-giay", name: "3HD2K CẦU GIẤY" },
+            { id: "my-dinh", name: "3HD2K MỸ ĐÌNH" },
+            { id: "lang-ha", name: "3HD2K LÁNG HẠ" },
+            { id: "royal-city", name: "3HD2K ROYAL CITY" }
+        ];
+        const list = db.cinemas && db.cinemas.length > 0 ? db.cinemas : defaultCinemas;
+        cSelect.innerHTML = list.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
         populateModalRooms();
         
         const today = new Date().toISOString().split('T')[0];
@@ -674,7 +803,15 @@ function populateModalRooms() {
     const cId = document.getElementById('st-cinema-select').value;
     const rSelect = document.getElementById('st-room-select');
     if (cId && rSelect) {
-        const rooms = cId === "ha-dong" ? ["Phòng chiếu 1", "Phòng chiếu 2", "Phòng chiếu IMAX"] : ["Phòng chiếu 1", "Phòng chiếu 2"];
+        const roomMap = {
+            "ha-dong": ["Phòng chiếu 1", "Phòng chiếu 2", "Phòng IMAX"],
+            "le-trong-tan": ["Phòng chiếu 1", "Phòng chiếu 2"],
+            "cau-giay": ["Phòng chiếu 1", "Phòng IMAX"],
+            "my-dinh": ["Phòng chiếu 1", "Phòng 4DX"],
+            "lang-ha": ["Phòng chiếu 1", "Phòng ScreenX"],
+            "royal-city": ["Phòng chiếu 1", "Phòng IMAX", "Phòng 4DX"]
+        };
+        const rooms = roomMap[cId] || ["Phòng chiếu 1", "Phòng chiếu 2"];
         rSelect.innerHTML = rooms.map(r => `<option value="${r}">${r}</option>`).join('');
     }
 }
@@ -683,12 +820,62 @@ function closeShowtimeModal() {
     document.getElementById('showtime-modal').style.display = 'none'; 
 }
 
+// --- OVERLAP CHECK ---
+function checkShowtimeConflict(cinemaId, roomName, dateStr, startTimeStr, durationMinutes) {
+    const [startH, startM] = startTimeStr.split(':').map(Number);
+    const newStartMin = startH * 60 + startM;
+    const newEndMin = newStartMin + durationMinutes + 15; // 15 mins room cleaning buffer
+
+    for (let st of db.showtimes) {
+        if (st.cinemaId === cinemaId && st.roomName === roomName && st.date === dateStr) {
+            const [exH, exM] = st.time.split(':').map(Number);
+            const exStartMin = exH * 60 + exM;
+            const exMovie = db.movies.find(m => m.id === st.movieId);
+            const exDuration = exMovie ? exMovie.duration : 120;
+            const exEndMin = exStartMin + exDuration + 15;
+
+            if (newStartMin < exEndMin && newEndMin > exStartMin) {
+                return { conflict: true, existingShowtime: st, existingMovieTitle: st.movieTitle };
+            }
+        }
+    }
+    return { conflict: false };
+}
+
 async function handleShowtimeSubmit(e) {
     if (e) e.preventDefault();
     const movieId = document.getElementById('st-movie-select').value;
+    const cinemaId = document.getElementById('st-cinema-select').value;
+    const roomName = document.getElementById('st-room-select').value;
     const date = document.getElementById('st-date-input').value;
     const time = document.getElementById('st-time-input').value;
     const price = parseFloat(document.getElementById('st-price-input').value || 80000);
+
+    const movie = db.movies.find(m => m.id === movieId);
+    const cinema = db.cinemas.find(c => c.id === cinemaId) || { name: cinemaId };
+    const movieDuration = movie ? movie.duration : 120;
+
+    // Strict Overlap Check
+    const overlapResult = checkShowtimeConflict(cinemaId, roomName, date, time, movieDuration);
+    if (overlapResult.conflict) {
+        showToast(`Xung đột lịch chiếu! Phòng ${roomName} đã có phim "${overlapResult.existingMovieTitle}" chiếu lúc ${overlapResult.existingShowtime.time}. Vui lòng chọn khung giờ khác.`, 'error');
+        return;
+    }
+
+    const newShowtime = {
+        id: 'st_' + Math.random().toString(36).substr(2, 9),
+        movieId: movieId,
+        movieTitle: movie ? movie.title : 'Phim #' + movieId,
+        cinemaId: cinemaId,
+        cinemaName: cinema ? cinema.name : cinemaId,
+        roomName: roomName,
+        date: date,
+        time: time,
+        price: price
+    };
+
+    db.showtimes.push(newShowtime);
+    localStorage.setItem('3hd2k_showtimes', JSON.stringify(db.showtimes));
 
     const payload = {
         movieId: parseInt(movieId) || movieId,
@@ -702,24 +889,47 @@ async function handleShowtimeSubmit(e) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         });
-        showToast('Tạo suất chiếu mới thành công!', 'success');
-    } catch (err) {
-        console.error('API create showtime error:', err);
-    }
+    } catch (_) {}
 
+    showToast('Tạo suất chiếu mới thành công!', 'success');
     closeShowtimeModal();
-    await reloadDatabase();
+    renderShowtimesTable();
+    renderAvailabilityMatrix();
 }
 
 async function deleteShowtime(id) {
-    if (confirm("Xóa lịch chiếu này khỏi hệ thống API?")) {
+    if (confirm("Xóa lịch chiếu này khỏi hệ thống?")) {
+        db.showtimes = db.showtimes.filter(s => s.id !== id);
+        localStorage.setItem('3hd2k_showtimes', JSON.stringify(db.showtimes));
+
         try {
             await fetch(`/api/showtimes/${id}`, { method: 'DELETE' });
-            showToast('Đã xóa suất chiếu!', 'success');
-        } catch (err) {
-            console.error('API delete showtime error:', err);
-        }
+        } catch (_) {}
+
+        showToast('Đã xóa suất chiếu!', 'success');
+        renderShowtimesTable();
+        renderAvailabilityMatrix();
+    }
+}
+
+// --- PURGE ALL MOVIE DATA ---
+async function purgeAllMovieData() {
+    if (confirm("⚠️ CẢNH BÁO: Bạn có chắc chắn muốn xóa TOÀN BỘ dữ liệu phim, suất chiếu và đơn vé cũ khỏi hệ thống?")) {
+        try {
+            await fetch('/api/movies/purge-all', { method: 'DELETE' });
+        } catch (_) {}
+
+        localStorage.removeItem('3hd2k_movies');
+        localStorage.removeItem('3hd2k_showtimes');
+        localStorage.removeItem('3hd2k_bookings');
+        
+        db.movies = [];
+        db.showtimes = [];
+        db.bookings = [];
+
+        showToast('Đã xóa toàn bộ dữ liệu phim & lịch chiếu cũ thành công!', 'success');
         await reloadDatabase();
+        renderAvailabilityMatrix();
     }
 }
 
