@@ -90,7 +90,7 @@ export function renderNavbar() {
             </div>
             <a href="${srcPrefix}/auth/user-login/login.html" class="user-btn" style="text-decoration: none; color: white;">
                 <div class="avatar-wrapper" style="background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.2);">
-                    <img src="${srcPrefix}/shared/images/avatar.jpg" alt="Guest Avatar" class="user-avatar" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                    <img src="https://ui-avatars.com/api/?name=Guest&background=1a1a1a&color=e50914" alt="Guest Avatar" class="user-avatar" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
                 </div>
             </a>
             <!-- Hamburger Menu -->
@@ -1512,7 +1512,7 @@ export function renderNavbar() {
                 if (oldUserBtn) oldUserBtn.remove();
 
                 const userName = (session.fullname || session.name) || 'Khách';
-                const defaultAvatar = `${srcPrefix}/shared/images/avatar.jpg`;
+                const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=1a1a1a&color=e50914`;
                 const userAvatar = session.avatar || defaultAvatar;
                 
                 const isVip = localStorage.getItem('is_vip') === 'true' || session.role === 'vip';
