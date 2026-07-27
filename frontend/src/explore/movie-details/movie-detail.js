@@ -231,18 +231,26 @@ function renderCinemaShowtimes() {
 
     const selectedCinema = document.getElementById('filter-cinema-brand')?.value || 'all';
     const selectedFormat = document.getElementById('filter-showtime-format')?.value || 'all';
+    const selectedCity = document.getElementById('filter-city')?.value || 'all';
 
     const movieFormats = currentMovie.formats || ['2D'];
 
     let filteredCinemas = cinemas;
+    if (selectedCity !== 'all') {
+        const cityMap = { 'hanoi': 'Hà Nội', 'hcm': 'Hồ Chí Minh', 'danang': 'Đà Nẵng' };
+        const cityStr = cityMap[selectedCity];
+        if (cityStr) {
+            filteredCinemas = filteredCinemas.filter(c => c.address && c.address.includes(cityStr));
+        }
+    }
     if (selectedCinema !== 'all') {
-        filteredCinemas = cinemas.filter(c => c.id === selectedCinema);
+        filteredCinemas = filteredCinemas.filter(c => c.id === selectedCinema);
     }
 
     // If we have API data available globally, use it, else fallback to empty
     const currentMovieShowtimes = window.currentMovieShowtimes || [];
 
-    listEl.innerHTML = filteredCinemas.map(cinema => {
+    const cinemaCards = filteredCinemas.map(cinema => {
         const formatsToShow = selectedFormat === 'all'
             ? movieFormats
             : movieFormats.filter(f => f === selectedFormat);
@@ -293,15 +301,17 @@ function renderCinemaShowtimes() {
             }).join('');
 
             const formatLabel = fmt === '2D Lồng tiếng' ? fmt :
-                `${fmt} ${selectedDateIndex === 0 ? 'Phụ đề' : 'Lồng tiếng'}`;
+                `${fmt} Phụ đề`;
 
             return `
                 <div class="format-showtime-row">
-                    <span class="format-label-badge">${fmt} Phụ đề</span>
+                    <span class="format-label-badge">${formatLabel}</span>
                     <div class="showtime-buttons">${btns}</div>
                 </div>
             `;
         }).join('');
+
+        if (!formatRows.trim()) return '';
 
         const featureTags = cinema.features.map(f =>
             `<span class="cinema-feature-tag">${f}</span>`
@@ -321,13 +331,15 @@ function renderCinemaShowtimes() {
         `;
     }).join('');
 
-    if (listEl.innerHTML.trim() === '') {
+    if (cinemaCards.trim() === '') {
         listEl.innerHTML = `
             <div style="padding:40px;text-align:center;color:var(--text-muted);">
                 <i class="fas fa-calendar-times" style="font-size:2.5rem;opacity:0.4;margin-bottom:12px;"></i>
                 <p>Không tìm thấy suất chiếu phù hợp.</p>
             </div>
         `;
+    } else {
+        listEl.innerHTML = cinemaCards;
     }
 }
 

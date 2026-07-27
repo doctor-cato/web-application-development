@@ -304,8 +304,6 @@ function startCountdown(seconds) {
   }, 1000);
 }
 
-}
-
 function handleContinue() {
   const seats = getSelectedSeats();
   if (seats.length === 0) {

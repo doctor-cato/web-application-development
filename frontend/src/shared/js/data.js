@@ -255,16 +255,55 @@ async function fetchCinemas() {
 window.fetchCinemasPromise = fetchCinemas().catch(() => getFallbackCinemas());
 
 // ── SHOWTIMES API ─────────────────────────────────
+function getFallbackShowtimes(movieId) {
+    const showtimes = [];
+    const now = new Date();
+    const currentCinemas = (typeof cinemas !== 'undefined' && cinemas.length > 0) ? cinemas : getFallbackCinemas();
+    
+    for (let i = 0; i < 7; i++) {
+        const targetDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + i);
+        currentCinemas.forEach(cinema => {
+            // Include some late hours and a guaranteed future hour for today
+            const hours = [10, 14, 18, 20, 22];
+            if (i === 0) {
+                hours.push((now.getHours() + 1) % 24); // Guaranteed future time for today
+            }
+            
+            // Remove duplicates
+            const uniqueHours = [...new Set(hours)].sort((a,b) => a-b);
+            
+            uniqueHours.forEach(hour => {
+                const st = new Date(targetDate);
+                st.setHours(hour, (Math.floor(Math.random() * 3) * 15), 0, 0);
+                
+                // If it's the guaranteed future time, make sure it's strictly in the future
+                if (i === 0 && hour === (now.getHours() + 1) % 24) {
+                    st.setHours(now.getHours() + 1, 30, 0, 0);
+                }
+
+                showtimes.push({
+                    id: Math.random().toString(36).substr(2,9),
+                    movieId: movieId,
+                    room: { cinemaId: cinema.id },
+                    startTime: st.toISOString()
+                });
+            });
+        });
+    }
+    return showtimes;
+}
+
 async function fetchShowtimesByMovie(movieId) {
     try {
         const response = await fetch(`/api/showtimes/movie/${movieId}`);
         if (response.ok) {
-            return await response.json();
+            const data = await response.json();
+            if (Array.isArray(data) && data.length > 0) return data;
         }
     } catch (e) {
         console.error("Failed to fetch showtimes:", e);
     }
-    return [];
+    return getFallbackShowtimes(movieId);
 }
 window.fetchShowtimesByMovie = fetchShowtimesByMovie;
 
