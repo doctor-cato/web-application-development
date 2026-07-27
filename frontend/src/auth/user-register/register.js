@@ -97,8 +97,14 @@ registerForm.addEventListener('submit', async function (e) {
     if (result.ok) {
         window.location.href = '/explore/home-page/index.html';
     } else {
-        emailInput.classList.add('error');
-        emailError.textContent = result.error;
-        emailError.classList.add('show');
+        if (result.error && (result.error.toLowerCase().includes('điện thoại') || result.error.toLowerCase().includes('phone'))) {
+            phoneInput.classList.add('error');
+            phoneError.textContent = result.error;
+            phoneError.classList.add('show');
+        } else {
+            emailInput.classList.add('error');
+            emailError.textContent = result.error;
+            emailError.classList.add('show');
+        }
     }
 });
