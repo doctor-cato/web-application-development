@@ -392,6 +392,71 @@ async function fetchMovies() {
 window.fetchMoviesPromise = fetchMovies().catch(() => getFallbackMovies());
 
 // ── CINEMAS ──────────────────────────────────────────────────
+function getFallbackCinemas() {
+    return [
+        {
+            id: 'c1',
+            name: '3HD2K HÀ ĐÔNG',
+            address: 'Tầng 5, AEON Mall Hà Đông, Dương Nội, Quận Hà Đông, Hà Nội',
+            distance: '0.5 KM',
+            screens: 9,
+            features: ['IMAX', '4DX', 'Dolby Atmos'],
+            lat: 20.9780,
+            lng: 105.7580
+        },
+        {
+            id: 'c2',
+            name: '3HD2K LÊ TRỌNG TẤN',
+            address: 'Tầng 4, Trung tâm TM Hồ Gươm Plaza, 102 Trần Phú, Quận Hà Đông, Hà Nội',
+            distance: '2.1 KM',
+            screens: 7,
+            features: ['Dolby Atmos', 'ScreenX'],
+            lat: 20.9850,
+            lng: 105.7850
+        },
+        {
+            id: 'c3',
+            name: '3HD2K CẦU GIẤY',
+            address: 'Tầng 3, 241 Xuân Thủy, Dịch Vọng Hậu, Cầu Giấy, Hà Nội',
+            distance: '2.0 KM',
+            screens: 8,
+            features: ['IMAX', 'Dolby Atmos'],
+            lat: 21.0360,
+            lng: 105.7820
+        },
+        {
+            id: 'c4',
+            name: '3HD2K MỸ ĐÌNH',
+            address: 'Tầng 2, Keangnam Landmark 72, Phạm Hùng, Nam Từ Liêm, Hà Nội',
+            distance: '5.3 KM',
+            screens: 6,
+            features: ['4DX', 'Dolby Atmos'],
+            lat: 21.0168,
+            lng: 105.7840
+        },
+        {
+            id: 'c5',
+            name: '3HD2K LÁNG HẠ',
+            address: '88 Láng Hạ, Đống Đa, Hà Nội',
+            distance: '1.7 KM',
+            screens: 10,
+            features: ['IMAX', 'ScreenX'],
+            lat: 21.0150,
+            lng: 105.8120
+        },
+        {
+            id: 'c6',
+            name: '3HD2K ROYAL CITY',
+            address: 'Tầng B2, Vincom Mega Mall Royal City, 72A Nguyễn Trãi, Thanh Xuân, Hà Nội',
+            distance: '7.8 KM',
+            screens: 12,
+            features: ['IMAX', '4DX', 'Dolby Atmos', 'ScreenX'],
+            lat: 21.0030,
+            lng: 105.8150
+        }
+    ];
+}
+
 let cinemas = [];
 
 async function fetchCinemas() {
@@ -399,21 +464,32 @@ async function fetchCinemas() {
         const response = await fetch(`/api/cinemas`);
         const contentType = response.headers.get('content-type') || '';
         if (response.ok && contentType.includes('application/json')) {
-            cinemas = await response.json();
-            cinemas.forEach(c => {
-                c.lat = c.latitude || c.lat || null;
-                c.lng = c.longitude || c.lng || null;
-                c.screens = c.screens || (c.rooms ? c.rooms.length : 0);
-                c.features = c.features || [];
-            });
-            window.cinemas = cinemas;
+            const fetched = await response.json();
+            if (Array.isArray(fetched) && fetched.length > 0) {
+                cinemas = fetched;
+                cinemas.forEach(c => {
+                    c.lat = c.latitude || c.lat || null;
+                    c.lng = c.longitude || c.lng || null;
+                    c.screens = c.screens || (c.rooms ? c.rooms.length : 0);
+                    c.features = c.features || [];
+                });
+            } else {
+                cinemas = getFallbackCinemas();
+            }
+        } else {
+            cinemas = getFallbackCinemas();
         }
     } catch (e) {
-        console.error("Failed to fetch cinemas:", e);
+        console.warn("Failed to fetch cinemas, using default fallbacks:", e);
+        cinemas = getFallbackCinemas();
     }
+    if (!Array.isArray(cinemas) || cinemas.length === 0) {
+        cinemas = getFallbackCinemas();
+    }
+    window.cinemas = cinemas;
     return cinemas;
 }
-window.fetchCinemasPromise = fetchCinemas().catch(() => []);
+window.fetchCinemasPromise = fetchCinemas().catch(() => getFallbackCinemas());
 
 // ── SHOWTIMES API ─────────────────────────────────
 async function fetchShowtimesByMovie(movieId) {

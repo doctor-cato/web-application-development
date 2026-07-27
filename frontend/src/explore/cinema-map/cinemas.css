@@ -166,10 +166,12 @@
     color: var(--primary-red);
 }
 
+.btn-directions.active,
 .cinema-card.active .btn-directions {
-    background: rgba(229, 9, 20, 0.15);
-    border-color: rgba(229, 9, 20, 0.4);
-    color: var(--primary-red);
+    background: var(--primary-red) !important;
+    border-color: var(--primary-red) !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 14px rgba(229, 9, 20, 0.6) !important;
 }
 
 /* --- CINEMA DETAILS (Screens info) --- */
@@ -640,10 +642,68 @@
     font-size: 0.5rem !important;
 }
 
-/* ===== LOCATION BUTTON ===== */
+/* ===== HUD MAP CONTROLS & FLOATING BUTTONS ===== */
+.hud-map-controls {
+    position: absolute;
+    bottom: 60px;
+    left: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    z-index: 1000;
+}
+
+.btn-hud-control {
+    width: 36px;
+    height: 36px;
+    border-radius: 3px;
+    background: rgba(5, 7, 8, 0.92);
+    border: 1px solid rgba(229, 9, 20, 0.42);
+    color: rgba(255, 52, 56, 0.9);
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 18px rgba(229, 9, 20, 0.18);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-hud-control:hover {
+    background: rgba(229, 9, 20, 0.25);
+    color: #fff;
+    transform: scale(1.05);
+    box-shadow: 0 0 24px rgba(229, 9, 20, 0.4);
+}
+
+.hud-floating-support {
+    position: absolute;
+    bottom: 25px;
+    right: 25px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--primary-red, #e50914);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    cursor: pointer;
+    z-index: 1000;
+    box-shadow: 0 0 20px rgba(229, 9, 20, 0.6), 0 4px 12px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hud-floating-support:hover {
+    transform: scale(1.1);
+    background: #ff0f1a;
+    box-shadow: 0 0 28px rgba(229, 9, 20, 0.8), 0 6px 16px rgba(0, 0, 0, 0.5);
+}
+
 .btn-my-location {
     position: absolute;
-    bottom: 155px; /* Above the zoom control */
+    bottom: 155px;
     left: 18px;
     top: auto;
     right: auto;
@@ -655,7 +715,7 @@
     color: rgba(255, 52, 56, 0.9);
     font-size: 1rem;
     cursor: pointer;
-    z-index: 1000; /* Must be above leaflet map */
+    z-index: 1000;
     transition: all 0.3s ease;
     box-shadow: 0 0 18px rgba(229, 9, 20, 0.18);
     display: flex;
