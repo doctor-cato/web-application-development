@@ -678,16 +678,22 @@ async function handleMovieSubmit(e) {
         desc: desc
     };
 
-    // Save to LocalStorage '3hd2k_movies' so home page & detail page immediately sync
-    let movieStore = JSON.parse(localStorage.getItem('3hd2k_movies') || '[]');
-    if (id) {
-        const idx = movieStore.findIndex(m => m.id === id);
-        if (idx >= 0) movieStore[idx] = movieItem;
-        else movieStore.push(movieItem);
-    } else {
-        movieStore.unshift(movieItem);
-    }
-    localStorage.setItem('3hd2k_movies', JSON.stringify(movieStore));
+    // Save to LocalStorage '3hd2k_movies' & 'cinema_movies' so home page & detail page immediately sync
+    let movieStore1 = JSON.parse(localStorage.getItem('3hd2k_movies') || '[]');
+    let movieStore2 = JSON.parse(localStorage.getItem('cinema_movies') || '[]');
+    
+    [movieStore1, movieStore2].forEach(store => {
+        if (id) {
+            const idx = store.findIndex(m => m.id === id);
+            if (idx >= 0) store[idx] = movieItem;
+            else store.push(movieItem);
+        } else {
+            store.unshift(movieItem);
+        }
+    });
+
+    localStorage.setItem('3hd2k_movies', JSON.stringify(movieStore1));
+    localStorage.setItem('cinema_movies', JSON.stringify(movieStore2));
 
     const apiData = {
         title: title,
@@ -1060,6 +1066,7 @@ async function purgeAllMovieData() {
         } catch (_) {}
 
         localStorage.removeItem('3hd2k_movies');
+        localStorage.removeItem('cinema_movies');
         localStorage.removeItem('3hd2k_showtimes');
         localStorage.removeItem('3hd2k_bookings');
         localStorage.removeItem('3hd2k_last_booking');

@@ -53,16 +53,6 @@ function mapMovieObj(m) {
     const bgImg = normalizeImagePath(rawBg);
     const formattedDuration = formatMovieDuration(m.duration);
 
-    return {
-        id: m.id || ('mv_' + Math.random().toString(36).substr(2, 9)),
-        title: m.title || 'Phim Chưa Có Tiêu Đề',
-        meta: m.meta || `${m.releaseDate ? new Date(m.releaseDate).getFullYear() : '2026'} • ${m.genre || 'Hành Động'} • ${formattedDuration}`,
-        desc: m.description || m.desc || "Nội dung phim đang được cập nhật...",
-        synopsis: m.description || m.synopsis || m.desc || "Nội dung phim đang được cập nhật...",
-        year: m.releaseDate ? new Date(m.releaseDate).getFullYear() : (m.year || '2026'),
-        duration: formattedDuration,
-        age: m.ageRating || m.age || 'P',
-        genre: m.genre || (m.tags ? m.tags.join(', ') : 'Chưa phân loại'),
     let movieStatus = m.status;
     if (movieStatus === 'NOW_SHOWING') movieStatus = 'now-showing';
     if (movieStatus === 'UPCOMING') movieStatus = 'coming-soon';
@@ -129,22 +119,23 @@ async function fetchMovies() {
         allMoviesData = getFallbackMovies();
     }
 
-    // Merge movies added by Admin in LocalStorage
+    // Merge movies added by Admin in LocalStorage (3hd2k_movies & cinema_movies)
     try {
-        const localMovies = JSON.parse(localStorage.getItem('3hd2k_movies') || '[]');
-        if (Array.isArray(localMovies)) {
-            localMovies.forEach(lm => {
-                if (lm && lm.title) {
-                    const mapped = mapMovieObj(lm);
-                    const existingIdx = allMoviesData.findIndex(m => m.id === mapped.id || m.title.toLowerCase() === mapped.title.toLowerCase());
-                    if (existingIdx >= 0) {
-                        allMoviesData[existingIdx] = mapped;
-                    } else {
-                        allMoviesData.unshift(mapped);
-                    }
+        const local1 = JSON.parse(localStorage.getItem('3hd2k_movies') || '[]');
+        const local2 = JSON.parse(localStorage.getItem('cinema_movies') || '[]');
+        const combined = [...(Array.isArray(local1) ? local1 : []), ...(Array.isArray(local2) ? local2 : [])];
+        
+        combined.forEach(lm => {
+            if (lm && lm.title) {
+                const mapped = mapMovieObj(lm);
+                const existingIdx = allMoviesData.findIndex(m => m.id === mapped.id || m.title.toLowerCase().trim() === mapped.title.toLowerCase().trim());
+                if (existingIdx >= 0) {
+                    allMoviesData[existingIdx] = mapped;
+                } else {
+                    allMoviesData.unshift(mapped);
                 }
-            });
-        }
+            }
+        });
     } catch (_) {}
 
     nowShowingMovies = allMoviesData.filter(m => m.status === 'now-showing');
