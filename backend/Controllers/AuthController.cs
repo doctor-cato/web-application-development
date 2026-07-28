@@ -92,9 +92,40 @@ namespace appweb.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var user = await _userRepository.CheckLoginAsync(model.Email);
+            var email = model.Email?.Trim();
+            var user = await _userRepository.GetByEmailAsync(email ?? string.Empty);
 
-            if (user == null || !BCrypt.Net.BCrypt.Verify(model.Password, user.Password))
+            if (user == null)
+                return Unauthorized(new { message = "Tài khoản hoặc mật khẩu không chính xác." });
+
+            bool isPasswordValid = false;
+            if (!string.IsNullOrEmpty(user.Password))
+            {
+                try
+                {
+                    if (user.Password.StartsWith("$2a$") || user.Password.StartsWith("$2b$") || user.Password.StartsWith("$2y$"))
+                    {
+                        isPasswordValid = BCrypt.Net.BCrypt.Verify(model.Password, user.Password);
+                    }
+                    else
+                    {
+                        // Fallback cho mật khẩu dạng plaintext (seed data hoặc legacy users)
+                        isPasswordValid = (user.Password == model.Password);
+                        if (isPasswordValid)
+                        {
+                            // Tự động nâng cấp mật khẩu plaintext thành BCrypt hash
+                            user.Password = BCrypt.Net.BCrypt.HashPassword(model.Password);
+                            await _userRepository.UpdateAsync(user);
+                        }
+                    }
+                }
+                catch
+                {
+                    isPasswordValid = (user.Password == model.Password);
+                }
+            }
+
+            if (!isPasswordValid)
                 return Unauthorized(new { message = "Tài khoản hoặc mật khẩu không chính xác." });
 
             var claims = new List<Claim>

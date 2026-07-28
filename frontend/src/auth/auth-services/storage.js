@@ -53,7 +53,7 @@ export function setCurrentUser(userPayload) {
     localStorage.setItem(KEYS.AUTH_TOKEN,    token);
     // Giữ các key legacy mà navbar.js đang đọc
     localStorage.setItem(KEYS.IS_LOGGED_IN,  'true');
-    localStorage.setItem(KEYS.USER_NAME,     userPayload.name  || '');
+    localStorage.setItem(KEYS.USER_NAME,     userPayload.fullname || userPayload.fullName || userPayload.name  || '');
     localStorage.setItem(KEYS.USER_EMAIL,    userPayload.email || '');
     localStorage.setItem(KEYS.USER_AVATAR,   userPayload.avatar || '');
 }
