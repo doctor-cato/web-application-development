@@ -11,6 +11,7 @@ export async function login(email, password) {
             headers: getHeaders(),
             body: JSON.stringify({ email, password }),
             signal: controller.signal
+        });
         clearTimeout(timeoutId);
         const responseText = await response.text();
         let data;
