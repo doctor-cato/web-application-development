@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Perform local storage database upgrade
-        const users = getUsers();
+        const users = getUsers() || [];
         const userIndex = users.findIndex(u => u.email === session.email);
         
         if (userIndex !== -1) {
@@ -154,9 +154,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const cardUser = document.getElementById('card-user-label');
         const cardTier = document.getElementById('card-tier-label');
 
-        if (successUser) successUser.textContent = fullnameInput.value.trim() || session.name;
+        const finalUserName = fullnameInput.value.trim() || session.name || session.fullname || session.email || 'KHÁCH HÀNG';
+        if (successUser) successUser.textContent = finalUserName;
         if (successPlan) successPlan.textContent = 'VIP ' + selectedPlan.toUpperCase();
-        if (cardUser) cardUser.textContent = (fullnameInput.value.trim() || session.name).toUpperCase();
+        if (cardUser) cardUser.textContent = finalUserName.toUpperCase();
         if (cardTier) cardTier.textContent = 'VIP ' + selectedPlan.toUpperCase();
 
         // Display success modal
