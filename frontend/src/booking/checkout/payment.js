@@ -124,11 +124,11 @@ function init() {
      qrImage.style.margin = '0 auto';
 
      if (provider === 'bank') {
-         qrImage.src = '/shared/images/qr-bank.png';
+         qrImage.src = '/shared/images/qr-bank.jpg';
      } else if (provider === 'zalopay') {
-         qrImage.src = '/shared/images/qr-zalo.png';
+         qrImage.src = '/shared/images/qr-zalo.jpg';
      } else if (provider === 'momo') {
-         qrImage.src = '/shared/images/qr-momo.png';
+         qrImage.src = '/shared/images/qr-momo.jpg';
      } else {
          qrImage.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=3HD2K-Cinema-${provider.toUpperCase()}`;
      }
