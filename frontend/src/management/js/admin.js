@@ -607,7 +607,7 @@ function renderMoviesTable() {
 
         tbody.innerHTML += `
             <tr>
-                <td class="poster-td"><img src="${m.poster || 'https:
+                <td class="poster-td"><img src="${m.poster || 'https://images.unsplash.com/photo-1536440136628-849c177e76a1'}" alt="${safeTitle}"></td>
                 <td><strong>${m.title}</strong></td>
                 <td>${m.genre}</td>
                 <td>${m.duration} phút</td>
