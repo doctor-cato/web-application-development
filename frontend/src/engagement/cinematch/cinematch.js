@@ -19,6 +19,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
+    const myUserId = session.email || 'guest_' + Math.random().toString(36).substr(2, 6);
+    const myUserName = session.fullname || session.name || session.username || "Người dùng ẩn danh";
+
     const btnStart = document.getElementById('btn-start');
     const stepForm = document.getElementById('step-form');
     const stepRadar = document.getElementById('step-radar');
@@ -110,14 +113,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     connection.on("OnMovieSuggested", (senderId, movieId, movieTitle) => {
-        if (senderId !== session.userId) {
+        if (senderId !== myUserId) {
             appendChat(partnerInfo.name, `Mình rất thích xem phim <b>${movieTitle}</b>. Bạn thấy sao?`, 'partner');
             highlightMovie(movieId);
         }
     });
 
     connection.on("OnMessageReceived", (senderId, senderName, message) => {
-        if (senderId !== session.userId) {
+        if (senderId !== myUserId) {
             appendChat(senderName, message, 'partner');
         }
     });
@@ -148,7 +151,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         setInterval(spawnNode, 800);
 
         try {
-            await connection.invoke("FindMatch", session.userId, session.username || "User", prefGenre.value);
+            await connection.invoke("FindMatch", myUserId, myUserName, prefGenre.value);
         } catch (err) {
             console.error(err);
             statusText.innerText = "Lỗi kết nối!";
