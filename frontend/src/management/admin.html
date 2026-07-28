@@ -1226,6 +1226,9 @@
             <button class="menu-item" data-tab="movies">
                 <i class="fas fa-film"></i> <span>Quản lý phim</span>
             </button>
+            <button class="menu-item" data-tab="showtimes">
+                <i class="fas fa-calendar-alt"></i> <span>Quản lý lịch chiếu</span>
+            </button>
             <button class="menu-item" data-tab="rooms">
                 <i class="fas fa-chair"></i> <span>Quản lý phòng & ghế</span>
             </button>
@@ -1408,6 +1411,68 @@
 
                             </tbody>
                         </table>
+                    </div>
+                </div>
+            </section>
+
+            <section id="tab-content-showtimes" class="tab-section">
+                <div class="action-bar glass-panel">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="showtime-search" placeholder="Tìm kiếm theo tên phim..." oninput="filterShowtimesTable()">
+                    </div>
+                    <div class="filter-actions">
+                        <select id="showtime-filter-cinema" onchange="filterShowtimesTable(); renderAvailabilityMatrix();">
+                            <option value="all">Tất cả rạp (6 Cụm Rạp)</option>
+                        </select>
+                        <button class="btn btn-primary" onclick="openAddShowtimeModal()">
+                            <i class="fas fa-plus"></i> Thêm lịch chiếu
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-card glass-panel">
+                    <h3 style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-list" style="color: var(--primary-red);"></i> Danh sách lịch chiếu
+                    </h3>
+                    <div class="table-container">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Tên phim</th>
+                                    <th>Cụm rạp</th>
+                                    <th>Phòng chiếu</th>
+                                    <th>Ngày chiếu</th>
+                                    <th>Giờ chiếu</th>
+                                    <th>Giá vé</th>
+                                    <th>Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody id="showtimes-tbody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="table-card glass-panel" style="margin-top: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+                        <h3 style="display: flex; align-items: center; gap: 10px;">
+                            <i class="fas fa-th" style="color: var(--btn-cyan-color);"></i> Ma trận phòng chiếu trống
+                        </h3>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <label for="matrix-date-picker" style="font-size: 0.85rem; color: var(--text-muted);">Ngày:</label>
+                            <input type="date" id="matrix-date-picker" onchange="renderAvailabilityMatrix()" style="background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border); color: #fff; padding: 8px 12px; border-radius: 6px; font-family: inherit; outline: none;">
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 15px; margin-bottom: 15px; flex-wrap: wrap;">
+                        <span style="font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; gap: 5px;">
+                            <span style="display: inline-block; width: 14px; height: 14px; background: rgba(13, 242, 134, 0.12); border: 1px solid rgba(13, 242, 134, 0.3); border-radius: 3px;"></span> Trống (Click để thêm)
+                        </span>
+                        <span style="font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; gap: 5px;">
+                            <span style="display: inline-block; width: 14px; height: 14px; background: rgba(229, 9, 20, 0.1); border: 1px solid rgba(229, 9, 20, 0.3); border-radius: 3px;"></span> Đã xếp lịch
+                        </span>
+                    </div>
+                    <div class="table-container" id="availability-matrix-container" style="overflow-x: auto;">
                     </div>
                 </div>
             </section>
@@ -1908,6 +1973,56 @@
                     <button type="button" class="btn btn-primary" id="btn-admin-submit-stock" onclick="submitAdminRestock()" style="background-color: var(--btn-cyan-color); color: #000;">Xác nhận</button>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div id="showtime-modal" class="modal-admin">
+        <div class="modal-admin-content glass-panel">
+            <span class="close-admin-modal" onclick="closeShowtimeModal()">&times;</span>
+            <h3 style="color: var(--btn-cyan-color); margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-calendar-plus" style="color: var(--primary-red);"></i> Thêm lịch chiếu mới
+            </h3>
+            <form id="showtime-form" onsubmit="handleShowtimeSubmit(event)">
+                <div class="form-group">
+                    <label for="st-movie-select">Chọn phim:</label>
+                    <select id="st-movie-select" required style="width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border); color: #fff; padding: 10px; border-radius: 6px; outline: none; font-family: inherit;">
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="st-cinema-select">Cụm rạp:</label>
+                        <select id="st-cinema-select" required onchange="populateModalRooms()" style="width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border); color: #fff; padding: 10px; border-radius: 6px; outline: none; font-family: inherit;">
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="st-room-select">Phòng chiếu:</label>
+                        <select id="st-room-select" required style="width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border); color: #fff; padding: 10px; border-radius: 6px; outline: none; font-family: inherit;">
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="st-date-input">Ngày chiếu:</label>
+                        <input type="date" id="st-date-input" required style="width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border); color: #fff; padding: 10px; border-radius: 6px; outline: none; font-family: inherit;">
+                    </div>
+                    <div class="form-group">
+                        <label for="st-time-input">Giờ chiếu:</label>
+                        <input type="time" id="st-time-input" required style="width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border); color: #fff; padding: 10px; border-radius: 6px; outline: none; font-family: inherit;">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="st-price-input">Giá vé (VNĐ):</label>
+                    <input type="number" id="st-price-input" min="10000" max="500000" value="80000" required style="width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border); color: #fff; padding: 10px; border-radius: 6px; outline: none; font-family: inherit;">
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline" style="border-color: var(--glass-border);" onclick="closeShowtimeModal()">Hủy</button>
+                    <button type="submit" class="btn btn-primary">Tạo lịch chiếu</button>
+                </div>
+            </form>
         </div>
     </div>
 
