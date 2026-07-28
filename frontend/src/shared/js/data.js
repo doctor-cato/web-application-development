@@ -154,6 +154,11 @@ function getFallbackMovies() {
 }
 
 async function fetchMovies() {
+    let deletedList = [];
+    try {
+        deletedList = JSON.parse(localStorage.getItem('3hd2k_deleted_movies') || '[]').map(x => String(x).toLowerCase().trim());
+    } catch (_) {}
+
     try {
         const response = await fetch(`/api/movies`);
         const contentType = response.headers.get('content-type') || '';
@@ -176,6 +181,13 @@ async function fetchMovies() {
         allMoviesData = getFallbackMovies();
     }
 
+    // Filter out any movies that were marked as deleted
+    allMoviesData = allMoviesData.filter(m => {
+        const mId = String(m.id || '').toLowerCase().trim();
+        const mTitle = String(m.title || '').toLowerCase().trim();
+        return !deletedList.includes(mId) && !deletedList.includes(mTitle);
+    });
+
     // Merge movies added by Admin in LocalStorage (3hd2k_movies & cinema_movies)
     try {
         const local1 = JSON.parse(localStorage.getItem('3hd2k_movies') || '[]');
@@ -185,11 +197,16 @@ async function fetchMovies() {
         combined.forEach(lm => {
             if (lm && lm.title) {
                 const mapped = mapMovieObj(lm);
-                const existingIdx = allMoviesData.findIndex(m => m.id === mapped.id || m.title.toLowerCase().trim() === mapped.title.toLowerCase().trim());
-                if (existingIdx >= 0) {
-                    allMoviesData[existingIdx] = mapped;
-                } else {
-                    allMoviesData.unshift(mapped);
+                const mId = String(mapped.id || '').toLowerCase().trim();
+                const mTitle = String(mapped.title || '').toLowerCase().trim();
+
+                if (!deletedList.includes(mId) && !deletedList.includes(mTitle)) {
+                    const existingIdx = allMoviesData.findIndex(m => m.id === mapped.id || m.title.toLowerCase().trim() === mapped.title.toLowerCase().trim());
+                    if (existingIdx >= 0) {
+                        allMoviesData[existingIdx] = mapped;
+                    } else {
+                        allMoviesData.unshift(mapped);
+                    }
                 }
             }
         });
