@@ -1,21 +1,21 @@
 <!DOCTYPE html>
 <html lang="vi">
-<head><meta name="referrer" content="no-referrer">
+<head><meta name="referrer" content="strict-origin-when-cross-origin">
     <link rel="icon" type="image/jpeg" href="/assets/favicon.jpg?v=2">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3HD2K - Hệ thống Quản trị Rạp chiếu</title>
-    <!-- Fonts -->
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- FontAwesome Icons -->
+
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <!-- Admin Portal Stylesheet -->
+
     <link rel="stylesheet" href="./css/admin.css">
-    
+
     <style>
-        /* Base styles from Parent App (Cinematic Noir / Glassmorphism) */
+
         :root {
             --primary-red: #E50914;
             --neon-red-glow: 0 0 10px rgba(229, 9, 20, 0.4);
@@ -45,7 +45,6 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Custom Scrollbar for Admin Portal */
         * {
             scrollbar-width: thin;
             scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
@@ -174,7 +173,6 @@
         .badge-yellow { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); }
         .badge-red { background: rgba(229, 9, 20, 0.15); color: var(--primary-red); border: 1px solid rgba(229, 9, 20, 0.3); }
 
-        /* Admin layout styling */
         .admin-body {
             display: flex;
             min-height: 100vh;
@@ -341,7 +339,6 @@
             color: var(--primary-red);
         }
 
-        /* Main Wrapper */
         .admin-wrapper {
             margin-left: 260px;
             flex-grow: 1;
@@ -351,7 +348,6 @@
             background: radial-gradient(circle at 80% 20%, rgba(229, 9, 20, 0.03), transparent 50%);
         }
 
-        /* Header */
         .admin-header {
             height: 80px;
             border-bottom: 1px solid var(--glass-border);
@@ -409,7 +405,6 @@
             font-weight: 800;
         }
 
-        /* Content Area */
         .admin-content {
             padding: 40px;
             flex-grow: 1;
@@ -430,7 +425,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Stats Grid */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -479,7 +473,6 @@
             color: #fff;
         }
 
-        /* Tables and cards */
         .table-card {
             border-radius: 8px;
             overflow: hidden;
@@ -583,7 +576,6 @@
             font-size: 0.9rem;
         }
 
-        /* Dashboard specific details */
         .dashboard-details {
             display: grid;
             grid-template-columns: 2fr 1fr;
@@ -692,7 +684,6 @@
             margin-bottom: 4px;
         }
 
-        /* Movie poster td */
         .poster-td {
             width: 60px;
         }
@@ -745,7 +736,6 @@
             color: var(--primary-red);
         }
 
-        /* Room Seat Config Layout */
         .room-management-grid {
             display: grid;
             grid-template-columns: 320px 1fr;
@@ -883,7 +873,6 @@
             margin: 0;
         }
 
-        /* Form styling inside sidebar panels */
         .form-group {
             margin-bottom: 16px;
             display: flex;
@@ -918,7 +907,6 @@
             gap: 15px;
         }
 
-        /* Stats tab charts spacing */
         .stats-top-row {
             margin-bottom: 30px;
         }
@@ -999,7 +987,6 @@
             color: #0df286;
         }
 
-        /* Modals Admin Portal */
         .modal-admin {
             position: fixed;
             top: 0;
@@ -1054,7 +1041,6 @@
             margin-top: 25px;
         }
 
-        /* Media Queries */
         @media (max-width: 1024px) {
             .dashboard-details {
                 grid-template-columns: 1fr;
@@ -1067,7 +1053,6 @@
             }
         }
 
-        /* ponytail: responsive layout fixes for mobile & tablet */
         @media (max-width: 768px) {
             .admin-sidebar {
                 width: 100%;
@@ -1111,8 +1096,6 @@
             }
         }
 
-
-        /* ================= CUSTOM INVENTORY & SWITCH STYLES ================= */
         .switch {
             position: relative;
             display: inline-block;
@@ -1187,7 +1170,7 @@
         }
     </style>
     <script>
-        // Auth check for Admin
+
         (function() {
             const token = localStorage.getItem('auth_token') || localStorage.getItem('3hd2k_user');
             if (!token) {
@@ -1205,7 +1188,7 @@
                 } else {
                     user = JSON.parse(decodeURIComponent(atob(token)));
                 }
-                
+
                 const role = (user.role || user.Role || '').toUpperCase();
                 if (role !== 'ADMIN') {
                     window.location.href = '../explore/home-page/index.html';
@@ -1230,7 +1213,7 @@
     </script>
 </head>
 <body class="admin-body">
-    <!-- SIDEBAR -->
+
     <aside class="admin-sidebar">
         <div class="sidebar-header">
             <a href="../index.html" class="logo" title="Quay về trang chủ 3HD2K">3HD2K</a>
@@ -1276,9 +1259,8 @@
         </div>
     </aside>
 
-    <!-- MAIN WRAPPER -->
     <div class="admin-wrapper">
-        <!-- HEADER -->
+
         <header class="admin-header">
             <div class="header-left">
                 <h1 id="tab-title">Dashboard</h1>
@@ -1302,10 +1284,8 @@
             </div>
         </header>
 
-        <!-- CONTENT AREA -->
         <main class="admin-content">
-            
-            <!-- ================= DASHBOARD TAB ================= -->
+
             <section id="tab-content-dashboard" class="tab-section active">
                 <div class="stats-grid">
                     <div class="stat-card glass-panel">
@@ -1346,7 +1326,7 @@
                 </div>
 
                 <div class="dashboard-details">
-                    <!-- Left: Recent bookings -->
+
                     <div class="dashboard-table-card glass-panel">
                         <div class="card-header">
                             <h3><i class="fas fa-receipt"></i> Đơn đặt vé gần đây</h3>
@@ -1366,13 +1346,12 @@
                                     </tr>
                                 </thead>
                                 <tbody id="recent-bookings-tbody">
-                                    <!-- Rendered dynamically -->
+
                                 </tbody>
                             </table>
                         </div>
                     </div>
 
-                    <!-- Right: Quick actions & Top movie -->
                     <div class="dashboard-side-cards">
                         <div class="quick-actions-card glass-panel">
                             <h3><i class="fas fa-bolt"></i> Thao tác nhanh</h3>
@@ -1394,7 +1373,6 @@
                 </div>
             </section>
 
-            <!-- ================= QUẢN LÝ PHIM TAB ================= -->
             <section id="tab-content-movies" class="tab-section">
                 <div class="action-bar glass-panel">
                     <div class="search-box">
@@ -1427,27 +1405,24 @@
                                 </tr>
                             </thead>
                             <tbody id="movies-tbody">
-                                <!-- Rendered dynamically -->
+
                             </tbody>
                         </table>
                     </div>
                 </div>
             </section>
 
-
-
-            <!-- ================= QUẢN LÝ PHÒNG & GHẾ TAB ================= -->
             <section id="tab-content-rooms" class="tab-section">
                 <div class="room-management-grid">
-                    <!-- Config Panel -->
+
                     <div class="room-config-panel glass-panel">
                         <h3><i class="fas fa-cog"></i> Cấu hình phòng chiếu</h3>
                         <p class="text-muted" style="font-size: 0.8125rem; margin-bottom: 20px;">Chọn phòng và thay đổi cấu hình số lượng ghế, hàng ghế.</p>
-                        
+
                         <div class="form-group">
                             <label for="room-select">Chọn phòng chiếu:</label>
                             <select id="room-select" onchange="loadRoomSeatMap()">
-                                <!-- Dynamically populated rooms -->
+
                             </select>
                         </div>
 
@@ -1457,7 +1432,7 @@
                                 <option value="all">Tất cả suất chiếu trong ngày (Ghế đã đặt thực tế)</option>
                             </select>
                         </div>
-                        
+
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="room-rows">Hàng ghế (Row A-K):</label>
@@ -1472,12 +1447,12 @@
                         <button class="btn btn-primary" style="width: 100%; margin-top: 10px;" onclick="updateRoomGridSize()">
                             <i class="fas fa-save"></i> Cập nhật kích thước phòng
                         </button>
-                        
+
                         <hr style="border: none; border-top: 1px solid var(--glass-border); margin: 25px 0;">
 
                         <h3><i class="fas fa-paint-roller"></i> Phân loại ghế</h3>
                         <p class="text-muted" style="font-size: 0.8125rem; margin-bottom: 15px;">Chọn loại ghế dưới đây, sau đó nhấn trực tiếp lên sơ đồ ghế bên phải để thay đổi phân loại.</p>
-                        
+
                         <div class="seat-type-selector">
                             <div class="type-btn active" data-type="standard">
                                 <span class="seat-indicator standard"></span>
@@ -1514,17 +1489,16 @@
                         </button>
                     </div>
 
-                    <!-- Seat Map Panel -->
                     <div class="room-map-panel glass-panel">
                         <div class="map-header">
                             <h3 id="room-map-title">Sơ đồ ghế Phòng Chiếu</h3>
                             <div class="screen-label">MÀN HÌNH CHẤT LƯỢNG CAO</div>
                             <div class="screen-line"></div>
                         </div>
-                        
+
                         <div class="seating-grid-wrapper">
                             <div class="seating-grid" id="admin-seating-grid">
-                                <!-- Interactive Seating Grid -->
+
                             </div>
                         </div>
 
@@ -1539,7 +1513,6 @@
                 </div>
             </section>
 
-            <!-- ================= QUẢN LÝ ĐẶT VÉ TAB ================= -->
             <section id="tab-content-bookings" class="tab-section">
                 <div class="action-bar glass-panel">
                     <div class="search-box">
@@ -1572,14 +1545,13 @@
                                 </tr>
                             </thead>
                             <tbody id="bookings-tbody">
-                                <!-- Rendered dynamically -->
+
                             </tbody>
                         </table>
                     </div>
                 </div>
             </section>
 
-            <!-- ================= QUẢN LÝ COMBO TAB ================= -->
             <section id="tab-content-combos" class="tab-section">
                 <div class="action-bar glass-panel">
                     <div class="search-box">
@@ -1605,14 +1577,13 @@
                                 </tr>
                             </thead>
                             <tbody id="combos-tbody">
-                                <!-- Rendered dynamically -->
+
                             </tbody>
                         </table>
                     </div>
                 </div>
             </section>
 
-            <!-- ================= QUẢN LÝ NGƯỜI DÙNG TAB ================= -->
             <section id="tab-content-users" class="tab-section">
                 <div class="action-bar glass-panel">
                     <div class="search-box">
@@ -1642,16 +1613,15 @@
                                 </tr>
                             </thead>
                             <tbody id="users-tbody">
-                                <!-- Rendered dynamically -->
+
                             </tbody>
                         </table>
                     </div>
                 </div>
             </section>
 
-            <!-- ================= QUẢN LÝ KHO TAB ================= -->
             <section id="tab-content-inventory" class="tab-section">
-                <!-- Stats Overview -->
+
                 <div class="stats-grid">
                     <div class="stat-card glass-panel" style="border-left: 4px solid var(--primary-red); display: flex; align-items: center; gap: 20px; padding: 20px;">
                         <div class="stat-icon red" style="background: rgba(229, 9, 20, 0.1); color: var(--primary-red); width: 48px; height: 48px; border-radius: 8px; display: flex; justify-content: center; align-items: center; font-size: 1.4rem;"><i class="fas fa-exclamation-triangle"></i></div>
@@ -1683,7 +1653,6 @@
                     </div>
                 </div>
 
-                <!-- Toolbar -->
                 <div class="action-bar glass-panel" style="margin-top: 20px;">
                     <div class="search-box">
                         <i class="fas fa-search"></i>
@@ -1700,7 +1669,6 @@
                     </div>
                 </div>
 
-                <!-- Table -->
                 <div class="table-card glass-panel" style="margin-top: 20px;">
                     <div class="table-container">
                         <table class="admin-table">
@@ -1717,25 +1685,23 @@
                                 </tr>
                             </thead>
                             <tbody id="admin-inventory-table-body">
-                                <!-- Dynamic rows -->
+
                             </tbody>
                         </table>
                     </div>
                 </div>
 
-                <!-- POS logs -->
                 <div class="table-card glass-panel" style="margin-top: 20px; padding: 20px;">
                     <h3 style="margin-bottom: 15px; display: flex; align-items: center; gap: 8px;"><i class="fas fa-clipboard-list"></i> Nhật ký hoạt động từ quầy POS bán hàng</h3>
                     <div id="admin-pos-logs" style="max-height: 250px; overflow-y: auto; font-family: monospace; font-size: 0.875rem; display: flex; flex-direction: column; gap: 8px; padding: 10px; background: rgba(0, 0, 0, 0.3); border-radius: 6px; border: 1px solid var(--glass-border);">
-                        <!-- Dynamic logs -->
+
                     </div>
                 </div>
             </section>
 
-            <!-- ================= THỐNG KÊ TAB ================= -->
             <section id="tab-content-stats" class="tab-section">
                 <div class="stats-top-row">
-                    <!-- Revenue chart -->
+
                     <div class="chart-card glass-panel">
                         <div class="chart-header">
                             <h3><i class="fas fa-chart-bar"></i> Doanh thu theo tháng (2026)</h3>
@@ -1751,7 +1717,7 @@
                 </div>
 
                 <div class="stats-grid-row">
-                    <!-- Movie pie chart -->
+
                     <div class="chart-card glass-panel">
                         <div class="chart-header">
                             <h3><i class="fas fa-chart-pie"></i> Phân khúc doanh thu phim</h3>
@@ -1761,11 +1727,10 @@
                         </div>
                     </div>
 
-                    <!-- Best selling combo list -->
                     <div class="stat-list-card glass-panel">
                         <h3><i class="fas fa-award"></i> Combo bán chạy nhất</h3>
                         <div class="stat-list" id="top-selling-combos-list">
-                            <!-- Rendered dynamically -->
+
                         </div>
                     </div>
                 </div>
@@ -1774,16 +1739,13 @@
         </main>
     </div>
 
-    <!-- ================= MODALS ================= -->
-
-    <!-- 1. MOVIE MODAL (ADD / EDIT) -->
     <div id="movie-modal" class="modal-admin">
         <div class="modal-admin-content glass-panel">
             <span class="close-admin-modal" onclick="closeMovieModal()">&times;</span>
             <h3 id="movie-modal-title">Thêm phim mới</h3>
             <form id="movie-form" onsubmit="handleMovieSubmit(event)">
                 <input type="hidden" id="movie-id">
-                
+
                 <div class="form-group">
                     <label for="movie-title-input">Tên phim:</label>
                     <input type="text" id="movie-title-input" required placeholder="Nhập tên phim...">
@@ -1843,7 +1805,6 @@
         </div>
     </div>
 
-    <!-- 1B. YOUTUBE TRAILER PREVIEW MODAL -->
     <div id="trailer-modal" class="modal-admin">
         <div class="modal-admin-content glass-panel" style="max-width: 800px; padding: 25px; border-radius: 12px;">
             <span class="close-admin-modal" onclick="closeTrailerModal()" style="float: right; cursor: pointer; font-size: 1.6rem; color: #fff;">&times;</span>
@@ -1851,14 +1812,11 @@
                 <i class="fab fa-youtube" style="color: var(--primary-red); font-size: 1.5rem;"></i> Xem Trailer Phim
             </h3>
             <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; background: #000; border: 1px solid var(--glass-border);">
-                <iframe id="trailer-iframe" style="position: absolute; top:0; left:0; width:100%; height:100%; border:0;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <iframe referrerpolicy="strict-origin-when-cross-origin" id="trailer-iframe" style="position: absolute; top:0; left:0; width:100%; height:100%; border:0;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
         </div>
     </div>
 
-
-
-    <!-- 3. COMBO MODAL (ADD / EDIT) -->
     <div id="combo-modal" class="modal-admin">
         <div class="modal-admin-content glass-panel">
             <span class="close-admin-modal" onclick="closeComboModal()">&times;</span>
@@ -1900,7 +1858,6 @@
         </div>
     </div>
 
-    <!-- 4. USER HISTORY MODAL -->
     <div id="user-history-modal" class="modal-admin">
         <div class="modal-admin-content glass-panel" style="max-width: 800px;">
             <span class="close-admin-modal" onclick="closeUserHistoryModal()">&times;</span>
@@ -1920,18 +1877,17 @@
                         </tr>
                     </thead>
                     <tbody id="user-history-tbody">
-                        <!-- Rendered dynamically -->
+
                     </tbody>
                 </table>
             </div>
-            
+
             <div class="form-actions" style="margin-top: 20px;">
                 <button type="button" class="btn btn-primary" onclick="closeUserHistoryModal()">Đóng</button>
             </div>
         </div>
     </div>
 
-    <!-- 5. ADMIN RESTOCK MODAL -->
     <div id="admin-restock-modal" class="modal-admin">
         <div class="modal-admin-content glass-panel" style="max-width: 420px; padding: 25px; border-radius: 12px; border: 1px solid var(--glass-border);">
             <span class="close-admin-modal" onclick="closeAdminRestockModal()" style="float: right; cursor: pointer; font-size: 1.5rem;">&times;</span>
@@ -1940,7 +1896,7 @@
                 <div class="form-group" style="display: flex; flex-direction: column; gap: 5px;">
                     <label for="admin-stock-select-item" style="font-size: 0.85rem; color: var(--text-muted);">Mặt hàng:</label>
                     <select id="admin-stock-select-item" style="width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border); color: #fff; padding: 10px; border-radius: 6px; outline: none; font-family: inherit;">
-                        <!-- Options generated dynamically -->
+
                     </select>
                 </div>
                 <div class="form-group" style="display: flex; flex-direction: column; gap: 5px;">
@@ -1955,10 +1911,8 @@
         </div>
     </div>
 
-    <!-- ChartJS library CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <!-- Admin Portal Engine Script -->
     <script src="./js/admin.js"></script>
 </body>
 </html>

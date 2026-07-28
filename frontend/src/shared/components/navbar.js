@@ -1,13 +1,8 @@
-/**
- * navbar.js
- * ─────────────────────────────────────────────────────────────
- * Component render thanh Navbar dùng chung cho toàn dự án.
- */
 
 import { logout, getSession } from '../../auth/auth-services/authService.js';
 
 export function renderNavbar() {
-    // Luôn dùng đường dẫn tuyệt đối từ root (thư mục src/)
+
     const srcPrefix = '';
 
     const navbarHTML = `
@@ -18,45 +13,7 @@ export function renderNavbar() {
                 <a href="${srcPrefix}/index.html">Trang chủ</a>
                 <a href="${srcPrefix}/explore/movie-search/index.html?tab=now-showing">Phim Đang Chiếu</a>
                 <a href="${srcPrefix}/explore/cinema-map/index.html">Cụm Rạp</a>
-                <a href="${srcPrefix}/user/user-notifications/index.html?tab=promo">Khuyến Mãi</a>
-                <div class="quick-book-wrapper">
-                    <a href="#" class="quick-book-toggle" id="quick-book-toggle">Đặt vé <i class="fas fa-chevron-down" style="font-size:0.8rem; margin-left:4px;"></i></a>
-                    <div class="quick-book-dropdown" id="quick-book-dropdown">
-                        <div class="qb-title">ĐẶT VÉ NHANH</div>
-                        <div class="qb-step">
-                            <label><strong>1. Chọn Phim</strong></label>
-                            <div class="qb-custom-select" id="qb-movie-wrapper">
-                                <div class="qb-select-trigger" id="qb-movie-trigger">
-                                    <i class="fas fa-search" style="color:rgba(255,255,255,0.5); margin-right:8px; font-size:0.85rem;"></i>
-                                    <input type="text" id="qb-movie-search" placeholder="-- Chọn Phim --" autocomplete="off" />
-                                    <i class="fas fa-chevron-down" style="color:rgba(255,255,255,0.5); margin-left:auto; font-size:0.7rem;"></i>
-                                </div>
-                                <div class="qb-select-menu" id="qb-movie-menu">
-                                    <ul class="qb-options-list" id="qb-movie-list"></ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="qb-step">
-                            <label><strong>2. Chọn Rạp</strong></label>
-                            <select id="qb-cinema" disabled>
-                                <option value="" disabled selected>-- Chọn Rạp --</option>
-                            </select>
-                        </div>
-                        <div class="qb-step">
-                            <label><strong>3. Chọn Ngày</strong></label>
-                            <select id="qb-date" disabled>
-                                <option value="" disabled selected>-- Chọn Ngày --</option>
-                            </select>
-                        </div>
-                        <div class="qb-step">
-                            <label><strong>4. Chọn Suất</strong></label>
-                            <select id="qb-showtime" disabled>
-                                <option value="" disabled selected>-- Chọn Suất Chiếu --</option>
-                            </select>
-                        </div>
-                        <button class="qb-btn" id="qb-submit" disabled>Tiếp tục</button>
-                    </div>
-                </div>
+                <a href="${srcPrefix}/booking/booking-food/index.html">Đồ Ăn</a>
                 <div class="cine-match-wrapper" style="display:flex; height:100%; align-items:center; margin-left: 8px; margin-right: 20px;">
                     <a href="${srcPrefix}/engagement/cinematch/index.html" class="cine-match-nav">
                         Cine-Match <i class="fas fa-heart" style="color: var(--primary-red, #e50914); font-size:0.85rem; animation: heartbeat 1.5s infinite;"></i>
@@ -69,7 +26,7 @@ export function renderNavbar() {
                 <i class="fas fa-search" id="search-icon"></i>
                 <input type="text" id="search-input" placeholder="Tìm kiếm phim..." autocomplete="off" />
                 <span id="search-text">Tìm kiếm</span>
-                
+
                 <div id="search-suggestions" style="display: none; position: absolute; top: 120%; right: 0; width: 340px; max-height: 400px; overflow-y: auto; background: var(--bg-elevated, #1a1a1a); border: 1px solid var(--glass-border, rgba(255,255,255,0.08)); border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); z-index: 10000; flex-direction: column; text-align: left;">
                     <!-- Render suggestions here via JS -->
                 </div>
@@ -102,15 +59,13 @@ export function renderNavbar() {
                         <li><a href="${srcPrefix}/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;">Trang chủ</a></li>
                         <li><a href="${srcPrefix}/explore/movie-search/index.html?tab=now-showing" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;">Phim Đang Chiếu</a></li>
                         <li><a href="${srcPrefix}/explore/cinema-map/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;">Cụm Rạp</a></li>
-                        <li><a href="#" id="mobile-qb-btn" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;">Đặt vé nhanh</a></li>
+                        <li><a href="${srcPrefix}/booking/booking-food/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;">Đồ Ăn</a></li>
                     </ul>
                     <div style="padding: 10px 20px; font-family:'Inter', sans-serif; text-transform:uppercase; font-weight:700; color: var(--primary-red, #e50914); font-size: 0.9rem; letter-spacing:1px; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 5px; margin-top: 5px;">Hệ Sinh Thái 3HD2K</div>
                     <ul style="list-style:none; padding:0; margin:0;">
-                        
+
                         <li><a href="${srcPrefix}/engagement/minigame/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-gamepad" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Cine Predict</a></li>
                         <li><a href="${srcPrefix}/engagement/cinematch/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-heart" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Cine-Match (Ghép đôi)</a></li>
-                        <li><a href="${srcPrefix}/booking/group-booking/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-users" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Đặt & Giữ ghế nhóm</a></li>
-                        <li><a href="${srcPrefix}/user/user-notifications/index.html?tab=promo" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-ticket-alt" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Khuyến mãi</a></li>
                         <li><a href="${srcPrefix}/user/loyalty-points/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-crown" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Gói hội viên</a></li>
                     </ul>
                 </div>
@@ -941,8 +896,6 @@ export function renderNavbar() {
     object-fit: cover;
 }
 
-
-
 .user-dropdown {
     position: absolute;
     top: calc(100% + 15px);
@@ -1087,7 +1040,7 @@ export function renderNavbar() {
         transform: translate(-50%, -50%) scale(1) !important;
     }
     .quick-book-dropdown::before { display: none !important; }
-    
+
     /* Add a dark overlay behind modal on mobile */
     .mobile-modal-overlay {
         position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
@@ -1107,17 +1060,17 @@ export function renderNavbar() {
     .navbar { height: 64px; padding: 0 16px; }
     .logo { font-size: 1.5rem; }
     .nav-actions { gap: 8px; }
-    
+
     /* Hide portal icon buttons from top bar on small screens to prevent action bar overflow; accessible via Hamburger menu */
     .portal-icon-btn { display: none !important; }
-    
+
     .search-pill.active #search-input { width: 90px; }
     #search-suggestions {
         width: calc(100vw - 32px) !important;
         max-width: 340px !important;
         right: -8px !important;
     }
-    
+
     .user-dropdown {
         position: fixed !important;
         top: 64px !important;
@@ -1128,7 +1081,7 @@ export function renderNavbar() {
         margin: 0 0 0 auto !important;
     }
     .user-dropdown::before { display: none !important; }
-    
+
     .notif-dropdown {
         position: fixed !important;
         top: 64px !important;
@@ -1139,7 +1092,7 @@ export function renderNavbar() {
         margin: 0 0 0 auto !important;
     }
     .notif-dropdown::before { display: none !important; }
-    
+
     #hamburger-dropdown {
         width: calc(100vw - 32px) !important;
         max-width: 280px !important;
@@ -1150,20 +1103,18 @@ export function renderNavbar() {
     </style>
     `;
 
-    // Try to find existing navbar or placeholder
-    let container = document.getElementById('navbar-placeholder') || 
+    let container = document.getElementById('navbar-placeholder') ||
                     document.querySelector('header.navbar');
-    
+
     if (container) {
         container.outerHTML = navbarHTML;
     } else {
         document.body.insertAdjacentHTML('afterbegin', navbarHTML);
     }
 
-    // Active link highlight
     setTimeout(() => {
         let currentPath = window.location.pathname;
-        // Normalize current path
+
         if (currentPath.endsWith('/index.html')) {
             currentPath = currentPath.replace('/index.html', '/');
         }
@@ -1172,16 +1123,15 @@ export function renderNavbar() {
         links.forEach(link => {
             const href = link.getAttribute('href');
             if (!href || href === '#') return;
-            
-            // Strip query parameters
+
             let hrefPath = href.split('?')[0].replace('../../', '').replace('../', '');
-            // Normalize href path
+
             if (hrefPath.endsWith('/index.html')) {
                 hrefPath = hrefPath.replace('/index.html', '/');
             }
-            
+
             if (hrefPath === '/') {
-                // If it's the home link, only highlight if currentPath is strictly root or home-page
+
                 if (currentPath === '/' || currentPath.includes('/explore/home-page')) {
                     link.classList.add('active');
                 }
@@ -1192,7 +1142,6 @@ export function renderNavbar() {
             }
         });
 
-        // Helper to close all menus
         function closeAllMenus(except = null) {
             const qbToggle = document.getElementById('quick-book-toggle');
             const qbDropdown = document.getElementById('quick-book-dropdown');
@@ -1220,7 +1169,6 @@ export function renderNavbar() {
             }
         }
 
-        // --- QUICK BOOK LOGIC ---
         const qbToggle = document.getElementById('quick-book-toggle');
         const qbDropdown = document.getElementById('quick-book-dropdown');
         if (qbToggle && qbDropdown) {
@@ -1244,7 +1192,6 @@ export function renderNavbar() {
             const qbShowtime = document.getElementById('qb-showtime');
             const qbSubmit = document.getElementById('qb-submit');
 
-            // Custom Select Elements
             const qbMovieWrapper = document.getElementById('qb-movie-wrapper');
             const qbMovieTrigger = document.getElementById('qb-movie-trigger');
             const qbMovieMenu = document.getElementById('qb-movie-menu');
@@ -1274,7 +1221,7 @@ export function renderNavbar() {
                 getActiveMovies().then(list => {
                     qbMovieList.innerHTML = '';
                     const filtered = list.filter(m => m.title.toLowerCase().includes(filterText.toLowerCase()));
-                    
+
                     if (filtered.length === 0) {
                         qbMovieList.innerHTML = '<li class="no-results">Không tìm thấy phim</li>';
                         return;
@@ -1296,10 +1243,8 @@ export function renderNavbar() {
                 });
             }
 
-            // Initial render
             renderMovieOptions();
 
-            // Toggle Dropdown
             if(qbMovieTrigger) {
                 qbMovieTrigger.addEventListener('click', (e) => {
                     e.stopPropagation();
@@ -1314,7 +1259,6 @@ export function renderNavbar() {
                 });
             }
 
-            // Search filtering
             if(qbMovieSearch) {
                 qbMovieSearch.addEventListener('input', (e) => {
                     if (!qbMovieMenu.classList.contains('active')) {
@@ -1325,14 +1269,12 @@ export function renderNavbar() {
                 });
             }
 
-            // Prevent closing when clicking inside menu
             if(qbMovieMenu) {
                 qbMovieMenu.addEventListener('click', (e) => {
                     e.stopPropagation();
                 });
             }
 
-            // Close custom dropdown when clicking outside
             document.addEventListener('click', (e) => {
                 if (qbMovieWrapper && !qbMovieWrapper.contains(e.target) && qbMovieMenu.classList.contains('active')) {
                     qbMovieMenu.classList.remove('active');
@@ -1376,20 +1318,19 @@ export function renderNavbar() {
             qbCinema.addEventListener('change', async () => {
                 qbDate.disabled = false;
                 qbDate.innerHTML = '<option value="" disabled selected>-- Đang tải lịch chiếu... --</option>';
-                
-                // Fetch showtimes
+
                 if (window.fetchShowtimesByMovie && selectedMovieId) {
                     currentShowtimes = await window.fetchShowtimesByMovie(selectedMovieId);
                 }
-                
+
                 const selectedCinemaId = qbCinema.value;
-                // Filter showtimes for selected cinema
+
                 const cinemaShowtimes = currentShowtimes.filter(s => s.room && s.room.cinemaId === selectedCinemaId);
-                
+
                 qbDate.innerHTML = '<option value="" disabled selected>-- Chọn Ngày --</option>';
-                // Extract unique dates
+
                 const uniqueDates = [...new Set(cinemaShowtimes.map(s => new Date(s.startTime).toLocaleDateString('vi-VN')))];
-                
+
                 if (uniqueDates.length === 0) {
                      const opt = document.createElement('option');
                      opt.value = "";
@@ -1411,22 +1352,22 @@ export function renderNavbar() {
             qbDate.addEventListener('change', () => {
                 qbShowtime.disabled = false;
                 qbShowtime.innerHTML = '<option value="" disabled selected>-- Chọn Suất Chiếu --</option>';
-                
+
                 const selectedCinemaId = qbCinema.value;
                 const selectedDate = qbDate.value;
-                
-                const filteredShowtimes = currentShowtimes.filter(s => 
-                    s.room && s.room.cinemaId === selectedCinemaId && 
+
+                const filteredShowtimes = currentShowtimes.filter(s =>
+                    s.room && s.room.cinemaId === selectedCinemaId &&
                     new Date(s.startTime).toLocaleDateString('vi-VN') === selectedDate
                 );
-                
+
                 if (filteredShowtimes.length === 0) {
                     const opt = document.createElement('option');
                     opt.value = "";
                     opt.textContent = "Hết suất chiếu";
                     qbShowtime.appendChild(opt);
                 } else {
-                    // Sort by time
+
                     filteredShowtimes.sort((a,b) => new Date(a.startTime) - new Date(b.startTime));
                     filteredShowtimes.forEach(s => {
                         const t = new Date(s.startTime).toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit'});
@@ -1447,13 +1388,12 @@ export function renderNavbar() {
                 const showtime = qbShowtime.value;
                 if (selectedMovieId && showtime) {
                     if (window.requireAuth && !window.requireAuth('Bạn cần đăng nhập để đặt vé xem phim. Hãy đăng nhập hoặc tạo tài khoản để tiếp tục.')) return;
-                    localStorage.removeItem('checkoutFood'); // Clear custom food state for new booking
-                    window.location.href = `${srcPrefix}/booking/seat-booking/booking.html?id=${selectedMovieId}&showtimeId=${showtime}`; 
+                    localStorage.removeItem('checkoutFood');
+                    window.location.href = `${srcPrefix}/booking/seat-booking/booking.html?id=${selectedMovieId}&showtimeId=${showtime}`;
                 }
             });
         }
 
-        // Hamburger Logic
         const hamburgerBtn = document.getElementById('hamburger-btn');
         const hamburgerDropdown = document.getElementById('hamburger-dropdown');
         if (hamburgerBtn && hamburgerDropdown) {
@@ -1463,7 +1403,7 @@ export function renderNavbar() {
                 closeAllMenus('hamburger');
                 hamburgerDropdown.style.display = isDisplay ? 'none' : 'block';
             });
-            
+
             hamburgerDropdown.addEventListener('click', (e) => {
                 e.stopPropagation();
                 if (e.target.closest('a')) {
@@ -1472,8 +1412,6 @@ export function renderNavbar() {
             });
         }
 
-        
-        // Mobile Quick Book Logic
         const mobileQbBtn = document.getElementById('mobile-qb-btn');
         const modalOverlay = document.getElementById('mobile-modal-overlay');
         if (mobileQbBtn && qbDropdown) {
@@ -1484,15 +1422,14 @@ export function renderNavbar() {
                 qbDropdown.classList.add('active');
                 if (modalOverlay) modalOverlay.classList.add('active');
             });
-            
+
             if (modalOverlay) {
                 modalOverlay.addEventListener('click', () => {
                     qbDropdown.classList.remove('active');
                     modalOverlay.classList.remove('active');
                 });
             }
-            
-            // Override the default document click so it also hides the overlay
+
             document.addEventListener('click', (e) => {
                 if (!qbDropdown.contains(e.target) && e.target !== qbToggle && e.target !== mobileQbBtn) {
                     qbDropdown.classList.remove('active');
@@ -1501,12 +1438,11 @@ export function renderNavbar() {
             });
         }
 
-        // --- AUTH LOGIC ---
         const session = getSession();
         if (session) {
             const navActions = document.querySelector('.nav-actions');
             if (navActions) {
-                // Xóa nút chưa đăng nhập hiện tại
+
                 const oldNotifBtn = document.getElementById('notif-btn');
                 const oldUserBtn = document.querySelector('.user-btn');
                 if (oldNotifBtn) oldNotifBtn.remove();
@@ -1515,7 +1451,7 @@ export function renderNavbar() {
                 const userName = (session.fullname || session.name) || 'Khách';
                 const defaultAvatar = `${srcPrefix}/shared/images/avatar.jpg`;
                 const userAvatar = session.avatar || defaultAvatar;
-                
+
                 const isVip = localStorage.getItem('is_vip') === 'true' || session.role === 'vip';
                 const vipPlan = localStorage.getItem('vip_plan') || session.vip_plan || '';
                 let rewardsPoints = 0;
@@ -1524,7 +1460,7 @@ export function renderNavbar() {
                     rewardsPoints = rewardsData.points || 0;
                 } catch(_) {}
                 const pointsDisplay = rewardsPoints.toLocaleString('vi-VN');
-                const userPointsHtml = isVip 
+                const userPointsHtml = isVip
                     ? `<span class="user-points"><i class="fas fa-crown" style="color: #ffc107;"></i> VIP ${vipPlan ? vipPlan.charAt(0).toUpperCase() + vipPlan.slice(1) : ''} - ${pointsDisplay} điểm</span>`
                     : `<span class="user-points">Hạng thường - ${pointsDisplay} điểm</span>`;
 
@@ -1628,14 +1564,12 @@ export function renderNavbar() {
                 if (logoutBtn) {
                     logoutBtn.addEventListener('click', (e) => {
                         e.preventDefault();
-                        logout(); // Gọi service để xóa auth_token và reload
+                        logout();
                     });
                 }
             }
         }
 
-
-        // --- SEARCH EXPAND LOGIC ---
         const searchPill = document.getElementById('search-pill');
         const searchInput = document.getElementById('search-input');
 
@@ -1651,7 +1585,7 @@ export function renderNavbar() {
 
         if (searchInput) {
             const searchSuggestions = document.getElementById('search-suggestions');
-            
+
             searchInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     const q = e.target.value.trim();
@@ -1668,22 +1602,22 @@ export function renderNavbar() {
                         searchSuggestions.style.display = 'none';
                         return;
                     }
-                    
+
                     let allMovies = [];
                     if (typeof window.nowShowingMovies !== 'undefined') allMovies = allMovies.concat(window.nowShowingMovies);
                     if (typeof window.comingSoonMovies !== 'undefined') allMovies = allMovies.concat(window.comingSoonMovies);
-                    
+
                     if (allMovies.length === 0) {
                         searchSuggestions.style.display = 'none';
                         return;
                     }
-                    
+
                     const matches = allMovies.filter(m => {
                         const titleMatch = m.title && m.title.toLowerCase().includes(q);
                         const titleEnMatch = m.titleEn && m.titleEn.toLowerCase().includes(q);
                         return titleMatch || titleEnMatch;
-                    }).slice(0, 5); // Limit top 5
-                    
+                    }).slice(0, 5);
+
                     if (matches.length > 0) {
                         searchSuggestions.innerHTML = matches.map(m => {
                             const posterSrc = m.poster.includes('../../') ? `${srcPrefix}/${m.poster.replace('../../', '')}` : m.poster;
@@ -1713,7 +1647,6 @@ export function renderNavbar() {
             }
         }
 
-        // --- NOTIFICATION DROPDOWN LOGIC ---
         const notifBtn = document.getElementById('notif-btn');
         const notifDropdown = document.getElementById('notif-dropdown');
 
@@ -1740,7 +1673,6 @@ export function renderNavbar() {
             });
         }
 
-        // --- USER DROPDOWN LOGIC ---
         const userBtn = document.getElementById('user-btn');
         const userDropdown = document.getElementById('user-dropdown');
 
@@ -1754,16 +1686,15 @@ export function renderNavbar() {
 
         if (userDropdown) {
             userDropdown.addEventListener('click', (e) => {
-                e.stopPropagation(); 
+                e.stopPropagation();
                 if (e.target.closest('a')) {
                     userBtn.classList.remove('active');
                 }
             });
         }
 
-        // --- CLICK OUTSIDE HANDLER ---
         document.addEventListener('click', (e) => {
-            // Đóng search
+
             if (searchPill && !searchPill.contains(e.target)) {
                 searchPill.classList.remove('active');
                 if (searchInput) {
@@ -1774,17 +1705,17 @@ export function renderNavbar() {
                     searchSuggestions.style.display = 'none';
                 }
             }
-            // Đóng notification
+
             const currentNotifBtn = document.getElementById('notif-btn');
             if (currentNotifBtn && currentNotifBtn.classList.contains('active') && !currentNotifBtn.contains(e.target)) {
                 currentNotifBtn.classList.remove('active');
             }
-            // Đóng user dropdown
+
             const currentUserBtn = document.getElementById('user-btn');
             if (currentUserBtn && currentUserBtn.classList.contains('active') && !currentUserBtn.contains(e.target)) {
                 currentUserBtn.classList.remove('active');
             }
-            // Đóng hamburger
+
             const currentHamburgerBtn = document.getElementById('hamburger-btn');
             const currentHamburgerDropdown = document.getElementById('hamburger-dropdown');
             if (currentHamburgerBtn && currentHamburgerDropdown && !currentHamburgerBtn.contains(e.target)) {
@@ -1792,7 +1723,6 @@ export function renderNavbar() {
             }
         });
 
-        // --- DYNAMIC NOTIFICATIONS LOGIC ---
         function formatRelativeTime(timestamp) {
             const diffMs = Date.now() - timestamp;
             const diffMins = Math.floor(diffMs / 60000);
@@ -1804,7 +1734,7 @@ export function renderNavbar() {
             if (diffHours < 24) return `${diffHours} giờ trước`;
             if (diffDays === 1) return 'Hôm qua';
             if (diffDays < 7) return `${diffDays} ngày trước`;
-            
+
             const d = new Date(timestamp);
             return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
         }
@@ -1823,12 +1753,10 @@ export function renderNavbar() {
 
         function updateNavNotifications() {
             if (!navNotifList) return;
-            
-            // Initialize if not present
+
             let notifsStr = localStorage.getItem('3hd2k_notifications');
             if (!notifsStr) {
-                // To meet user requirement: start completely empty. 
-                // Only populated via purchases or external triggers.
+
                 localStorage.setItem('3hd2k_notifications', JSON.stringify([]));
                 notifsStr = '[]';
             }
@@ -1840,22 +1768,20 @@ export function renderNavbar() {
                 notifs = [];
             }
 
-            // --- SYNC WITH BOOKING DATA ---
             try {
                 const bookings = JSON.parse(localStorage.getItem('cinema_bookings') || '[]');
                 const existingBookingNotifs = notifs.filter(n => n.category === 'booking');
-                // Retain non-booking notifs
+
                 notifs = notifs.filter(n => n.category !== 'booking');
-                
+
                 bookings.forEach(b => {
                     const bId = b.id || '';
                     const notifId = 'notif_' + bId;
                     const existing = existingBookingNotifs.find(n => n.id === notifId);
-                    
+
                     const isCancelled = b.status === 'Cancelled' || b.status === 'cancelled';
                     const title = isCancelled ? 'Đã hủy vé thành công!' : 'Đặt vé thành công!';
-                    
-                    // Format date & time
+
                     let timeText = b.showtimeText || b.time || 'N/A';
                     if (b.date) {
                         timeText += ', ' + b.date;
@@ -1863,9 +1789,9 @@ export function renderNavbar() {
 
                     const text = `${b.movieTitle || 'Phim'} - Suất ${timeText}`;
                     const time = existing ? existing.timestamp : (b.createdAt || Date.now());
-                    // default to true for newly synced ones
+
                     const unread = existing ? existing.unread : true;
-                    
+
                     notifs.push({
                         id: notifId,
                         category: 'booking',
@@ -1876,14 +1802,12 @@ export function renderNavbar() {
                         unread: unread
                     });
                 });
-                
+
                 localStorage.setItem('3hd2k_notifications', JSON.stringify(notifs));
             } catch (e) {
                 console.error('Error syncing booking notifications', e);
             }
-            // ------------------------------
 
-            // Sort by timestamp desc
             notifs.sort((a, b) => b.timestamp - a.timestamp);
 
             const unreadCount = notifs.filter(n => n.unread).length;
@@ -1914,15 +1838,14 @@ export function renderNavbar() {
             }
         }
 
-        // Initial render
         updateNavNotifications();
         window.updateNavNotifications = updateNavNotifications;
 
         if (markAllBtnNav) {
             markAllBtnNav.addEventListener('click', (e) => {
-                e.preventDefault(); 
-                e.stopPropagation(); 
-                
+                e.preventDefault();
+                e.stopPropagation();
+
                 try {
                     let notifs = JSON.parse(localStorage.getItem('3hd2k_notifications') || '[]');
                     notifs.forEach(n => n.unread = false);
@@ -1934,7 +1857,6 @@ export function renderNavbar() {
             });
         }
 
-
     }, 0);
 }
 
@@ -1945,10 +1867,8 @@ function safeRender() {
     renderNavbar();
 }
 
-// Tự động render nếu được import
 document.addEventListener('DOMContentLoaded', safeRender);
 
-// Chạy luôn nếu script load sau DOMContentLoaded
 if (document.readyState === 'interactive' || document.readyState === 'complete') {
     safeRender();
 }

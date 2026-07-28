@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
-<head><meta name="referrer" content="no-referrer">
+<head><meta name="referrer" content="strict-origin-when-cross-origin">
     <link rel="icon" type="image/jpeg" href="/assets/favicon.jpg?v=2">
     <script>
         window.addEventListener("error", function(e) {
@@ -34,10 +34,10 @@
     <link rel="stylesheet" href="/shared/css/main.css">
     <link rel="stylesheet" href="/booking/group-booking/group-booking.css">
     <style>
-        /* --- RESPONSIVE MEDIA QUERIES (INLINE) --- */
+
         html, body { max-width: 100vw; overflow-x: hidden; margin: 0; padding: 0; }
         .copy-icon { display: none; }
-        
+
         .mobile-seat-picker { display: none; }
 
         @media (max-width: 1024px) {
@@ -50,28 +50,25 @@
 
         @media (max-width: 768px) {
             .hero-title { font-size: 1.8rem !important; }
-            
-            /* Make timer box clean and horizontal */
-            .timer-box { 
-                padding: 1rem !important; 
-                flex-direction: row !important; 
-                justify-content: center !important; 
-                align-items: center !important; 
-                border-radius: 0.5rem !important; 
+
+            .timer-box {
+                padding: 1rem !important;
+                flex-direction: row !important;
+                justify-content: center !important;
+                align-items: center !important;
+                border-radius: 0.5rem !important;
                 gap: 1rem;
             }
             .timer-value { font-size: 2rem !important; margin: 0 !important; animation: none !important; }
             .timer-label { margin: 0 !important; font-size: 0.8rem !important; }
             .progress-container { display: none !important; }
-            
-            /* Panels */
+
             .panel-title { font-size: 1.5rem !important; }
             .panel-section, .food-beverage-panel { padding: 1rem !important; box-sizing: border-box; width: 100%; }
             .fb-panel-title { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
             .quick-combos-container { flex-direction: column; width: 100%; }
             .combo-card { width: 100%; box-sizing: border-box; }
-            
-            /* Member Cards */
+
             .members-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 0.75rem !important; }
             .member-card { flex-direction: column !important; align-items: center; padding: 0.75rem !important; gap: 0.25rem !important; text-align: center !important; }
             .member-card > div:last-child { width: 100% !important; padding: 0 !important; flex-direction: column !important; margin-top: 0.5rem !important; gap: 0.4rem !important; }
@@ -79,38 +76,32 @@
             .member-name { font-size: 0.95rem !important; margin: 0 !important; line-height: 1.2; word-break: break-word; }
             .member-status { margin: 0 !important; font-size: 0.75rem !important; line-height: 1.2; }
             .btn-pay-avatar, .btn-cancel-avatar { padding: 0.4rem !important; font-size: 0.7rem !important; width: 100% !important; margin: 0 !important; }
-            
-            /* Movie Info */
+
             .movie-info-row { flex-direction: column; align-items: center; gap: 1rem; width: 100%; text-align: center; }
             .movie-info-row > div:last-child { border-left: none !important; padding-left: 0 !important; width: 100%; justify-content: space-evenly; gap: 0; flex-direction: row; }
-            
-            /* Symmetric Prices */
+
             #dynamic-price-value, #dynamic-total-value { white-space: nowrap !important; font-size: 1.8rem !important; }
             .price-block { flex: 1; text-align: center !important; }
             .price-block:last-child { border-left: 1px dashed rgba(255,255,255,0.15) !important; padding-left: 0 !important; }
-            
-            /* Radar / Seat Map */
+
             .radar-box { padding: 1rem; }
             .screen-line.curved { width: 100% !important; margin-left: 0 !important; border-radius: 50% 50% 0 0 / 20px 20px 0 0 !important; }
             .seat-map-container { overflow: hidden; width: 100%; height: auto !important; padding-bottom: 2rem; margin-top: 1rem; }
             .seat-grid { flex-direction: row !important; flex-wrap: wrap; justify-content: center; gap: 1.5rem !important; }
             .seat { width: 2.5rem !important; height: 2.5rem !important; border-radius: 8px !important; font-size: 0.8rem; }
-            
-            /* Mobile Seat Picker Instruction */
+
             .mobile-seat-picker { display: block; text-align: center; margin-top: 1rem; padding: 1rem; background: rgba(0, 243, 255, 0.1); border-radius: 8px; border: 1px dashed var(--neon-blue); }
-            
-            /* Clipboard Button */
+
             .share-input { padding-right: 3.5rem !important; font-size: 0.85rem !important; text-overflow: ellipsis; white-space: nowrap; }
             .share-input-group { flex-direction: row !important; align-items: center; position: relative; }
             .copy-text { display: none; }
             .copy-icon { display: inline-block !important; font-size: 1.5rem; }
             .btn-copy { width: auto !important; padding: 0.5rem 1rem !important; flex-shrink: 0; background: transparent; color: var(--neon-blue); border: none !important; border-radius: 4px; position: absolute; right: 0; top: 0; bottom: 0; height: 100%; }
-            
+
             .share-buttons { flex-direction: column; }
             .share-buttons button { width: 100%; }
         }
 
-        /* PONYTAIL: Mobile <= 480px responsive rules for room lobby */
         @media (max-width: 480px) {
             .hero-title { font-size: 1.5rem !important; }
             .panel-title { font-size: 1.3rem !important; }
@@ -126,7 +117,6 @@
 </head>
 <body>
 
-<!-- Navbar Placeholder -->
 <nav id="navbar-placeholder"></nav>
 
 <main class="page-wrapper pt-20">
@@ -141,7 +131,7 @@
                 <h1 class="hero-title">PHÒNG CHỜ CHỐT GHẾ</h1>
                 <p class="hero-desc">Mời bạn bè vào phòng chờ. Ai thanh toán trước, người đó chọn ghế! Vé sẽ được xuất ngay khi tất cả hoàn tất.</p>
             </div>
-            
+
             <div class="timer-box">
                 <span class="timer-label">PHÒNG CHỜ ĐÓNG SAU</span>
                 <span class="timer-value" id="countdown">14:59</span>
@@ -153,16 +143,16 @@
     </section>
 
     <section class="main-grid">
-        <!-- Cột trái: Quản lý nhóm & Chia sẻ -->
+
         <div class="left-col">
             <div class="panel-section">
                 <h3 class="panel-title"><span class="material-symbols-outlined" style="margin-right: 12px; font-size: 2.2rem; color: var(--primary-red);">group</span> SQUAD CỦA BẠN</h3>
-                <!-- Dynamic Members Grid -->
+
                 <div class="members-grid" id="dynamic-members-grid">
-                    <!-- JS will inject members here -->
+
                 </div>
             </div>
-            
+
             <div class="panel-section food-beverage-panel" style="background: transparent; border: none; padding: 0;">
                 <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem; margin-bottom: 1rem;">
                     <h3 class="panel-title" style="margin: 0; padding: 0; font-size: 1.8rem; font-weight: 800; letter-spacing: 1px;">BẮP NƯỚC (COMBO)</h3>
@@ -170,7 +160,7 @@
                         <i class="fas fa-utensils" style="color: #f59e0b;"></i> <span id="btn-edit-food-text">Menu Đầy Đủ</span>
                     </a>
                 </div>
-                
+
                 <div class="combo-list-horizontal" id="group-food-panel">
                     <label class="combo-card selected">
                         <input type="radio" name="group-combo" value="none" checked style="position: absolute; opacity: 0; width: 0; height: 0;">
@@ -233,26 +223,24 @@
             </div>
         </div>
 
-        <!-- Cột phải: Xem trước ghế và thông tin -->
         <div class="right-col">
             <div class="panel-section">
                 <h3 class="panel-title"><span class="material-symbols-outlined" style="margin-right: 12px; font-size: 2.2rem; color: var(--primary-red);">radar</span> RADAR GHẾ (TRỰC TIẾP)</h3>
                 <p style="color: var(--neon-red); margin-bottom: 1rem; font-size: 0.9rem; font-weight: 600;"><span class="material-symbols-outlined" style="vertical-align: middle; font-size: 1.1rem; margin-top: -2px;">info</span> Vui lòng bấm vào Sơ Đồ Ghế (Radar) bên dưới để thanh toán phần của bạn!</p>
                 <div class="seat-map-container">
                     <div class="screen-line curved">
-                        <!-- Removed screen label completely for minimalist cinematic look -->
+
                     </div>
-                    
-                    <!-- Dynamic Seat Row -->
+
                     <div class="seat-row" id="dynamic-seat-map" style="display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: center; z-index: 2;">
-                        <!-- JS will inject seats here -->
+
                     </div>
                 </div>
-                
+
                 <div class="movie-info-row glassmorphism-movie-card" style="position: relative; overflow: hidden; border-radius: 16px; border: 1px solid var(--glass-border); padding: 1.5rem; margin-top: 2rem; border-top: none; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-                    <!-- Blurred Background Layer -->
+
                     <div id="dynamic-movie-bg" style="position: absolute; top: -10%; left: -10%; right: -10%; bottom: -10%; background-size: cover; background-position: center; filter: blur(25px) brightness(0.3); z-index: 0; transition: background 0.5s ease;"></div>
-                    
+
                     <div style="display: flex; gap: 1.5rem; align-items: center; z-index: 1; position: relative;">
                         <img id="dynamic-movie-poster" src="" alt="Poster" style="width: 80px; height: 115px; border-radius: 8px; object-fit: cover; box-shadow: 0 8px 20px rgba(0,0,0,0.8); display: none; border: 1px solid rgba(255,255,255,0.15);">
                         <div>
@@ -273,13 +261,12 @@
     </section>
 </main>
 
-<!-- Modal Thanh Toán -->
 <div class="modal-backdrop" id="payment-modal-backdrop">
     <div class="payment-modal">
         <button class="modal-close" id="btn-close-modal"><i class="fa-solid fa-xmark"></i></button>
         <h3 class="modal-title">CHỐT GHẾ <span id="modal-seat-id" style="color: var(--neon-red);">--</span></h3>
         <p class="modal-subtitle">Thanh toán ngay để khóa vị trí này cho bạn!</p>
-        
+
         <div class="payment-methods">
             <label class="payment-method selected" onclick="selectPaymentMethod(this)">
                 <input type="radio" name="payment" value="momo" checked style="display:none;">
@@ -292,18 +279,17 @@
                 <span>VNPAY</span>
             </label>
         </div>
-        
+
         <button class="btn-pay" id="btn-confirm-pay" style="margin-top: 1rem;">XÁC NHẬN THANH TOÁN</button>
     </div>
 </div>
 
-<!-- Modal Xác nhận Hủy -->
 <div class="modal-backdrop" id="cancel-modal-backdrop">
     <div class="payment-modal" style="text-align: center; max-width: 400px; padding: 2.5rem 2rem;">
         <div style="font-size: 3rem; color: var(--neon-red); margin-bottom: 1rem;"><span class="material-symbols-outlined" style="font-size: 4rem;">warning</span></div>
         <h3 class="modal-title" style="color: var(--neon-red); margin-bottom: 0.5rem; font-size: 2rem;">XÁC NHẬN HỦY</h3>
         <p class="modal-subtitle" style="margin-bottom: 2rem;">Bạn có chắc chắn muốn hủy phần ghế <strong id="cancel-modal-seat-id" style="color: var(--neon-red);"></strong> của mình? Thao tác này không thể hoàn tác.</p>
-        
+
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
             <button class="btn-cancel-avatar" id="btn-abort-cancel" style="padding: 1rem;">KHÔNG</button>
             <button class="btn-pay-avatar" id="btn-proceed-cancel" style="background: var(--neon-red); border-color: var(--neon-red); box-shadow: 0 0 15px var(--neon-red-glow); color: #fff; padding: 1rem;">CÓ, HỦY GHẾ</button>
@@ -311,7 +297,6 @@
     </div>
 </div>
 
-<!-- Container cho Toast Notifications -->
 <div id="toast-container" style="position: fixed; top: 80px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px;"></div>
 
 <div id="footer-placeholder"></div>
@@ -319,24 +304,22 @@
 <script type="module" src="/shared/components/navbar.js"></script>
 <script type="module" src="/shared/components/footer.js"></script>
 
-
 <script type="module">
     import { formatPrice } from '/explore/home-page/movieService.js';
     import { confirmBooking } from '../seat-booking/bookingService.js';
     import { lsSet, KEYS } from '/shared/utils/storage.js';
 
-    // --- State Management ---
     const urlParams = new URLSearchParams(window.location.search);
     const orderId = urlParams.get('order') || 'DEMO-123';
     let groupData = null;
     let pricePerSeat = 0;
     let myFoodTotal = 0;
     let myFoodText = '';
-    
+
     function loadOrderData() {
         let rawData = localStorage.getItem('splitOrder_' + orderId);
         let isValid = false;
-        
+
         try {
             if (rawData) {
                 groupData = JSON.parse(rawData);
@@ -347,8 +330,7 @@
         } catch(e) {
             console.error("Lỗi parse data:", e);
         }
-        
-        // Force reset demo data if invalid to prevent freezing
+
         if (!isValid) {
             groupData = {
                 checkoutData: {
@@ -371,13 +353,10 @@
             window.location.href = "/explore/home-page/index.html";
             return false;
         }
-        
+
         if (!groupData.paidSeats) groupData.paidSeats = [];
         if (!groupData.cancelledSeats) groupData.cancelledSeats = [];
 
-        // ---------------------------------
-        // Capture Return from Payment Gateway
-        // ---------------------------------
         const paidSeatFromUrl = urlParams.get('paidSeat');
         const clearFood = urlParams.get('clearFood');
         if (paidSeatFromUrl && !groupData.paidSeats.includes(paidSeatFromUrl)) {
@@ -385,7 +364,7 @@
             if (orderId) {
                 localStorage.setItem('splitOrder_' + orderId, JSON.stringify(groupData));
             }
-            // Clean URL
+
             const cleanUrl = new URL(window.location.href);
             cleanUrl.searchParams.delete('paidSeat');
             if (clearFood) {
@@ -395,7 +374,6 @@
             window.history.replaceState({}, '', cleanUrl.toString());
         }
 
-        // Load food data
         let foodStr = localStorage.getItem('selectedFood');
         let customFoodArr = [];
         try {
@@ -417,9 +395,8 @@
                 myFoodText = items.map(f => `${f.qty}x ${f.name}`).join(', ');
             } catch(e) {}
         }
-        window.customFoodArr = customFoodArr; // Expose for renderLobby
+        window.customFoodArr = customFoodArr;
 
-        // Calculate price per seat (fixed price logic based on active seats initially)
         const activeSeatsCount = groupData.checkoutData.seats.length - groupData.cancelledSeats.length;
         if (activeSeatsCount > 0) {
             pricePerSeat = Math.floor(groupData.checkoutData.total / activeSeatsCount);
@@ -427,33 +404,27 @@
             pricePerSeat = 0;
         }
 
-        // ---------------------------------
-        // Xác định "Ghế Của Tôi" (My Seat)
-        // ---------------------------------
         let mySeat = localStorage.getItem('mySeatForOrder_' + orderId);
-        
-        // Nếu người dùng đã chủ động hủy ghế của họ, họ sẽ trở thành người xem (Observer)
+
         if (mySeat === 'CANCELLED') {
             window.mySeat = null;
         } else {
-            // Nếu ghế của tôi không tồn tại, hoặc đã bị hủy từ nguồn khác, hoặc đã bị ai đó thanh toán mất
-            // -> Tìm 1 ghế trống mới gán cho user
+
             if (!mySeat || !groupData.checkoutData.seats.includes(mySeat) || groupData.cancelledSeats.includes(mySeat)) {
-                const activeUnpaidSeats = (groupData?.checkoutData?.seats || []).filter(s => 
+                const activeUnpaidSeats = (groupData?.checkoutData?.seats || []).filter(s =>
                     !groupData.cancelledSeats.includes(s) && !groupData.paidSeats.includes(s)
                 );
                 if (activeUnpaidSeats.length > 0) {
                     mySeat = activeUnpaidSeats[0];
                     localStorage.setItem('mySeatForOrder_' + orderId, mySeat);
                 } else {
-                    mySeat = null; // Hết ghế
+                    mySeat = null;
                 }
             }
             window.mySeat = mySeat;
         }
         return true;
     }
-
 
     async function saveOrderData() {
         try {
@@ -472,13 +443,11 @@
         localStorage.setItem('splitOrder_' + orderId, JSON.stringify(groupData));
     }
 
-    // --- Helper: Check if current user is the group leader (first seat) ---
     function isGroupLeader() {
         const allSeats = groupData?.checkoutData?.seats || [];
         return allSeats.length > 0 && window.mySeat === allSeats[0];
     }
 
-    // --- Leader Pay For Member ---
     window.leaderPayForMember = function(seatName) {
         if (!isGroupLeader()) {
             showToast('Chi truong nhom moi co the thanh toan ho!', 'error');
@@ -494,32 +463,28 @@
         window._proxyPaySeat = seatName;
     }
 
-    // --- Dynamic Rendering ---
     function renderLobby() {
-        // 1. Share Link
+
         const shareInput = document.getElementById('dynamic-share-link');
         shareInput.value = window.location.href;
 
-        // 2. Movie Info
         document.getElementById('dynamic-movie-title').textContent = groupData?.checkoutData?.movieTitle || 'Không rõ';
         document.getElementById('dynamic-movie-meta').textContent = `${groupData?.checkoutData?.room || ''} • ${groupData?.checkoutData?.showtimeText || ''}`;
         document.getElementById('dynamic-price-value').textContent = typeof formatPrice === 'function' ? formatPrice(pricePerSeat + myFoodTotal) : ((pricePerSeat + myFoodTotal) + ' ₫');
-        
-        // Tính và hiển thị Tổng Tiền
+
         const totalSeats = groupData.checkoutData.seats ? groupData.checkoutData.seats.length : 1;
         const totalValueEl = document.getElementById('dynamic-total-value');
         if (totalValueEl) {
             totalValueEl.textContent = formatPrice(pricePerSeat * totalSeats);
         }
-        
-        // Custom food panel
+
         const foodPanel = document.getElementById('group-food-panel');
         if (foodPanel && window.customFoodArr && window.customFoodArr.length > 0) {
-            // Also uncheck radio buttons visually if they still exist
+
             document.querySelectorAll('label.combo-card').forEach(x => x.classList.remove('selected'));
             const noneRadio = document.querySelector('input[name="group-combo"][value="none"]');
             if (noneRadio) noneRadio.checked = true;
-            
+
             foodPanel.innerHTML = `
                 <div class="glass-panel" style="width: 100%; padding: 1rem; border: 1px solid var(--primary-color);">
                     <div style="color: var(--primary-color); font-weight: bold; margin-bottom: 0.5rem;"><i class="fas fa-check-circle"></i> Đã chọn món trong Menu Đầy Đủ</div>
@@ -530,21 +495,19 @@
             `;
         }
 
-        // Hiển thị Poster & Background
         if (groupData.checkoutData.poster) {
             const posterImg = document.getElementById('dynamic-movie-poster');
             if (posterImg) {
                 posterImg.src = groupData.checkoutData.poster;
                 posterImg.style.display = 'block';
             }
-            
+
             const movieBg = document.getElementById('dynamic-movie-bg');
             if (movieBg) {
                 movieBg.style.backgroundImage = `url('${groupData.checkoutData.poster}')`;
             }
         }
-        
-        // Hiển thị Tags (Ví dụ: 18+, Vietsub)
+
         if (groupData.checkoutData.tags) {
             const tagsContainer = document.getElementById('dynamic-movie-tags');
             tagsContainer.innerHTML = '';
@@ -557,22 +520,21 @@
         }
         document.getElementById('btn-confirm-pay').textContent = `XÁC NHẬN THANH TOÁN (${formatPrice(pricePerSeat)})`;
 
-        // 3. Render Avatar Squad Grid
         const membersGrid = document.getElementById('dynamic-members-grid');
         membersGrid.innerHTML = '';
-        
+
         const activeSeats = (groupData?.checkoutData?.seats || []).filter(s => !groupData.cancelledSeats.includes(s));
-        
+
         let friendNameIndex = 0;
 
         activeSeats.forEach((seatName) => {
             const isPaid = groupData.paidSeats.includes(seatName);
             const isMySeat = (seatName === window.mySeat);
-            
+
             const card = document.createElement('div');
-            
+
             if (isPaid) {
-                // ĐÃ THANH TOÁN
+
                 if (isMySeat) {
                     card.className = 'member-card paid';
                     card.innerHTML = `
@@ -593,7 +555,7 @@
                     `;
                 }
             } else {
-                // CHƯA THANH TOÁN
+
                 if (isMySeat) {
                     card.className = 'member-card empty';
                     card.style.borderColor = 'var(--neon-blue)';
@@ -627,17 +589,16 @@
             membersGrid.appendChild(card);
         });
 
-        // 4. Render Seat Map Radar
         const seatMap = document.getElementById('dynamic-seat-map');
         seatMap.innerHTML = '';
-        
+
         (groupData?.checkoutData?.seats || []).forEach(seat => {
             const isPaid = groupData.paidSeats.includes(seat);
             const isCancelled = groupData.cancelledSeats.includes(seat);
             const isMySeat = (seat === window.mySeat);
 
             const seatEl = document.createElement('div');
-            
+
             if (isCancelled) {
                 seatEl.className = 'seat cancelled';
                 seatEl.title = `Ghế ${seat} - Đã hủy`;
@@ -647,16 +608,16 @@
             } else {
                 seatEl.className = 'seat locked';
                 seatEl.setAttribute('data-seat', seat);
-                
+
                 if (isMySeat) {
                     seatEl.title = `Ghế ${seat} - Click để thanh toán phần của bạn`;
                     seatEl.style.cursor = 'pointer';
-                    seatEl.style.borderColor = 'var(--neon-blue)'; // Highlight my seat specifically
+                    seatEl.style.borderColor = 'var(--neon-blue)';
                     seatEl.addEventListener('click', () => openPaymentModal(seat));
                 } else {
                     seatEl.title = `Ghế ${seat} - Chờ người khác thanh toán`;
                     seatEl.style.cursor = 'not-allowed';
-                    seatEl.style.opacity = '0.7'; // Làm mờ nhẹ ghế của người khác
+                    seatEl.style.opacity = '0.7';
                     seatEl.addEventListener('click', () => alert('Ghế này dành cho người khác. Vui lòng chỉ thanh toán phần ghế của bạn!'));
                 }
             }
@@ -664,7 +625,6 @@
         });
     }
 
-    // --- Modal & Payment Gamification Logic ---
     const modalBackdrop = document.getElementById('payment-modal-backdrop');
     const btnCloseModal = document.getElementById('btn-close-modal');
     const btnConfirmPay = document.getElementById('btn-confirm-pay');
@@ -675,19 +635,19 @@
         if (!seat || typeof seat !== 'string') {
             seat = window.mySeat;
         }
-        // Allow own seat OR leader proxy payment
+
         if (!seat) return;
         if (seat !== window.mySeat && !isGroupLeader()) return;
-        
+
         currentlyPayingSeat = seat;
         modalSeatId.textContent = seat;
-        
+
         if (myFoodTotal > 0) {
             document.getElementById('btn-confirm-pay').textContent = `THANH TOÁN (${formatPrice(pricePerSeat + myFoodTotal)})`;
         } else {
             document.getElementById('btn-confirm-pay').textContent = `XÁC NHẬN THANH TOÁN (${formatPrice(pricePerSeat)})`;
         }
-        
+
         modalBackdrop.classList.add('active');
     }
 
@@ -705,22 +665,22 @@
     async function checkCompletion() {
         const activeSeats = (groupData?.checkoutData?.seats || []).filter(s => !groupData.cancelledSeats.includes(s));
         const allPaid = activeSeats.every(s => groupData.paidSeats.includes(s));
-        
+
         if (activeSeats.length > 0 && allPaid) {
-            // LƯU VÉ RIÊNG TỪNG GHẾ — mỗi ghế một mã vé độc lập
+
             const bookings = [];
             for (const seat of activeSeats) {
                 const seatCheckoutData = {
                     ...groupData.checkoutData,
-                    seats: [seat],                          // chỉ 1 ghế cho mỗi vé
-                    total: pricePerSeat,                    // giá 1 ghế
+                    seats: [seat],
+                    total: pricePerSeat,
                     seatAmount: pricePerSeat,
                     transactionId: 'GROUP-' + orderId + '-' + seat,
                     createdAt: new Date().toISOString()
                 };
                 const booking = await confirmBooking(seatCheckoutData);
                 if (booking) {
-                    // Đảm bảo createdAt luôn có giá trị
+
                     if (!booking.createdAt) booking.createdAt = new Date().toISOString();
                     bookings.push(booking);
                 }
@@ -728,11 +688,9 @@
 
             if (bookings.length === 0) return;
 
-            // Tìm booking của người dùng hiện tại (theo ghế của họ)
             const myBooking = bookings.find(b => b.seats && b.seats.includes(window.mySeat))
                            || bookings[0];
 
-            // Lưu booking của mình để hiển thị ở trang success
             lsSet(KEYS.LAST_BOOKING, myBooking);
 
             setTimeout(() => {
@@ -748,27 +706,26 @@
     }
 
     btnConfirmPay.addEventListener('click', () => {
-        // Allow proxy payment by leader OR own seat payment
+
         const isProxy = window._isProxyPayment === true;
         if (!isProxy && (!currentlyPayingSeat || currentlyPayingSeat !== window.mySeat)) return;
-        
+
         const originalBtnText = btnConfirmPay.textContent;
         btnConfirmPay.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ĐANG XỬ LÝ...';
         btnConfirmPay.style.pointerEvents = 'none';
 
-        setTimeout(() => {
+        setTimeout(async () => {
             modalBackdrop.classList.remove('active');
             btnConfirmPay.textContent = originalBtnText;
             btnConfirmPay.style.pointerEvents = 'auto';
 
             if (isProxy) {
-                // --- PROXY PAYMENT: Leader pays for member instantly ---
+
                 const proxySeat = window._proxyPaySeat;
                 if (proxySeat && !groupData.paidSeats.includes(proxySeat)) {
                     groupData.paidSeats.push(proxySeat);
                     localStorage.setItem('splitOrder_' + orderId, JSON.stringify(groupData));
-                    
-                    // Save notification for member
+
                     let notifications = JSON.parse(localStorage.getItem('3hd2k_notifications') || '[]');
                     notifications.unshift({
                         id: 'NOTIF-' + Date.now(),
@@ -780,22 +737,21 @@
                         read: false
                     });
                     localStorage.setItem('3hd2k_notifications', JSON.stringify(notifications));
-                    
+
                     showToast('Da thanh toan ho ghe ' + proxySeat + ' thanh cong!', 'success');
                 }
                 window._isProxyPayment = false;
                 window._proxyPaySeat = null;
                 currentlyPayingSeat = null;
-                
+
                 loadOrderData();
                 renderLobby();
                 await checkCompletion();
                 return;
             }
 
-            // --- NORMAL PAYMENT: Redirect to payment gateway ---
             const selectedMethod = document.querySelector('.payment-method.selected input')?.value || 'momo';
-            
+
             const currentUrl = new URL(window.location.href);
             currentUrl.searchParams.set('paidSeat', currentlyPayingSeat);
             currentUrl.searchParams.set('clearFood', 'true');
@@ -804,11 +760,10 @@
             const txId = 'TX-' + Math.random().toString(36).substr(2, 9).toUpperCase();
             const totalPay = pricePerSeat + myFoodTotal;
             window.location.href = `../checkout/payment_simulation.html?provider=${encodeURIComponent(selectedMethod)}&txId=${txId}&amount=${totalPay}&returnUrl=${returnUrl}`;
-            
+
         }, 500);
     });
 
-    // --- Toast Logic ---
     function showToast(message, type = 'success') {
         const toast = document.createElement('div');
         toast.style.background = type === 'success' ? 'var(--bg-panel)' : 'rgba(255, 42, 42, 0.9)';
@@ -825,25 +780,23 @@
         toast.style.transition = 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)';
         toast.style.transform = 'translateX(120%)';
         toast.style.opacity = '0';
-        
+
         const icon = type === 'success' ? '<i class="fas fa-check-circle" style="color: var(--neon-green); font-size: 1.25rem;"></i>' : '<i class="fas fa-info-circle" style="color: #fff; font-size: 1.25rem;"></i>';
         toast.innerHTML = `${icon} <span>${message}</span>`;
-        
+
         document.getElementById('toast-container').appendChild(toast);
-        
-        // Trigger reflow
+
         toast.offsetHeight;
         toast.style.transform = 'translateX(0)';
         toast.style.opacity = '1';
-        
+
         setTimeout(() => {
             toast.style.transform = 'translateX(120%)';
             toast.style.opacity = '0';
             setTimeout(() => toast.remove(), 300);
         }, 3000);
     }
-    
-    // Expose showToast to window for inline onclick handlers
+
     window.showToast = showToast;
 
     const COMBOS = { none: { price: 0, name: '' }, single: { price: 65000, name: 'Combo 1 Người' }, double: { price: 95000, name: 'Combo 2 Người' } };
@@ -873,7 +826,6 @@
         });
     });
 
-    // Khôi phục trạng thái khi load trang
     let foodStr = localStorage.getItem('selectedFood');
     if (foodStr) {
         try {
@@ -910,27 +862,24 @@
 
     btnProceedCancel.addEventListener('click', async () => {
         if (!pendingCancelSeat) return;
-        
+
         const seatToCancel = pendingCancelSeat;
         cancelModalBackdrop.classList.remove('active');
-        
-        // Mark as cancelled
+
         groupData.cancelledSeats.push(seatToCancel);
         groupData.checkoutData.total -= pricePerSeat;
         await saveOrderData();
-        
-        // Chuyển người dùng thành Observer
+
         localStorage.setItem('mySeatForOrder_' + orderId, 'CANCELLED');
-        
-        await loadOrderData(); 
-        renderLobby(); 
-        
+
+        await loadOrderData();
+        renderLobby();
+
         showToast(`Đã hủy ghế ${seatToCancel} thành công!`, 'success');
-        
+
         await checkCompletion();
     });
 
-    // --- Countdown Timer Logic ---
     let timeLeft = 14 * 60 + 59;
     const countdownEl = document.getElementById('countdown');
     const progressBar = document.getElementById('progress-bar');
@@ -940,7 +889,7 @@
         const minutes = Math.floor(timeLeft / 60);
         const seconds = timeLeft % 60;
         countdownEl.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-        
+
         const progress = (timeLeft / totalTime) * 100;
         progressBar.style.width = `${progress}%`;
 
@@ -951,12 +900,11 @@
             countdownEl.textContent = "HẾT GIỜ";
             countdownEl.style.color = "var(--neon-red)";
             alert('Phòng chờ đã đóng. Vé chưa thanh toán sẽ được trả lại hệ thống!');
-            window.location.href = "/explore/home-page/index.html"; // Kick them out
+            window.location.href = "/explore/home-page/index.html";
         }
     };
     const timerInterval = setInterval(updateTimer, 1000);
 
-    // --- Share Link Logic ---
     window.copyLink = function(event) {
         const input = document.querySelector('.share-input');
         input.select();
@@ -972,21 +920,19 @@
             btn.style.color = '';
         }, 2000);
     }
-    
+
     window.shareSocial = function(platform) {
         alert(`Đã mở giao diện chia sẻ qua ${platform} với link: ${window.location.href}`);
     }
 
-    // Init
     if (loadOrderData()) {
         renderLobby();
-        
+
         document.getElementById('btn-go-food')?.addEventListener('click', (e) => {
             e.preventDefault();
             window.location.href = `/booking/booking-food/index.html?returnToLobby=${orderId}`;
         });
-        
-        // Check if returning from a successful payment caused the order to complete
+
         await checkCompletion();
     }
 </script>

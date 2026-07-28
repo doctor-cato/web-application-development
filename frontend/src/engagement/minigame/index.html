@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
-<head><meta name="referrer" content="no-referrer">
+<head><meta name="referrer" content="strict-origin-when-cross-origin">
     <link rel="icon" type="image/jpeg" href="/assets/favicon.jpg?v=2">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,11 +10,11 @@
     <meta property="og:type" content="website">
     <meta property="og:image" content="/assets/favicon.jpg">
     <title>3HD2K - Minigames & Tương Tác</title>
-    <!-- Load custom fonts: Inter for Headings, Inter for Body -->
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- FontAwesome for Icons -->
+
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../../shared/css/main.css">
     <link rel="stylesheet" href="../../engagement/minigame/css/style.css">
@@ -22,7 +22,6 @@
 <body>
     <div class="container-fluid">
         <div id="navbar-placeholder"></div>
-        <!-- NAVIGATION: Rendered via navbar.js -->
 
         <section class="hero-banner">
             <div class="hero-content">
@@ -33,7 +32,7 @@
                     <i class="fas fa-book-open" style="margin-right: 8px;"></i> TÌM HIỂU CÁCH CHƠI
                 </button>
             </div>
-            
+
             <div class="wallet-bar-container">
                 <div class="wallet-bar">
                     <div class="wallet-info">
@@ -42,7 +41,7 @@
                         </span>
                         <div class="wallet-text">
                             <span class="wallet-label" style="display:flex; align-items:center; gap: 5px;">
-                                SỐ DƯ CỦA BẠN 
+                                SỐ DƯ CỦA BẠN
                                 <i class="fas fa-info-circle" title="Điểm tích luỹ tự động nhận được khi bạn đặt vé xem phim." style="cursor:help; opacity:0.7;"></i>
                             </span>
                             <span class="wallet-balance"><strong id="balance-amount">1,250</strong> <span class="points-label">ĐIỂM</span></span>
@@ -68,7 +67,7 @@
             </div>
 
             <div class="pools-grid" id="active-pools-grid">
-                <!-- Active cards will be rendered here by JS -->
+
             </div>
 
             <div class="section-divider" style="margin: 60px 0 40px; border-top: 1px solid rgba(255,255,255,0.1);"></div>
@@ -79,7 +78,7 @@
             </div>
 
             <div class="pools-grid" id="ended-pools-grid">
-                <!-- Ended cards will be rendered here by JS -->
+
             </div>
         </main>
 
@@ -112,10 +111,9 @@
         </section>
 
         <div id="footer-placeholder"></div>
-        <!-- FOOTER: Rendered via footer.js -->
+
     </div>
 
-    <!-- TOAST NOTIFICATION -->
     <div id="toast" class="toast-message"></div>
 
     <script src="../../engagement/minigame/js/script.js"></script>

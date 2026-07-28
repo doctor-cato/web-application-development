@@ -10,7 +10,6 @@
         public DateTime EndTime { get; set; }
         public decimal TicketPrice { get; set; }
 
-        // Hỗ trợ hiển thị nhanh định dạng giờ trên giao diện đặt vé (Ví dụ: 14:30)
         public string FormattedTime => StartTime.ToString("HH:mm");
     }
 }

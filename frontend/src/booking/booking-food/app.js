@@ -58,7 +58,7 @@
   let order = { movie: 'Chưa chọn phim', format: '', seats: '', ticketLabel: '0x Vé', ticketPrice: 0 };
 
   if (returnToLobby) {
-    // From Group Booking Lobby
+
     const raw = localStorage.getItem('splitOrder_' + returnToLobby);
     if (raw) {
       try {
@@ -78,7 +78,7 @@
       } catch(e) {}
     }
   } else {
-    // From Single Booking (checkout flow)
+
     const sessionRaw = sessionStorage.getItem('cinema_checkout');
     if (sessionRaw) {
       try {
@@ -159,13 +159,12 @@
       addLabel.style.border = current.added ? '1px solid rgba(255,255,255,0.1)' : '';
       addLabel.style.boxShadow = current.added ? 'none' : '';
     }
-    
+
     if (current.added) {
       card.classList.add('active');
     } else {
       card.classList.remove('active');
     }
-
 
     if (!qtyRow) return;
 
@@ -234,7 +233,6 @@
 
     refs.summary.amount.textContent = money(order.ticketPrice + finalProductTotal);
 
-    // Save selected items to localStorage for the checkout page
     const selectedFoods = [];
     productIds.forEach(id => {
       if(state[id].added) {
@@ -256,7 +254,6 @@
     productIds.forEach(renderCard);
     renderSummary();
   }
-
 
   function shakeSummary() {
     const card = document.querySelector('.summary-card');
@@ -294,7 +291,6 @@
     const id = card.dataset.product;
     if (!state[id]) return;
 
-
     if (addLabel) {
       state[id].added = !state[id].added;
       if (state[id].added) shakeSummary();
@@ -304,15 +300,10 @@
       if (step === 1 && state[id].added) shakeSummary();
     }
 
-
     renderCard(id);
     renderSummary();
   });
 
-  // (Bỏ qua search và navLinks cũ do đã sử dụng component navbar.js toàn cục)
-
-  
-  // Slider logic
   document.querySelectorAll('.category').forEach(cat => {
     const prev = cat.querySelector('.prev');
     const next = cat.querySelector('.next');
@@ -381,7 +372,6 @@
     appliedPromoCodeEl.innerText = window.currentPromoCode;
   }
 
-  // Sticky Tabs Scroll Spy
   const sections = document.querySelectorAll('.menu-section');
   const tabs = document.querySelectorAll('.food-tab');
 
@@ -408,7 +398,6 @@
 
   sections.forEach(sec => observer.observe(sec));
 
-  // Smooth scroll for tabs
   tabs.forEach(tab => {
     tab.addEventListener('click', (e) => {
       e.preventDefault();
@@ -420,7 +409,6 @@
     });
   });
 
-  // Handle returnToLobby UI changes
   const checkoutBtn = document.querySelector('.summary a.btn.primary');
   if (returnToLobby) {
     if (checkoutBtn) {
@@ -448,7 +436,7 @@
           }
       });
       localStorage.setItem('checkoutFood', JSON.stringify(cart));
-      
+
       let co = sessionStorage.getItem('cinema_checkout');
       if (!co) {
           sessionStorage.setItem('cinema_checkout', JSON.stringify({
@@ -467,7 +455,7 @@
               sessionStorage.setItem('cinema_checkout', JSON.stringify(sd));
           } catch(err) {}
       }
-      
+
       if (returnToLobby) {
           window.location.href = `../group-booking/room.html?order=${returnToLobby}`;
       } else {

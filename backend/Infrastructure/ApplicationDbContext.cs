@@ -7,7 +7,6 @@ namespace appweb.Infrastructure
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
-        // --- CÁC BẢNG ĐÃ CÓ ---
         public DbSet<Booking> Bookings { get; set; }
         public DbSet<BookingDetail> BookingDetails { get; set; }
         public DbSet<Movie> Movies { get; set; }
@@ -17,15 +16,13 @@ namespace appweb.Infrastructure
         public DbSet<Cinema> Cinemas { get; set; }
         public DbSet<Room> Rooms { get; set; }
         public DbSet<Seat> Seats { get; set; }
-        
-        // --- BỔ SUNG BẢNG CINE-MATCH ---
+
         public DbSet<CineMatch> CineMatches { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // 1. Cấu hình bảng Bookings
             modelBuilder.Entity<Booking>(entity =>
             {
                 entity.HasKey(e => e.Id).HasName("PK_bookings__3213E83F981ED873");
@@ -66,7 +63,6 @@ namespace appweb.Infrastructure
                     .HasConstraintName("FK__bookings__user_i__628FA481");
             });
 
-            // 2. Cấu hình bảng Booking Details
             modelBuilder.Entity<BookingDetail>(entity =>
             {
                 entity.HasKey(e => e.Id).HasName("PK_booking___3213E83F8B692CA5");

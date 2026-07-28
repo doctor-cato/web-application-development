@@ -1,16 +1,10 @@
-/* ============================================================
-   3HD2K — Movie Detail Page Styles
-   Theme: Cinematic Noir, Glassmorphism, Premium Dark UI
-   ============================================================ */
 
-/* ── PAGE WRAPPER ─────────────────────────────────────────── */
 .movie-detail-page {
-    padding-top: 80px; /* navbar height */
+    padding-top: 80px;
     background: var(--bg-color);
     min-height: 100vh;
 }
 
-/* ── BREADCRUMB ───────────────────────────────────────────── */
 .detail-breadcrumb {
     padding: 16px var(--page-padding);
     display: flex;
@@ -29,7 +23,6 @@
 .detail-breadcrumb .sep { opacity: 0.4; font-size: 0.7rem; }
 .detail-breadcrumb .current { color: var(--text-main); font-weight: 500; }
 
-/* ── COMBINED DETAIL SECTION (poster + all info in one) ───── */
 .detail-combined {
     position: relative;
     overflow: hidden;
@@ -72,7 +65,6 @@
     margin: 0 auto;
 }
 
-/* Poster */
 .detail-combined-poster {
     flex-shrink: 0;
     width: 220px;
@@ -93,7 +85,6 @@
     display: block;
 }
 
-/* Info panel */
 .detail-combined-info {
     flex: 1;
     min-width: 0;
@@ -102,28 +93,24 @@
     gap: 0;
 }
 
-/* Divider between actions and synopsis */
 .detail-combined-section {
     margin-top: 28px;
     padding-top: 24px;
     border-top: 1px solid rgba(255,255,255,0.08);
 }
 
-/* Meta grid inside combined */
 .detail-combined-info .detail-meta-grid {
     margin-top: 24px;
     padding-top: 20px;
     border-top: 1px solid rgba(255,255,255,0.08);
 }
 
-/* Cast inside combined */
 .detail-combined-cast {
     margin-top: 24px;
     padding-top: 20px;
     border-top: 1px solid rgba(255,255,255,0.08);
 }
 
-/* ── HERO / BACKDROP (legacy, kept for reference) ──────────── */
 .detail-hero {
     position: relative;
     height: 80vh;
@@ -169,7 +156,6 @@
     gap: 40px;
 }
 
-/* Poster dọc trong hero */
 .detail-hero-poster {
     flex-shrink: 0;
     width: 180px;
@@ -191,7 +177,6 @@
     display: block;
 }
 
-/* Info bên cạnh poster */
 .detail-hero-info {
     flex: 1;
     min-width: 0;
@@ -384,14 +369,12 @@
     margin-left: 2px;
 }
 
-/* ── MAIN CONTENT LAYOUT ──────────────────────────────────── */
 .detail-main {
     padding: 0 var(--page-padding) 80px;
     max-width: 1400px;
     margin: 0 auto;
 }
 
-/* ── METADATA SECTION ────────────────────────────── */
 .detail-metadata {
     display: grid;
     grid-template-columns: 220px 1fr;
@@ -436,7 +419,6 @@
     font-size: 0.875rem;
 }
 
-/* ── METADATA BODY ────────────────────────────────────────── */
 .detail-info-body {}
 
 .detail-section-label {
@@ -512,7 +494,6 @@
     border-color: var(--primary-red);
 }
 
-/* Cast avatars */
 .cast-list {
     display: flex;
     flex-wrap: wrap;
@@ -545,7 +526,6 @@
     line-height: 1.3;
 }
 
-/* ── SHOWTIMES SECTION ────────────────────────────────────── */
 .detail-showtimes {
     padding: 50px 0 60px;
     border-bottom: 1px solid var(--glass-border);
@@ -571,7 +551,6 @@
     box-shadow: 0 0 10px rgba(229,9,20,0.5);
 }
 
-/* Date tabs */
 .showtime-date-tabs {
     display: flex;
     gap: 8px;
@@ -626,7 +605,6 @@
 }
 .date-tab.active .month-name { color: rgba(255,255,255,0.7); }
 
-/* Filters row */
 .showtime-filters-row {
     display: flex;
     gap: 14px;
@@ -655,9 +633,9 @@
     border-color: rgba(255, 255, 255, 0.2);
     box-shadow: 0 6px 16px rgba(229, 9, 20, 0.2);
 }
-.showtime-filter-select i { 
-    color: var(--primary-red); 
-    font-size: 1rem; 
+.showtime-filter-select i {
+    color: var(--primary-red);
+    font-size: 1rem;
 }
 .showtime-filter-select select {
     background: transparent;
@@ -680,7 +658,6 @@
     font-weight: normal;
 }
 
-/* Cinema showtime list */
 .cinema-showtime-list {
     display: flex;
     flex-direction: column;
@@ -851,7 +828,6 @@
 .legend-dot.almost-full { background: #f39c12; }
 .legend-dot.full { background: #555; }
 
-/* ── RATINGS & REVIEWS ────────────────────────────────────── */
 .detail-ratings {
     padding: 50px 0 60px;
     border-bottom: 1px solid var(--glass-border);
@@ -863,7 +839,6 @@
     gap: 50px;
 }
 
-/* Score panel */
 .rating-score-panel {
     display: flex;
     flex-direction: column;
@@ -929,7 +904,6 @@
     color: var(--text-main);
 }
 
-/* User interactions */
 .rating-interact-row {
     display: flex;
     gap: 12px;
@@ -963,7 +937,6 @@
 }
 .interact-btn.liked i { color: #ff6b6b; }
 
-/* Comments */
 .reviews-container {
     display: flex;
     flex-direction: column;
@@ -1082,7 +1055,6 @@
 }
 .review-card:hover { border-color: rgba(255,255,255,0.15); }
 
-/* ── VIP REVIEW CARD BORDERS ────────────────────────────── */
 .review-card-silver {
     border-color: #c0c0c0 !important;
     box-shadow: 0 0 10px rgba(192, 192, 192, 0.15);
@@ -1134,9 +1106,6 @@
     color: rgba(255,255,255,0.75);
 }
 
-
-
-/* ── MEDIA GALLERY ────────────────────────────────────────── */
 .detail-media {
     padding: 50px 0 60px;
     border-bottom: 1px solid var(--glass-border);
@@ -1172,7 +1141,6 @@
 .media-panel { display: none; }
 .media-panel.active { display: block; }
 
-/* Trailer embed */
 .trailer-embed-container {
     position: relative;
     padding-bottom: 56.25%;
@@ -1191,7 +1159,6 @@
     border-radius: 10px;
 }
 
-/* Image gallery grid */
 .gallery-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -1230,7 +1197,6 @@
 }
 .gallery-item:hover::after { opacity: 1; }
 
-/* Lightbox */
 .lightbox-overlay {
     display: none;
     position: fixed;
@@ -1291,7 +1257,6 @@
 .lightbox-prev { left: -60px; }
 .lightbox-next { right: -60px; }
 
-/* ── RELATED MOVIES (CAROUSEL) ────────────────────────────── */
 .detail-related {
     padding: 50px 0 60px;
     border-bottom: 1px solid var(--glass-border);
@@ -1394,7 +1359,6 @@
 .carousel-scroll-btn.prev { left: -20px; }
 .carousel-scroll-btn.next { right: -20px; }
 
-/* ── PROMOTIONS BANNER ────────────────────────────────────── */
 .detail-promos {
     padding: 50px 0 60px;
 }
@@ -1472,8 +1436,6 @@
     color: #87d3f5;
 }
 
-/* ── RESPONSIVE ───────────────────────────────────────────── */
-/* ponytail: consolidated responsive layout for movie details */
 @media (max-width: 1024px) {
     .detail-metadata { grid-template-columns: 180px 1fr; gap: 30px; }
     .ratings-layout { grid-template-columns: 200px 1fr; }
@@ -1513,7 +1475,7 @@
     .showtime-filter-select { width: 100%; }
     .showtime-date-tabs { overflow-x: auto; white-space: nowrap; flex-wrap: nowrap; }
     .float-support { bottom: 20px; right: 16px; }
-    /* Combined section responsive */
+
     .detail-combined-content {
         flex-direction: column;
         align-items: center;

@@ -1,9 +1,4 @@
-// ============================================================
-//  3HD2K — DATA STORE
-//  Tất cả dữ liệu phim, rạp và suất chiếu mẫu + Đồng bộ Admin
-// ============================================================
 
-// ── API & STORAGE INTEGRATION ────────────────────────────────────
 let allMoviesData = [];
 let heroMovies = [];
 let nowShowingMovies = [];
@@ -48,7 +43,7 @@ function formatMovieDuration(rawDuration) {
 function mapMovieObj(m) {
     const rawPoster = m.posterUrl || m.poster || m.bg || m.backdropUrl;
     const rawBg = m.bgUrl || m.backdropUrl || m.bg || m.posterUrl || m.poster;
-    
+
     const posterImg = normalizeImagePath(rawPoster);
     const bgImg = normalizeImagePath(rawBg);
     const formattedDuration = formatMovieDuration(m.duration);
@@ -154,6 +149,11 @@ function getFallbackMovies() {
 }
 
 async function fetchMovies() {
+    let deletedList = [];
+    try {
+        deletedList = JSON.parse(localStorage.getItem('3hd2k_deleted_movies') || '[]').map(x => String(x).toLowerCase().trim());
+    } catch (_) {}
+
     try {
         const response = await fetch(`/api/movies`);
         const contentType = response.headers.get('content-type') || '';
@@ -176,20 +176,30 @@ async function fetchMovies() {
         allMoviesData = getFallbackMovies();
     }
 
-    // Merge movies added by Admin in LocalStorage (3hd2k_movies & cinema_movies)
+    allMoviesData = allMoviesData.filter(m => {
+        const mId = String(m.id || '').toLowerCase().trim();
+        const mTitle = String(m.title || '').toLowerCase().trim();
+        return !deletedList.includes(mId) && !deletedList.includes(mTitle);
+    });
+
     try {
         const local1 = JSON.parse(localStorage.getItem('3hd2k_movies') || '[]');
         const local2 = JSON.parse(localStorage.getItem('cinema_movies') || '[]');
         const combined = [...(Array.isArray(local1) ? local1 : []), ...(Array.isArray(local2) ? local2 : [])];
-        
+
         combined.forEach(lm => {
             if (lm && lm.title) {
                 const mapped = mapMovieObj(lm);
-                const existingIdx = allMoviesData.findIndex(m => m.id === mapped.id || m.title.toLowerCase().trim() === mapped.title.toLowerCase().trim());
-                if (existingIdx >= 0) {
-                    allMoviesData[existingIdx] = mapped;
-                } else {
-                    allMoviesData.unshift(mapped);
+                const mId = String(mapped.id || '').toLowerCase().trim();
+                const mTitle = String(mapped.title || '').toLowerCase().trim();
+
+                if (!deletedList.includes(mId) && !deletedList.includes(mTitle)) {
+                    const existingIdx = allMoviesData.findIndex(m => m.id === mapped.id || m.title.toLowerCase().trim() === mapped.title.toLowerCase().trim());
+                    if (existingIdx >= 0) {
+                        allMoviesData[existingIdx] = mapped;
+                    } else {
+                        allMoviesData.unshift(mapped);
+                    }
                 }
             }
         });
@@ -197,8 +207,7 @@ async function fetchMovies() {
 
     nowShowingMovies = allMoviesData.filter(m => m.status === 'now-showing');
     comingSoonMovies = allMoviesData.filter(m => m.status === 'coming-soon');
-    
-    // Strict Rule: Hero Banner ONLY displays Now-Showing movies
+
     heroMovies = nowShowingMovies.slice(0, 5);
 
     window.allMoviesData = allMoviesData;
@@ -211,7 +220,6 @@ async function fetchMovies() {
 
 window.fetchMoviesPromise = fetchMovies().catch(() => getFallbackMovies());
 
-// ── CINEMAS ──────────────────────────────────────────────────
 function getFallbackCinemas() {
     return [
         {
@@ -311,29 +319,26 @@ async function fetchCinemas() {
 }
 window.fetchCinemasPromise = fetchCinemas().catch(() => getFallbackCinemas());
 
-// ── SHOWTIMES API ─────────────────────────────────
 function getFallbackShowtimes(movieId) {
     const showtimes = [];
     const now = new Date();
     const currentCinemas = (typeof cinemas !== 'undefined' && cinemas.length > 0) ? cinemas : getFallbackCinemas();
-    
+
     for (let i = 0; i < 7; i++) {
         const targetDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + i);
         currentCinemas.forEach(cinema => {
-            // Include some late hours and a guaranteed future hour for today
+
             const hours = [10, 14, 18, 20, 22];
             if (i === 0) {
-                hours.push((now.getHours() + 1) % 24); // Guaranteed future time for today
+                hours.push((now.getHours() + 1) % 24);
             }
-            
-            // Remove duplicates
+
             const uniqueHours = [...new Set(hours)].sort((a,b) => a-b);
-            
+
             uniqueHours.forEach(hour => {
                 const st = new Date(targetDate);
                 st.setHours(hour, (Math.floor(Math.random() * 3) * 15), 0, 0);
-                
-                // If it's the guaranteed future time, make sure it's strictly in the future
+
                 if (i === 0 && hour === (now.getHours() + 1) % 24) {
                     st.setHours(now.getHours() + 1, 30, 0, 0);
                 }
@@ -364,7 +369,6 @@ async function fetchShowtimesByMovie(movieId) {
 }
 window.fetchShowtimesByMovie = fetchShowtimesByMovie;
 
-// Export to window
 window.heroMovies = heroMovies;
 window.nowShowingMovies = nowShowingMovies;
 window.comingSoonMovies = comingSoonMovies;

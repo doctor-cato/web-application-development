@@ -41,7 +41,6 @@ namespace appweb.Controllers
             if (existingUser != null)
                 return BadRequest(new { message = "Email này đã được sử dụng." });
 
-            // Kiểm tra trùng số điện thoại
             if (!string.IsNullOrEmpty(model.Phone))
             {
                 var existingPhone = await _userRepository.GetByPhoneAsync(model.Phone);
@@ -92,9 +91,40 @@ namespace appweb.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var user = await _userRepository.CheckLoginAsync(model.Email);
+            var email = model.Email?.Trim();
+            var user = await _userRepository.GetByEmailAsync(email ?? string.Empty);
 
-            if (user == null || !BCrypt.Net.BCrypt.Verify(model.Password, user.Password))
+            if (user == null)
+                return Unauthorized(new { message = "Tài khoản hoặc mật khẩu không chính xác." });
+
+            bool isPasswordValid = false;
+            if (!string.IsNullOrEmpty(user.Password))
+            {
+                try
+                {
+                    if (user.Password.StartsWith("$2a$") || user.Password.StartsWith("$2b$") || user.Password.StartsWith("$2y$"))
+                    {
+                        isPasswordValid = BCrypt.Net.BCrypt.Verify(model.Password, user.Password);
+                    }
+                    else
+                    {
+
+                        isPasswordValid = (user.Password == model.Password);
+                        if (isPasswordValid)
+                        {
+
+                            user.Password = BCrypt.Net.BCrypt.HashPassword(model.Password);
+                            await _userRepository.UpdateAsync(user);
+                        }
+                    }
+                }
+                catch
+                {
+                    isPasswordValid = (user.Password == model.Password);
+                }
+            }
+
+            if (!isPasswordValid)
                 return Unauthorized(new { message = "Tài khoản hoặc mật khẩu không chính xác." });
 
             var claims = new List<Claim>
@@ -115,17 +145,17 @@ namespace appweb.Controllers
                     ExpiresUtc = DateTimeOffset.UtcNow.AddDays(30)
                 });
 
-            return Ok(new { 
-                message = "Đăng nhập thành công", 
-                user = new { 
-                    email = user.Email, 
-                    fullname = user.Fullname, 
+            return Ok(new {
+                message = "Đăng nhập thành công",
+                user = new {
+                    email = user.Email,
+                    fullname = user.Fullname,
                     phone = user.Phone,
                     dateOfBirth = user.DateOfBirth,
                     gender = user.Gender,
                     role = user.Role,
                     avatar = user.AvatarUrl
-                } 
+                }
             });
         }
 
@@ -146,21 +176,18 @@ namespace appweb.Controllers
             if (user == null)
                 return NotFound(new { message = "Không tìm thấy tài khoản với email này." });
 
-            // Sinh mã OTP 6 số
             string otp = System.Security.Cryptography.RandomNumberGenerator.GetInt32(100000, 999999).ToString();
 
-            // Lưu vào DB
             user.OtpCode = otp;
-            user.OtpExpiryTime = DateTime.Now.AddMinutes(5); // Hết hạn sau 5 phút
+            user.OtpExpiryTime = DateTime.Now.AddMinutes(5);
             await _userRepository.UpdateAsync(user);
 
-            // Gửi email thật qua SMTP
             try
             {
                 var smtpSettings = _configuration.GetSection("SmtpSettings");
                 var senderEmail = smtpSettings["SenderEmail"];
                 var password = smtpSettings["Password"];
-                
+
                 if (!string.IsNullOrEmpty(senderEmail) && senderEmail != "YOUR_GMAIL_HERE@gmail.com")
                 {
                     var client = new SmtpClient(smtpSettings["Server"], int.Parse(smtpSettings["Port"]))
@@ -168,7 +195,7 @@ namespace appweb.Controllers
                         Credentials = new NetworkCredential(smtpSettings["Username"], password),
                         EnableSsl = true
                     };
-                    
+
                     var mailMessage = new MailMessage
                     {
                         From = new MailAddress(senderEmail, smtpSettings["SenderName"]),
@@ -177,7 +204,7 @@ namespace appweb.Controllers
                         IsBodyHtml = false,
                     };
                     mailMessage.To.Add(model.Email);
-                    
+
                     await client.SendMailAsync(mailMessage);
                     Console.WriteLine("Đã gửi email thật thành công qua SMTP.");
                 }
@@ -204,14 +231,12 @@ namespace appweb.Controllers
             if (user == null)
                 return NotFound(new { message = "Không tìm thấy tài khoản." });
 
-            // Kiểm tra OTP hợp lệ
             if (user.OtpCode != model.OtpCode)
                 return BadRequest(new { message = "Mã OTP không chính xác." });
 
             if (user.OtpExpiryTime < DateTime.Now)
                 return BadRequest(new { message = "Mã OTP đã hết hạn." });
 
-            // Cập nhật mật khẩu mới
             user.Password = BCrypt.Net.BCrypt.HashPassword(model.NewPassword);
             user.OtpCode = null;
             user.OtpExpiryTime = null;
@@ -236,7 +261,7 @@ namespace appweb.Controllers
 
             user.Role = "VIP";
             user.VipPlan = model.Plan;
-            
+
             await _userRepository.UpdateAsync(user);
 
             return Ok(new { message = "Nâng cấp VIP thành công." });

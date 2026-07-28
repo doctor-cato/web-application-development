@@ -1,9 +1,4 @@
-/* cancel-booking.css
-   Styles cho trang Hủy vé & Đổi suất chiếu
-   Theme: Cinematic Noir (#0c0c0c, #e50914) — nhất quán với main.css
-*/
 
-/* ---------- Page layout ---------- */
 .page-wrapper {
   min-height: 100vh;
   padding: 100px max(5%, calc((100% - 900px) / 2)) 60px;
@@ -32,7 +27,6 @@
   font-size: 0.95rem;
 }
 
-/* ---------- Ticket list ---------- */
 .ticket-list {
   display: flex;
   flex-direction: column;
@@ -60,7 +54,6 @@
   text-decoration: underline;
 }
 
-/* ---------- Ticket card ---------- */
 .ticket-card {
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
@@ -134,7 +127,6 @@
   color: #4ade80;
 }
 
-/* ---------- Ticket actions ---------- */
 .ticket-actions {
   display: flex;
   gap: 10px;
@@ -184,7 +176,6 @@
   transform: translateY(-1px);
 }
 
-/* ---------- Modal ---------- */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -239,7 +230,6 @@
   color: var(--primary-red);
 }
 
-/* ---------- Showtime list ---------- */
 .showtime-list {
   display: flex;
   flex-direction: column;
@@ -318,7 +308,6 @@
   flex-shrink: 0;
 }
 
-/* ---------- Modal actions ---------- */
 .modal-actions {
   display: flex;
   justify-content: flex-end;
@@ -326,7 +315,6 @@
   flex-shrink: 0;
 }
 
-/* ---------- Toast ---------- */
 .cb-toast {
   position: fixed;
   bottom: 32px;
@@ -355,7 +343,6 @@
 .cb-toast--warning { background: #713f12; border: 1px solid #facc15; }
 .cb-toast--info    { background: #1e3a5f; border: 1px solid #60a5fa; }
 
-/* ---------- Responsive ---------- */
 @media (max-width: 600px) {
   .ticket-card {
     flex-direction: column;
@@ -373,7 +360,6 @@
   }
 }
 
-/* ---------- Tabs ---------- */
 .tabs {
   display: flex;
   gap: 8px;
@@ -416,7 +402,6 @@
   display: block;
 }
 
-/* ---------- History list ---------- */
 .history-list {
   display: flex;
   flex-direction: column;
@@ -474,7 +459,6 @@
   margin-top: 2px;
 }
 
-/* PONYTAIL: Mobile <= 480px responsive styling for cancel booking page */
 @media (max-width: 480px) {
   .page-wrapper {
     margin: 80px auto 30px;

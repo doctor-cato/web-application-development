@@ -9,7 +9,6 @@ test.describe('Automated Accessibility (axe-core) Audit', () => {
       .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'best-practice'])
       .analyze();
 
-    // Verify there are no critical accessibility violations
     const criticalViolations = accessibilityScanResults.violations.filter(
       (v) => v.impact === 'critical' || v.impact === 'serious'
     );

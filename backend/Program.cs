@@ -7,7 +7,6 @@ using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Đăng ký các dịch vụ hệ thống MVC và API Controller
 builder.Services.AddControllersWithViews()
     .AddJsonOptions(options =>
     {
@@ -31,10 +30,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Đăng ký SignalR
 builder.Services.AddSignalR();
 
-// Đăng ký Authentication (Cookie)
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
@@ -44,10 +41,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.ExpireTimeSpan = TimeSpan.FromDays(30);
     });
 
-// Đăng ký FileService
 builder.Services.AddScoped<IFileService, FileService>();
 
-// Đăng ký các Repositories
 builder.Services.AddScoped<appweb.Repositories.UserRepository>();
 builder.Services.AddScoped<appweb.Repositories.MovieRepository>();
 builder.Services.AddScoped<appweb.Repositories.BookingRepository>();
@@ -56,8 +51,9 @@ builder.Services.AddScoped<appweb.Repositories.CinemaRepository>();
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
+if (builder.Configuration.GetValue<bool>("Database:InitializeOnStartup"))
 {
+    using var scope = app.Services.CreateScope();
     try
     {
         var services = scope.ServiceProvider;
@@ -66,11 +62,10 @@ using (var scope = app.Services.CreateScope())
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"[DbInitializer Warning]: {ex.Message}");
+        app.Logger.LogError(ex, "Database initialization failed.");
     }
 }
 
-// ĐƯA SWAGGER RA NGOÀI ĐỂ LUÔN HOẠT ĐỘNG KHI CHẠY DỰ ÁN
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
@@ -78,16 +73,15 @@ app.UseSwaggerUI(c =>
 });
 
 app.UseHttpsRedirection();
-app.UseStaticFiles(); // Default wwwroot
+app.UseStaticFiles();
 
-// Serve frontend directory (if exists - e.g., local development)
 var frontendPath = Path.GetFullPath(Path.Combine(builder.Environment.ContentRootPath, "../frontend"));
 if (Directory.Exists(frontendPath))
 {
     app.UseStaticFiles(new StaticFileOptions
     {
         FileProvider = new PhysicalFileProvider(frontendPath),
-        RequestPath = "" // Map directly to root so /src/engagement/... works
+        RequestPath = ""
     });
 }
 

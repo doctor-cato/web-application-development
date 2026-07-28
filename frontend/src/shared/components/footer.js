@@ -1,8 +1,3 @@
-/**
- * footer.js
- * ─────────────────────────────────────────────────────────────
- * Component render Footer dùng chung cho toàn dự án.
- */
 
 export function renderFooter() {
     const footerHTML = `
@@ -21,8 +16,7 @@ export function renderFooter() {
                     <h4 style="font-family: 'Inter', sans-serif; font-size: 0.75rem; font-weight: bold; letter-spacing: 1px; margin-bottom: 20px;">KHÁM PHÁ</h4>
                     <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px;">
                         <li><a href="../../engagement/minigame/index.html" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s; font-family: 'Inter', sans-serif;">CINE PREDICT</a></li>
-                        <li><a href="../../booking/group-booking/index.html" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s; font-family: 'Inter', sans-serif;">Đặt ghế nhóm</a></li>
-                        <li><a href="../../wip.html" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s; font-family: 'Inter', sans-serif;">Khuyến mãi</a></li>
+                        <li><a href="../../booking/booking-food/index.html" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s; font-family: 'Inter', sans-serif;">Đồ Ăn</a></li>
                     </ul>
                 </div>
                 <div class="link-column">
@@ -95,11 +89,10 @@ export function renderFooter() {
     </style>
     `;
 
-    // Try to find existing footer or placeholder
-    let container = document.getElementById('footer-placeholder') || 
+    let container = document.getElementById('footer-placeholder') ||
                     document.querySelector('footer.main-footer') ||
                     document.querySelector('footer');
-    
+
     if (container) {
         container.outerHTML = footerHTML;
     } else {
@@ -107,7 +100,6 @@ export function renderFooter() {
     }
 }
 
-// Tự động render nếu được import
 let hasRenderedFooter = false;
 function safeRenderFooter() {
     if (hasRenderedFooter) return;

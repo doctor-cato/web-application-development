@@ -32,6 +32,12 @@ Mọi thao tác đọc/ghi dữ liệu trình duyệt được đóng gói tập
 
 Tên Database mặc định: `movie_booking_db`
 
+### Cấu hình kết nối
+
+- Backend dùng SQL Server Somee theo chuỗi `DefaultConnection` trong `backend/appsettings.json`; môi trường production cũng dùng file này, vì vậy không để chuỗi kết nối chỉ trong `appsettings.Development.json`.
+- `Database:InitializeOnStartup` mặc định là `false`. Database đã triển khai phải được tạo/cập nhật bằng script SQL hoặc migration có chủ đích, không dùng `EnsureCreated()` khi khởi động ứng dụng.
+- Khi chạy frontend độc lập ở cổng `3000` hoặc `8080`, `shared/utils/apiConfig.js` tự gọi backend tại cổng `5111`. Khi frontend được phục vụ bởi ASP.NET Core hoặc Vercel, API vẫn dùng đường dẫn tương đối `/api`.
+
 ### Sơ đồ Bảng & Thực thể (Database Tables)
 
 ```mermaid

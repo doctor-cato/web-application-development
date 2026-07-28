@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
-<head><meta name="referrer" content="no-referrer">
+<head><meta name="referrer" content="strict-origin-when-cross-origin">
     <link rel="icon" type="image/jpeg" href="/assets/favicon.jpg?v=2">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,21 +8,19 @@
     <meta name="description" content="Xem thông tin chi tiết, lịch chiếu và đặt vé phim tại 3HD2K Cinemas.">
     <link rel="stylesheet" href="../../shared/css/main.css">
     <link rel="stylesheet" href="../../explore/movie-details/movie-detail.css">
-    <!-- Fonts -->
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <!-- Icons -->
+
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
 
     <div id="navbar-placeholder"></div>
 
-    <!-- ── MAIN ────────────────────────────────────────────── -->
     <main class="movie-detail-page">
 
-        <!-- BREADCRUMB -->
         <nav class="detail-breadcrumb" id="detail-breadcrumb" aria-label="breadcrumb">
             <a href="../../explore/home-page/index.html"><i class="fas fa-home" style="margin-right:4px;"></i>Trang chủ</a>
             <span class="sep"><i class="fas fa-chevron-right"></i></span>
@@ -31,16 +29,15 @@
             <span class="current" id="breadcrumb-movie-name">Đang tải...</span>
         </nav>
 
-        <!-- COMBINED MOVIE DETAIL HEADER -->
         <section class="detail-combined" id="detail-hero">
             <div class="detail-combined-backdrop" id="hero-backdrop"></div>
             <div class="detail-combined-gradient"></div>
             <div class="detail-combined-content">
-                <!-- Poster -->
+
                 <div class="detail-combined-poster" id="hero-poster-wrap">
                     <img id="hero-poster-img" src="" alt="Movie Poster">
                 </div>
-                <!-- Info panel -->
+
                 <div class="detail-combined-info">
                     <div class="detail-hero-badges" id="hero-badges"></div>
                     <h1 class="detail-hero-title" id="hero-title">Đang tải...</h1>
@@ -72,21 +69,15 @@
             </div>
         </section>
 
-        <!-- CONTENT AREA -->
         <div class="detail-main">
 
-
-
-            <!-- 2. SHOWTIMES -->
             <section class="detail-showtimes" id="section-showtimes">
                 <h2 class="detail-section-title">Lịch Chiếu</h2>
 
-                <!-- Date tabs -->
                 <div class="showtime-date-tabs" id="date-tabs">
-                    <!-- Rendered by JS -->
+
                 </div>
 
-                <!-- Filters -->
                 <div class="showtime-filters-row">
                     <div class="showtime-filter-select">
                         <i class="fas fa-map-marker-alt"></i>
@@ -121,12 +112,10 @@
                     </div>
                 </div>
 
-                <!-- Cinema list -->
                 <div class="cinema-showtime-list" id="cinema-showtime-list">
-                    <!-- Rendered by JS -->
+
                 </div>
 
-                <!-- Legend -->
                 <div class="showtime-legend">
                     <div class="legend-item"><div class="legend-dot available"></div> Còn vé</div>
                     <div class="legend-item"><div class="legend-dot almost-full"></div> Sắp hết vé</div>
@@ -134,12 +123,10 @@
                 </div>
             </section>
 
-            <!-- 3. RATINGS & REVIEWS -->
             <section class="detail-ratings" id="section-ratings">
                 <h2 class="detail-section-title">Đánh Giá & Bình Luận</h2>
                 <div class="ratings-layout">
 
-                    <!-- Score panel -->
                     <div class="rating-score-panel">
                         <div>
                             <div class="rating-big-num" id="rating-big-num">
@@ -147,11 +134,10 @@
                             </div>
                         </div>
                         <div class="rating-stars-large" id="rating-stars-large">
-                            <!-- Rendered by JS -->
+
                         </div>
                         <div class="rating-count-text" id="rating-count-text">-- lượt đánh giá</div>
 
-                        <!-- External scores -->
                         <div class="rating-source-row">
                             <div class="rating-source-item">
                                 <span class="source-name">
@@ -168,7 +154,6 @@
                         </div>
                     </div>
 
-                    <!-- Reviews & Comments -->
                     <div class="reviews-container">
                         <div class="comment-form">
                             <div class="comment-rating-select" id="comment-rating-select">
@@ -188,15 +173,13 @@
                             </div>
                         </div>
 
-                        <!-- Reviews -->
                         <div class="reviews-panel" id="reviews-panel">
-                            <!-- Rendered by JS -->
+
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- 4. MEDIA GALLERY -->
             <section class="detail-media" id="section-media">
                 <h2 class="detail-section-title">Trailer & Hình Ảnh</h2>
 
@@ -209,10 +192,9 @@
                     </button>
                 </div>
 
-                <!-- Trailer panel -->
                 <div class="media-panel active" id="panel-trailer">
                     <div class="trailer-embed-container" id="trailer-embed-container">
-                        <iframe id="detail-trailer-iframe"
+                        <iframe referrerpolicy="strict-origin-when-cross-origin" id="detail-trailer-iframe"
                             src=""
                             title="Movie Trailer"
                             frameborder="0"
@@ -231,15 +213,13 @@
                     </div>
                 </div>
 
-                <!-- Gallery panel -->
                 <div class="media-panel" id="panel-gallery">
                     <div class="gallery-grid" id="gallery-grid">
-                        <!-- Rendered by JS -->
+
                     </div>
                 </div>
             </section>
 
-            <!-- 5. RELATED MOVIES -->
             <section class="detail-related" id="section-related">
                 <h2 class="detail-section-title">Phim Liên Quan</h2>
                 <div class="related-carousel-wrapper">
@@ -247,7 +227,7 @@
                         <i class="fas fa-chevron-left"></i>
                     </button>
                     <div class="related-carousel" id="related-carousel">
-                        <!-- Rendered by JS -->
+
                     </div>
                     <button class="carousel-scroll-btn next" onclick="scrollRelated(1)" aria-label="Cuộn phải">
                         <i class="fas fa-chevron-right"></i>
@@ -255,7 +235,6 @@
                 </div>
             </section>
 
-            <!-- 6. PROMOTIONS -->
             <section class="detail-promos" id="section-promos">
                 <h2 class="detail-section-title">Khuyến Mãi</h2>
                 <div class="promo-grid">
@@ -278,17 +257,16 @@
                 </div>
             </section>
 
-        </div><!-- /.detail-main -->
+        </div>
     </main>
 
     <div id="footer-placeholder"></div>
 
-    <!-- ── TRAILER MODAL ────────────────────────────────────── -->
     <div id="trailer-modal" class="modal">
         <div class="modal-content">
             <span class="close-btn" id="close-modal">&times;</span>
             <div class="video-container">
-                <iframe id="trailer-video" src="" title="YouTube video player" frameborder="0"
+                <iframe referrerpolicy="strict-origin-when-cross-origin" id="trailer-video" src="" title="YouTube video player" frameborder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowfullscreen></iframe>
                 <div id="trailer-fallback" style="display:none; position:absolute; inset:0; background:#0a0a0a; display:none; flex-direction:column; align-items:center; justify-content:center; gap:20px; border-radius:8px;">
@@ -304,7 +282,6 @@
         </div>
     </div>
 
-    <!-- ── LIGHTBOX ─────────────────────────────────────────── -->
     <div class="lightbox-overlay" id="lightbox-overlay" onclick="closeLightboxOnBg(event)">
         <div class="lightbox-inner">
             <button class="lightbox-close" onclick="closeLightbox()" aria-label="Đóng">
@@ -320,9 +297,6 @@
         </div>
     </div>
 
-
-
-    <!-- ── SCRIPTS ──────────────────────────────────────────── -->
     <script src="../../shared/js/data.js"></script>
     <script src="../../shared/js/main.js"></script>
     <script src="../../shared/utils/authGuard-global.js"></script>

@@ -1,4 +1,4 @@
-// @ts-check
+
 const { defineConfig, devices } = require('@playwright/test');
 const fs = require('fs');
 
@@ -14,7 +14,7 @@ module.exports = defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
   use: {
-    /* Base URL to use in actions like `await page.goto('/')`. */
+
     baseURL: process.env.PLAYWRIGHT_TEST_BASE_URL || 'http://localhost:3000',
     trace: 'on-first-retry',
     launchOptions: {

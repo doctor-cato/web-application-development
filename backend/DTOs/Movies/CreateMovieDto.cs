@@ -11,7 +11,7 @@ namespace appweb.DTOs.Movie
         public string Description { get; set; } = string.Empty;
 
         [Range(1, 500, ErrorMessage = "Thời lượng phim phải từ 1 đến 500 phút")]
-        public int Duration { get; set; } // Tính theo số phút
+        public int Duration { get; set; }
 
         [Required(ErrorMessage = "Vui lòng chọn ngày khởi chiếu")]
         [DataType(DataType.Date)]

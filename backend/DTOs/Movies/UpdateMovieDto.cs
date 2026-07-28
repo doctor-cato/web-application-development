@@ -5,7 +5,7 @@ namespace appweb.DTOs.Movie
     public class UpdateMovieDto
     {
         [Required]
-        public string Id { get; set; } = string.Empty; // Id dạng string để khớp với MongoDB Object Id
+        public string Id { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Tên phim không được để trống")]
         public string Title { get; set; } = string.Empty;
@@ -27,6 +27,6 @@ namespace appweb.DTOs.Movie
 
         public string? TrailerUrl { get; set; }
 
-        public bool IsShowing { get; set; } // Trạng thái phim đang chiếu hay đã ngừng chiếu
+        public bool IsShowing { get; set; }
     }
 }

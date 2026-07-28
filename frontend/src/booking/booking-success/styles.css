@@ -32,7 +32,6 @@ a { color: inherit; text-decoration: none; }
   flex-direction: column;
 }
 
-/* === TOPBAR (Same as tichdiem) === */
 .topbar {
   position: fixed;
   top: 0;
@@ -171,7 +170,6 @@ a { color: inherit; text-decoration: none; }
 
 .icon-btn:hover { color: #d4d4d4; }
 
-/* === LAYOUT (Same as tichdiem) === */
 .layout {
   display: flex;
   flex: 1;
@@ -254,7 +252,6 @@ a { color: inherit; text-decoration: none; }
   gap: 28px;
 }
 
-/* === HERO BANNER === */
 .hero-banner {
   position: relative;
   height: 360px;
@@ -328,7 +325,6 @@ a { color: inherit; text-decoration: none; }
   font-size: 10px;
 }
 
-/* === DETAILS & QR SECTION === */
 .details-section {
   display: grid;
   grid-template-columns: 1.6fr 1fr;
@@ -341,7 +337,6 @@ a { color: inherit; text-decoration: none; }
   border-radius: 14px;
 }
 
-/* Ticket Info Card */
 .info-card {
   padding: 32px;
   display: flex;
@@ -439,7 +434,6 @@ a { color: inherit; text-decoration: none; }
   transform: translateY(-1px);
 }
 
-/* QR Code Card */
 .qr-card {
   padding: 32px;
   display: flex;
@@ -495,7 +489,6 @@ a { color: inherit; text-decoration: none; }
   margin-top: 4px;
 }
 
-/* === UPSELL SECTION === */
 .upsell-section {
   display: flex;
   flex-direction: column;
@@ -576,7 +569,6 @@ a { color: inherit; text-decoration: none; }
   text-decoration: underline;
 }
 
-/* === FOOTER (Same as tichdiem) === */
 .footer {
   padding: 24px 0 0;
   margin-top: 36px;
@@ -620,7 +612,6 @@ a { color: inherit; text-decoration: none; }
 
 .foot-links a:hover { color: #ccc; }
 
-/* === RESPONSIVE DESIGN === */
 @media (max-width: 1024px) {
   .details-section {
     grid-template-columns: 1fr;
@@ -635,17 +626,16 @@ a { color: inherit; text-decoration: none; }
   .nav { display: none; }
   .topbar-inner { padding: 0 20px; }
   .upsell-grid { grid-template-columns: 1fr; }
-  
+
   .hero-banner {
     height: 280px;
   }
-  
+
   .movie-title {
     font-size: 42px;
   }
 }
 
-/* Mobile Hero Overrides */
 @media(max-width: 768px) {
   .hero-content-overlay {
     padding: 1.5rem 1rem !important;
@@ -666,7 +656,6 @@ a { color: inherit; text-decoration: none; }
   }
 }
 
-/* PONYTAIL: Clean mobile layout for booking-success under 480px */
 @media (max-width: 480px) {
   .hero-content-overlay h1.movie-title {
     font-size: 1.75rem !important;

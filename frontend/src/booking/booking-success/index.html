@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi" class="dark">
-<head><meta name="referrer" content="no-referrer">
+<head><meta name="referrer" content="strict-origin-when-cross-origin">
     <link rel="icon" type="image/jpeg" href="/assets/favicon.jpg?v=2">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,11 +16,11 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <!-- TOPBAR -->
+
   <div id="navbar-placeholder"></div>
 
   <main class="booking-page-container" style="padding-top: 6rem;">
-    <!-- Hero Banner (Top Full Width) -->
+
     <div class="booking-card hero-banner-card" style="padding: 0; overflow: hidden; position: relative; border: 1px solid var(--glass-border); min-height: 280px; display: flex; align-items: flex-end;">
       <div id="bs-hero-image" class="hero-image-bg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; background-image: linear-gradient(to top, rgba(12, 12, 12, 1) 0%, rgba(12, 12, 12, 0.4) 60%, rgba(12, 12, 12, 0.1) 100%); background-color: #111; z-index: 1;"></div>
       <div class="hero-content-overlay" style="position: relative; z-index: 2; padding: 2rem; width: 100%;">
@@ -30,18 +30,17 @@
         </div>
         <h1 id="bs-movie-title" class="movie-title" style="font-family: 'Bebas Neue', sans-serif; font-size: 3.5rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.5rem; text-shadow: 0 4px 12px rgba(0,0,0,0.8);">Đang tải...</h1>
         <div id="bs-movie-tags" class="movie-tags" style="display: flex; gap: 10px; font-size: 0.85rem; font-weight: 600;">
-          <!-- Tags will be dynamically injected here -->
+
         </div>
       </div>
     </div>
 
-    <!-- Booking Grid (2 columns for desktop) -->
     <div class="booking-grid booking-grid-checkout">
-      <!-- LEFT COLUMN: Ticket Information -->
+
       <div class="booking-panel">
         <div class="booking-card">
           <h2 class="booking-section-title">Thông Tin Vé</h2>
-          
+
           <div class="info-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
             <div class="grid-item">
               <span class="label" style="display: block; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Rạp</span>
@@ -67,7 +66,6 @@
             <button class="btn-outline" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; border-radius: 8px; font-weight: 600; background: transparent; border: 1px solid rgba(255,255,255,0.2); color: white; transition: all 0.2s;"><i class="fas fa-share-alt"></i> CHIA SẺ</button>
           </div>
 
-          <!-- Per-Seat Individual Ticket QR Codes List -->
           <div id="per-seat-tickets-wrapper" style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px dashed var(--glass-border);">
             <h3 style="font-size: 0.95rem; font-weight: 700; color: #fff; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
               <i class="fas fa-qrcode" style="color: var(--primary-red);"></i> Danh Sách Mã Vé Từng Ghế
@@ -77,11 +75,10 @@
         </div>
       </div>
 
-      <!-- RIGHT COLUMN: QR Code -->
       <div class="booking-panel">
         <div class="booking-card" style="align-items: center; text-align: center; padding: 2.5rem 2rem;">
           <h2 class="booking-section-title" style="border: none; text-align: center; margin-bottom: 1.5rem; letter-spacing: 1px;">Mã Quét Vào Rạp</h2>
-          
+
           <div class="qr-wrapper" style="background: white; width: 220px; height: 220px; border-radius: 16px; margin: 0 auto 1.5rem auto; display: flex; justify-content: center; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
             <div id="qrcode-container" style="width: 180px; height: 180px; position: relative; display: flex; justify-content: center; align-items: center;"></div>
           </div>
@@ -96,7 +93,6 @@
     </div>
   </main>
 
-  <!-- Footer -->
   <div id="footer-placeholder"></div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -105,9 +101,9 @@
   <script type="module" src="/shared/components/footer.js"></script>
   <script type="module" src="/shared/js/main.js"></script>
   <script type="module" src="./booking-success.js"></script>
-  
+
   <style>
-    /* Custom button hover styles for booking-success */
+
     .btn-primary:hover {
       background: #cc0812;
       transform: translateY(-2px);

@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html class="dark" lang="vi">
-<head><meta name="referrer" content="no-referrer">
+<head><meta name="referrer" content="strict-origin-when-cross-origin">
     <link rel="icon" type="image/jpeg" href="/assets/favicon.jpg?v=2">
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Mô phỏng thanh toán - 3HD2K Cinema</title>
-    
+
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    
+
     <link rel="stylesheet" href="/shared/css/main.css">
     <link rel="stylesheet" href="/shared/css/style.css">
     <link rel="stylesheet" href="/shared/css/tailwind-legacy.css">
-    
+
     <style>
         .sim-container {
             max-width: 400px;
@@ -31,7 +31,7 @@
         }
 
         .sim-header {
-            background: #ae2070; /* Momo color by default */
+            background: #ae2070;
             color: white;
             padding: 1.5rem;
             text-align: center;
@@ -59,7 +59,7 @@
             margin: 1rem 0;
             color: #ae2070;
         }
-        
+
         .sim-amount.vnpay {
             color: #005baa;
         }
@@ -107,6 +107,11 @@
         .sim-spinner.zalopay { border-top-color: #0068ff; }
         .sim-btn.zalopay { background: #0068ff; }
 
+        .sim-header.bank { background: #005baa; }
+        .sim-amount.bank { color: #005baa; }
+        .sim-spinner.bank { border-top-color: #005baa; }
+        .sim-btn.bank { background: #005baa; }
+
         .sim-header.card { background: #333333; }
         .sim-amount.card { color: #333333; }
         .sim-spinner.card { border-top-color: #333333; }
@@ -116,7 +121,6 @@
             opacity: 0.9;
         }
 
-        /* PONYTAIL: Mobile <= 480px responsive styling for payment simulator */
         @media (max-width: 480px) {
             .sim-container {
                 width: 92%;
@@ -144,20 +148,20 @@
             <h1 id="gateway-name">Cổng Thanh Toán</h1>
         </div>
         <div class="sim-body">
-            <div style="background: #f8f9fa; padding: 1rem; border-radius: 12px; display: inline-block; margin-bottom: 1.5rem; border: 1px solid #e9ecef; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-                <img id="qr-code-img" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=3HD2K-Cinema-Simulation" alt="QR Code" style="width: 180px; height: 180px; display: block;">
+            <div style="background: #f8f9fa; padding: 1rem; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; border: 1px solid #e9ecef; box-shadow: 0 4px 6px rgba(0,0,0,0.05); min-height: 200px; width: 100%; max-width: 280px; box-sizing: border-box;">
+                <img id="qr-code-img" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=3HD2K-Cinema-Simulation" alt="QR Code" style="width: 100%; height: auto; max-height: 350px; object-fit: contain; display: block; border-radius: 8px;">
             </div>
-            
+
             <p id="scan-text" style="color: #666; font-size: 0.875rem; margin-bottom: 0.5rem;">Dùng ứng dụng để quét mã QR</p>
-            
+
             <div class="sim-amount" id="sim-amount" style="margin-top: 0.5rem; margin-bottom: 0;">0 đ</div>
             <p style="font-weight: 600; font-size: 1rem; color: #333; margin-top: 0.25rem; margin-bottom: 1.5rem;">3HD2K Cinema</p>
-            
+
             <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 1rem; background: #f8f9fa; padding: 0.5rem; border-radius: 8px;">
                 <div class="sim-spinner" id="sim-spinner" style="margin: 0; width: 16px; height: 16px; border-width: 2px;"></div>
                 <span style="font-size: 0.85rem; color: #666;">Đang chờ thanh toán... <strong class="countdown-warning" style="color: #e50914;">05:00</strong></span>
             </div>
-            
+
             <button class="sim-btn" id="sim-btn" disabled>XÁC NHẬN ĐÃ QUÉT MÃ</button>
         </div>
     </div>

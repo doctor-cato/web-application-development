@@ -20,12 +20,16 @@ namespace appweb.Repositories
 
         public async Task<User?> GetByEmailAsync(string email)
         {
-            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            if (string.IsNullOrWhiteSpace(email)) return null;
+            var normalizedEmail = email.Trim().ToLower();
+            return await _context.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == normalizedEmail);
         }
 
         public async Task<User?> GetByPhoneAsync(string phone)
         {
-            return await _context.Users.FirstOrDefaultAsync(u => u.Phone == phone);
+            if (string.IsNullOrWhiteSpace(phone)) return null;
+            var normalizedPhone = phone.Trim();
+            return await _context.Users.FirstOrDefaultAsync(u => u.Phone == normalizedPhone);
         }
 
         public async Task AddAsync(User user)
@@ -36,10 +40,22 @@ namespace appweb.Repositories
 
         public async Task<User?> CheckLoginAsync(string email, string? password = null)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
-            if (user != null && !string.IsNullOrEmpty(password) && user.Password != password)
+            var user = await GetByEmailAsync(email);
+            if (user != null && !string.IsNullOrEmpty(password))
             {
-                return null;
+                bool isValid = false;
+                try
+                {
+                    if (user.Password.StartsWith("$2a$") || user.Password.StartsWith("$2b$") || user.Password.StartsWith("$2y$"))
+                        isValid = BCrypt.Net.BCrypt.Verify(password, user.Password);
+                    else
+                        isValid = (user.Password == password);
+                }
+                catch
+                {
+                    isValid = (user.Password == password);
+                }
+                if (!isValid) return null;
             }
             return user;
         }

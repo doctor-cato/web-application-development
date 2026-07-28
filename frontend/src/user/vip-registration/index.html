@@ -1,29 +1,29 @@
 <!DOCTYPE html>
 <html lang="vi">
-<head><meta name="referrer" content="no-referrer">
+<head><meta name="referrer" content="strict-origin-when-cross-origin">
     <link rel="icon" type="image/jpeg" href="/assets/favicon.jpg?v=2">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Đăng ký Thành viên VIP - 3HD2K Cinema</title>
-    <!-- Fonts -->
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
-    <!-- Icons -->
+
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <!-- Stylesheets -->
+
     <link rel="stylesheet" href="/shared/css/main.css">
     <link rel="stylesheet" href="styles.css">
-    <!-- Scripts -->
+
     <script type="module" src="app.js" defer></script>
 </head>
 <body>
     <div class="app">
-        <!-- Navbar placeholder -->
+
         <div id="navbar-placeholder"></div>
 
         <main class="vip-main">
-            <!-- HERO HEADER -->
+
             <section class="vip-hero text-center">
                 <div class="glow-orb"></div>
                 <span class="vip-badge-top"><i class="fas fa-crown"></i> 3HD2K PREMIUM</span>
@@ -31,10 +31,9 @@
                 <p class="vip-subtitle">Mở khóa các đặc quyền độc bản, nhân đôi điểm thưởng và tận hưởng dịch vụ rạp phim đẳng cấp hàng đầu.</p>
             </section>
 
-            <!-- TIER CARDS GRID -->
             <section class="vip-plans-section">
                 <div class="plans-grid">
-                    <!-- Silver Card -->
+
                     <div class="plan-card" data-plan="silver">
                         <div class="plan-badge">HẠNG BẠC</div>
                         <h2 class="plan-name">VIP Silver</h2>
@@ -48,7 +47,6 @@
                         <button class="btn-select-plan select-silver" type="button">CHỌN GÓI BẠC</button>
                     </div>
 
-                    <!-- Gold Card (Featured) -->
                     <div class="plan-card featured" data-plan="gold">
                         <div class="plan-badge">PHỔ BIẾN NHẤT</div>
                         <h2 class="plan-name"><i class="fas fa-crown" style="color: #ffd700;"></i> VIP Gold</h2>
@@ -63,7 +61,6 @@
                         <button class="btn-select-plan select-gold" type="button">CHỌN GÓI VÀNG</button>
                     </div>
 
-                    <!-- Platinum Card -->
                     <div class="plan-card" data-plan="platinum">
                         <div class="plan-badge">THƯỢNG HẠNG</div>
                         <h2 class="plan-name">VIP Platinum</h2>
@@ -80,13 +77,12 @@
                 </div>
             </section>
 
-            <!-- REGISTRATION FORM SECTION -->
             <section class="vip-form-section glass-panel" id="checkout-section">
                 <h2 class="form-title text-center">THÔNG TIN ĐĂNG KÝ</h2>
                 <p class="form-subtitle text-center">Gói đã chọn: <strong id="selected-plan-display">Chưa chọn</strong></p>
 
                 <form id="vipRegisterForm" class="vip-form">
-                    <!-- Form Grid -->
+
                     <div class="form-grid">
                         <div class="form-group">
                             <label for="fullname">Họ và tên</label>
@@ -121,7 +117,6 @@
                         </div>
                     </div>
 
-                    <!-- Payment Selector -->
                     <div class="payment-method-selector">
                         <label class="section-label">Phương thức thanh toán</label>
                         <div class="payment-options">
@@ -143,7 +138,6 @@
                         </div>
                     </div>
 
-                    <!-- Credit Card Details (Conditional) -->
                     <div class="credit-card-details" id="card-details" style="display: none;">
                         <div class="card-grid">
                             <div class="form-group span-2">
@@ -164,7 +158,6 @@
                         </div>
                     </div>
 
-                    <!-- Submit Button -->
                     <button type="submit" class="btn-vip-submit">
                         <span id="btn-text">NÂNG CẤP NGAY</span>
                         <div class="spinner" id="btn-spinner" style="display: none;"></div>
@@ -173,7 +166,6 @@
             </section>
         </main>
 
-        <!-- SUCCESS MODAL -->
         <div class="vip-modal-overlay" id="success-modal">
             <div class="vip-modal">
                 <div class="success-icon"><i class="fas fa-check"></i></div>
@@ -192,11 +184,9 @@
             </div>
         </div>
 
-        <!-- Footer placeholder -->
         <div id="footer-placeholder"></div>
     </div>
 
-    <!-- Components Loading -->
     <script type="module" src="/shared/components/navbar.js"></script>
     <script type="module" src="/shared/components/footer.js"></script>
 </body>

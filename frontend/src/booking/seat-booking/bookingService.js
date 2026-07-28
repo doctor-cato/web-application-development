@@ -1,16 +1,7 @@
-/**
- * bookingService.js — Real-time Seat Locking Service
- * 
- * --- Scope & Architectural Demarcation ---
- * 1. Local Multi-Tab Synchronization (Same Device / Same Origin):
- *    Handled natively via BroadcastChannel API ('seat_sync') with 0 external dependencies.
- * 2. Cross-Device Synchronization (Different Devices / Remote Users):
- *    Handled via ASP.NET Core SignalR / WebSocket Notification Hub (/notificationHub).
- */
 
 import { lsGet, lsSet, getBookings, saveBookings, KEYS } from '../../shared/utils/storage.js';
 
-const LOCK_DURATION_MS = 15 * 60 * 1000; // 15 minutes
+const LOCK_DURATION_MS = 15 * 60 * 1000;
 let channel = null;
 
 function getChannel() {
@@ -66,8 +57,7 @@ export function closeSeatSyncChannel() {
 export function getSeatMap(showtimeId) {
   const map = _getLocksMap();
   const result = (map[showtimeId] && { ...map[showtimeId] }) || {};
-  
-  // Lấy các ghế đã đặt từ bookings
+
   const bookings = getBookings();
   bookings.forEach(b => {
     if (b.showtimeId === showtimeId && b.status !== 'Cancelled') {
@@ -76,19 +66,19 @@ export function getSeatMap(showtimeId) {
       });
     }
   });
-  
+
   return result;
 }
 
 export function lockSeat(showtimeId, seatId, userId) {
-  // Kiểm tra ghế đã được thanh toán chưa
+
   const bookings = getBookings();
   const isBooked = bookings.some(b => b.status !== 'Cancelled' && b.showtimeId === showtimeId && (b.seats || []).includes(seatId));
   if (isBooked) return false;
 
   const map = _getLocksMap();
   map[showtimeId] = map[showtimeId] || {};
-  if (map[showtimeId][seatId]) return false; // already locked/booked
+  if (map[showtimeId][seatId]) return false;
 
   const expiresAt = Date.now() + LOCK_DURATION_MS;
   map[showtimeId][seatId] = { seatId, userId, expiresAt };
@@ -96,7 +86,6 @@ export function lockSeat(showtimeId, seatId, userId) {
 
   try { getChannel()?.postMessage({ type: 'seat_locked', showtimeId, seatId, userId, expiresAt }); } catch (e) {}
 
-  // schedule local cleanup (best-effort)
   setTimeout(() => {
     const m = _getLocksMap();
     if (m[showtimeId] && m[showtimeId][seatId] && m[showtimeId][seatId].expiresAt <= Date.now()) {
@@ -149,24 +138,24 @@ export async function confirmBooking(checkoutData) {
 
     const payload = {
         Email: checkoutData.userId || 'guest@example.com',
-        ShowtimeId: checkoutData.showtimeId || 1, // fallback
-        MovieId: checkoutData.movieId || 1,       // fallback
+        ShowtimeId: checkoutData.showtimeId || 1,
+        MovieId: checkoutData.movieId || 1,
         Seats: seatsArr.join(','),
         Tickets: perSeatTickets,
         TotalPrice: checkoutData.total || checkoutData.amount || 0,
         PaymentMethod: checkoutData.paymentMethod || 'Credit Card'
     };
-    
+
     const response = await fetch(`${API_BASE_URL}/bookings`, {
         method: 'POST',
         headers: getHeaders(),
         body: JSON.stringify(payload)
     });
-    
+
     if (response.ok) {
         const data = await response.json();
         const finalId = data.bookingId || checkoutData.id || makeBookingId();
-        
+
         const booking = {
             id: finalId,
             movieTitle: checkoutData.movieTitle || 'Unknown Movie',
@@ -184,7 +173,6 @@ export async function confirmBooking(checkoutData) {
             createdAt: checkoutData.createdAt || new Date().toISOString()
         };
 
-        // remove locks for booked seats and notify
         const map = _getLocksMap();
         (booking.seats || []).forEach(s => {
           if (map[booking.showtimeId] && map[booking.showtimeId][s]) {
@@ -194,13 +182,12 @@ export async function confirmBooking(checkoutData) {
         });
         _saveLocksMap(map);
 
-        // Notify Staff about F&B App Order if there is food
         if (checkoutData.customFood && checkoutData.customFood.length > 0) {
             let appOrders = JSON.parse(localStorage.getItem("cinema_app_orders")) || [];
             let itemsText = checkoutData.customFood.map(item => `${item.qty}x ${item.name}`).join(", ");
             let userName = localStorage.getItem('userName') || 'Khách Vãng Lai';
             let userPhone = localStorage.getItem('userPhone') || 'N/A';
-            
+
             appOrders.unshift({
                 id: 'APP-' + Math.random().toString(36).substr(2, 6).toUpperCase(),
                 customerName: userName,

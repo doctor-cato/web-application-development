@@ -1,22 +1,22 @@
 <!DOCTYPE html>
 <html class="dark" lang="vi">
-<head><meta name="referrer" content="no-referrer">
+<head><meta name="referrer" content="strict-origin-when-cross-origin">
     <link rel="icon" type="image/jpeg" href="/assets/favicon.jpg?v=2">
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta name="description" content="Chọn vị trí ghế ngồi xem phim trực tiếp trên sơ đồ rạp chiếu 3HD2K Cinema. Giữ ghế tức thì, chọn ghế VIP, ghế đôi Sweetbox và thanh toán dễ dàng.">
-    <!-- Open Graph / Social Media Meta Tags -->
+
     <meta property="og:type" content="website">
     <meta property="og:title" content="Chọn Ghế Xem Phim - 3HD2K Cinema">
     <meta property="og:description" content="Sơ đồ chọn ghế trực quan real-time tại rạp 3HD2K Cinema. Đặt vé xem phim nhanh chóng ngay hôm nay!">
     <meta property="og:image" content="/assets/favicon.jpg">
     <meta name="robots" content="noindex, follow">
     <title>Chọn Ghế Xem Phim - 3HD2K Cinema</title>
-    
+
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=Inter:wght@500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    
+
     <link rel="stylesheet" href="../../shared/css/main.css">
     <link rel="stylesheet" href="../../shared/css/style.css">
     <link rel="stylesheet" href="../../shared/css/tailwind-legacy.css">
@@ -27,24 +27,21 @@
 
     <div id="navbar-placeholder"></div>
 
-    <!-- ═══════════ MAIN ═══════════ -->
     <main class="booking-page-container">
         <div class="booking-grid">
 
-            <!-- ────── LEFT: Movie info + Showtime ────── -->
             <div class="booking-panel">
 
-                <!-- Movie card -->
                 <div id="movie-info-card" class="glass-panel booking-card" style="padding: 1.25rem;">
                     <div class="movie-info-card" style="align-items: center;">
-                        <!-- Poster placeholder -->
+
                         <div class="movie-poster-sm" style="box-shadow: 0 4px 12px rgba(0,0,0,0.5);">
                             <img id="movie-poster" src="" alt="">
                         </div>
                         <div class="movie-details-sm">
                             <h1 id="movie-title" style="margin-bottom: 0.25rem; font-size: 1.5rem; text-transform: uppercase;">Đang tải...</h1>
                             <div id="movie-tags" style="display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 0.75rem;"></div>
-                            
+
                             <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; font-size: 0.8rem;">
                                 <div style="display: flex; align-items: center; gap: 4px; background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1);">
                                     <i class="fa-regular fa-clock" style="color: var(--primary-red);"></i>
@@ -63,7 +60,6 @@
                     </div>
                 </div>
 
-                <!-- Price table -->
                 <div class="glass-panel booking-card">
                     <h2 class="booking-section-title">Bảng Giá Vé</h2>
                     <div>
@@ -91,7 +87,6 @@
                     </div>
                 </div>
 
-                <!-- Legend -->
                 <div class="glass-panel booking-card">
                     <h2 class="booking-section-title">Chú Thích</h2>
                     <div class="legend-grid">
@@ -103,7 +98,6 @@
                     </div>
                 </div>
 
-                <!-- Selected summary (sticky) -->
                 <div id="selection-summary" class="glass-panel booking-card">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
                         <h2 class="booking-section-title" style="margin-bottom: 0;">Ghế Đã Chọn</h2>
@@ -126,25 +120,21 @@
 
             </div>
 
-            <!-- ────── RIGHT: Seat grid ────── -->
             <div class="booking-panel">
                 <div class="glass-panel booking-card" style="align-items: center; padding: 2rem;">
 
-                    <!-- Screen -->
                     <div class="screen-container" style="width: 100%; max-width: 800px;">
                         <div class="screen-glow"></div>
                         <p class="screen-label">MÀN HÌNH</p>
                     </div>
 
-                    <!-- Seat grid (rendered by seatGrid.js) -->
                     <div id="seat-map" style="width: 100%;">
                         <div id="seat-grid" style="display: flex; flex-direction: column; align-items: center; gap: 8px; width: 100%;">
-                            <!-- Fallback / Loading -->
+
                             <p style="color: var(--text-muted);">Đang tải sơ đồ ghế...</p>
                         </div>
                     </div>
 
-                    <!-- Upgraded Group Seat Selector with Toggle -->
                     <div class="group-seat-selector glass-panel" style="margin-top: 2.5rem; display: flex; flex-direction: column; gap: 1rem; max-width: 500px; padding: 1rem 1.5rem; border: 1px solid rgba(229, 9, 20, 0.3); box-shadow: 0 4px 20px rgba(0,0,0,0.5), inset 0 0 15px rgba(229,9,20,0.1); border-radius: 20px;">
                         <div style="display: flex; align-items: center; justify-content: space-between;">
                             <div style="display: flex; align-items: center; gap: 0.75rem;">
@@ -156,7 +146,7 @@
                                     <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">Tự động chọn sát nhau & Bật Split Pay</div>
                                 </div>
                             </div>
-                            <!-- Toggle Switch -->
+
                             <label style="position: relative; display: inline-block; width: 50px; height: 26px;">
                                 <input type="checkbox" id="toggle-group-booking" style="opacity: 0; width: 0; height: 0;">
                                 <span class="slider round" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; transition: .4s; border-radius: 34px;">
@@ -168,8 +158,7 @@
                                 input:checked + .slider > span { transform: translateX(24px); }
                             </style>
                         </div>
-                        
-                        <!-- Counter UI (Hidden by default) -->
+
                         <div id="group-counter-ui" style="display: none; align-items: center; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
                             <span style="font-size: 0.85rem; color: #ccc;">Số lượng ghế cần tìm:</span>
                             <div class="group-seat-controls" style="background: rgba(0,0,0,0.6); padding: 0.25rem 0.5rem; border-radius: 30px; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center;">
@@ -179,8 +168,7 @@
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Cine-Match Selector (Blind Date) -->
+
                     <div class="cine-match-selector glass-panel" style="margin-top: 1rem; display: flex; flex-direction: column; gap: 1rem; max-width: 500px; padding: 1rem 1.5rem; border: 1px solid rgba(236, 72, 153, 0.3); box-shadow: 0 4px 20px rgba(0,0,0,0.5), inset 0 0 15px rgba(236, 72, 153, 0.1); border-radius: 20px;">
                         <div style="display: flex; align-items: center; justify-content: space-between;">
                             <div style="display: flex; align-items: center; gap: 0.75rem;">
@@ -201,14 +189,13 @@
                             <style>
                                 #toggle-cine-match:checked + .slider { background-color: #ec4899; }
                                 #toggle-cine-match:checked + .slider > span { transform: translateX(24px); }
-                                /* Social Zone styling */
+
                                 .seat-social-zone { border-color: #ec4899 !important; box-shadow: 0 0 5px rgba(236,72,153,0.5) !important; }
                                 .seat-social-zone.seat--available:hover { background-color: rgba(236,72,153,0.3) !important; }
                                 .cine-match-active .seat:not(.seat-social-zone) { opacity: 0.3; pointer-events: none; }
                             </style>
                         </div>
-                        
-                        <!-- Preference UI (Hidden by default) -->
+
                         <div id="cine-match-pref-ui" style="display: none; align-items: center; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
                             <span style="font-size: 0.85rem; color: #ccc;">Muốn ghép với:</span>
                             <select id="cine-match-preference" style="background: rgba(0,0,0,0.6); padding: 0.4rem 0.8rem; border-radius: 8px; border: 1px solid rgba(236,72,153,0.3); color: white; font-size: 0.85rem; outline: none;">

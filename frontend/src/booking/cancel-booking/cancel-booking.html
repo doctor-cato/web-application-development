@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
-<head><meta name="referrer" content="no-referrer">
+<head><meta name="referrer" content="strict-origin-when-cross-origin">
     <link rel="icon" type="image/jpeg" href="/assets/favicon.jpg?v=2">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-  <!-- Navbar -->
+
   <nav id="navbar-placeholder"></nav>
 
   <main class="page-wrapper">
@@ -21,7 +21,6 @@
       <p class="subtitle">Quản lý vé, hủy vé, đổi suất và xem lịch sử giao dịch</p>
     </div>
 
-    <!-- Tab navigation -->
     <div class="tabs" role="tablist">
       <button class="tab-btn active" data-tab="tickets" role="tab" aria-selected="true" aria-controls="tabTickets" id="tab-btn-tickets">
         <i class="fa-solid fa-ticket"></i> Vé của tôi
@@ -31,14 +30,12 @@
       </button>
     </div>
 
-    <!-- Tab: Vé của tôi -->
     <div id="tabTickets" class="tab-content active" role="tabpanel" aria-labelledby="tab-btn-tickets">
       <div id="ticketContainer" class="ticket-list">
         <div class="empty-message"><i class="fa-regular fa-ticket"></i> Bạn chưa có vé nào.</div>
       </div>
     </div>
 
-    <!-- Tab: Lịch sử giao dịch -->
     <div id="tabHistory" class="tab-content" role="tabpanel" aria-labelledby="tab-btn-history">
       <div id="historyContainer" class="history-list">
         <div class="empty-message"><i class="fa-solid fa-clock-rotate-left"></i> Chưa có giao dịch nào.</div>
@@ -46,7 +43,6 @@
     </div>
   </main>
 
-  <!-- Modal đổi suất chiếu -->
   <div id="changeShowtimeModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div class="modal-box">
       <h3 id="modalTitle"><i class="fa-solid fa-rotate"></i> Chọn suất chiếu mới</h3>

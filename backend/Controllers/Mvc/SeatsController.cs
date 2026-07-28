@@ -15,13 +15,11 @@ using appweb.Infrastructure;
         _context = context;
     }
 
-    // GET: SEATS
-    public async Task<IActionResult> Index()    
+    public async Task<IActionResult> Index()
     {
         return View(await _context.Seats.ToListAsync());
     }
 
-    // GET: SEATS/Details/5
     public async Task<IActionResult> Details(Guid? id)
     {
         if (id == null)
@@ -39,15 +37,11 @@ using appweb.Infrastructure;
         return View(seat);
     }
 
-    // GET: SEATS/Create
     public IActionResult Create()
     {
         return View();
     }
 
-    // POST: SEATS/Create
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create([Bind("Id,RoomId,SeatRow,SeatNumber,SeatType,BookingDetails,Room")] Seat seat)
@@ -61,7 +55,6 @@ using appweb.Infrastructure;
         return View(seat);
     }
 
-    // GET: SEATS/Edit/5
     public async Task<IActionResult> Edit(Guid? id)
     {
         if (id == null)
@@ -77,9 +70,6 @@ using appweb.Infrastructure;
         return View(seat);
     }
 
-    // POST: SEATS/Edit/5
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(Guid? id, [Bind("Id,RoomId,SeatRow,SeatNumber,SeatType,BookingDetails,Room")] Seat seat)
@@ -112,7 +102,6 @@ using appweb.Infrastructure;
         return View(seat);
     }
 
-    // GET: SEATS/Delete/5
     public async Task<IActionResult> Delete(Guid? id)
     {
         if (id == null)
@@ -130,7 +119,6 @@ using appweb.Infrastructure;
         return View(seat);
     }
 
-    // POST: SEATS/Delete/5
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(Guid? id)
@@ -150,5 +138,4 @@ using appweb.Infrastructure;
         return _context.Seats.Any(e => e.Id == id);
     }
 }
-
 

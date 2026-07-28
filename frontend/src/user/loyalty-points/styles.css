@@ -32,7 +32,6 @@ a { color: inherit; text-decoration: none; }
   flex-direction: column;
 }
 
-/* === TOPBAR === */
 .topbar {
   position: fixed;
   top: 0;
@@ -172,7 +171,6 @@ a { color: inherit; text-decoration: none; }
 
 .icon-btn:hover { color: #d4d4d4; }
 
-/* === LAYOUT === */
 .layout {
   display: flex;
   flex: 1;
@@ -247,7 +245,6 @@ a { color: inherit; text-decoration: none; }
   width: 100%;
 }
 
-/* === OVERVIEW === */
 .overview {
   display: grid;
   grid-template-columns: 1.15fr 0.85fr;
@@ -441,7 +438,6 @@ a { color: inherit; text-decoration: none; }
   background: rgba(255, 255, 255, 0.03);
 }
 
-/* === GIFTS === */
 .gifts-section { margin-bottom: 36px; }
 
 .section-head {
@@ -616,7 +612,6 @@ a { color: inherit; text-decoration: none; }
   color: #555 !important;
 }
 
-/* === HISTORY === */
 .history-sub {
   font-size: 11px;
   color: var(--muted);
@@ -714,7 +709,6 @@ a { color: inherit; text-decoration: none; }
   color: var(--accent);
 }
 
-/* === EARN SECTION === */
 .earn-section {
   margin-bottom: 32px;
 }
@@ -796,7 +790,6 @@ a { color: inherit; text-decoration: none; }
   z-index: 1;
 }
 
-/* === POINTS COUNTER ANIMATION === */
 .points {
   transition: transform 0.15s ease;
 }
@@ -811,7 +804,6 @@ a { color: inherit; text-decoration: none; }
   75% { transform: translateX(1px); }
 }
 
-/* === TOAST NOTIFICATIONS === */
 .toast-container {
   position: fixed;
   top: 100px;
@@ -896,7 +888,6 @@ a { color: inherit; text-decoration: none; }
   letter-spacing: 0.5px;
 }
 
-/* === CELEBRATION MODAL === */
 .celebration-overlay {
   position: fixed;
   inset: 0;
@@ -1017,7 +1008,6 @@ a { color: inherit; text-decoration: none; }
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
 }
 
-/* === CONFETTI PARTICLES === */
 .confetti-particle {
   position: absolute;
   top: -20px;
@@ -1057,7 +1047,6 @@ a { color: inherit; text-decoration: none; }
   }
 }
 
-/* === TIER DETAILS MODAL === */
 .tier-modal-overlay {
   position: fixed;
   inset: 0;
@@ -1255,7 +1244,6 @@ a { color: inherit; text-decoration: none; }
   flex-shrink: 0;
 }
 
-/* === DIAMOND SHIMMER === */
 .tier-diamond {
   position: relative;
 }
@@ -1283,7 +1271,6 @@ a { color: inherit; text-decoration: none; }
   100% { background-position: -200% 0; }
 }
 
-/* === REWARDS CARD TRANSITION === */
 .rewards-card {
   transition: background 0.6s ease, border-color 0.6s ease, box-shadow 0.6s ease;
 }
@@ -1304,7 +1291,6 @@ a { color: inherit; text-decoration: none; }
   transition: color 0.4s ease, border-color 0.4s ease, background 0.4s ease;
 }
 
-/* === DYNAMIC HISTORY ITEMS === */
 .history-poster--dynamic {
   display: flex;
   align-items: center;
@@ -1331,7 +1317,6 @@ a { color: inherit; text-decoration: none; }
   }
 }
 
-/* === FOOTER === */
 .footer {
   margin-left: var(--sidebar-w);
   padding: 20px 36px 28px;
@@ -1375,7 +1360,6 @@ a { color: inherit; text-decoration: none; }
 
 .foot-links a:hover { color: #ccc; }
 
-/* === RESPONSIVE === */
 @media (max-width: 1024px) {
   .overview { grid-template-columns: 1fr; }
   .gifts-grid { grid-template-columns: 1fr 1fr; }
@@ -1416,7 +1400,6 @@ a { color: inherit; text-decoration: none; }
   }
 }
 
-/* ponytail: responsive fixes for mobile <= 480px */
 @media (max-width: 480px) {
   .points { font-size: 36px; }
   .rewards-card-inner { padding: 18px 16px; }

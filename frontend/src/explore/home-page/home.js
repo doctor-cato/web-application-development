@@ -6,7 +6,6 @@ const metaEl = document.getElementById('hero-meta');
 const descEl = document.getElementById('hero-desc');
 const ageEl = document.getElementById('hero-age');
 
-// --- TRAILER MODAL ELEMENTS (khai báo sớm để dùng trong slider) ---
 const modal = document.getElementById('trailer-modal');
 const btnWatch = document.getElementById('btn-watch-trailer');
 const btnClose = document.getElementById('close-modal');
@@ -15,27 +14,34 @@ const trailerFallback = document.getElementById('trailer-fallback');
 const trailerYtLink = document.getElementById('trailer-yt-link');
 const btnBookNow = document.getElementById('btn-book-now');
 
-// --- YOUTUBE EMBED HELPER ---
 function getYouTubeEmbedUrl(url) {
     if (!url) return '';
     let cleanUrl = url.trim();
-    if (cleanUrl.includes('embed/')) return cleanUrl;
-    
     let videoId = '';
-    if (cleanUrl.includes('v=')) {
+
+    if (cleanUrl.includes('embed/')) {
+        videoId = cleanUrl.split('embed/')[1]?.split('?')[0]?.split('&')[0];
+    } else if (cleanUrl.includes('v=')) {
         videoId = cleanUrl.split('v=')[1]?.split('&')[0];
     } else if (cleanUrl.includes('youtu.be/')) {
         videoId = cleanUrl.split('youtu.be/')[1]?.split('?')[0];
     } else if (cleanUrl.match(/^[a-zA-Z0-9_-]{11}$/)) {
         videoId = cleanUrl;
     }
-    
-    return videoId ? `https://www.youtube.com/embed/${videoId}` : cleanUrl;
+
+    if (videoId) {
+        const origin = (typeof window !== 'undefined' && window.location && window.location.origin && window.location.origin !== 'null')
+            ? encodeURIComponent(window.location.origin)
+            : '';
+        const originParam = origin ? `&origin=${origin}` : '';
+        return `https://www.youtube-nocookie.com/embed/${videoId}?enablejsapi=1&rel=0${originParam}`;
+    }
+    return cleanUrl;
 }
 
 function renderHeroMovie(movie) {
     if (!movie || (!movie.title && !movie.bg && !movie.poster)) {
-        // Trạng thái CHƯA CÓ PHIM trong Database
+
         if (titleEl) titleEl.textContent = "CHƯA CÓ PHIM TRONG DATABASE";
         if (metaEl) metaEl.innerHTML = '<i class="fas fa-info-circle" style="color: var(--primary-red); margin-right: 6px;"></i> Hệ thống chưa có dữ liệu phim';
         if (descEl) descEl.textContent = "Hiện tại chưa có dữ liệu phim trong cơ sở dữ liệu. Khi cơ sở dữ liệu được cập nhật hình ảnh hoặc tiêu đề phim, phim mới sẽ tự động hiển thị để thay thế.";
@@ -48,11 +54,10 @@ function renderHeroMovie(movie) {
         return;
     }
 
-    // Trạng thái ĐÃ CÓ PHIM từ Database
     if (titleEl) titleEl.textContent = movie.title || 'Phim Không Tiêu Đề';
     if (metaEl) metaEl.innerHTML = movie.meta ? movie.meta.replace(/•/g, '&bull;') : 'Thông tin đang cập nhật';
     if (descEl) descEl.textContent = movie.desc || 'Nội dung phim đang được cập nhật...';
-    
+
     if (ageEl) {
         ageEl.textContent = movie.age || 'P';
         ageEl.style.display = 'inline-block';
@@ -113,7 +118,7 @@ if (btnBookNow) {
 
 function changeHeroSlide(direction = 1) {
     if (!window.heroMovies || window.heroMovies.length === 0) return;
-    
+
     currentHeroIndex = (currentHeroIndex + direction + window.heroMovies.length) % window.heroMovies.length;
     const movie = window.heroMovies[currentHeroIndex];
 
@@ -127,7 +132,7 @@ function changeHeroSlide(direction = 1) {
         bgOverlay.style.opacity = 0.3;
         bgOverlay.style.transform = 'scale(1.02)';
     }
-    
+
     setTimeout(() => {
         renderHeroMovie(movie);
         if (heroContent) {
@@ -152,7 +157,6 @@ function resetSlideInterval() {
     slideInterval = setInterval(() => changeHeroSlide(1), 5000);
 }
 
-// Pause slider when tab is hidden to prevent background memory/CPU leaks
 document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
         clearInterval(slideInterval);
@@ -161,7 +165,6 @@ document.addEventListener('visibilitychange', () => {
     }
 });
 
-// --- MANUAL SLIDE LOGIC (HOVER ZONES) ---
 const btnPrev = document.getElementById('hero-prev');
 const btnNext = document.getElementById('hero-next');
 
@@ -176,17 +179,14 @@ if (btnPrev && btnNext) {
     });
 }
 
-// --- TRAILER MODAL LOGIC ---
-
-// Phát hiện lỗi YouTube embed qua postMessage (Error 100, 150, 153)
 window.addEventListener('message', (e) => {
-    if (e.origin !== 'https://www.youtube.com') return;
+    if (!e.origin.includes('youtube.com') && !e.origin.includes('youtube-nocookie.com')) return;
     try {
-        const data = JSON.parse(e.data);
-        if (data.event === 'onError' && [100, 150, 151, 153].includes(data.info)) {
-            // Video bị chặn embed → hiện fallback
+        const data = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
+        if (data.event === 'onError' && [2, 5, 100, 101, 150, 151, 153].includes(data.info)) {
+
             if (trailerFallback) trailerFallback.style.display = 'flex';
-            iframe.style.display = 'none';
+            if (iframe) iframe.style.display = 'none';
         }
     } catch (_) {}
 });
@@ -195,12 +195,16 @@ if (btnWatch) {
     btnWatch.addEventListener('click', (e) => {
         e.preventDefault();
         const currentMovie = (window.heroMovies && window.heroMovies.length > 0) ? window.heroMovies[currentHeroIndex] : null;
-        const rawTrailer = (currentMovie && currentMovie.trailer) ? currentMovie.trailer : iframe.src;
+        const rawTrailer = (currentMovie && (currentMovie.trailerWatch || currentMovie.trailer)) ? (currentMovie.trailerWatch || currentMovie.trailer) : iframe.src;
         if (!rawTrailer) return;
 
         const formattedEmbed = getYouTubeEmbedUrl(rawTrailer);
         const sep = formattedEmbed.includes('?') ? '&' : '?';
-        iframe.src = formattedEmbed + `${sep}autoplay=1&enablejsapi=1`;
+        iframe.src = formattedEmbed + `${sep}autoplay=1`;
+
+        if (trailerYtLink) {
+            trailerYtLink.href = (currentMovie && (currentMovie.trailerWatch || currentMovie.trailer)) ? (currentMovie.trailerWatch || currentMovie.trailer) : rawTrailer;
+        }
 
         if (trailerFallback) trailerFallback.style.display = 'none';
         iframe.style.display = 'block';
@@ -214,7 +218,7 @@ function closeModal() {
     iframe.src = '';
     iframe.style.display = 'block';
     if (trailerFallback) trailerFallback.style.display = 'none';
-    // Resume slider
+
     slideInterval = setInterval(() => changeHeroSlide(1), 5000);
 }
 
@@ -235,7 +239,7 @@ const filterCinema = document.getElementById('filter-cinema');
 
 function renderNowShowing(movies) {
     if (!nowShowingGrid) return;
-    
+
     if (movies.length === 0) {
         nowShowingGrid.innerHTML = `
             <div style="width:100%; padding: 40px; text-align:center; color: var(--text-muted);">
@@ -330,19 +334,17 @@ function applyFilters() {
         const matchGenre = genre === 'all' || (movie.genre && movie.genre.includes(genre));
         const matchFormat = format === 'all' || (movie.formats && movie.formats.includes(format));
         const matchCinema = cinema === 'all' || movie.cinema === cinema || movie.cinemaId === cinema;
-        
+
         return matchGenre && matchFormat && matchCinema;
     });
 
     renderNowShowing(filtered);
 }
 
-// Attach event listeners to filters
 if (filterGenre) filterGenre.addEventListener('change', applyFilters);
 if (filterFormat) filterFormat.addEventListener('change', applyFilters);
 if (filterCinema) filterCinema.addEventListener('change', applyFilters);
 
-// Initial render
 document.addEventListener('DOMContentLoaded', async () => {
     try {
         if (window.fetchMoviesPromise) await window.fetchMoviesPromise;
@@ -361,14 +363,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         window.renderComingSoon(comingSoon);
     }
 
-    // --- VIP LOGIC FOR REWARDS BUTTON ---
     const btnVip = document.getElementById('btn-home-vip');
     if (btnVip) {
         const isLogged = localStorage.getItem('isLoggedIn') === 'true';
         const isVip = localStorage.getItem('is_vip') === 'true';
-        const vipPlan = localStorage.getItem('vip_plan'); // e.g., 'silver', 'gold', 'platinum'
-        
-        if (session && (session.role === 'vip' || localStorage.getItem('is_vip') === 'true')) {
+        const vipPlan = localStorage.getItem('vip_plan');
+
+        if (isVip) {
             btnVip.href = '../../user/user-profile/index.html';
             btnVip.textContent = 'TRANG TÀI KHOẢN VIP';
         } else {
@@ -377,25 +378,23 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // Kiểm tra xem có cần auto-open Quick Book cho Group Booking không
     setTimeout(() => {
         if (localStorage.getItem('show_quickbook') === 'true') {
             localStorage.removeItem('show_quickbook');
             const quickBookToggle = document.querySelector('.quick-book-toggle');
             if (quickBookToggle) {
-                quickBookToggle.click(); // Mở Quick Book
+                quickBookToggle.click();
             }
         }
     }, 500);
 
 });
 
-// Define comingSoonGrid
 const comingSoonGrid = document.getElementById('coming-soon-grid');
 
 window.renderComingSoon = function(movies) {
     if (!comingSoonGrid) return;
-    
+
     if (!movies || movies.length === 0) {
         comingSoonGrid.innerHTML = `
             <div style="width:100%; padding: 40px; text-align:center; color: var(--text-muted);">

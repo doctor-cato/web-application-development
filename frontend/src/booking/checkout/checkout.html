@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html class="dark" lang="vi">
-<head><meta name="referrer" content="no-referrer">
+<head><meta name="referrer" content="strict-origin-when-cross-origin">
     <link rel="icon" type="image/jpeg" href="/assets/favicon.jpg?v=2">
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Xác nhận đặt vé - 3HD2K Cinema</title>
-    
+
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=Inter:wght@500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    
+
     <link rel="stylesheet" href="/shared/css/main.css">
     <link rel="stylesheet" href="/shared/css/style.css">
     <link rel="stylesheet" href="/shared/css/tailwind-legacy.css">
@@ -35,13 +35,11 @@
 
         <div class="booking-grid booking-grid-checkout">
 
-            <!-- ────── LEFT COLUMN ────── -->
             <div class="booking-panel">
 
-                <!-- ORDER SUMMARY CARD -->
                 <div class="glass-panel booking-card">
                     <h2 class="booking-section-title">Thông Tin Đơn Hàng</h2>
-                    
+
                     <div class="movie-info-card" style="margin-bottom: 1rem;">
                         <div class="movie-poster-sm">
                             <img id="order-summary-poster" src="" alt="Movie Poster">
@@ -53,7 +51,6 @@
                         </div>
                     </div>
 
-                    <!-- Details table -->
                     <div style="display: flex; flex-direction: column; gap: 0.5rem; border-top: 1px solid var(--glass-border); padding-top: 1rem;">
                         <div class="price-row">
                             <span class="price-label">Suất chiếu</span>
@@ -99,7 +96,6 @@
 
                 </div>
 
-                <!-- FOOD & BEVERAGE -->
                 <div class="glass-panel booking-card">
                     <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem; margin-bottom: 1rem;">
                         <h2 class="booking-section-title" style="border: none; margin: 0; padding: 0;">Bắp Nước (Combo)</h2>
@@ -107,7 +103,7 @@
                             <i class="fas fa-utensils"></i> <span id="btn-edit-food-text">Menu Đầy Đủ</span>
                         </a>
                     </div>
-                    
+
                     <div class="combo-list-horizontal" id="food-upsell-panel">
                         <label class="combo-card selected">
                             <input type="radio" name="combo" value="none" checked style="position: absolute; opacity: 0; width: 0; height: 0;">
@@ -154,13 +150,11 @@
 
             </div>
 
-            <!-- ────── RIGHT COLUMN ────── -->
             <div class="booking-panel">
-                
+
                 <div class="glass-panel booking-card" style="position: sticky; top: 100px;">
                     <h2 class="booking-section-title">Thanh Toán</h2>
-                    
-                    <!-- Promo -->
+
                     <div class="promo-section" style="margin-bottom: 1.5rem;">
                         <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; align-items: center;">
                             <label style="font-size: 0.875rem; color: var(--text-muted);">Mã khuyến mãi / Ưu đãi</label>
@@ -169,8 +163,7 @@
                             <input type="text" id="promo-input" placeholder="Nhập mã khuyến mãi" style="flex: 1; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); border-radius: 8px; padding: 0.5rem 1rem; color: white; outline: none; text-transform: uppercase;">
                             <button id="btn-apply-promo" class="btn btn-outline" style="padding: 0.5rem 1rem;">Áp dụng</button>
                         </div>
-                        
-                        <!-- Applied Promo -->
+
                         <div id="applied-promo-container" style="display: none; margin-top: 0.5rem; padding: 0.75rem 1rem; background: rgba(76, 175, 80, 0.1); border: 1px solid rgba(76, 175, 80, 0.3); border-radius: 8px; align-items: center; justify-content: space-between;">
                             <div style="display: flex; align-items: center; gap: 0.5rem; color: #4CAF50;">
                                 <i class="fas fa-check-circle"></i>
@@ -179,7 +172,6 @@
                             <i class="fas fa-times" id="btn-remove-promo" style="cursor: pointer; color: var(--text-muted); font-size: 1rem;"></i>
                         </div>
 
-                        <!-- Offers List Dropdown -->
                         <div id="offers-list" style="display: none; flex-direction: column; gap: 0.5rem; margin-top: 1rem; background: rgba(0,0,0,0.4); padding: 1rem; border-radius: 8px; border: 1px solid var(--glass-border);">
                             <div class="offer-item" data-code="GIAM50K" style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: background 0.3s; border-radius: 6px;">
                                 <div style="display: flex; gap: 1rem; align-items: center;">
@@ -204,24 +196,29 @@
                         </div>
                     </div>
 
-                    <!-- Payment methods -->
                     <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem;">
-                        <label class="payment-card selected-momo">
-                            <input type="radio" name="payment" value="momo" checked style="position: absolute; opacity: 0; width: 0; height: 0;">
+                        <label class="payment-card selected-bank">
+                            <input type="radio" name="payment" value="bank" checked style="position: absolute; opacity: 0; width: 0; height: 0;">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/2/25/Logo_MB_new.png" alt="MB Bank" class="payment-icon" style="object-fit: contain; background: white; padding: 2px;">
+                            <div style="flex: 1; font-weight: 600;">Chuyển khoản Ngân hàng</div>
+                            <i class="fas fa-check-circle" style="color: #005baa;"></i>
+                        </label>
+
+                        <label class="payment-card">
+                            <input type="radio" name="payment" value="zalopay" style="position: absolute; opacity: 0; width: 0; height: 0;">
+                            <img src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-ZaloPay-Square.png" alt="ZaloPay" class="payment-icon">
+                            <div style="flex: 1; font-weight: 600;">Ví ZaloPay</div>
+                            <i class="fas fa-check-circle" style="color: #0068ff; display: none;"></i>
+                        </label>
+
+                        <label class="payment-card">
+                            <input type="radio" name="payment" value="momo" style="position: absolute; opacity: 0; width: 0; height: 0;">
                             <img src="https://img.mservice.io/momo-payment/icon/images/logo512.png" alt="MoMo" class="payment-icon">
                             <div style="flex: 1; font-weight: 600;">Ví MoMo</div>
-                            <i class="fas fa-check-circle" style="color: #ae2070;"></i>
-                        </label>
-                        
-                        <label class="payment-card">
-                            <input type="radio" name="payment" value="vnpay" style="position: absolute; opacity: 0; width: 0; height: 0;">
-                            <img src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-VNPAY-QR-1.png" alt="VNPay" class="payment-icon">
-                            <div style="flex: 1; font-weight: 600;">VNPay</div>
-                            <i class="fas fa-check-circle" style="color: #005baa; display: none;"></i>
+                            <i class="fas fa-check-circle" style="color: #ae2070; display: none;"></i>
                         </label>
                     </div>
 
-                    <!-- Total -->
                     <div class="summary-total">
                         <span style="color: var(--text-muted);">Tổng thanh toán:</span>
                         <span id="order-total" class="summary-total-price" data-amount="0">0 đ</span>
@@ -235,7 +232,7 @@
                             THANH TOÁN
                         </button>
                     </div>
-                    
+
                     <p style="text-align: center; color: var(--text-muted); font-size: 0.75rem; margin-top: 1rem;">
                         Giao dịch được mã hóa và bảo mật 256-bit.
                     </p>
@@ -246,7 +243,6 @@
         </div>
     </main>
 
-    <!-- PONYTAIL: Mobile responsive styles for checkout page -->
     <style>
         @media (max-width: 480px) {
             .checkout-btn-group { flex-direction: column !important; }
@@ -254,24 +250,23 @@
         }
     </style>
 
-    <!-- SPLIT & LOCK MODAL -->
     <div id="split-modal" class="modal-backdrop" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(5px);">
         <div class="glass-panel split-modal-panel" style="width: 90%; max-width: 500px; padding: 2rem; position: relative; text-align: left; box-shadow: 0 10px 30px rgba(229,9,20,0.2); border: 1px solid rgba(229,9,20,0.3); max-height: 90vh; overflow-y: auto;">
             <i class="fas fa-times" id="close-split-modal" style="position: absolute; top: 1rem; right: 1rem; cursor: pointer; font-size: 1.25rem; color: var(--text-muted); transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--text-muted)'"></i>
-            
+
             <h2 style="font-family: 'Inter', sans-serif; font-size: 1.75rem; margin-bottom: 0.5rem; letter-spacing: 1px; color: #fff; text-align: center;">PHÂN BỔ VÉ NHÓM</h2>
             <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem; line-height: 1.5; text-align: center;">
                 Chỉ định ghế cho bạn bè. Bạn có thể chọn <strong>thanh toán hộ</strong> hoặc để họ tự thanh toán phần của mình.
             </p>
-            
+
             <div id="split-seats-container" style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
-                <!-- Dynamically populated by JS -->
+
             </div>
 
             <div id="split-total-preview" style="text-align: right; margin-bottom: 1.5rem; font-size: 1.1rem; font-weight: bold; color: var(--primary-red);">
                 Tổng tiền bạn trả: <span id="split-host-total">0 đ</span>
             </div>
-            
+
             <div id="split-link-section" style="display: none; align-items: center; background: rgba(0,0,0,0.6); padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); margin-bottom: 1.5rem;">
                 <input type="text" id="split-link-input" readonly value="" style="background: transparent; border: none; color: #fff; width: 100%; outline: none; font-size: 0.9rem; font-family: 'Inter', monospace;">
                 <button id="btn-copy-link" style="background: transparent; border: none; color: var(--primary-red); cursor: pointer; padding: 0.25rem 0.5rem; font-size: 1.1rem; transition: transform 0.2s;" title="Sao chép Link">

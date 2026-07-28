@@ -1,11 +1,7 @@
-// ============================================================
-// 3HD2K Rewards — Loyalty Points & Tier System
-// ============================================================
 
 (function () {
   'use strict';
 
-  // ── Tier Definitions ──────────────────────────────────────
   const TIERS = [
     {
       id: 'member',
@@ -83,7 +79,6 @@
     }
   ];
 
-  // ── Earn Actions ──────────────────────────────────────────
   const EARN_ACTIONS = [
     { id: 'ticket', label: 'Mua vé phim', icon: '🎬', minPts: 50, maxPts: 150 },
     { id: 'combo', label: 'Mua combo Bắp Nước', icon: '🍿', minPts: 20, maxPts: 50 },
@@ -92,13 +87,11 @@
     { id: 'share', label: 'Chia sẻ mạng xã hội', icon: '📱', minPts: 5, maxPts: 5 }
   ];
 
-  // ── State ─────────────────────────────────────────────────
   let state = {
     points: 0,
     history: []
   };
 
-  // ── Persistence ───────────────────────────────────────────
   const STORAGE_KEY = '3hd2k_rewards';
 
   function loadState() {
@@ -109,14 +102,13 @@
         state.points = parsed.points || 0;
         state.history = parsed.history || [];
       }
-    } catch (_) { /* first visit */ }
+    } catch (_) {  }
   }
 
   function saveState() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }
 
-  // ── Helpers ───────────────────────────────────────────────
   function getTier(pts) {
     for (let i = TIERS.length - 1; i >= 0; i--) {
       if (pts >= TIERS[i].min) return TIERS[i];
@@ -144,11 +136,9 @@
     return `${dd}/${mm}/${yyyy} ${hh}:${mi}`;
   }
 
-  // ── DOM References ────────────────────────────────────────
   const $ = (sel, ctx) => (ctx || document).querySelector(sel);
   const $$ = (sel, ctx) => [...(ctx || document).querySelectorAll(sel)];
 
-  // ── Animated Counter ──────────────────────────────────────
   function animateCounter(el, from, to, duration = 800) {
     const start = performance.now();
     const diff = to - from;
@@ -156,7 +146,7 @@
     function tick(now) {
       const elapsed = now - start;
       const progress = Math.min(elapsed / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+      const eased = 1 - Math.pow(1 - progress, 3);
       const value = Math.round(from + diff * eased);
       el.innerHTML = `${value} <span>PTS</span>`;
       if (progress < 1) {
@@ -168,7 +158,6 @@
     requestAnimationFrame(tick);
   }
 
-  // ── Toast Notifications ───────────────────────────────────
   let toastContainer;
 
   function initToastContainer() {
@@ -190,7 +179,6 @@
     `;
     toastContainer.appendChild(toast);
 
-    // Trigger animation
     requestAnimationFrame(() => {
       toast.classList.add('toast--visible');
     });
@@ -201,7 +189,6 @@
     }, 3000);
   }
 
-  // ── Celebration Modal (Tier Upgrade) ──────────────────────
   function showCelebration(tier) {
     const overlay = document.createElement('div');
     overlay.className = 'celebration-overlay';
@@ -222,7 +209,6 @@
 
     requestAnimationFrame(() => overlay.classList.add('celebration--visible'));
 
-    // Confetti particles
     spawnConfetti(overlay.querySelector('#confettiCanvas'), tier.color);
 
     const btn = overlay.querySelector('.celebration-btn');
@@ -248,7 +234,6 @@
     }
   }
 
-  // ── Tier Details Modal ────────────────────────────────────
   function showTierDetailsModal() {
     const currentTier = getTier(state.points);
     const overlay = document.createElement('div');
@@ -304,12 +289,10 @@
     });
   }
 
-  // ── Update UI ─────────────────────────────────────────────
   function updateUI(oldPoints, animate = false) {
     const tier = getTier(state.points);
     const nextTier = getNextTier(state.points);
 
-    // Points counter
     const pointsEl = $('.points');
     if (animate && oldPoints !== state.points) {
       animateCounter(pointsEl, oldPoints, state.points);
@@ -317,14 +300,12 @@
       pointsEl.innerHTML = `${state.points} <span>PTS</span>`;
     }
 
-    // Tier badge
     const badgeEl = $('.tier-badge');
     badgeEl.textContent = tier.name;
     badgeEl.style.color = tier.color;
     badgeEl.style.borderColor = tier.color + '80';
     badgeEl.style.background = tier.color + '1a';
 
-    // Rewards card glow & bg
     const card = $('.rewards-card');
     card.style.background = tier.gradient;
     card.style.borderColor = tier.color + '26';
@@ -333,7 +314,6 @@
     const glow = $('.rewards-card-glow');
     glow.style.background = `radial-gradient(ellipse, ${tier.glowColor} 0%, transparent 70%)`;
 
-    // Progress bar
     if (nextTier) {
       const progressInTier = state.points - tier.min;
       const tierRange = nextTier.min - tier.min;
@@ -357,7 +337,7 @@
       hint.innerHTML = `Còn <strong>${remaining} PTS</strong> nữa để thăng hạng ${nextTier.name}`;
       hint.style.display = '';
     } else {
-      // Max tier (Diamond)
+
       const fill = $('.progress-fill');
       const thumb = $('.progress-thumb');
       fill.style.width = '100%';
@@ -374,7 +354,6 @@
       hint.innerHTML = `🎉 Bạn đang ở <strong>hạng cao nhất</strong>!`;
     }
 
-    // Privileges card
     const privCard = $('.privileges-card');
     privCard.querySelector('h2').textContent = `ĐẶC QUYỀN HẠNG ${tier.name}`;
     const privList = privCard.querySelector('.privilege-list');
@@ -385,14 +364,12 @@
       </li>
     `).join('');
 
-    // Diamond shimmer
     if (tier.id === 'diamond') {
       card.classList.add('tier-diamond');
     } else {
       card.classList.remove('tier-diamond');
     }
 
-    // Update gift buttons based on current points
     $$('.gift-card').forEach(card => {
       const ptsText = $('.gift-pts', card).textContent.trim();
       const pts = parseInt(ptsText);
@@ -411,13 +388,11 @@
     });
   }
 
-  // ── Render History ────────────────────────────────────────
   function renderHistory() {
     const list = $('.history-list');
-    // Keep existing static items, prepend dynamic ones
-    const dynamicItems = state.history.slice().reverse(); // newest first
 
-    // Remove old dynamic items and empty message
+    const dynamicItems = state.history.slice().reverse();
+
     $$('.history-item:not([data-static])', list).forEach(el => el.remove());
     $$('.empty-history', list).forEach(el => el.remove());
 
@@ -435,7 +410,7 @@
     dynamicItems.forEach(entry => {
       const item = document.createElement('article');
       item.className = 'history-item history-item--new';
-      
+
       const isRedemption = entry.pts < 0;
       const ptsFormatted = isRedemption ? `${entry.pts} PTS` : `+${entry.pts} PTS`;
       const ptsStyle = isRedemption ? 'color: #8a8a8a;' : 'color: var(--accent);';
@@ -458,7 +433,6 @@
     });
   }
 
-  // ── Earn Points ───────────────────────────────────────────
   function earnPoints(action) {
     const pts = randomInt(action.minPts, action.maxPts);
     const oldPoints = state.points;
@@ -467,7 +441,6 @@
     state.points += pts;
     const newTier = getTier(state.points);
 
-    // Color mapping for history entries
     const colorMap = {
       ticket: { color: '#e55d65', dark: '#3a1a1d' },
       combo: { color: '#d4a040', dark: '#3a2a10' },
@@ -492,13 +465,11 @@
     updateUI(oldPoints, true);
     renderHistory();
 
-    // Tier upgrade celebration
     if (newTier.id !== oldTier.id) {
       setTimeout(() => showCelebration(newTier), 600);
     }
   }
 
-  // ── Gift Redemption ───────────────────────────────────────
   function showRedeemConfirmationModal(title, pts, onConfirm) {
     const overlay = document.createElement('div');
     overlay.className = 'tier-modal-overlay confirmation-modal-overlay';
@@ -599,10 +570,6 @@
     });
   }
 
-  // ── Build Earn Section ────────────────────────────────────
-  // Hiển thị thông tin hướng dẫn cách tích điểm (chỉ đọc).
-  // Điểm chỉ được cộng khi thực hiện giao dịch thực tế
-  // (mua vé, mua combo, check-in, đánh giá, chia sẻ).
   function buildEarnSection() {
     const section = document.createElement('section');
     section.className = 'earn-section';
@@ -627,19 +594,16 @@
       </div>
     `;
 
-    // Insert before gifts section
     const giftsSection = $('.gifts-section');
     giftsSection.parentNode.insertBefore(section, giftsSection);
   }
 
-  // ── Mark Static History Items ─────────────────────────────
   function markStaticItems() {
     $$('.history-item').forEach(item => {
       item.setAttribute('data-static', 'true');
     });
   }
 
-  // ── Tier Details Button ───────────────────────────────────
   function bindTierDetailsButton() {
     const btn = $('.btn-outline');
     if (btn) {
@@ -650,7 +614,6 @@
     }
   }
 
-  // ── Init ──────────────────────────────────────────────────
   function init() {
     loadState();
     initToastContainer();
@@ -662,7 +625,6 @@
     renderHistory();
   }
 
-  // Wait for DOM
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else {
