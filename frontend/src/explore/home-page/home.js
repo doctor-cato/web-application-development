@@ -19,18 +19,26 @@ const btnBookNow = document.getElementById('btn-book-now');
 function getYouTubeEmbedUrl(url) {
     if (!url) return '';
     let cleanUrl = url.trim();
-    if (cleanUrl.includes('embed/')) return cleanUrl;
-    
     let videoId = '';
-    if (cleanUrl.includes('v=')) {
+    
+    if (cleanUrl.includes('embed/')) {
+        videoId = cleanUrl.split('embed/')[1]?.split('?')[0]?.split('&')[0];
+    } else if (cleanUrl.includes('v=')) {
         videoId = cleanUrl.split('v=')[1]?.split('&')[0];
     } else if (cleanUrl.includes('youtu.be/')) {
         videoId = cleanUrl.split('youtu.be/')[1]?.split('?')[0];
     } else if (cleanUrl.match(/^[a-zA-Z0-9_-]{11}$/)) {
         videoId = cleanUrl;
     }
-    
-    return videoId ? `https://www.youtube.com/embed/${videoId}` : cleanUrl;
+
+    if (videoId) {
+        const origin = (typeof window !== 'undefined' && window.location && window.location.origin && window.location.origin !== 'null') 
+            ? encodeURIComponent(window.location.origin) 
+            : '';
+        const originParam = origin ? `&origin=${origin}` : '';
+        return `https://www.youtube-nocookie.com/embed/${videoId}?enablejsapi=1&rel=0${originParam}`;
+    }
+    return cleanUrl;
 }
 
 function renderHeroMovie(movie) {
@@ -178,15 +186,15 @@ if (btnPrev && btnNext) {
 
 // --- TRAILER MODAL LOGIC ---
 
-// Phát hiện lỗi YouTube embed qua postMessage (Error 100, 150, 153)
+// Phát hiện lỗi YouTube embed qua postMessage (Error 2, 5, 100, 101, 150, 151, 153)
 window.addEventListener('message', (e) => {
-    if (e.origin !== 'https://www.youtube.com') return;
+    if (!e.origin.includes('youtube.com') && !e.origin.includes('youtube-nocookie.com')) return;
     try {
-        const data = JSON.parse(e.data);
-        if (data.event === 'onError' && [100, 150, 151, 153].includes(data.info)) {
+        const data = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
+        if (data.event === 'onError' && [2, 5, 100, 101, 150, 151, 153].includes(data.info)) {
             // Video bị chặn embed → hiện fallback
             if (trailerFallback) trailerFallback.style.display = 'flex';
-            iframe.style.display = 'none';
+            if (iframe) iframe.style.display = 'none';
         }
     } catch (_) {}
 });
@@ -195,12 +203,16 @@ if (btnWatch) {
     btnWatch.addEventListener('click', (e) => {
         e.preventDefault();
         const currentMovie = (window.heroMovies && window.heroMovies.length > 0) ? window.heroMovies[currentHeroIndex] : null;
-        const rawTrailer = (currentMovie && currentMovie.trailer) ? currentMovie.trailer : iframe.src;
+        const rawTrailer = (currentMovie && (currentMovie.trailerWatch || currentMovie.trailer)) ? (currentMovie.trailerWatch || currentMovie.trailer) : iframe.src;
         if (!rawTrailer) return;
 
         const formattedEmbed = getYouTubeEmbedUrl(rawTrailer);
         const sep = formattedEmbed.includes('?') ? '&' : '?';
-        iframe.src = formattedEmbed + `${sep}autoplay=1&enablejsapi=1`;
+        iframe.src = formattedEmbed + `${sep}autoplay=1`;
+
+        if (trailerYtLink) {
+            trailerYtLink.href = (currentMovie && (currentMovie.trailerWatch || currentMovie.trailer)) ? (currentMovie.trailerWatch || currentMovie.trailer) : rawTrailer;
+        }
 
         if (trailerFallback) trailerFallback.style.display = 'none';
         iframe.style.display = 'block';

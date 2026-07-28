@@ -521,18 +521,27 @@ function renderDashboard() {
 // --- YOUTUBE TRAILER HELPER & MODAL ---
 function getYouTubeEmbedUrl(url) {
     if (!url) return '';
-    if (url.includes('embed/')) return url;
-    
+    let cleanUrl = url.trim();
     let videoId = '';
-    if (url.includes('v=')) {
-        videoId = url.split('v=')[1]?.split('&')[0];
-    } else if (url.includes('youtu.be/')) {
-        videoId = url.split('youtu.be/')[1]?.split('?')[0];
-    } else if (url.match(/^[a-zA-Z0-9_-]{11}$/)) {
-        videoId = url;
-    }
     
-    return videoId ? `https://www.youtube.com/embed/${videoId}?autoplay=1` : url;
+    if (cleanUrl.includes('embed/')) {
+        videoId = cleanUrl.split('embed/')[1]?.split('?')[0]?.split('&')[0];
+    } else if (cleanUrl.includes('v=')) {
+        videoId = cleanUrl.split('v=')[1]?.split('&')[0];
+    } else if (cleanUrl.includes('youtu.be/')) {
+        videoId = cleanUrl.split('youtu.be/')[1]?.split('?')[0];
+    } else if (cleanUrl.match(/^[a-zA-Z0-9_-]{11}$/)) {
+        videoId = cleanUrl;
+    }
+
+    if (videoId) {
+        const origin = (typeof window !== 'undefined' && window.location && window.location.origin && window.location.origin !== 'null') 
+            ? encodeURIComponent(window.location.origin) 
+            : '';
+        const originParam = origin ? `&origin=${origin}` : '';
+        return `https://www.youtube-nocookie.com/embed/${videoId}?enablejsapi=1&autoplay=1&rel=0${originParam}`;
+    }
+    return cleanUrl;
 }
 
 function openTrailerModal(url, title = 'Trailer Phim') {
