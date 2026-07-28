@@ -756,7 +756,7 @@
         btnConfirmPay.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ĐANG XỬ LÝ...';
         btnConfirmPay.style.pointerEvents = 'none';
 
-        setTimeout(() => {
+        setTimeout(async () => {
             modalBackdrop.classList.remove('active');
             btnConfirmPay.textContent = originalBtnText;
             btnConfirmPay.style.pointerEvents = 'auto';
