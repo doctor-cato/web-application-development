@@ -2,12 +2,17 @@ import { API_BASE_URL, getHeaders } from '../../shared/utils/apiConfig.js?v=5';
 import { getCurrentUser, setCurrentUser, clearCurrentUser } from './storage.js';
 
 export async function login(email, password) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
+
     try {
         const response = await fetch(`${API_BASE_URL}/auth/login`, {
             method: 'POST',
             headers: getHeaders(),
-            body: JSON.stringify({ email, password })
+            body: JSON.stringify({ email, password }),
+            signal: controller.signal
         });
+        clearTimeout(timeoutId);
         
         const responseText = await response.text();
         let data;
@@ -25,8 +30,12 @@ export async function login(email, password) {
             return { ok: false, error: data.message || 'Đăng nhập thất bại' };
         }
     } catch (error) {
+        clearTimeout(timeoutId);
         console.error('Login network error:', error);
-        return { ok: false, error: 'Không thể kết nối tới máy chủ. Vui lòng kiểm tra kết nối mạng.' };
+        if (error.name === 'AbortError') {
+            return { ok: false, error: 'Hết thời gian chờ phản hồi từ máy chủ (Timeout). Vui lòng kiểm tra lại server Somee.' };
+        }
+        return { ok: false, error: 'Không thể kết nối tới máy chủ. Vui lòng kiểm tra kết nối mạng hoặc server Backend.' };
     }
 }
 
