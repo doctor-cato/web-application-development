@@ -285,7 +285,7 @@ function getSelectedCombo() {
 }
 
 function getSelectedPayment() {
-  return document.querySelector('input[name="payment"]:checked')?.value || 'momo';
+  return document.querySelector('input[name="payment"]:checked')?.value || 'bank';
 }
 
 function init() {
@@ -310,7 +310,7 @@ function init() {
   document.querySelectorAll('input[name="payment"]').forEach(radio => {
     radio.addEventListener('change', (e) => {
       document.querySelectorAll('label.payment-card').forEach(x => {
-        x.classList.remove('selected-momo', 'selected-vnpay');
+        x.classList.remove('selected-momo', 'selected-vnpay', 'selected-bank', 'selected-zalopay');
         const icon = x.querySelector('i');
         if (icon) icon.style.display = 'none';
       });
@@ -320,6 +320,8 @@ function init() {
       if (card) {
         if (selectedRadio.value === 'momo') card.classList.add('selected-momo');
         if (selectedRadio.value === 'vnpay') card.classList.add('selected-vnpay');
+        if (selectedRadio.value === 'bank') card.classList.add('selected-bank');
+        if (selectedRadio.value === 'zalopay') card.classList.add('selected-zalopay');
         const icon = card.querySelector('i');
         if (icon) icon.style.display = 'block';
       }

@@ -206,18 +206,25 @@
 
                     <!-- Payment methods -->
                     <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem;">
-                        <label class="payment-card selected-momo">
-                            <input type="radio" name="payment" value="momo" checked style="position: absolute; opacity: 0; width: 0; height: 0;">
-                            <img src="https://img.mservice.io/momo-payment/icon/images/logo512.png" alt="MoMo" class="payment-icon">
-                            <div style="flex: 1; font-weight: 600;">Ví MoMo</div>
-                            <i class="fas fa-check-circle" style="color: #ae2070;"></i>
+                        <label class="payment-card selected-bank">
+                            <input type="radio" name="payment" value="bank" checked style="position: absolute; opacity: 0; width: 0; height: 0;">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/2/25/Logo_MB_new.png" alt="MB Bank" class="payment-icon" style="object-fit: contain; background: white; padding: 2px;">
+                            <div style="flex: 1; font-weight: 600;">Chuyển khoản Ngân hàng</div>
+                            <i class="fas fa-check-circle" style="color: #005baa;"></i>
                         </label>
                         
                         <label class="payment-card">
-                            <input type="radio" name="payment" value="vnpay" style="position: absolute; opacity: 0; width: 0; height: 0;">
-                            <img src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-VNPAY-QR-1.png" alt="VNPay" class="payment-icon">
-                            <div style="flex: 1; font-weight: 600;">VNPay</div>
-                            <i class="fas fa-check-circle" style="color: #005baa; display: none;"></i>
+                            <input type="radio" name="payment" value="zalopay" style="position: absolute; opacity: 0; width: 0; height: 0;">
+                            <img src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-ZaloPay-Square.png" alt="ZaloPay" class="payment-icon">
+                            <div style="flex: 1; font-weight: 600;">Ví ZaloPay</div>
+                            <i class="fas fa-check-circle" style="color: #0068ff; display: none;"></i>
+                        </label>
+
+                        <label class="payment-card">
+                            <input type="radio" name="payment" value="momo" style="position: absolute; opacity: 0; width: 0; height: 0;">
+                            <img src="https://img.mservice.io/momo-payment/icon/images/logo512.png" alt="MoMo" class="payment-icon">
+                            <div style="flex: 1; font-weight: 600;">Ví MoMo</div>
+                            <i class="fas fa-check-circle" style="color: #ae2070; display: none;"></i>
                         </label>
                     </div>
 
