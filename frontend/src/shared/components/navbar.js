@@ -18,45 +18,7 @@ export function renderNavbar() {
                 <a href="${srcPrefix}/index.html">Trang chủ</a>
                 <a href="${srcPrefix}/explore/movie-search/index.html?tab=now-showing">Phim Đang Chiếu</a>
                 <a href="${srcPrefix}/explore/cinema-map/index.html">Cụm Rạp</a>
-                <a href="${srcPrefix}/user/user-notifications/index.html?tab=promo">Khuyến Mãi</a>
-                <div class="quick-book-wrapper">
-                    <a href="#" class="quick-book-toggle" id="quick-book-toggle">Đặt vé <i class="fas fa-chevron-down" style="font-size:0.8rem; margin-left:4px;"></i></a>
-                    <div class="quick-book-dropdown" id="quick-book-dropdown">
-                        <div class="qb-title">ĐẶT VÉ NHANH</div>
-                        <div class="qb-step">
-                            <label><strong>1. Chọn Phim</strong></label>
-                            <div class="qb-custom-select" id="qb-movie-wrapper">
-                                <div class="qb-select-trigger" id="qb-movie-trigger">
-                                    <i class="fas fa-search" style="color:rgba(255,255,255,0.5); margin-right:8px; font-size:0.85rem;"></i>
-                                    <input type="text" id="qb-movie-search" placeholder="-- Chọn Phim --" autocomplete="off" />
-                                    <i class="fas fa-chevron-down" style="color:rgba(255,255,255,0.5); margin-left:auto; font-size:0.7rem;"></i>
-                                </div>
-                                <div class="qb-select-menu" id="qb-movie-menu">
-                                    <ul class="qb-options-list" id="qb-movie-list"></ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="qb-step">
-                            <label><strong>2. Chọn Rạp</strong></label>
-                            <select id="qb-cinema" disabled>
-                                <option value="" disabled selected>-- Chọn Rạp --</option>
-                            </select>
-                        </div>
-                        <div class="qb-step">
-                            <label><strong>3. Chọn Ngày</strong></label>
-                            <select id="qb-date" disabled>
-                                <option value="" disabled selected>-- Chọn Ngày --</option>
-                            </select>
-                        </div>
-                        <div class="qb-step">
-                            <label><strong>4. Chọn Suất</strong></label>
-                            <select id="qb-showtime" disabled>
-                                <option value="" disabled selected>-- Chọn Suất Chiếu --</option>
-                            </select>
-                        </div>
-                        <button class="qb-btn" id="qb-submit" disabled>Tiếp tục</button>
-                    </div>
-                </div>
+                <a href="${srcPrefix}/booking/booking-food/index.html">Đồ Ăn</a>
                 <div class="cine-match-wrapper" style="display:flex; height:100%; align-items:center; margin-left: 8px; margin-right: 20px;">
                     <a href="${srcPrefix}/engagement/cinematch/index.html" class="cine-match-nav">
                         Cine-Match <i class="fas fa-heart" style="color: var(--primary-red, #e50914); font-size:0.85rem; animation: heartbeat 1.5s infinite;"></i>
@@ -102,15 +64,13 @@ export function renderNavbar() {
                         <li><a href="${srcPrefix}/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;">Trang chủ</a></li>
                         <li><a href="${srcPrefix}/explore/movie-search/index.html?tab=now-showing" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;">Phim Đang Chiếu</a></li>
                         <li><a href="${srcPrefix}/explore/cinema-map/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;">Cụm Rạp</a></li>
-                        <li><a href="#" id="mobile-qb-btn" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;">Đặt vé nhanh</a></li>
+                        <li><a href="${srcPrefix}/booking/booking-food/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;">Đồ Ăn</a></li>
                     </ul>
                     <div style="padding: 10px 20px; font-family:'Inter', sans-serif; text-transform:uppercase; font-weight:700; color: var(--primary-red, #e50914); font-size: 0.9rem; letter-spacing:1px; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 5px; margin-top: 5px;">Hệ Sinh Thái 3HD2K</div>
                     <ul style="list-style:none; padding:0; margin:0;">
                         
                         <li><a href="${srcPrefix}/engagement/minigame/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-gamepad" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Cine Predict</a></li>
                         <li><a href="${srcPrefix}/engagement/cinematch/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-heart" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Cine-Match (Ghép đôi)</a></li>
-                        <li><a href="${srcPrefix}/booking/group-booking/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-users" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Đặt & Giữ ghế nhóm</a></li>
-                        <li><a href="${srcPrefix}/user/user-notifications/index.html?tab=promo" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-ticket-alt" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Khuyến mãi</a></li>
                         <li><a href="${srcPrefix}/user/loyalty-points/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-crown" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Gói hội viên</a></li>
                     </ul>
                 </div>
