@@ -35,14 +35,15 @@
             padding: 0;
         }
 
-        body {
+        body, button, input, select, textarea {
             background-color: var(--bg-color);
             color: var(--text-main);
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             height: 100vh;
             overflow: hidden;
             display: flex;
             -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         /* Glass Panel */
@@ -68,6 +69,10 @@
             transition: all 0.2s ease;
             border: none;
             color: #fff;
+            height: auto;
+            min-height: 40px;
+            flex-shrink: 0;
+            font-family: inherit;
         }
 
         .btn:active {
@@ -108,26 +113,31 @@
         }
 
         .sidebar-header .logo {
-            font-family: 'Inter', sans-serif;
-            font-size: 2.2rem;
-            color: var(--primary-red);
-            letter-spacing: 2px;
-            text-shadow: 0 0 10px rgba(229, 9, 20, 0.5);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            font-size: 2.4rem;
+            font-weight: 900;
+            color: #e50914;
+            letter-spacing: 1px;
+            text-shadow: none;
             text-decoration: none;
+            line-height: 1;
+            display: inline-block;
         }
 
         .portal-badge {
-            font-size: 0.6875rem;
+            font-size: 0.75rem;
             font-weight: 800;
-            color: var(--text-muted);
-            letter-spacing: 2px;
+            color: var(--btn-green-color);
+            letter-spacing: 2.5px;
+            margin-top: 4px;
         }
 
         /* Search input with absolute icon fix */
         .search-box {
             position: relative;
             width: 100%;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
+            flex-shrink: 0;
         }
 
         .search-box i {
@@ -135,34 +145,41 @@
             left: 14px;
             top: 50%;
             transform: translateY(-50%);
-            color: var(--text-muted);
+            color: var(--btn-green-color);
+            font-size: 0.95rem;
             z-index: 2;
             pointer-events: none;
             transition: color 0.3s ease;
         }
 
         .search-box input {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid var(--glass-border);
-            border-radius: 6px;
-            padding: 12px 16px 12px 38px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            padding: 11px 14px 11px 40px;
             outline: none;
             color: #fff;
-            font-size: 0.9rem;
+            font-size: 0.875rem;
+            font-weight: 500;
             width: 100%;
+            height: 42px;
             box-sizing: border-box;
-            transition: all 0.3s ease;
-            font-family: inherit;
+            transition: all 0.25s ease;
+            font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .search-box input::placeholder {
+            color: rgba(255, 255, 255, 0.45);
+            font-size: 0.85rem;
+            font-weight: 400;
+            font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
         }
 
         .search-box input:focus {
             border-color: var(--btn-green-color);
-            box-shadow: 0 0 10px rgba(13, 242, 134, 0.25);
-            background: rgba(0, 0, 0, 0.6);
-        }
-
-        .search-box:focus-within i {
-            color: var(--btn-green-color);
+            box-shadow: 0 0 12px rgba(13, 242, 134, 0.35);
+            background: rgba(0, 0, 0, 0.7);
         }
 
         /* App Orders Scroll List */
@@ -268,12 +285,15 @@
             color: #000;
             font-size: 0.8rem;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding: 10px 14px;
+            letter-spacing: 0.2px;
+            padding: 8px 14px;
             border-radius: 6px;
             white-space: nowrap;
             height: fit-content;
-            font-weight: 800;
+            font-weight: 700;
+            font-family: inherit;
+            flex-shrink: 0;
+            align-self: center;
         }
 
         .btn-confirm-delivery:hover {
@@ -346,6 +366,7 @@
             flex-grow: 1;
             height: 100vh;
             margin-left: 380px;
+            width: calc(100% - 380px);
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -354,27 +375,31 @@
 
         /* Header Styling matching 3HD2K_Admin */
         .admin-header {
-            height: 70px;
+            min-height: 70px;
+            height: auto;
+            padding: 10px 24px;
             border-bottom: 1px solid var(--glass-border);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 24px;
+            gap: 12px;
+            flex-wrap: wrap;
             z-index: 100;
             background: rgba(12, 12, 12, 0.4);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
+            flex-shrink: 0;
         }
 
         .header-left h1 {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: 700;
             letter-spacing: 0.5px;
             color: #fff;
         }
 
         .header-left p {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: var(--text-muted);
             margin-top: 2px;
         }
@@ -382,16 +407,17 @@
         .header-right {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
+            flex-wrap: wrap;
         }
 
         .time-widget, .notification-pill {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
+            gap: 6px;
+            padding: 6px 12px;
             border-radius: 6px;
-            font-size: 0.875rem;
+            font-size: 0.8rem;
             font-weight: 600;
             background: var(--glass-bg);
             border: 1px solid var(--glass-border);
@@ -399,7 +425,7 @@
         }
         
         .notification-pill {
-            padding: 8px 12px;
+            padding: 6px 10px;
             cursor: pointer;
         }
 
@@ -415,16 +441,17 @@
         .view-site-btn {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
+            gap: 6px;
+            padding: 6px 12px;
             border-radius: 6px;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 600;
             background: transparent;
             border: 1px solid var(--glass-border);
             color: var(--text-main);
             transition: all 0.25s ease;
             cursor: pointer;
+            text-decoration: none;
         }
 
         .view-site-btn:hover {
@@ -433,23 +460,64 @@
             box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
         }
 
+        .btn-mini {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.75rem;
+            transition: all 0.2s ease;
+            border: 1px solid var(--btn-cyan-color);
+            background: rgba(0, 240, 255, 0.1);
+            color: #fff;
+            font-family: inherit;
+            height: 28px;
+            min-height: 28px;
+            max-height: 28px;
+            flex-shrink: 0;
+            align-self: center;
+            white-space: nowrap;
+        }
+
+        .btn-mini:hover {
+            background: rgba(0, 240, 255, 0.25);
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.35);
+            transform: translateY(-1px);
+        }
+
         /* POS Filter Tab Bar */
         .pos-tabs {
             display: flex;
-            gap: 10px;
-            padding: 15px 24px 5px 24px;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px 6px 24px;
+            overflow-x: auto;
+            flex-shrink: 0;
+            height: auto;
+            min-height: 48px;
         }
 
         .pos-tab {
             background: rgba(255,255,255,0.03);
             border: 1px solid var(--glass-border);
             color: var(--text-muted);
-            padding: 10px 18px;
+            padding: 8px 16px;
             border-radius: 6px;
-            font-size: 0.875rem;
+            font-size: 0.85rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.25s ease;
+            white-space: nowrap;
+            height: 38px;
+            align-self: center;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
         }
 
         .pos-tab:hover {
@@ -469,13 +537,14 @@
         .pos-grid-container {
             flex: 1;
             overflow-y: auto;
-            padding: 10px 24px 20px 24px;
+            padding: 10px 24px 15px 24px;
+            min-height: 0;
         }
 
         .pos-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 18px;
+            grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
+            gap: 16px;
         }
 
         /* POS Item Card */
@@ -564,19 +633,21 @@
             letter-spacing: 0.5px;
         }
 
-        /* Bottom Checkout Panel */
+        /* Bottom Checkout Panel - Fixed height & side by side */
         .checkout-panel {
             border-top: 1px solid var(--glass-border);
             background: rgba(18, 18, 18, 0.95);
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
-            padding: 15px 24px;
+            padding: 14px 24px;
             display: flex;
-            gap: 24px;
+            gap: 20px;
             align-items: stretch;
-            min-height: 220px;
-            height: auto;
-            flex-wrap: wrap;
+            height: 230px;
+            min-height: 230px;
+            max-height: 230px;
+            flex-shrink: 0;
+            overflow: hidden;
         }
 
         /* Cart Column */
@@ -585,39 +656,65 @@
             display: flex;
             flex-direction: column;
             border-right: 1px solid var(--glass-border);
-            padding-right: 20px;
+            padding-right: 16px;
+            min-width: 240px;
+            overflow: hidden;
+            height: 100%;
         }
 
         .cart-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
+            flex-shrink: 0;
+            height: 28px;
+            min-height: 28px;
+            max-height: 28px;
+            width: 100%;
         }
 
         .cart-header h3 {
             font-size: 0.85rem;
             font-weight: 800;
-            color: var(--text-muted);
+            color: #ffffff;
             text-transform: uppercase;
             letter-spacing: 1px;
+            margin: 0;
         }
 
         .btn-clear-cart {
-            background: transparent;
-            border: none;
-            color: var(--primary-red);
-            font-size: 0.75rem;
+            background: rgba(229, 9, 20, 0.15);
+            border: 1px solid var(--primary-red);
+            color: #ff4d4d;
+            font-size: 0.725rem;
             font-weight: 700;
             cursor: pointer;
+            padding: 0 10px;
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            transition: all 0.2s ease;
+            height: 26px;
+            min-height: 26px;
+            max-height: 26px;
+            flex-shrink: 0;
+            align-self: center;
+            white-space: nowrap;
         }
 
         .cart-items-list {
             flex: 1;
+            min-height: 0;
+            max-height: 160px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
+            padding-right: 4px;
+            width: 100%;
         }
 
         .cart-item {
@@ -630,7 +727,7 @@
         .cart-item-name {
             font-weight: 600;
             color: #fff;
-            max-width: 55%;
+            max-width: 50%;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -675,12 +772,14 @@
 
         /* Loyalty Section */
         .loyalty-section {
-            width: 260px;
+            width: 250px;
+            min-width: 250px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
             border-right: 1px solid var(--glass-border);
-            padding-right: 20px;
+            padding-right: 16px;
+            flex-shrink: 0;
         }
 
         .loyalty-header {
@@ -700,7 +799,7 @@
             background: rgba(0, 0, 0, 0.4);
             border: 1px solid var(--glass-border);
             border-radius: 4px;
-            padding: 10px 10px 10px 32px;
+            padding: 9px 9px 9px 32px;
             color: #fff;
             font-size: 0.875rem;
             outline: none;
@@ -725,7 +824,7 @@
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid var(--glass-border);
             border-radius: 4px;
-            padding: 10px;
+            padding: 8px;
             font-size: 0.8rem;
             display: flex;
             flex-direction: column;
@@ -751,10 +850,12 @@
 
         /* Checkout Action Column */
         .actions-section {
-            width: 220px;
+            width: 210px;
+            min-width: 210px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            flex-shrink: 0;
         }
 
         .total-box {
@@ -782,6 +883,9 @@
             display: flex;
             gap: 6px;
             margin: 8px 0;
+            align-items: center;
+            flex-shrink: 0;
+            height: 36px;
         }
 
         .payment-btn {
@@ -790,12 +894,20 @@
             border: 1px solid var(--glass-border);
             color: var(--text-muted);
             font-size: 0.75rem;
-            padding: 8px 0;
+            padding: 0 4px;
             border-radius: 4px;
             cursor: pointer;
             text-align: center;
             font-weight: 700;
             transition: all 0.2s ease;
+            height: 34px;
+            min-height: 34px;
+            max-height: 34px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            white-space: nowrap;
         }
 
         .payment-btn.active {
@@ -811,10 +923,11 @@
             color: #000;
             width: 100%;
             padding: 12px 0;
-            font-size: 0.9rem;
+            font-size: 0.875rem;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-weight: 800;
+            letter-spacing: 0.2px;
+            font-weight: 700;
+            font-family: inherit;
         }
 
         .btn-checkout-submit:hover {
@@ -1012,7 +1125,7 @@
         
         <!-- App Queue content inside the sidebar -->
         <div style="flex-grow: 1; padding: 20px 24px; display: flex; flex-direction: column; gap: 15px; overflow: hidden;">
-            <div class="column-header" style="margin-bottom: 5px;">
+            <div class="column-header" style="margin-bottom: 2px; flex-shrink: 0;">
                 <h2 style="font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 8px;">
                     <i class="fas fa-ticket-alt" style="color: var(--btn-green-color);"></i> Đơn Đặt Trước (App Queue)
                 </h2>
@@ -1062,9 +1175,22 @@
                     <i class="far fa-clock"></i>
                     <span id="live-time">14:45:48</span>
                 </div>
-                <div class="notification-pill glass-panel" onclick="showToast('Hệ thống hoạt động bình thường')">
+                <div class="notification-pill glass-panel" id="notif-pill-btn" onclick="toggleNotificationDropdown(event)" style="position: relative; cursor: pointer;">
                     <i class="fas fa-bell"></i>
-                    <span class="badge">0</span>
+                    <span class="badge" id="notif-badge-count">0</span>
+                    
+                    <!-- Notification Dropdown Panel Popover -->
+                    <div id="notif-dropdown-panel" style="display: none; position: absolute; top: calc(100% + 8px); right: 0; width: 360px; height: auto; background: #141414; border: 1px solid rgba(255, 255, 255, 0.15); box-shadow: 0 12px 36px rgba(0, 0, 0, 0.9); z-index: 99999; border-radius: 8px; overflow: hidden; padding: 0; text-align: left; font-weight: normal;">
+                        <div style="padding: 12px 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); display: flex; justify-content: space-between; align-items: center; background: rgba(255, 255, 255, 0.05); height: 44px; box-sizing: border-box;">
+                            <strong style="color: #fff; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; font-weight: 700;">
+                                <i class="fas fa-bell" style="color: var(--btn-cyan-color);"></i> THÔNG BÁO HỆ THỐNG
+                            </strong>
+                            <button onclick="markAllNotificationsAsRead(event)" style="background: transparent; border: none; color: var(--btn-cyan-color); font-size: 0.75rem; font-weight: 700; cursor: pointer;">Đánh dấu đã đọc</button>
+                        </div>
+                        <div id="notif-list-container" style="max-height: 320px; overflow-y: auto; display: flex; flex-direction: column;">
+                            <!-- Notifications rendered dynamically -->
+                        </div>
+                    </div>
                 </div>
                 <a href="../index.html" class="view-site-btn btn-outline-small" style="color: var(--btn-cyan-color); border-color: rgba(0, 240, 255, 0.4); margin-right: 8px;">
                     <i class="fas fa-home"></i> Trang chủ Website
@@ -1100,7 +1226,9 @@
             <div class="cart-section">
                 <div class="cart-header">
                     <h3>Giỏ hàng trực tiếp</h3>
-                    <button class="btn-clear-cart" onclick="clearCart()">Xóa tất cả</button>
+                    <button class="btn-clear-cart" onclick="clearCart()">
+                        <i class="fas fa-trash-alt" style="font-size: 0.7rem;"></i> Xóa tất cả
+                    </button>
                 </div>
                 <div class="cart-items-list" id="cart-container">
                     <!-- Items rendered dynamically -->
@@ -1155,10 +1283,10 @@
                 <div style="display: flex; justify-content: space-between;"><span style="color: var(--text-muted);">Tổng thanh toán:</span><strong id="modal-receipt-total" style="color: var(--btn-green-color); font-size: 1rem;">-</strong></div>
                 <div style="display: flex; justify-content: space-between;" id="modal-points-wrapper"><span style="color: var(--text-muted);">Điểm thành viên:</span><strong id="modal-receipt-points" style="color: var(--btn-cyan-color);">-</strong></div>
             </div>
-            <button class="btn" style="background-color: var(--btn-cyan-color); color: #000; font-weight: 700; width: 100%; margin-bottom: 8px;" onclick="openPhysicalPrintModal()">
+            <button class="btn" style="background-color: var(--btn-cyan-color); color: #000; font-weight: 700; width: 100%; height: 42px; min-height: 42px; flex-shrink: 0; margin-bottom: 8px;" onclick="openPhysicalPrintModal()">
                 <i class="fas fa-print"></i> 🖨️ IN VÉ VẬT LÝ (TÁCH VÉ PHIM & F&B)
             </button>
-            <button class="btn" style="background-color: var(--btn-green-color); color: #000; font-weight: 700; width: 100%;" onclick="closeSuccessModal()">HOÀN THÀNH</button>
+            <button class="btn" style="background-color: var(--btn-green-color); color: #000; font-weight: 700; width: 100%; height: 42px; min-height: 42px; flex-shrink: 0;" onclick="closeSuccessModal()">HOÀN THÀNH</button>
         </div>
     </div>
 
@@ -1286,19 +1414,19 @@
             <p style="color: var(--text-muted); font-size: 0.8rem; text-align: center; margin-bottom: 15px;">Vé được tách riêng biệt chuẩn máy in POS nhiệt 80mm</p>
             
             <!-- Print Ticket Tabs -->
-            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-                <button class="pos-tab active" id="print-tab-movie" onclick="switchPrintTab('movie')" style="flex: 1;">🎟️ VÉ XEM PHIM</button>
-                <button class="pos-tab" id="print-tab-fnb" onclick="switchPrintTab('fnb')" style="flex: 1;">🍿 PHIẾU BẮP NƯỚC F&B</button>
+            <div style="display: flex; gap: 10px; margin-bottom: 15px; align-items: center; flex-shrink: 0;">
+                <button class="pos-tab active" id="print-tab-movie" onclick="switchPrintTab('movie')" style="flex: 1; height: 38px; display: inline-flex; align-items: center; justify-content: center;">🎟️ VÉ XEM PHIM</button>
+                <button class="pos-tab" id="print-tab-fnb" onclick="switchPrintTab('fnb')" style="flex: 1; height: 38px; display: inline-flex; align-items: center; justify-content: center;">🍿 PHIẾU BẮP NƯỚC F&B</button>
             </div>
 
             <!-- Print Content Area -->
-            <div id="print-ticket-preview-area" style="background: #fff; color: #000; padding: 20px; border-radius: 8px; font-family: monospace; max-height: 380px; overflow-y: auto;">
+            <div id="print-ticket-preview-area" style="background: #fff; color: #000; padding: 20px; border-radius: 8px; font-family: monospace; max-height: 380px; overflow-y: auto; flex-shrink: 1;">
                 <!-- Rendered dynamically -->
             </div>
 
-            <div style="display: flex; gap: 12px; margin-top: 15px;">
-                <button class="btn" style="background: #333; color: #fff; flex: 1;" onclick="document.getElementById('physical-print-modal').classList.remove('active')">ĐÓNG</button>
-                <button class="btn" style="background: var(--btn-green-color); color: #000; font-weight: 800; flex: 2;" onclick="triggerPhysicalPrint()"><i class="fas fa-print"></i> IN CẢ 2 VÉ VẬT LÝ</button>
+            <div style="display: flex; gap: 12px; margin-top: 15px; align-items: center; flex-shrink: 0;">
+                <button class="btn" style="background: #333; color: #fff; flex: 1; height: 42px; min-height: 42px;" onclick="document.getElementById('physical-print-modal').classList.remove('active')">ĐÓNG</button>
+                <button class="btn" style="background: var(--btn-green-color); color: #000; font-weight: 800; flex: 2; height: 42px; min-height: 42px;" onclick="triggerPhysicalPrint()"><i class="fas fa-print"></i> IN CẢ 2 VÉ VẬT LÝ</button>
             </div>
         </div>
     </div>
@@ -1315,32 +1443,23 @@
                 if (!audioCtx) {
                     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
                 osc.connect(gain);
                 gain.connect(audioCtx.destination);
-                
-                if (type === 'scan') {
-                    // Quick high double beep
+
+                if (type === 'success') {
                     osc.type = 'sine';
-                    osc.frequency.setValueAtTime(880, audioCtx.currentTime); // A5
-                    gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                    osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5
+                    osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.1); // A5
+                    gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
                     osc.start();
-                    osc.stop(audioCtx.currentTime + 0.08);
-                    
-                    setTimeout(() => {
-                        const osc2 = audioCtx.createOscillator();
-                        const gain2 = audioCtx.createGain();
-                        osc2.connect(gain2);
-                        gain2.connect(audioCtx.destination);
-                        osc2.type = 'sine';
-                        osc2.frequency.setValueAtTime(1200, audioCtx.currentTime); // Higher
-                        gain2.gain.setValueAtTime(0.08, audioCtx.currentTime);
-                        osc2.start();
-                        osc2.stop(audioCtx.currentTime + 0.1);
-                    }, 100);
-                } else if (type === 'success') {
-                    // Upward arpeggio
+                    osc.stop(audioCtx.currentTime + 0.3);
+                } else if (type === 'scan') {
                     osc.type = 'triangle';
                     osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
                     gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
@@ -1348,7 +1467,6 @@
                     gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
                     osc.stop(audioCtx.currentTime + 0.4);
                 } else if (type === 'click') {
-                    // Subtler short click
                     osc.type = 'sine';
                     osc.frequency.setValueAtTime(600, audioCtx.currentTime);
                     gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
@@ -1360,6 +1478,83 @@
                 console.log("Audio not supported or blocked: ", e);
             }
         }
+
+        // --- Notification Center ---
+        function getNotifications() {
+            return JSON.parse(localStorage.getItem("staff_notifications")) || [];
+        }
+
+        function addNotification(title, text, type = "sale") {
+            const notifs = getNotifications();
+            const newNotif = {
+                id: "NOTIF-" + Date.now(),
+                title: title,
+                text: text,
+                time: new Date().toLocaleTimeString("vi-VN"),
+                unread: true,
+                type: type
+            };
+            notifs.unshift(newNotif);
+            localStorage.setItem("staff_notifications", JSON.stringify(notifs.slice(0, 50)));
+            renderNotifications();
+        }
+
+        function renderNotifications() {
+            const notifs = getNotifications();
+            const unreadCount = notifs.filter(n => n.unread).length;
+            const badgeEl = document.getElementById("notif-badge-count");
+            if (badgeEl) {
+                badgeEl.textContent = unreadCount;
+            }
+
+            const listContainer = document.getElementById("notif-list-container");
+            if (!listContainer) return;
+
+            if (notifs.length === 0) {
+                listContainer.innerHTML = `<div style="padding: 20px; text-align: center; color: var(--text-muted); font-size: 0.8rem; font-style: italic;">Chưa có thông báo mới</div>`;
+                return;
+            }
+
+            listContainer.innerHTML = notifs.map(n => `
+                <div style="padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.06); background: ${n.unread ? 'rgba(0, 240, 255, 0.08)' : 'transparent'}; text-align: left;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                        <span style="font-weight: 700; color: ${n.type === 'delivery' ? 'var(--btn-green-color)' : n.type === 'sale' ? 'var(--btn-cyan-color)' : 'var(--primary-red)'}; font-size: 0.825rem; display: flex; align-items: center; gap: 6px;">
+                            ${n.type === 'delivery' ? '🚚 ' : n.type === 'sale' ? '🧾 ' : '🔔 '}${n.title}
+                        </span>
+                        <span style="font-size: 0.725rem; color: var(--text-muted);">${n.time}</span>
+                    </div>
+                    <p style="font-size: 0.8rem; color: #ddd; margin: 0; line-height: 1.4; font-weight: 400;">${n.text}</p>
+                </div>
+            `).join("");
+        }
+
+        window.toggleNotificationDropdown = function(e) {
+            if (e) e.stopPropagation();
+            const panel = document.getElementById("notif-dropdown-panel");
+            if (!panel) return;
+            const isHidden = panel.style.display === "none";
+            panel.style.display = isHidden ? "block" : "none";
+            if (isHidden) {
+                renderNotifications();
+            }
+        };
+
+        window.markAllNotificationsAsRead = function(e) {
+            if (e) e.stopPropagation();
+            const notifs = getNotifications();
+            notifs.forEach(n => n.unread = false);
+            localStorage.setItem("staff_notifications", JSON.stringify(notifs));
+            renderNotifications();
+        };
+
+        // Close dropdown when clicking outside
+        window.addEventListener('click', (e) => {
+            const dropdown = document.getElementById("notif-dropdown-panel");
+            const pillBtn = document.getElementById("notif-pill-btn");
+            if (dropdown && pillBtn && !pillBtn.contains(e.target)) {
+                dropdown.style.display = "none";
+            }
+        });
 
         // --- Mock Data Initialization ---
         const DEFAULT_INVENTORY = [
@@ -1627,6 +1822,7 @@
                 text: `POS giao đơn đặt trước: ${order.customerName} - Mã ${order.id} - Tổng tiền: ${order.totalAmount.toLocaleString('vi-VN')}đ.`
             });
             localStorage.setItem("cinema_activity_log", JSON.stringify(logs.slice(0, 50)));
+            addNotification("Giao đồ thành công", `Đã giao đơn ${order.id} cho ${order.customerName} (${order.totalAmount.toLocaleString('vi-VN')}đ)`, "delivery");
 
             // 4. Remove order from queue
             orders.splice(orderIndex, 1);
@@ -1697,7 +1893,7 @@
                 <div style="grid-column: 1 / -1; margin-bottom: 5px;">
                     <div style="background: rgba(229, 9, 20, 0.12); border: 1px solid var(--primary-red); padding: 12px 18px; border-radius: 8px; display: flex; align-items: center; justify-content: space-between;">
                         <div>
-                            <h3 style="color: #fff; font-size: 1rem;"><i class="fas fa-film" style="color: var(--primary-red);"></i> BÁN VÉ XEM PHIM TẠI QUẦY (STEP 1: CHỌN PHIM)</h3>
+                            <h3 style="color: #fff; font-size: 1rem;"><i class="fas fa-film" style="color: var(--primary-red);"></i> BÁN VÉ XEM PHIM TẠI QUẦY</h3>
                             <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 2px;">Vui lòng chọn Phim ➔ Chọn Suất Chiếu ➔ Sơ Đồ Ghế để đặt vé cho khách hàng</p>
                         </div>
                     </div>
@@ -1719,9 +1915,9 @@
                             </div>
                             <div style="border-top: 1px dashed var(--glass-border); padding-top: 8px; margin-top: 4px;">
                                 <span style="font-size: 0.7rem; color: var(--btn-cyan-color); font-weight: 700; display: block; margin-bottom: 6px;">CHỌN SUẤT CHIẾU:</span>
-                                <div style="display: flex; flex-wrap: wrap; gap: 4px;">
+                                <div style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center;">
                                     ${showtimesList.map(st => `
-                                        <button class="btn-mini" onclick="event.stopPropagation(); openPOSSeatModal('${st.id}', '${m.id}')" style="padding: 4px 8px; font-size: 0.75rem; background: rgba(0, 240, 255, 0.1); border-color: var(--btn-cyan-color); color: #fff;">
+                                        <button class="btn-mini" onclick="event.stopPropagation(); openPOSSeatModal('${st.id}', '${m.id}')">
                                             ⏱️ ${st.time}
                                         </button>
                                     `).join("")}
@@ -1780,7 +1976,7 @@
 
         // --- POS Cart Handling ---
         window.addToCart = function(prodId) {
-            const prod = SALE_PRODUCTS.find(p => p.id === prodId);
+            const prod = SALE_PRODUCTS.find(p => String(p.id) === String(prodId));
             if (!prod) return;
 
             const stock = getProductStockAvailable(prod);
@@ -1791,7 +1987,7 @@
 
             playBeep('click');
 
-            const cartItem = cart.find(item => item.product.id === prodId);
+            const cartItem = cart.find(item => String(item.product.id) === String(prodId));
             if (cartItem) {
                 if (cartItem.qty >= stock) {
                     showToast("Không thể vượt quá số lượng tồn kho!");
@@ -1808,7 +2004,7 @@
 
         window.updateCartQty = function(prodId, delta) {
             playBeep('click');
-            const cartItem = cart.find(item => item.product.id === prodId);
+            const cartItem = cart.find(item => String(item.product.id) === String(prodId));
             if (!cartItem) return;
 
             const stock = getProductStockAvailable(cartItem.product);
@@ -1820,17 +2016,24 @@
 
             cartItem.qty += delta;
             if (cartItem.qty <= 0) {
-                cart = cart.filter(item => item.product.id !== prodId);
+                cart = cart.filter(item => String(item.product.id) !== String(prodId));
             }
 
             renderCart();
         }
 
+        window.removeFromCart = function(prodId) {
+            playBeep('click');
+            cart = cart.filter(item => String(item.product.id) !== String(prodId));
+            renderCart();
+            showToast("Đã xóa sản phẩm khỏi giỏ hàng");
+        };
+
         window.clearCart = function() {
             playBeep('click');
             cart = [];
             renderCart();
-        }
+        };
 
         function renderCart() {
             const container = document.getElementById("cart-container");
@@ -1840,7 +2043,7 @@
             if (!container || !submitBtn || !totalValEl) return;
 
             if (cart.length === 0) {
-                container.innerHTML = `<div style="color: var(--text-muted); text-align: center; font-style: italic; font-size: 0.8rem; padding-top: 20px;">Giỏ hàng trống. Click chọn sản phẩm phía trên để bán.</div>`;
+                container.innerHTML = `<div style="color: rgba(255, 255, 255, 0.6); text-align: center; font-style: italic; font-size: 0.85rem; padding-top: 20px;">🛒 Giỏ hàng trống. Click chọn sản phẩm phía trên để bán.</div>`;
                 totalValEl.textContent = "0đ";
                 submitBtn.disabled = true;
                 return;
@@ -1852,14 +2055,19 @@
                 total += cost;
 
                 return `
-                    <div class="cart-item">
-                        <div class="cart-item-name">${item.product.name}</div>
-                        <div class="cart-item-qty-control">
-                            <button class="cart-qty-btn" onclick="updateCartQty('${item.product.id}', -1)">-</button>
-                            <span class="cart-item-qty">${item.qty}</span>
-                            <button class="cart-qty-btn" onclick="updateCartQty('${item.product.id}', 1)">+</button>
+                    <div class="cart-item" style="background: rgba(255,255,255,0.04); border: 1px solid var(--glass-border); padding: 6px 10px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; gap: 8px; height: 38px; min-height: 38px; max-height: 38px; flex-shrink: 0; width: 100%; box-sizing: border-box;">
+                        <div class="cart-item-name" style="font-weight: 700; color: #fff; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.85rem;" title="${item.product.name}">${item.product.name}</div>
+                        <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
+                            <div class="cart-item-qty-control" style="display: inline-flex; align-items: center; gap: 4px; background: rgba(0,240,255,0.1); border: 1px solid var(--btn-cyan-color); padding: 0 6px; border-radius: 4px; height: 24px; min-height: 24px;">
+                                <button class="cart-qty-btn" onclick="updateCartQty('${item.product.id}', -1)" style="background: transparent; border: none; color: var(--btn-cyan-color); font-weight: 800; font-size: 0.9rem; cursor: pointer; padding: 0 4px; line-height: 1; height: 22px;">-</button>
+                                <span class="cart-item-qty" style="color: #fff; font-weight: 800; font-size: 0.85rem; min-width: 14px; text-align: center;">${item.qty}</span>
+                                <button class="cart-qty-btn" onclick="updateCartQty('${item.product.id}', 1)" style="background: transparent; border: none; color: var(--btn-cyan-color); font-weight: 800; font-size: 0.9rem; cursor: pointer; padding: 0 4px; line-height: 1; height: 22px;">+</button>
+                            </div>
+                            <div class="cart-item-price" style="color: var(--btn-green-color); font-weight: 800; font-size: 0.875rem; min-width: 65px; text-align: right;">${cost.toLocaleString('vi-VN')}đ</div>
+                            <button onclick="removeFromCart('${item.product.id}')" title="Xóa món này" style="background: transparent; border: none; color: var(--primary-red); cursor: pointer; font-size: 0.85rem; padding: 0 4px; height: 24px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;" onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
                         </div>
-                        <div class="cart-item-price">${cost.toLocaleString('vi-VN')}đ</div>
                     </div>
                 `;
             }).join("");
@@ -2037,33 +2245,50 @@
             const allMovies = getPOSMovies();
             const allShowtimes = getPOSShowtimes();
 
-            let showtime = allShowtimes.find(s => s.id === showtimeId);
-            let movie = allMovies.find(m => m.id === movieId || m.id === showtime?.movieId);
+            let showtime = allShowtimes.find(s => String(s.id) === String(showtimeId));
+            let movie = allMovies.find(m => String(m.id) === String(movieId) || (showtime && String(m.id) === String(showtime.movieId)));
 
             if (!movie && showtime) {
-                movie = { id: showtime.movieId, title: showtime.movieTitle, duration: 120, age: 'T13' };
+                movie = { id: showtime.movieId, title: showtime.movieTitle || 'Phim Chiếu Rạp', duration: 120, age: 'T13' };
             }
 
             if (!showtime) {
-                showtime = { id: showtimeId || 'ST-DEFAULT', movieId: movieId, movieTitle: movie?.title || 'Phim Chiếu Rạp', roomName: 'Phòng chiếu 1', time: '19:00', price: 80000 };
+                showtime = { id: showtimeId || 'ST-DEFAULT', movieId: movieId, movieTitle: movie ? movie.title : 'Phim Chiếu Rạp', roomName: 'Phòng chiếu 1', time: '19:00', price: 80000 };
             }
 
-            activeTicketMovie = movie;
+            activeTicketMovie = movie || { id: movieId, title: showtime.movieTitle || 'Phim Chiếu Rạp' };
             activeTicketShowtime = showtime;
             selectedTicketSeats = [];
 
-            document.getElementById("seat-modal-movie-title").innerHTML = `<i class="fas fa-film" style="color: var(--primary-red);"></i> ${movie ? movie.title : showtime.movieTitle}`;
-            document.getElementById("seat-modal-showtime-info").textContent = `Suất: ${showtime.time} | ${showtime.roomName} | ${showtime.cinemaName || '3HD2K HÀ ĐÔNG'}`;
-            document.getElementById("seat-modal-base-price").textContent = (showtime.price || 80000).toLocaleString('vi-VN') + "đ";
+            const titleEl = document.getElementById("seat-modal-movie-title");
+            if (titleEl) {
+                titleEl.innerHTML = `<i class="fas fa-film" style="color: var(--primary-red);"></i> <span>${activeTicketMovie.title}</span>`;
+            }
+            const infoEl = document.getElementById("seat-modal-showtime-info");
+            if (infoEl) {
+                infoEl.textContent = `Suất: ${showtime.time} | ${showtime.roomName || 'Phòng chiếu 1'} | ${showtime.cinemaName || '3HD2K HÀ ĐÔNG'}`;
+            }
+            const priceEl = document.getElementById("seat-modal-base-price");
+            if (priceEl) {
+                priceEl.textContent = (showtime.price || 80000).toLocaleString('vi-VN') + "đ";
+            }
 
             renderPOSSeatingGrid();
 
-            document.getElementById("pos-ticket-seat-modal").classList.add("active");
+            const modal = document.getElementById("pos-ticket-seat-modal");
+            if (modal) {
+                modal.classList.add("active");
+                modal.style.display = "flex";
+            }
         };
 
         window.closePOSSeatModal = function() {
             playBeep('click');
-            document.getElementById("pos-ticket-seat-modal").classList.remove("active");
+            const modal = document.getElementById("pos-ticket-seat-modal");
+            if (modal) {
+                modal.classList.remove("active");
+                modal.style.display = "none";
+            }
         };
 
         function renderPOSSeatingGrid() {
@@ -2299,6 +2524,50 @@
             window.print();
         };
 
+        window.confirmQRPayment = function() {
+            document.getElementById('qr-modal').style.display = 'none';
+            submitPOSSale(true);
+        };
+
+        window.confirmPOSPayment = function() {
+            const posModal = document.getElementById('pos-modal');
+            const posStatusText = document.getElementById('pos-status-text');
+            const posTotalAmount = document.getElementById('pos-total-amount');
+            const posCardIcon = document.getElementById('pos-card-icon');
+            const posSuccessIcon = document.getElementById('pos-success-icon');
+            const cartTotal = document.getElementById('cart-total-value') ? document.getElementById('cart-total-value').innerText : "0đ";
+
+            if (posModal) {
+                if (posTotalAmount) posTotalAmount.innerText = cartTotal;
+                if (posStatusText) posStatusText.innerText = "Đang kết nối máy quẹt thẻ POS...";
+                if (posCardIcon) {
+                    posCardIcon.style.top = "-50px";
+                    posCardIcon.style.display = "block";
+                }
+                if (posSuccessIcon) posSuccessIcon.style.display = "none";
+                posModal.style.display = 'flex';
+
+                setTimeout(() => {
+                    if (posCardIcon) posCardIcon.style.top = "30px";
+                    if (posStatusText) posStatusText.innerText = "Đang đọc thông tin thẻ...";
+                }, 300);
+
+                setTimeout(() => {
+                    if (posCardIcon) posCardIcon.style.display = "none";
+                    if (posSuccessIcon) posSuccessIcon.style.display = "block";
+                    if (posStatusText) posStatusText.innerText = "Thanh toán thẻ thành công!";
+                    playBeep('success');
+                }, 900);
+
+                setTimeout(() => {
+                    posModal.style.display = 'none';
+                    submitPOSSale(true);
+                }, 1400);
+            } else {
+                submitPOSSale(true);
+            }
+        };
+
         window.submitPOSSale = function(skipMethodCheck = false) {
             if (cart.length === 0) return;
 
@@ -2316,6 +2585,9 @@
 
             const inventory = JSON.parse(localStorage.getItem("cinema_inventory")) || [];
             const users = JSON.parse(localStorage.getItem("3hd2k_users")) || [];
+
+            let customerName = vipCustomer ? (vipCustomer.name || vipCustomer.fullname || vipCustomer.Fullname || "Khách VIP") : "Khách vãng lai";
+            let pointsSummary = "";
 
             // Separate ticket items and F&B items
             const ticketItems = cart.filter(item => item.product.isTicket);
@@ -2421,8 +2693,6 @@
 
             // 3. VIP point accumulation & API sync (Issue #61)
             const pointsEarned = Math.floor(totalAmount / 10000);
-            let customerName = "Khách vãng lai";
-            let pointsSummary = "";
 
             if (vipCustomer) {
                 const targetPhone = vipCustomer.phone || vipCustomer.Phone;
@@ -2430,7 +2700,7 @@
                 if (!user) {
                     user = {
                         username: vipCustomer.username || "vip_" + targetPhone,
-                        name: vipCustomer.name || vipCustomer.fullname || vipCustomer.Fullname || "Khách VIP",
+                        name: customerName,
                         email: vipCustomer.email || "",
                         phone: targetPhone,
                         points: 0
@@ -2439,7 +2709,6 @@
                 }
                 user.points = (user.points || user.Points || 0) + pointsEarned;
                 localStorage.setItem("3hd2k_users", JSON.stringify(users));
-                customerName = user.name || user.fullname || user.Fullname || "Khách VIP";
                 pointsSummary = `${user.points} điểm VIP (+${pointsEarned})`;
 
                 // Non-blocking API sync
@@ -2474,6 +2743,7 @@
                 text: `POS bán hàng: ${customerName} - ${itemsText} - Thanh toán: ${methodLabel} - Tổng tiền: ${totalAmount.toLocaleString('vi-VN')}đ.`
             });
             localStorage.setItem("cinema_activity_log", JSON.stringify(logs.slice(0, 50)));
+            addNotification("Bán hàng POS thành công", `Khách hàng: ${customerName} - ${itemsText} (${totalAmount.toLocaleString('vi-VN')}đ)`, "sale");
 
             // 5. Show success modal receipt
             document.getElementById("modal-receipt-id").textContent = receiptId;
@@ -2541,6 +2811,7 @@
                 renderAppOrders();
                 renderPOSProducts();
                 renderCart();
+                renderNotifications();
                 lookupVIPCustomer();
             }
         });
@@ -2550,6 +2821,7 @@
         renderAppOrders();
         renderPOSProducts();
         renderCart();
+        renderNotifications();
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
     <script>
