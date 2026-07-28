@@ -455,18 +455,26 @@ function submitComment() {
 function getYouTubeEmbedUrl(url) {
     if (!url) return '';
     let cleanUrl = url.trim();
-    if (cleanUrl.includes('embed/')) return cleanUrl;
-    
     let videoId = '';
-    if (cleanUrl.includes('v=')) {
+    
+    if (cleanUrl.includes('embed/')) {
+        videoId = cleanUrl.split('embed/')[1]?.split('?')[0]?.split('&')[0];
+    } else if (cleanUrl.includes('v=')) {
         videoId = cleanUrl.split('v=')[1]?.split('&')[0];
     } else if (cleanUrl.includes('youtu.be/')) {
         videoId = cleanUrl.split('youtu.be/')[1]?.split('?')[0];
     } else if (cleanUrl.match(/^[a-zA-Z0-9_-]{11}$/)) {
         videoId = cleanUrl;
     }
-    
-    return videoId ? `https://www.youtube.com/embed/${videoId}` : cleanUrl;
+
+    if (videoId) {
+        const origin = (typeof window !== 'undefined' && window.location && window.location.origin && window.location.origin !== 'null') 
+            ? encodeURIComponent(window.location.origin) 
+            : '';
+        const originParam = origin ? `&origin=${origin}` : '';
+        return `https://www.youtube-nocookie.com/embed/${videoId}?enablejsapi=1&rel=0${originParam}`;
+    }
+    return cleanUrl;
 }
 
 // ── MEDIA GALLERY ────────────────────────────────────────────
@@ -721,16 +729,18 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 // Lắng nghe sự kiện lỗi từ iframe YouTube để hiển thị fallback
 window.addEventListener('message', (e) => {
+    if (!e.origin.includes('youtube.com') && !e.origin.includes('youtube-nocookie.com')) return;
     try {
-        const data = JSON.parse(e.data);
-        if (data.event === 'onError' && [100, 150, 151, 153].includes(data.info)) {
+        const data = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
+        if (data.event === 'onError' && [2, 5, 100, 101, 150, 151, 153].includes(data.info)) {
             const iframe1 = document.getElementById('trailer-video');
             const iframe2 = document.getElementById('detail-trailer-iframe');
-            if (iframe1 && e.source === iframe1.contentWindow) {
+            if (iframe1 && (e.source === iframe1.contentWindow || !e.source)) {
                 const fb = document.getElementById('trailer-fallback');
                 if (fb) fb.style.display = 'flex';
                 iframe1.style.display = 'none';
-            } else if (iframe2 && e.source === iframe2.contentWindow) {
+            }
+            if (iframe2 && (e.source === iframe2.contentWindow || !e.source)) {
                 const fb = document.getElementById('detail-trailer-fallback');
                 if (fb) fb.style.display = 'flex';
                 iframe2.style.display = 'none';

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
-<head><meta name="referrer" content="no-referrer">
+<head><meta name="referrer" content="strict-origin-when-cross-origin">
     <link rel="icon" type="image/jpeg" href="/assets/favicon.jpg?v=2">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -212,7 +212,7 @@
                 <!-- Trailer panel -->
                 <div class="media-panel active" id="panel-trailer">
                     <div class="trailer-embed-container" id="trailer-embed-container">
-                        <iframe id="detail-trailer-iframe"
+                        <iframe referrerpolicy="strict-origin-when-cross-origin" id="detail-trailer-iframe"
                             src=""
                             title="Movie Trailer"
                             frameborder="0"
@@ -288,7 +288,7 @@
         <div class="modal-content">
             <span class="close-btn" id="close-modal">&times;</span>
             <div class="video-container">
-                <iframe id="trailer-video" src="" title="YouTube video player" frameborder="0"
+                <iframe referrerpolicy="strict-origin-when-cross-origin" id="trailer-video" src="" title="YouTube video player" frameborder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowfullscreen></iframe>
                 <div id="trailer-fallback" style="display:none; position:absolute; inset:0; background:#0a0a0a; display:none; flex-direction:column; align-items:center; justify-content:center; gap:20px; border-radius:8px;">
