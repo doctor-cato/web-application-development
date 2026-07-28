@@ -51,8 +51,9 @@ builder.Services.AddScoped<appweb.Repositories.CinemaRepository>();
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
+if (builder.Configuration.GetValue<bool>("Database:InitializeOnStartup"))
 {
+    using var scope = app.Services.CreateScope();
     try
     {
         var services = scope.ServiceProvider;
@@ -61,7 +62,7 @@ using (var scope = app.Services.CreateScope())
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"[DbInitializer Warning]: {ex.Message}");
+        app.Logger.LogError(ex, "Database initialization failed.");
     }
 }
 
