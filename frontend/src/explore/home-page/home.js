@@ -369,7 +369,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const isVip = localStorage.getItem('is_vip') === 'true';
         const vipPlan = localStorage.getItem('vip_plan');
 
-        if (session && (session.role === 'vip' || localStorage.getItem('is_vip') === 'true')) {
+        if (isVip) {
             btnVip.href = '../../user/user-profile/index.html';
             btnVip.textContent = 'TRANG TÀI KHOẢN VIP';
         } else {
