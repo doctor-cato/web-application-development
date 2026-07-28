@@ -1,6 +1,4 @@
-/**
- * forgot.js — Xử lý form quên mật khẩu (Nối Database Backend)
- */
+
 import { API_BASE_URL, getHeaders } from '../../shared/utils/apiConfig.js?v=4';
 
 const forgotForm  = document.getElementById('forgotForm');
@@ -42,7 +40,6 @@ function clearErrors() {
     resetErrorBanner.classList.remove('show');
 }
 
-// BƯỚC 1: Gửi yêu cầu quên mật khẩu (Lấy OTP)
 forgotForm.addEventListener('submit', async function (e) {
     e.preventDefault();
     clearErrors();
@@ -68,7 +65,7 @@ forgotForm.addEventListener('submit', async function (e) {
         if (!response.ok) {
             showError(data.message || data.title || 'Có lỗi xảy ra.');
         } else {
-            // Chuyển sang bước nhập OTP
+
             lastEmail = email;
             stepEmail.style.display = 'none';
             stepReset.style.display = 'block';
@@ -82,7 +79,6 @@ forgotForm.addEventListener('submit', async function (e) {
     }
 });
 
-// BƯỚC 2: Nhập OTP và Mật khẩu mới
 resetForm.addEventListener('submit', async function (e) {
     e.preventDefault();
     clearErrors();
@@ -114,7 +110,7 @@ resetForm.addEventListener('submit', async function (e) {
         if (!response.ok) {
             showResetError(data.message || data.title || 'Có lỗi xảy ra.');
         } else {
-            // Chuyển sang bước thành công
+
             stepReset.style.display = 'none';
             stepSuccess.style.display = 'block';
             successMsg.textContent = 'Mật khẩu của bạn đã được cập nhật thành công. Vui lòng đăng nhập lại.';
@@ -132,13 +128,12 @@ emailInput.addEventListener('input', clearErrors);
 otpInput.addEventListener('input', clearErrors);
 newPasswordInput.addEventListener('input', clearErrors);
 
-// Gửi lại OTP
 if (btnResendOtp) {
     btnResendOtp.addEventListener('click', async (e) => {
         e.preventDefault();
         btnResendOtp.textContent = 'Đang gửi lại...';
         btnResendOtp.style.pointerEvents = 'none';
-        
+
         try {
             await fetch(`${API_BASE_URL}/auth/forgot-password`, {
                 method: 'POST',

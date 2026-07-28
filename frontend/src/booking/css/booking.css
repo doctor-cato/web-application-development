@@ -1,17 +1,12 @@
-/* ==========================================================================
-   BOOKING STYLES (Vanilla CSS for 3HD2K)
-   - Synchronized with main.css Cinematic Noir theme
-   ========================================================================== */
 
-/* ── LAYOUT ─────────────────────────────────────────────────────────── */
 .booking-page-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 7rem 1rem 3rem 1rem; /* Tăng padding-top để tránh bị đè bởi fixed navbar */
+    padding: 7rem 1rem 3rem 1rem;
     display: flex;
     flex-direction: column;
     gap: 2rem;
-    min-height: calc(100vh - 80px - 100px); /* Account for navbar and footer */
+    min-height: calc(100vh - 80px - 100px);
 }
 
 .booking-grid {
@@ -29,7 +24,6 @@
     }
 }
 
-/* ── PANELS & CARDS ─────────────────────────────────────────────────── */
 .booking-panel {
     display: flex;
     flex-direction: column;
@@ -37,7 +31,7 @@
 }
 
 .booking-card {
-    background: rgba(26, 28, 28, 0.4); /* Glassmorphism effect */
+    background: rgba(26, 28, 28, 0.4);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
     border: 1px solid var(--glass-border, rgba(255,255,255,0.08));
@@ -48,7 +42,6 @@
     gap: 1.25rem;
 }
 
-/* ── HEADINGS ───────────────────────────────────────────────────────── */
 .booking-section-title {
     font-family: 'Inter', sans-serif;
     font-weight: 600;
@@ -61,7 +54,6 @@
     margin-bottom: 1rem;
 }
 
-/* ── MOVIE INFO (SIDEBAR) ───────────────────────────────────────────── */
 .movie-info-card {
     display: flex;
     gap: 1rem;
@@ -106,7 +98,6 @@
     font-weight: 600;
 }
 
-/* ── PRICING & LEGEND ───────────────────────────────────────────────── */
 .price-row {
     display: flex;
     justify-content: space-between;
@@ -141,9 +132,7 @@
     gap: 0.5rem;
 }
 
-/* ── SEATS ──────────────────────────────────────────────────────────── */
-/* Base Seat Geometry */
-.seat { 
+.seat {
     width: 36px;
     height: 36px;
     display: flex;
@@ -151,8 +140,8 @@
     align-items: center;
     font-size: 10px;
     font-weight: bold;
-    cursor: pointer; 
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); 
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     border-top-left-radius: 12px !important;
     border-top-right-radius: 12px !important;
     border-bottom-left-radius: 4px !important;
@@ -161,29 +150,29 @@
     color: rgba(255,255,255,0.5) !important;
 }
 
-.seat:hover:not(.seat--locked):not(.seat--booked) { 
-    transform: translateY(-4px) scale(1.05); 
+.seat:hover:not(.seat--locked):not(.seat--booked) {
+    transform: translateY(-4px) scale(1.05);
     box-shadow: inset 0 -3px 0 rgba(0,0,0,0.1), 0 8px 12px rgba(229,9,20,0.3);
     color: white !important;
 }
 
 .seat--available  { background: linear-gradient(145deg, #444, #2a2a2a); border: 1px solid #555; }
-.seat--selected   { 
-    background: linear-gradient(145deg, #ff4d4d, var(--primary-red)); 
-    border: 1px solid #ff4d4d; 
+.seat--selected   {
+    background: linear-gradient(145deg, #ff4d4d, var(--primary-red));
+    border: 1px solid #ff4d4d;
     box-shadow: inset 0 -5px 0 rgba(0,0,0,0.2), 0 0 15px rgba(229,9,20,0.5);
     color: white !important;
     text-shadow: 0 1px 2px rgba(0,0,0,0.5);
 }
 .seat--locked     { background: linear-gradient(145deg, #fbbf24, #d97706); border: 1px solid #f59e0b; cursor: not-allowed; }
-.seat--booked     { 
-    background: 
+.seat--booked     {
+    background:
         linear-gradient(to top right, transparent 45%, rgba(229,9,20,0.8) 45%, rgba(229,9,20,0.8) 55%, transparent 55%),
         linear-gradient(to bottom right, transparent 45%, rgba(229,9,20,0.8) 45%, rgba(229,9,20,0.8) 55%, transparent 55%),
         #1f2937 !important;
-    border: 1px solid #374151 !important; 
-    cursor: not-allowed !important; 
-    opacity: 0.8 !important; 
+    border: 1px solid #374151 !important;
+    cursor: not-allowed !important;
+    opacity: 0.8 !important;
     color: transparent !important;
 }
 .seat--vip        { border: 1px solid #7c3aed; }
@@ -193,13 +182,12 @@
 .seat--couple.seat--available  { background: rgba(219,39,119,0.12); color: #fbcfe8 !important;}
 .seat--couple.seat--selected   { background: linear-gradient(145deg, #f9a8d4, #db2777); border-color: #f472b6; box-shadow: inset 0 -5px 0 rgba(0,0,0,0.2), 0 0 15px rgba(219,39,119,0.5);}
 
-/* ── SEAT GRID LAYOUT ───────────────────────────────────────────────── */
 .seat-grid-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 100%;
-    max-width: 56rem; /* 896px */
+    max-width: 56rem;
     gap: 1rem;
 }
 
@@ -231,7 +219,6 @@
     width: 2rem;
 }
 
-/* Screen glow */
 .screen-container {
     text-align: center;
     margin-bottom: 3.5rem;
@@ -256,7 +243,6 @@
     font-weight: 600;
 }
 
-/* Selected Seat Tags */
 .seat-tag {
     display: inline-flex;
     align-items: center;
@@ -280,7 +266,6 @@
     box-shadow: inset 0 0 12px rgba(229, 9, 20, 0.4), 0 0 15px rgba(229, 9, 20, 0.5);
 }
 
-/* ── SUMMARY ────────────────────────────────────────────────────────── */
 .selected-seats-list {
     display: flex;
     flex-wrap: wrap;
@@ -324,7 +309,6 @@
     letter-spacing: 2px;
 }
 
-/* ── CHECKOUT SPECIFIC ──────────────────────────────────────────────── */
 .checkout-header {
     margin-bottom: 2rem;
 }
@@ -341,14 +325,13 @@
     font-size: 0.875rem;
 }
 
-/* Combo List Horizontal */
 .combo-list-horizontal {
     display: flex;
     gap: 1rem;
     overflow-x: auto;
     padding-bottom: 1rem;
     padding-top: 0.5rem;
-    /* Hide scrollbar */
+
     -ms-overflow-style: none;
     scrollbar-width: none;
 }
@@ -356,7 +339,6 @@
     display: none;
 }
 
-/* Combo Card V2 */
 .combo-card {
     position: relative;
     display: flex;
@@ -386,7 +368,6 @@
     box-shadow: 0 8px 25px rgba(229, 9, 20, 0.4);
 }
 
-/* 3D Pop-out Image */
 .combo-img-wrap {
     width: 100px;
     height: 100px;
@@ -432,11 +413,10 @@
 .combo-price {
     font-weight: 900;
     font-size: 1rem;
-    color: #f59e0b; /* gradient có thể dùng background-clip, tạm thời dùng màu vàng cam */
+    color: #f59e0b;
     text-shadow: 0 2px 4px rgba(0,0,0,0.5);
 }
 
-/* Badges */
 .combo-badge {
     position: absolute;
     top: -10px;
@@ -456,7 +436,6 @@
     background: linear-gradient(45deg, #10b981, #059669);
 }
 
-/* Checkmark animation */
 .combo-check {
     position: absolute;
     top: 10px;
@@ -473,7 +452,6 @@
     transform: scale(1);
 }
 
-/* Food Upsell Button */
 .btn-upsell-food {
     display: inline-flex;
     align-items: center;
@@ -490,7 +468,7 @@
     box-shadow: 0 0 10px rgba(229, 9, 20, 0.1);
     position: relative;
     overflow: hidden;
-    /* Hiệu ứng pulse nhẹ liên tục */
+
     animation: pulse-border 2s infinite;
 }
 
@@ -515,7 +493,7 @@
     background: linear-gradient(135deg, rgba(229, 9, 20, 0.3), rgba(229, 9, 20, 0.6));
     border-color: var(--primary-red);
     transform: translateY(-2px);
-    animation: none; /* Dừng pulse khi hover */
+    animation: none;
     box-shadow: 0 5px 15px rgba(229, 9, 20, 0.4);
 }
 
@@ -528,7 +506,6 @@
     font-size: 1.1rem;
 }
 
-/* Payment Card */
 .payment-card {
     display: flex;
     align-items: center;
@@ -561,7 +538,6 @@
     object-fit: cover;
 }
 
-/* Invoice Specific */
 .invoice-container {
     max-width: 600px;
     margin: 0 auto;
@@ -628,7 +604,6 @@
     height: 150px;
 }
 
-/* Group Seat Selector UI */
 .group-seat-selector {
     display: flex;
     align-items: center;
@@ -690,7 +665,6 @@
     font-size: 1.1rem;
 }
 
-/* Hover Previews */
 .seat--preview-valid {
     box-shadow: 0 0 10px rgba(229, 9, 20, 0.8) !important;
     border-color: rgba(229, 9, 20, 1) !important;
@@ -712,107 +686,90 @@
     75% { transform: translateX(2px); }
 }
 
-
-/* ==========================================================================
-   MOBILE RESPONSIVE TWEAKS FOR SEAT MAP
-   ========================================================================== */
 @media (max-width: 768px) {
-    /* Make the entire booking page fit the mobile screen better */
+
     .booking-page-container { padding-left: 0.5rem !important; padding-right: 0.5rem !important; }
     .booking-grid { gap: 1rem !important; }
     .booking-card { padding: 1rem !important; }
 
-    /* Shrink the seats so a full row fits on mobile */
-    .seat { 
-        width: 20px !important; 
-        height: 20px !important; 
-        font-size: 7px !important; 
+    .seat {
+        width: 20px !important;
+        height: 20px !important;
+        font-size: 7px !important;
         border-radius: 4px !important;
-        flex-shrink: 1 !important; 
+        flex-shrink: 1 !important;
     }
     .seat--couple { width: 44px !important; }
 
-    /* Force no wrap and shrink gaps */
-    .seat-row-seats { 
-        flex-wrap: nowrap !important; 
-        gap: 0.15rem !important; 
+    .seat-row-seats {
+        flex-wrap: nowrap !important;
+        gap: 0.15rem !important;
         width: 100%;
         justify-content: center;
     }
-    .seat-row-wrapper { 
-        gap: 0.15rem !important; 
+    .seat-row-wrapper {
+        gap: 0.15rem !important;
         flex-wrap: nowrap !important;
         width: 100%;
     }
     .seat-aisle { width: 0.5rem !important; }
 
-    /* Shrink labels */
-    .seat-row-label { 
-        width: 1rem !important; 
-        font-size: 0.65rem !important; 
+    .seat-row-label {
+        width: 1rem !important;
+        font-size: 0.65rem !important;
     }
 
-    /* Adjust screen glow width */
     .screen-glow { border-top: 2px solid var(--primary-red) !important; }
 
-    /* Movie details header adjustments */
     .movie-poster-sm { width: 60px !important; height: 85px !important; }
     .movie-details-sm h1 { font-size: 1.1rem !important; }
     .movie-details-sm p { font-size: 0.65rem !important; }
-    
-    /* Make total price bigger and centered */
+
     .summary-total { flex-direction: column; gap: 0.5rem; text-align: center; }
     .summary-total-price { font-size: 1.8rem !important; }
     .btn-continue { font-size: 1rem !important; padding: 0.5rem !important; }
 }
 
 @media (max-width: 1023px) {
-    /* Checkout Page Mobile */
+
     .booking-grid-checkout {
         display: flex;
         flex-direction: column;
     }
-    
-    /* Disable sticky top on mobile for Thanh Toan */
+
     .booking-grid-checkout .booking-panel:nth-child(2) > .booking-card {
         position: static !important;
         margin-bottom: 2rem;
     }
-    
-    /* Seat Booking Page Mobile Reordering */
+
     .booking-grid:not(.booking-grid-checkout) {
         display: flex;
         flex-direction: column;
     }
     .booking-grid:not(.booking-grid-checkout) .booking-panel {
-        display: contents; 
+        display: contents;
     }
     .booking-grid:not(.booking-grid-checkout) #movie-info-card { order: 1; }
-    
-    /* Seat Grid Card */
-    .booking-grid:not(.booking-grid-checkout) .booking-panel:nth-child(2) > .booking-card { 
-        order: 2; 
-        width: 100%; 
-        overflow-x: auto; 
-        /* Hide scrollbar but keep scrollable */
+
+    .booking-grid:not(.booking-grid-checkout) .booking-panel:nth-child(2) > .booking-card {
+        order: 2;
+        width: 100%;
+        overflow-x: auto;
+
         -ms-overflow-style: none;
         scrollbar-width: none;
     }
     .booking-grid:not(.booking-grid-checkout) .booking-panel:nth-child(2) > .booking-card::-webkit-scrollbar {
         display: none;
     }
-    
-    /* Summary */
+
     .booking-grid:not(.booking-grid-checkout) #selection-summary { order: 3; position: static !important; }
-    
-    /* Price Table */
+
     .booking-grid:not(.booking-grid-checkout) .booking-panel:nth-child(1) > .booking-card:nth-child(2) { order: 4; }
-    
-    /* Legend */
+
     .booking-grid:not(.booking-grid-checkout) .booking-panel:nth-child(1) > .booking-card:nth-child(3) { order: 5; }
 }
 
-/* PONYTAIL: Mobile <= 480px optimizations for seat grid, selectors, checkout, and invoice tables */
 @media (max-width: 480px) {
     .booking-page-container {
         padding-top: 5.5rem !important;

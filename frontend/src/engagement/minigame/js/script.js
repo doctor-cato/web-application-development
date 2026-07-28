@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const balanceDisplay = document.getElementById('balance-amount');
     const toastElement = document.getElementById('toast');
 
-    // Toast Notification System
     function showToast(message) {
         if (!toastElement) {
             alert(message);
@@ -11,22 +10,21 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         toastElement.textContent = message;
         toastElement.classList.add('show');
-        
+
         setTimeout(() => {
             toastElement.classList.remove('show');
         }, 3000);
     }
 
-    // Fetch and render data
     async function loadCinePredictData() {
         try {
             const response = await fetch('/api/CinePredict');
             if (!response.ok) throw new Error('API Error');
             const data = await response.json();
-            
+
             const activeGrid = document.getElementById('active-pools-grid');
             const endedGrid = document.getElementById('ended-pools-grid');
-            
+
             if (activeGrid) activeGrid.innerHTML = '';
             if (endedGrid) endedGrid.innerHTML = '';
 
@@ -35,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const cardClass = isEnded ? 'pool-card ended-card' : 'pool-card';
                 const buttonClass = isEnded ? 'btn-bet-action disabled' : 'btn-bet-action';
                 const buttonText = isEnded ? 'ĐÃ TRẢ THƯỞNG' : 'DỰ ĐOÁN';
-                
+
                 let optionsHtml = '';
                 item.options.forEach((opt, idx) => {
                     if (isEnded) {
@@ -66,14 +64,14 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                     </div>
                 </div>`;
-                
+
                 if (isEnded && endedGrid) {
                     endedGrid.insertAdjacentHTML('beforeend', html);
                 } else if (!isEnded && activeGrid) {
                     activeGrid.insertAdjacentHTML('beforeend', html);
                 }
             });
-            
+
             attachCardEvents();
         } catch (error) {
             console.error('Error loading Cine Predict data:', error);
@@ -115,7 +113,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     currentBalance -= cost;
                     animateBalance(currentBalance);
 
-                    // Reset selections
                     optionButtons.forEach(b => b.classList.remove('selected'));
                     selectedValue = null;
 
@@ -125,11 +122,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Balance Animation helper
     function animateBalance(target) {
         if (!balanceDisplay) return;
         const start = parseInt(balanceDisplay.textContent.replace(/,/g, ''));
-        const duration = 500; // ms
+        const duration = 500;
         const startTime = performance.now();
 
         function update(currentTime) {
@@ -147,7 +143,6 @@ document.addEventListener('DOMContentLoaded', () => {
         requestAnimationFrame(update);
     }
 
-    // Timer logic: Countdown from 14:54
     const timerElement = document.getElementById('main-timer');
     if (timerElement) {
         let timeParts = timerElement.textContent.split(':');
@@ -171,7 +166,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 1000);
     }
 
-    // Deposit simulator (+1000 Points)
     const depositBtn = document.getElementById('btn-deposit');
     if (depositBtn) {
         depositBtn.addEventListener('click', () => {
@@ -181,14 +175,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // History simulator
     const historyBtn = document.getElementById('btn-history');
     if (historyBtn) {
         historyBtn.addEventListener('click', () => {
             showToast('Lịch sử: Chưa ghi nhận lượt dự đoán gần đây.');
         });
     }
-    
-    // Initial Load
+
     loadCinePredictData();
 });

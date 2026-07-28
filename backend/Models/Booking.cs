@@ -15,7 +15,6 @@ namespace appweb.Models
         public string PaymentStatus { get; set; } = "Pending";
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
-        // Quan hệ giữa các bảng (Navigation Properties)
         public virtual User? User { get; set; }
         public virtual Movie? Movie { get; set; }
         public virtual Showtime? Showtime { get; set; }

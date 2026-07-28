@@ -1,4 +1,3 @@
-// ===== CINEMAS PAGE — CALL OF DUTY TACTICAL MAP =====
 
 const cinemasList = document.getElementById('cinemas-list');
 const hudCoordinates = document.getElementById('hud-coordinates');
@@ -74,7 +73,6 @@ function getActiveCinemasData() {
     ];
 }
 
-// --- INIT MAP ---
 function initMap() {
     const mapContainer = document.getElementById('leaflet-map');
     if (!mapContainer || typeof L === 'undefined') return;
@@ -101,7 +99,6 @@ function initMap() {
         pane: 'tactical-base'
     }).addTo(map);
 
-    // Render markers
     data.forEach((cinema, index) => {
         const isActive = cinema.id === activeId || index === 0;
         if (isActive) activeId = cinema.id;
@@ -112,7 +109,6 @@ function initMap() {
     updateHudCoords();
 }
 
-// --- ADD MARKER ---
 function addMarker(cinema, isActive) {
     const icon = buildIcon(cinema, isActive);
     const marker = L.marker([cinema.lat, cinema.lng], { icon, zIndexOffset: isActive ? 100 : 0 }).addTo(map);
@@ -120,7 +116,6 @@ function addMarker(cinema, isActive) {
     markerObjects[cinema.id] = marker;
 }
 
-// --- BUILD DIV ICON ---
 function buildIcon(cinema, isActive) {
     return L.divIcon({
         className: '',
@@ -142,13 +137,11 @@ function buildIcon(cinema, isActive) {
     });
 }
 
-// --- UPDATE HUD COORDINATES ---
 function updateHudCoords() {
     if (!hudCoordinates) return;
     hudCoordinates.textContent = `01. MAP MODE // GRID ACTIVE`;
 }
 
-// --- RENDER CARDS ---
 function renderCinemas() {
     if (!cinemasList) return;
     const data = getActiveCinemasData();
@@ -198,12 +191,10 @@ function renderCinemas() {
     });
 }
 
-// --- SET ACTIVE CINEMA ---
 function setActiveCinema(cinemaId) {
     activeId = cinemaId;
     const data = getActiveCinemasData();
 
-    // Update cards
     document.querySelectorAll('.cinema-card').forEach(card => {
         const isActive = card.dataset.cinemaId === cinemaId;
         card.classList.toggle('active', isActive);
@@ -211,7 +202,6 @@ function setActiveCinema(cinemaId) {
         if (btnDir) btnDir.classList.toggle('active', isActive);
     });
 
-    // Rebuild all markers
     data.forEach(cinema => {
         const isActive = cinema.id === cinemaId;
         const m = markerObjects[cinema.id];
@@ -220,7 +210,6 @@ function setActiveCinema(cinemaId) {
         m.setZIndexOffset(isActive ? 100 : 0);
     });
 
-    // Fly to cinema
     const cinema = data.find(c => c.id === cinemaId);
     if (cinema && map) map.flyTo([cinema.lat, cinema.lng], 14, { duration: 0.8 });
 
@@ -228,7 +217,6 @@ function setActiveCinema(cinemaId) {
     if (activeCard) activeCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
-// --- MY LOCATION & ZOOM CONTROLS ---
 const btnLoc = document.getElementById('btn-my-location');
 if (btnLoc) btnLoc.addEventListener('click', () => {
     if (!map) return;
@@ -247,7 +235,6 @@ if (btnZoomOut) btnZoomOut.addEventListener('click', () => {
     if (map) map.zoomOut();
 });
 
-// --- INIT ---
 document.addEventListener('DOMContentLoaded', async () => {
     if (window.fetchCinemasPromise) {
         try {
@@ -259,7 +246,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const urlParams = new URLSearchParams(window.location.search);
     const targetCinemaId = urlParams.get('cinema');
-    
+
     if (targetCinemaId) {
         setTimeout(() => {
             setActiveCinema(targetCinemaId);

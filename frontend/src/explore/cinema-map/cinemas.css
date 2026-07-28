@@ -1,6 +1,4 @@
-/* ===== CINEMAS PAGE STYLES ===== */
 
-/* --- PAGE LAYOUT --- */
 .cinemas-page {
     padding-top: 100px;
     min-height: 100vh;
@@ -12,7 +10,6 @@
     min-height: calc(100vh - 100px);
 }
 
-/* --- LEFT PANEL (Cinema List) --- */
 .cinemas-list-panel {
     padding: 40px var(--page-padding) 40px 0;
     padding-left: var(--page-padding);
@@ -55,7 +52,6 @@
     color: var(--text-muted);
 }
 
-/* --- CINEMA CARD --- */
 .cinema-card {
     padding: 24px 20px;
     border-left: 3px solid transparent;
@@ -174,7 +170,6 @@
     box-shadow: 0 0 14px rgba(229, 9, 20, 0.6) !important;
 }
 
-/* --- CINEMA DETAILS (Screens info) --- */
 .cinema-screens {
     font-family: 'Inter', sans-serif;
     font-size: 0.75rem;
@@ -190,7 +185,6 @@
     font-size: 0.7rem;
 }
 
-/* ===== RIGHT PANEL — COD TACTICAL MAP ===== */
 .cinemas-map-panel {
     position: relative;
     background: #d8d6cf;
@@ -199,7 +193,6 @@
     --hud-red-bright: #ff3438;
 }
 
-/* Leaflet tactical map base */
 #leaflet-map {
     width: 100%;
     height: 100%;
@@ -209,7 +202,6 @@
     background: #d8d6cf;
 }
 
-/* Tactical grid and red map wash */
 #leaflet-map::before,
 #leaflet-map::after {
     content: "";
@@ -226,7 +218,6 @@
     display: none;
 }
 
-/* Map tone controls for street clarity */
 .leaflet-tile-pane {
     filter: none;
 }
@@ -245,7 +236,6 @@
     opacity: 1;
 }
 
-/* ===== HUD FRAME (Corner Brackets) ===== */
 .hud-frame {
     position: absolute;
     inset: 0;
@@ -280,7 +270,6 @@
     border-right: 2px solid rgba(229, 9, 20, 0.7);
 }
 
-/* ===== SCANLINES ===== */
 .hud-scanlines {
     position: absolute;
     inset: 0;
@@ -297,7 +286,6 @@
         radial-gradient(circle at center, transparent 42%, rgba(0, 0, 0, 0.24));
 }
 
-/* ===== HUD TOP BAR ===== */
 .hud-top-bar {
     position: absolute;
     top: 0; left: 0; right: 0;
@@ -337,7 +325,6 @@
     text-align: right;
 }
 
-/* ===== HUD BOTTOM BAR ===== */
 .hud-bottom-bar {
     position: absolute;
     bottom: 0; left: 0; right: 0;
@@ -412,7 +399,6 @@
     letter-spacing: 0.8px;
 }
 
-/* Legend marker = small target circle */
 .hud-legend-marker {
     width: 10px;
     height: 10px;
@@ -442,7 +428,6 @@
     text-transform: uppercase;
 }
 
-/* ===== COD TARGET MARKER ===== */
 .cod-marker-wrap {
     position: relative;
     width: 36px;
@@ -463,7 +448,6 @@
     z-index: 3;
 }
 
-/* === RADAR SCAN (active only) === */
 .cod-radar {
     position: absolute;
     top: 50%; left: 50%;
@@ -500,7 +484,6 @@
     to   { transform: rotate(360deg); }
 }
 
-/* === TARGET CIRCLE === */
 .cod-target {
     position: absolute;
     top: 50%; left: 50%;
@@ -518,7 +501,6 @@
         rgba(30, 4, 4, 0.74);
 }
 
-/* 4 tick marks around the circle */
 .cod-target::before {
     content: '';
     position: absolute;
@@ -527,7 +509,6 @@
     border: 1px solid rgba(255, 43, 43, 0.24);
 }
 
-/* Center dot */
 .cod-dot {
     position: absolute;
     top: 50%; left: 50%;
@@ -539,7 +520,6 @@
     box-shadow: 0 0 4px rgba(255, 43, 43, 0.9);
 }
 
-/* === PULSE RING (active only) === */
 .cod-pulse {
     position: absolute;
     top: 50%; left: 50%;
@@ -558,7 +538,6 @@
     100% { transform: translate(-50%, -50%) scale(2.4); opacity: 0; }
 }
 
-/* Active marker — brighter */
 .cod-marker-wrap.active .cod-target {
     border-color: #ff4444;
     box-shadow: 0 0 16px rgba(255, 43, 43, 0.95), 0 0 36px rgba(255, 43, 43, 0.38);
@@ -571,7 +550,6 @@
     box-shadow: 0 0 8px rgba(255, 43, 43, 1);
 }
 
-/* === LABEL === */
 .cod-label {
     position: absolute;
     top: 50%;
@@ -611,7 +589,6 @@
     letter-spacing: 0.5px;
 }
 
-/* ===== LEAFLET OVERRIDES ===== */
 .leaflet-popup { display: none !important; }
 
 .leaflet-control-zoom {
@@ -620,7 +597,7 @@
     overflow: hidden;
     box-shadow: 0 0 18px rgba(229, 9, 20, 0.18) !important;
     margin-left: 18px !important;
-    margin-bottom: 75px !important; /* Move above bottom HUD */
+    margin-bottom: 75px !important;
 }
 
 .leaflet-control-zoom a {
@@ -642,7 +619,6 @@
     font-size: 0.5rem !important;
 }
 
-/* ===== HUD MAP CONTROLS & FLOATING BUTTONS ===== */
 .hud-map-controls {
     position: absolute;
     bottom: 60px;
@@ -730,13 +706,10 @@
     box-shadow: 0 0 24px rgba(229, 9, 20, 0.36);
 }
 
-/* --- FOOTER ADJUSTMENT --- */
 .cinemas-page + footer {
     margin-top: 0;
 }
 
-/* --- RESPONSIVE ADJUSTMENTS --- */
-/* ponytail: responsive adjustments for cinema map page */
 @media (max-width: 1024px) {
     .cinemas-layout {
         grid-template-columns: 350px 1fr;

@@ -12,7 +12,7 @@ namespace appweb.Models
         public Guid Id { get; set; } = Guid.NewGuid();
 
         [Column("user_id")]
-        public Guid UserId { get; set; } // Người tạo yêu cầu
+        public Guid UserId { get; set; }
 
         [Column("showtime_id")]
         public Guid ShowtimeId { get; set; }
@@ -24,16 +24,16 @@ namespace appweb.Models
         public string AdjacentSeatId { get; set; } = string.Empty;
 
         [Column("match_preference")]
-        public string MatchPreference { get; set; } = "any"; // "male", "female", "any"
+        public string MatchPreference { get; set; } = "any";
 
         [Column("matched_user_id")]
-        public Guid? MatchedUserId { get; set; } // Người được ghép đôi (có thể Null nếu đang chờ)
+        public Guid? MatchedUserId { get; set; }
 
         [Column("status")]
-        public string Status { get; set; } = "pending"; // "pending", "matched", "completed", "cancelled"
+        public string Status { get; set; } = "pending";
 
         [Column("reveal_code")]
-        public string RevealCode { get; set; } = Guid.NewGuid().ToString("N").Substring(0, 8).ToUpper(); // Mã QR 8 ký tự
+        public string RevealCode { get; set; } = Guid.NewGuid().ToString("N").Substring(0, 8).ToUpper();
 
         [Column("is_revealed")]
         public bool IsRevealed { get; set; } = false;
@@ -41,7 +41,6 @@ namespace appweb.Models
         [Column("created_at")]
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
-        // Navigation properties
         [ForeignKey("UserId")]
         public virtual User User1 { get; set; }
 

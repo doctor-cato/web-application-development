@@ -15,13 +15,11 @@ using appweb.Infrastructure;
         _context = context;
     }
 
-    // GET: SHOWTIMES
-    public async Task<IActionResult> Index()    
+    public async Task<IActionResult> Index()
     {
         return View(await _context.Showtimes.ToListAsync());
     }
 
-    // GET: SHOWTIMES/Details/5
     public async Task<IActionResult> Details(Guid? id)
     {
         if (id == null)
@@ -39,15 +37,11 @@ using appweb.Infrastructure;
         return View(showtime);
     }
 
-    // GET: SHOWTIMES/Create
     public IActionResult Create()
     {
         return View();
     }
 
-    // POST: SHOWTIMES/Create
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create([Bind("Id,MovieId,RoomId,StartTime,EndTime,TicketPrice,BookingDetails,Bookings,Movie,Room")] Showtime showtime)
@@ -61,7 +55,6 @@ using appweb.Infrastructure;
         return View(showtime);
     }
 
-    // GET: SHOWTIMES/Edit/5
     public async Task<IActionResult> Edit(Guid? id)
     {
         if (id == null)
@@ -77,9 +70,6 @@ using appweb.Infrastructure;
         return View(showtime);
     }
 
-    // POST: SHOWTIMES/Edit/5
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(Guid? id, [Bind("Id,MovieId,RoomId,StartTime,EndTime,TicketPrice,BookingDetails,Bookings,Movie,Room")] Showtime showtime)
@@ -112,7 +102,6 @@ using appweb.Infrastructure;
         return View(showtime);
     }
 
-    // GET: SHOWTIMES/Delete/5
     public async Task<IActionResult> Delete(Guid? id)
     {
         if (id == null)
@@ -130,7 +119,6 @@ using appweb.Infrastructure;
         return View(showtime);
     }
 
-    // POST: SHOWTIMES/Delete/5
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(Guid? id)
@@ -150,5 +138,4 @@ using appweb.Infrastructure;
         return _context.Showtimes.Any(e => e.Id == id);
     }
 }
-
 

@@ -5,17 +5,17 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta name="description" content="Đăng nhập vào tài khoản 3HD2K Cinema để đặt vé xem phim, nhận khuyến mãi và quản lý lịch sử giao dịch.">
-    <!-- Open Graph -->
+
     <meta property="og:title" content="Đăng Nhập - 3HD2K Cinema">
     <meta property="og:description" content="Đăng nhập để đặt vé xem phim và tận hưởng ưu đãi dành cho thành viên 3HD2K Cinema.">
     <meta property="og:type" content="website">
     <meta property="og:image" content="/assets/favicon.jpg">
     <title>Đăng nhập - 3HD2K Cinema</title>
-    <!-- Fonts -->
+
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Icons -->
+
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
-    <!-- Vanilla CSS -->
+
     <link rel="stylesheet" href="../../auth/auth-services/auth.css?v=4">
 </head>
 <body>
@@ -25,7 +25,7 @@
     </header>
 
     <main class="auth-main">
-        <!-- Left Side: Banner (Hidden on Mobile) -->
+
         <div class="auth-banner">
             <div class="auth-banner-bg">
                 <img src="../../shared/images/cinema_audience_smiling.png" alt="Cinema Background">
@@ -39,21 +39,18 @@
             </h1>
         </div>
 
-        <!-- Right Side: Form Container -->
         <div class="auth-content">
             <div class="auth-box">
-                <!-- Tabs -->
+
                 <div class="auth-tabs">
                     <a href="../../auth/user-login/login.html" class="auth-tab active">Đăng Nhập</a>
                     <a href="../../auth/user-register/register.html" class="auth-tab">Đăng Ký</a>
                 </div>
 
-                <!-- Error Banner (Global) -->
                 <div id="form-error-banner" class="form-error-banner"></div>
 
-                <!-- Form -->
                 <form id="loginForm" class="auth-form" action="../../explore/home-page/index.html" method="GET">
-                    <!-- Email -->
+
                     <div class="form-group">
                         <label for="email">Email</label>
                         <div class="input-wrapper">
@@ -63,7 +60,6 @@
                         <div id="email-error" class="inline-error">Email không hợp lệ.</div>
                     </div>
 
-                    <!-- Password -->
                     <div class="form-group">
                         <label for="password">Mật khẩu</label>
                         <div class="input-wrapper">
@@ -74,14 +70,12 @@
                         <div id="password-error" class="inline-error">Mật khẩu phải có ít nhất 6 ký tự.</div>
                     </div>
 
-                    <!-- Forgot Password Link -->
                     <div style="text-align: right; margin-bottom: 1.5rem; margin-top: -0.5rem;">
                         <a href="../../auth/forgot-password/index.html" style="font-size: 13px; color: var(--primary-red); text-decoration: none;">
                             Quên mật khẩu?
                         </a>
                     </div>
 
-                    <!-- Submit Button -->
                     <button type="submit" class="btn-submit">
                         Đăng Nhập
                     </button>

@@ -1,15 +1,11 @@
-/**
- * pages/booking.js — Trang chọn ghế
- */
 
 import { getSeatMap, lockSeat, unlockSeat, subscribeSeatUpdates, closeSeatSyncChannel } from './bookingService.js';
 import { renderSeatGrid, updateSeat, getSelectedSeats, getSeatType, setGroupSize, setCineMatchMode, getCineMatchAdjacentSeat } from '../../shared/components/seatGrid.js';
 import { saveCheckout } from '../../shared/utils/storage.js';
 import { requireAuth } from '../../shared/utils/authGuard.js';
 
-// Kiểm tra đăng nhập ngay khi tải trang chọn ghế
 if (!requireAuth('Bạn cần đăng nhập để đặt vé xem phim. Hãy đăng nhập hoặc tạo tài khoản để tiếp tục.')) {
-    // Chặn toàn bộ giao diện, user sẽ thấy modal
+
     document.addEventListener('DOMContentLoaded', () => {
         const main = document.querySelector('main');
         if (main) main.style.filter = 'blur(5px)';
@@ -27,19 +23,19 @@ async function init() {
   if (window.fetchMoviesPromise) {
       await window.fetchMoviesPromise;
   }
-  // Group Seat Logic
+
   const btnMinus = document.getElementById('btn-group-minus');
   const btnPlus = document.getElementById('btn-group-plus');
   const sizeDisplay = document.getElementById('group-size-display');
   const toggleGroup = document.getElementById('toggle-group-booking');
   const counterUi = document.getElementById('group-counter-ui');
   let currentGroupSize = 1;
-  
+
   if (toggleGroup && counterUi) {
       toggleGroup.addEventListener('change', (e) => {
           if (e.target.checked) {
               counterUi.style.display = 'flex';
-              // Default to 2 when turned on
+
               currentGroupSize = 2;
               if(sizeDisplay) sizeDisplay.innerText = currentGroupSize;
               setGroupSize(currentGroupSize);
@@ -54,7 +50,7 @@ async function init() {
           }
       });
   }
-  
+
   if (btnMinus && btnPlus && sizeDisplay) {
       btnMinus.addEventListener('click', () => {
           if (currentGroupSize > 1) {
@@ -65,7 +61,7 @@ async function init() {
               if (currentGroupSize === 1) btnMinus.disabled = true;
           }
       });
-      
+
       btnPlus.addEventListener('click', () => {
           if (currentGroupSize < 6) {
               currentGroupSize++;
@@ -77,7 +73,6 @@ async function init() {
       });
   }
 
-  // Cine-Match Logic
   const toggleCineMatch = document.getElementById('toggle-cine-match');
   const cineMatchPrefUi = document.getElementById('cine-match-pref-ui');
   if (toggleCineMatch) {
@@ -85,7 +80,7 @@ async function init() {
           const isActive = e.target.checked;
           if (isActive) {
               if (toggleGroup && toggleGroup.checked) {
-                  toggleGroup.click(); // Turn off group booking
+                  toggleGroup.click();
               }
               cineMatchPrefUi.style.display = 'flex';
           } else {
@@ -95,11 +90,10 @@ async function init() {
       });
   }
 
-  // Prevent both toggles from being on simultaneously
   if (toggleGroup && toggleCineMatch) {
       toggleGroup.addEventListener('change', (e) => {
           if (e.target.checked && toggleCineMatch.checked) {
-              toggleCineMatch.click(); // Turn off CineMatch
+              toggleCineMatch.click();
           }
       });
   }
@@ -107,22 +101,22 @@ async function init() {
   const urlParams = new URLSearchParams(window.location.search);
     const movieId = urlParams.get('id');
     currentShowtimeId = urlParams.get('showtimeId') || 'st_200';
-    
+
     if ((urlParams.get('cinematch') === 'true' || localStorage.getItem('cinematch_active') === 'true') && toggleCineMatch) {
         toggleCineMatch.checked = true;
         toggleCineMatch.dispatchEvent(new Event('change'));
     }
-    
+
     if (localStorage.getItem('group_booking_active') === 'true' && toggleGroup) {
         toggleGroup.checked = true;
         toggleGroup.dispatchEvent(new Event('change'));
         localStorage.removeItem('group_booking_active');
     }
-    
+
     console.log("[DEBUG] movieId from URL:", movieId);
 
   if (movieId) {
-    // Fetch all movies directly from API — guaranteed to work, no race conditions
+
     try {
       console.log("[DEBUG] Starting fetch...");
       const response = await fetch('/api/movies');
@@ -154,11 +148,10 @@ async function init() {
   console.log("[DEBUG] Calling renderMovieInfo with:", movieData.title);
 
   renderMovieInfo();
-  
+
   const seatMap = getSeatMap(currentShowtimeId);
   const container = document.getElementById('seat-grid');
-  
-  // Lấy giá vé cơ bản từ localStorage showtimes
+
   try {
       const showtimesStr = localStorage.getItem('3hd2k_showtimes');
       if (showtimesStr) {
@@ -179,10 +172,9 @@ async function init() {
     });
   }
 
-  // Subscribe to real-time seat updates
   subscribeSeatUpdates((eventData) => {
     if (eventData.showtimeId !== currentShowtimeId) return;
-    
+
     if (eventData.type === 'seat_locked') {
       updateSeat(eventData.seatId, 'locked', eventData.userId);
     } else if (eventData.type === 'seat_unlocked') {
@@ -196,7 +188,6 @@ async function init() {
 
   updatePricesTable();
 
-  // Attach lifecycle cleanup to prevent memory leaks (Issue #61)
   const cleanupLifecycle = () => {
     if (countdownTimer) {
       clearInterval(countdownTimer);
@@ -213,7 +204,7 @@ function renderMovieInfo() {
   const showtimeEl = document.getElementById('showtime-datetime');
   const roomEl = document.getElementById('showtime-room');
   const posterEl = document.getElementById('movie-poster');
-  
+
   if (titleEl) titleEl.innerText = movieData.title;
   if (showtimeEl) showtimeEl.innerText = `19:30 | ${currentShowtimeId}`;
   if (roomEl) roomEl.innerText = 'Phòng 3';
@@ -273,7 +264,7 @@ function updateSummary() {
   const selectedSeatsEl = document.getElementById('selected-seats-list');
   const totalPriceEl = document.getElementById('total-price');
   const btnContinue = document.getElementById('btn-continue');
-  
+
   if (selectedSeatsEl) {
     if (seats.length) {
       selectedSeatsEl.innerHTML = seats.map(s => `<span class="seat-tag">${s}</span>`).join('');
@@ -281,9 +272,9 @@ function updateSummary() {
       selectedSeatsEl.innerHTML = `<p class="text-secondary text-xs italic">Chưa chọn ghế nào.</p>`;
     }
   }
-  
+
   if (totalPriceEl) totalPriceEl.innerText = calculateTotal().toLocaleString('vi-VN') + ' đ';
-  
+
   if (btnContinue) {
     btnContinue.disabled = seats.length === 0;
   }
@@ -292,14 +283,14 @@ function updateSummary() {
 function startCountdown(seconds) {
   const cdEl = document.getElementById('countdown-header');
   if (!cdEl) return;
-  
+
   let remain = seconds;
   countdownTimer = setInterval(() => {
     remain--;
     const m = Math.floor(remain / 60).toString().padStart(2, '0');
     const s = (remain % 60).toString().padStart(2, '0');
     cdEl.innerText = `${m}:${s}`;
-    
+
     if (remain <= 0) {
       clearInterval(countdownTimer);
       countdownTimer = null;
@@ -319,15 +310,14 @@ function handleContinue() {
 
   const isGroupToggleOn = document.getElementById('toggle-group-booking')?.checked || false;
   const isCineMatchToggleOn = document.getElementById('toggle-cine-match')?.checked || false;
-  
+
   if (isGroupToggleOn && seats.length < 2) {
     alert('Vui lòng chọn ít nhất 2 ghế để sử dụng đặt vé nhóm.');
     return;
   }
-  
+
   const isGroup = isGroupToggleOn && seats.length >= 2;
-  
-  // Lấy thông tin adjacent seat nếu là CineMatch
+
   let cineMatchAdjacentSeat = null;
   let cineMatchPreference = 'any';
   if (isCineMatchToggleOn && seats.length > 0) {
@@ -345,39 +335,37 @@ function handleContinue() {
     room: 'Phòng 3',
     showtimeText: '19:30',
     selectedSeats: seats,
-    seats: seats, // for checkout.js
+    seats: seats,
     seatTotal: calculateTotal(),
     isGroupBooking: isGroup,
     isCineMatch: isCineMatchToggleOn,
     cineMatchAdjacentSeat: cineMatchAdjacentSeat,
     cineMatchPreference: cineMatchPreference,
-    seatAmount: calculateTotal(), // for checkout.js
-    total: calculateTotal(), // for checkout.js
-    expiresAt: Date.now() + 15 * 60 * 1000 // 15 mins
+    seatAmount: calculateTotal(),
+    total: calculateTotal(),
+    expiresAt: Date.now() + 15 * 60 * 1000
   };
-  
+
   saveCheckout(checkoutData);
 
   if (isGroup) {
-      // Tự động khởi tạo phiên Split Pay và bay thẳng vào Lobby
+
       const orderId = 'SPLIT-' + Math.random().toString(36).substring(2, 8).toUpperCase();
       const splitData = {
           orderId: orderId,
           checkoutData: checkoutData,
-          customFood: '[]', // Tạm thời bỏ qua Bắp Nước khi đi thẳng vào Lobby
+          customFood: '[]',
           status: 'PENDING',
           paidSeats: [],
           cancelledSeats: []
       };
       localStorage.setItem('splitOrder_' + orderId, JSON.stringify(splitData));
-      
-      // Gán ghế đầu tiên cho Host
+
       localStorage.setItem('mySeatForOrder_' + orderId, seats[0]);
-      
-      // Chuyển hướng thẳng vào phòng chờ
+
       window.location.href = '../group-booking/room.html?order=' + orderId;
   } else {
-      // Mua 1 ghế bình thường thì đi qua Checkout để chọn Bắp nước
+
       window.location.href = '../checkout/checkout.html';
   }
 }

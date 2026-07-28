@@ -20,14 +20,12 @@ namespace appweb.Controllers.HomeController.cs
             _context = context;
         }
 
-        // 1. GET: api/Cinemas (Lấy toàn bộ danh sách rạp)
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Cinema>>> GetCinemas()
         {
             return await _context.Cinemas.ToListAsync();
         }
 
-        // 2. GET: api/Cinemas/5 (Lấy thông tin 1 rạp theo ID)
         [HttpGet("{id}")]
         public async Task<ActionResult<Cinema>> GetCinema(Guid id)
         {
@@ -36,7 +34,6 @@ namespace appweb.Controllers.HomeController.cs
             return cinema;
         }
 
-        // 3. POST: api/Cinemas (Thêm mới một rạp phim)
         [HttpPost]
         public async Task<ActionResult<Cinema>> PostCinema(Cinema cinema)
         {
@@ -45,7 +42,6 @@ namespace appweb.Controllers.HomeController.cs
             return CreatedAtAction(nameof(GetCinema), new { id = cinema.Id }, cinema);
         }
 
-        // 4. PUT: api/Cinemas/5 (Cập nhật thông tin rạp theo ID)
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCinema(Guid id, Cinema cinema)
         {
@@ -66,7 +62,6 @@ namespace appweb.Controllers.HomeController.cs
             return Ok(new { message = "Cập nhật thông tin rạp thành công!" });
         }
 
-        // 5. DELETE: api/Cinemas/5 (Xóa rạp theo ID)
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCinema(Guid id)
         {

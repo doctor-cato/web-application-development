@@ -33,7 +33,7 @@ namespace appweb.Controllers
             var booking = new Booking
             {
                 Id = Guid.NewGuid(),
-                UserId = user?.UserId, // Guid?
+                UserId = user?.UserId,
                 ShowtimeId = Guid.Parse(request.ShowtimeId),
                 MovieId = Guid.Parse(request.MovieId),
                 Seats = request.Seats,

@@ -1,7 +1,4 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-/* 3HD2K Stylesheet
-  Theme: Cinematic Noir, High Contrast, Glassmorphism
-*/
 
 :root {
     --primary-red: #E50914;
@@ -26,7 +23,6 @@ button, input, select, textarea {
     color: inherit;
 }
 
-/* Fallback for Tailwind font classes */
 .font-\[\'Inter\'\] { font-family: 'Inter', sans-serif !important; }
 .font-\[\'Bebas_Neue\'\] { font-family: 'Inter', sans-serif !important; }
 .font-bold { font-weight: 700 !important; }
@@ -906,7 +902,6 @@ footer {
     img { max-width: 100%; height: auto; }
 }
 
-
 @keyframes ringBell {
     0% { transform: rotate(0); }
     10% { transform: rotate(20deg); }
@@ -948,9 +943,9 @@ footer {
 }
 
 .custom-select-selected i.fa-chevron-down {
-    margin-left: 8px; 
-    font-size: 0.75rem; 
-    color: var(--text-muted); 
+    margin-left: 8px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
     transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 

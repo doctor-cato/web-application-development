@@ -3,7 +3,7 @@ import { simulatePayment } from '/shared/utils/paymentService.js';
 import { confirmBooking } from '../seat-booking/bookingService.js';
 
 let countdownTimer = null;
-const PAYMENT_TIMEOUT = 300; // seconds
+const PAYMENT_TIMEOUT = 300;
 
 function qs(sel) { return document.querySelector(sel); }
 
@@ -16,10 +16,10 @@ function formatSeconds(s) {
 async function handleSuccess(txId) {
   const btn = qs('.btn-success');
   if (btn) btn.innerText = 'Đang xử lý...';
-  
+
   const params = new URLSearchParams(window.location.search);
   const returnUrl = params.get('returnUrl');
-  
+
   simulatePayment(txId, async (result) => {
     if (result.status === 'success') {
       try {
@@ -31,7 +31,7 @@ async function handleSuccess(txId) {
         checkoutData.transactionId = txId;
         checkoutData.createdAt = new Date().toISOString();
         let booking = await confirmBooking(checkoutData);
-        // Fallback nếu backend lỗi — tạo booking object local
+
         if (!booking) {
             const seatsArr = Array.isArray(checkoutData.seats) ? checkoutData.seats : (checkoutData.seats ? [checkoutData.seats] : []);
             booking = {
@@ -52,7 +52,7 @@ async function handleSuccess(txId) {
                 createdAt: checkoutData.createdAt
             };
         }
-        // Lưu ID booking vào session để trang invoice hiển thị
+
         lsSet(KEYS.LAST_BOOKING, booking);
         localStorage.removeItem('cinematch_active');
         window.location.href = '../booking-success/index.html';
@@ -65,7 +65,7 @@ async function handleSuccess(txId) {
 }
 
 function handleCancel(txId) {
-  // in a real app we'd mark the tx as cancelled in DB
+
   window.location.href = './checkout.html';
 }
 
@@ -92,7 +92,7 @@ function init() {
 
   const gatewayName = document.getElementById('gateway-name');
   const scanText = document.getElementById('scan-text');
-  
+
   if (gatewayName) {
     if (provider === 'vnpay') {
         gatewayName.innerText = 'Cổng Thanh Toán VNPAY';
@@ -101,6 +101,10 @@ function init() {
     else if (provider === 'zalopay') {
         gatewayName.innerText = 'Cổng Thanh Toán ZALOPAY';
         if (scanText) scanText.innerText = 'Dùng ứng dụng ZaloPay để quét mã QR';
+    }
+    else if (provider === 'bank') {
+        gatewayName.innerText = 'Chuyển Khoản Ngân Hàng';
+        if (scanText) scanText.innerText = 'Dùng ứng dụng ngân hàng để quét mã VietQR';
     }
     else if (provider === 'card') {
         gatewayName.innerText = 'Cổng Thanh Toán VISA / MASTER';
@@ -111,10 +115,23 @@ function init() {
         if (scanText) scanText.innerText = 'Dùng ứng dụng MoMo để quét mã QR';
     }
   }
-  
+
   const qrImage = document.getElementById('qr-code-img');
   if (qrImage) {
-     qrImage.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=3HD2K-Cinema-${provider.toUpperCase()}`;
+     qrImage.style.width = '100%';
+     qrImage.style.maxWidth = '240px';
+     qrImage.style.height = 'auto';
+     qrImage.style.margin = '0 auto';
+
+     if (provider === 'bank') {
+         qrImage.src = '/shared/images/qr-bank.png';
+     } else if (provider === 'zalopay') {
+         qrImage.src = '/shared/images/qr-zalo.png';
+     } else if (provider === 'momo') {
+         qrImage.src = '/shared/images/qr-momo.png';
+     } else {
+         qrImage.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=3HD2K-Cinema-${provider.toUpperCase()}`;
+     }
   }
 
   const simHeader = document.getElementById('sim-header');
@@ -122,7 +139,7 @@ function init() {
   const simSpinner = document.getElementById('sim-spinner');
   const simBtn2 = document.getElementById('sim-btn');
 
-  if (provider === 'vnpay' || provider === 'zalopay' || provider === 'card') {
+  if (provider === 'vnpay' || provider === 'zalopay' || provider === 'card' || provider === 'bank') {
     simHeader?.classList.add(provider);
     simAmount?.classList.add(provider);
     simSpinner?.classList.add(provider);

@@ -1,9 +1,4 @@
-/* ==========================================================================
-   3HD2K Cinema — Global Stylesheet
-   Supplements Tailwind CDN with custom components not expressible as utilities
-   ========================================================================== */
 
-/* ── Avatar component (profile + register pages) ─────────────────────── */
 .avatar-container {
   position: relative;
   display: inline-block;
@@ -44,11 +39,6 @@
   color: #fff;
 }
 
-/* ==========================================================================
-   Payment & QR Ticket Feature
-   ========================================================================== */
-
-/* ── Countdown timer ─────────────────────────────────────────────────── */
 .countdown {
   font-family: 'Courier New', Courier, monospace;
   font-variant-numeric: tabular-nums;
@@ -65,7 +55,6 @@
   50%       { opacity: 0.5; }
 }
 
-/* ── Pulsing live dot (used next to countdown) ───────────────────────── */
 @keyframes pulse-dot {
   0%, 100% { transform: scale(1);   opacity: 1; }
   50%       { transform: scale(1.6); opacity: 0.45; }
@@ -75,7 +64,6 @@
   animation: pulse-dot 1.2s ease-in-out infinite;
 }
 
-/* ── CSS loading spinner (pay button loading state) ──────────────────── */
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
@@ -92,7 +80,6 @@
   flex-shrink: 0;
 }
 
-/* ── Combo selector cards ────────────────────────────────────────────── */
 .combo-card {
   cursor: pointer;
   border: 1px solid #343535;
@@ -114,7 +101,6 @@
   background-color: rgba(229, 9, 20, 0.08);
 }
 
-/* ── Payment method cards ────────────────────────────────────────────── */
 .payment-card {
   cursor: pointer;
   border: 1px solid #343535;
@@ -140,7 +126,6 @@
   background-color: rgba(0, 91, 170, 0.09);
 }
 
-/* ── Provider theme classes (payment_simulation.html) ────────────────── */
 .momo-theme .provider-header {
   background: linear-gradient(135deg, #ae2070, #d4337a);
 }
@@ -157,13 +142,11 @@
   color: #005baa;
 }
 
-/* Provider countdown warning (payment simulation page) */
 .countdown-warning {
   color: #e50914;
   animation: countdown-pulse 1s ease-in-out infinite;
 }
 
-/* ── Ticket tear / perforated separator (booking_invoice.html) ───────── */
 .ticket-tear {
   position: relative;
   overflow: visible;
@@ -183,13 +166,12 @@
 .ticket-tear::before { left:  -12px; }
 .ticket-tear::after  { right: -12px; }
 
-/* ── Offline Ready badge ─────────────────────────────────────────────── */
 .offline-badge {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  background: rgba(22, 163, 74, 0.25);   /* green-700/25 */
-  color: #86efac;                          /* green-300 */
+  background: rgba(22, 163, 74, 0.25);
+  color: #86efac;
   font-size: 0.7rem;
   font-weight: 600;
   padding: 3px 10px;
@@ -197,7 +179,6 @@
   border: 1px solid rgba(74, 222, 128, 0.35);
 }
 
-/* ── QR canvas wrapper ───────────────────────────────────────────────── */
 .qr-wrapper {
   background: #ffffff;
   border-radius: 16px;
@@ -209,7 +190,6 @@
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
 }
 
-/* ── QR fallback text ────────────────────────────────────────────────── */
 .qr-fallback-text {
   font-family: 'Courier New', Courier, monospace;
   font-size: 0.7rem;
@@ -220,7 +200,6 @@
   line-height: 1.5;
 }
 
-/* ── QR grid placeholder (payment_simulation.html) ───────────────────── */
 .qr-grid {
   background-image:
     linear-gradient(#cccccc 1px, transparent 1px),
@@ -229,7 +208,6 @@
   background-color: #ffffff;
 }
 
-/* ── Ticket card ─────────────────────────────────────────────────────── */
 .ticket-card {
   border-radius: 16px;
   overflow: visible;

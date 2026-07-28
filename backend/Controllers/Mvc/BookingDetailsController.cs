@@ -16,13 +16,12 @@ namespace appweb.Controllers.HomeController.cs
             _context = context;
         }
 
-        // 1. API LẤY DANH SÁCH: GET /api/BookingDetails
         [HttpGet]
         public async Task<IActionResult> GetAllBookings()
         {
             try
             {
-                // Lấy toàn bộ dữ liệu từ bảng BookingDetails trong SQL Server
+
                 var bookings = await _context.BookingDetails.ToListAsync();
                 return Ok(bookings);
             }
@@ -32,7 +31,6 @@ namespace appweb.Controllers.HomeController.cs
             }
         }
 
-        // 2. API THÊM MỚI: POST /api/BookingDetails
         [HttpPost]
         public async Task<IActionResult> CreateBooking([FromBody] BookingDetail newBooking)
         {
@@ -43,10 +41,8 @@ namespace appweb.Controllers.HomeController.cs
                     return BadRequest(new { message = "Dữ liệu gửi lên không hợp lệ." });
                 }
 
-                // Thêm bản ghi mới vào DbContext
                 _context.BookingDetails.Add(newBooking);
 
-                // Lưu thay đổi thực tế xuống SQL Server
                 await _context.SaveChangesAsync();
 
                 return Ok(new { message = "Thêm mới chi tiết đặt vé thành công!", data = newBooking });

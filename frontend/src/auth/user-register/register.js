@@ -1,14 +1,10 @@
-/**
- * register.js — Xử lý form đăng ký tài khoản
- */
+
 import { register, isLoggedIn } from '../../auth/auth-services/authService.js?v=5';
 
-// Redirect nếu đã đăng nhập
 if (isLoggedIn()) {
     window.location.href = '/explore/home-page/index.html';
 }
 
-// ── DOM refs ───────────────────────────────────────────────
 const registerForm      = document.getElementById('registerForm');
 const errorBanner       = document.getElementById('form-error-banner');
 const emailInput        = document.getElementById('email');
@@ -19,10 +15,7 @@ const emailError        = document.getElementById('email-error');
 const pwdError          = document.getElementById('pwd-error');
 const confirmPwdError   = document.getElementById('confirm-pwd-error');
 const phoneError        = document.getElementById('phone-error');
-// ── Avatar removed from registration ─────────────────────────
 
-
-// ── Toggle hiển thị mật khẩu ──────────────────────────────
 document.querySelectorAll('.togglePasswordBtn').forEach(btn => {
     btn.addEventListener('click', function () {
         const targetId    = this.getAttribute('data-target');
@@ -33,7 +26,6 @@ document.querySelectorAll('.togglePasswordBtn').forEach(btn => {
     });
 });
 
-// ── Gỡ lỗi khi user gõ lại ────────────────────────────────
 [emailInput, pwdInput, confirmPwdInput, phoneInput].forEach(input => {
     if (!input) return;
     input.addEventListener('input', function () {
@@ -46,11 +38,9 @@ document.querySelectorAll('.togglePasswordBtn').forEach(btn => {
     });
 });
 
-// ── Submit ─────────────────────────────────────────────────
 registerForm.addEventListener('submit', async function (e) {
     e.preventDefault();
 
-    // Reset errors
     [emailInput, pwdInput, confirmPwdInput, phoneInput].forEach(el => el && el.classList.remove('error'));
     [emailError, pwdError, confirmPwdError, phoneError].forEach(el => el && el.classList.remove('show'));
     errorBanner.classList.remove('show');
@@ -65,7 +55,6 @@ registerForm.addEventListener('submit', async function (e) {
 
     let isValid = true;
 
-    // Validation: Phone
     const phoneRegex = /^(0|\+84)[3|5|7|8|9][0-9]{8}$/;
     if (!phoneRegex.test(phone)) {
         phoneInput.classList.add('error');
@@ -74,7 +63,6 @@ registerForm.addEventListener('submit', async function (e) {
         isValid = false;
     }
 
-    // Validation: Password length
     if (password.length < 6) {
         pwdInput.classList.add('error');
         pwdError.textContent = 'Tối thiểu 6 ký tự.';
@@ -82,7 +70,6 @@ registerForm.addEventListener('submit', async function (e) {
         isValid = false;
     }
 
-    // Validation: Confirm password
     if (password !== confirmPassword) {
         confirmPwdInput.classList.add('error');
         confirmPwdError.textContent = 'Mật khẩu không khớp.';

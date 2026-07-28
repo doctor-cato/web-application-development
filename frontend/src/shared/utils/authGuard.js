@@ -1,35 +1,14 @@
-/**
- * authGuard.js
- * ─────────────────────────────────────────────────────────────
- * Kiểm tra trạng thái đăng nhập trước khi cho phép sử dụng
- * các tính năng yêu cầu xác thực (đặt vé, thanh toán, v.v.)
- *
- * Cách dùng:
- *   import { requireAuth } from '../../shared/utils/authGuard.js';
- *
- *   // Returns true nếu đã đăng nhập, false nếu chưa (và hiện modal)
- *   if (!requireAuth()) return;
- * ─────────────────────────────────────────────────────────────
- */
 
 const MODAL_ID = 'auth-guard-modal';
 
-/**
- * Kiểm tra user đã đăng nhập chưa dựa vào localStorage.
- */
 export function isAuthenticated() {
     const session = localStorage.getItem('currentUser');
     const isLoggedIn = localStorage.getItem('isLoggedIn');
     return Boolean(session) || isLoggedIn === 'true';
 }
 
-/**
- * Hiển thị modal yêu cầu đăng nhập.
- * @param {string} [message] — Thông điệp tùy chỉnh
- * @returns {false} — Luôn trả về false để dùng ngắn gọn: if (!requireAuth()) return;
- */
 export function showAuthModal(message) {
-    // Xóa modal cũ nếu có
+
     const existing = document.getElementById(MODAL_ID);
     if (existing) existing.remove();
 
@@ -146,7 +125,6 @@ export function showAuthModal(message) {
 
     document.body.appendChild(modal);
 
-    // Close handlers
     const closeBtn = document.getElementById('auth-guard-close');
     const overlay = modal.querySelector('.auth-guard-overlay');
 
@@ -164,11 +142,6 @@ export function showAuthModal(message) {
     return false;
 }
 
-/**
- * Guard chính: nếu đã đăng nhập trả về true, chưa thì hiện modal và trả về false.
- * @param {string} [message] — Thông điệp tùy chỉnh
- * @returns {boolean}
- */
 export function requireAuth(message) {
     if (isAuthenticated()) return true;
     showAuthModal(message);

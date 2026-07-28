@@ -1,8 +1,3 @@
-/**
- * footer.js
- * ─────────────────────────────────────────────────────────────
- * Component render Footer dùng chung cho toàn dự án.
- */
 
 export function renderFooter() {
     const footerHTML = `
@@ -94,11 +89,10 @@ export function renderFooter() {
     </style>
     `;
 
-    // Try to find existing footer or placeholder
-    let container = document.getElementById('footer-placeholder') || 
+    let container = document.getElementById('footer-placeholder') ||
                     document.querySelector('footer.main-footer') ||
                     document.querySelector('footer');
-    
+
     if (container) {
         container.outerHTML = footerHTML;
     } else {
@@ -106,7 +100,6 @@ export function renderFooter() {
     }
 }
 
-// Tự động render nếu được import
 let hasRenderedFooter = false;
 function safeRenderFooter() {
     if (hasRenderedFooter) return;

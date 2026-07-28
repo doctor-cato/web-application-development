@@ -1,6 +1,3 @@
-/* ══════════════════════════════════════════════════
-   3HD2K BOOKING-FOOD — Premium Dark Cinema Theme
-   ══════════════════════════════════════════════════ */
 
 :root {
   --bg: #0a0a0a;
@@ -22,7 +19,6 @@
 body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); }
 button, input { font: inherit; }
 
-/* ═══ PAGE LAYOUT ═══ */
 .page {
   padding: 110px 40px 80px;
   max-width: 1440px;
@@ -47,7 +43,6 @@ button, input { font: inherit; }
   .summary { position: static; }
 }
 
-/* ═══ STICKY CATEGORY TABS ═══ */
 .food-tabs {
   display: flex;
   gap: 10px;
@@ -96,7 +91,6 @@ button, input { font: inherit; }
 }
 .food-tab.active i { color: #fff; }
 
-/* ═══ SECTION TITLES ═══ */
 .menu-section {
   scroll-margin-top: 160px;
   margin-bottom: 20px;
@@ -141,7 +135,6 @@ button, input { font: inherit; }
   margin-left: 16px;
 }
 
-/* ═══ CATEGORY & SLIDER ═══ */
 .category {
   position: relative;
   margin-bottom: 40px;
@@ -179,7 +172,6 @@ button, input { font: inherit; }
 .slider-btn.next { right: -22px; }
 @media (max-width: 960px) { .slider-btn { display: none; } }
 
-/* ═══ PRODUCT GRID (Horizontal scroll) ═══ */
 .grid {
   display: flex;
   gap: 20px;
@@ -205,7 +197,6 @@ button, input { font: inherit; }
   background: var(--accent);
 }
 
-/* ═══ PRODUCT CARD ═══ */
 .card {
   background: var(--card-bg);
   backdrop-filter: blur(12px);
@@ -236,7 +227,6 @@ button, input { font: inherit; }
   box-shadow: 0 0 30px rgba(229, 9, 20, 0.15), 0 12px 40px rgba(0, 0, 0, 0.5);
 }
 
-/* Product Image */
 .media {
   height: 220px;
   display: flex;
@@ -257,7 +247,6 @@ button, input { font: inherit; }
   transform: scale(1.12) translateY(-8px) rotate(-2deg);
 }
 
-/* Card Body */
 .body {
   padding: 20px 22px 24px;
   display: flex;
@@ -289,7 +278,6 @@ button, input { font: inherit; }
   transition: max-height 0.4s ease;
 }
 
-/* Card Controls */
 .controls {
   display: flex !important;
   flex-direction: column !important;
@@ -381,7 +369,6 @@ button, input { font: inherit; }
   transform: translateY(0) scale(0.98);
 }
 
-/* Added state */
 .add-label[aria-pressed="true"] {
   background: rgba(255, 255, 255, 0.04) !important;
   color: var(--muted) !important;
@@ -394,7 +381,6 @@ button, input { font: inherit; }
   box-shadow: 0 0 12px rgba(255, 255, 255, 0.06) !important;
 }
 
-/* ═══ SUMMARY SIDEBAR ═══ */
 .summary-card {
   background: linear-gradient(160deg, rgba(18, 18, 20, 0.95), rgba(12, 12, 14, 0.98));
   backdrop-filter: blur(16px);
@@ -463,7 +449,6 @@ button, input { font: inherit; }
 .summary-products .line { margin: 0; }
 .summary-products .count { color: #f5f5f5; font-weight: 700; }
 
-/* ═══ PROMO SECTION ═══ */
 .promo-section {
   position: relative;
   margin: 20px 0;
@@ -539,7 +524,6 @@ button, input { font: inherit; }
   transform: translateY(-1px);
 }
 
-/* Promo Dropdown */
 .promo-dropdown {
   display: none;
   position: absolute;
@@ -596,7 +580,6 @@ button, input { font: inherit; }
   line-height: 1.4;
 }
 
-/* Applied Promo */
 .applied-promo {
   display: none;
   margin-top: 10px;
@@ -629,7 +612,6 @@ button, input { font: inherit; }
   color: #ff6b6b;
 }
 
-/* ═══ TOTAL & BUTTONS ═══ */
 .total {
   display: flex;
   justify-content: space-between;
@@ -695,7 +677,6 @@ button, input { font: inherit; }
   transform: translateY(-1px);
 }
 
-/* ═══ HIDDEN CONTROLS (CSS-only cart) ═══ */
 input[type="checkbox"][hidden],
 input[type="radio"][hidden] {
   display: block !important;
@@ -714,7 +695,6 @@ input[type="radio"][hidden] {
   content: none !important;
 }
 
-/* ═══ RESPONSIVE ═══ */
 @media (max-width: 640px) {
   .section-title { font-size: 22px; }
   .card { flex: 0 0 260px; min-width: 260px; min-height: 400px; }
@@ -724,7 +704,6 @@ input[type="radio"][hidden] {
   .food-tab { padding: 8px 16px; font-size: 13px; }
 }
 
-/* PONYTAIL: Clean mobile layout for booking-food under 480px */
 @media (max-width: 480px) {
   .page { padding: 90px 12px 40px; }
   .section-title { font-size: 18px; flex-wrap: wrap; gap: 8px; }

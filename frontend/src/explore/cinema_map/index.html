@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Tìm vị trí các cụm rạp chiếu phim 3HD2K Cinema gần nhất trên bản đồ trực quan. Xem địa chỉ rạp, suất chiếu và hướng dẫn đường đi chi tiết.">
-    <!-- Open Graph / Social Media Meta Tags -->
+
     <meta property="og:type" content="website">
     <meta property="og:title" content="Hệ Thống Cụm Rạp Chiếu Phim - 3HD2K Cinema">
     <meta property="og:description" content="Tìm rạp chiếu phim 3HD2K Cinema gần bạn nhất, chỉ đường bản đồ và đặt vé xem phim tiện lợi.">
@@ -14,13 +14,13 @@
     <title>3HD2K - Hệ Thống Cụm Rạp & Bản Đồ Chỉ Đường</title>
     <link rel="stylesheet" href="../../shared/css/main.css">
     <link rel="stylesheet" href="../cinema-map/cinemas.css">
-    <!-- Load custom fonts -->
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@600;700;800;900&family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
-    <!-- Leaflet.js Map -->
+
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <!-- FontAwesome for Icons -->
+
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
@@ -28,20 +28,19 @@
 
     <main class="cinemas-page">
         <div class="cinemas-layout">
-            <!-- LEFT: Cinema List -->
+
             <div class="cinemas-list-panel">
                 <div class="cinemas-header">
                     <h1>RẠP CHIẾU GẦN ĐÂY</h1>
                     <p>Khám phá các phòng chiếu 3HD2K chân thực gần bạn</p>
                 </div>
                 <div id="cinemas-list">
-                    <!-- Rendered by JS -->
+
                 </div>
             </div>
 
-            <!-- RIGHT: Tactical Map -->
             <div class="cinemas-map-panel">
-                <!-- HUD Frame -->
+
                 <div class="hud-frame">
                     <span class="hud-corner hud-tl"></span>
                     <span class="hud-corner hud-tr"></span>
@@ -49,19 +48,15 @@
                     <span class="hud-corner hud-br"></span>
                 </div>
 
-                <!-- Scanline overlay -->
                 <div class="hud-scanlines"></div>
 
-                <!-- HUD Top Bar -->
                 <div class="hud-top-bar">
                     <span class="map-overlay-brand"><i class="fas fa-film" style="margin-right: 6px;"></i> CINEMAS 3HD2K</span>
                     <span class="hud-coordinates" id="hud-coordinates">01. MAP MODE // GRID ACTIVE</span>
                 </div>
 
-                <!-- Leaflet Map -->
                 <div id="leaflet-map"></div>
 
-                <!-- HUD Bottom Bar -->
                 <div class="hud-bottom-bar">
                     <div class="hud-bottom-left">
                         <span class="hud-mission">MISSION: FIND YOUR CINEMA</span>
@@ -72,7 +67,6 @@
                     </div>
                 </div>
 
-                <!-- Map controls stacked vertical group -->
                 <div class="hud-map-controls">
                     <button class="btn-hud-control" id="btn-my-location" title="Vị trí của tôi">
                         <i class="fas fa-crosshairs"></i>
@@ -85,7 +79,6 @@
                     </button>
                 </div>
 
-                <!-- Floating Red Support Button -->
                 <div class="hud-floating-support" title="Hỗ trợ khách hàng">
                     <i class="fas fa-headset"></i>
                 </div>

@@ -1,14 +1,9 @@
-// ============================================================
-//  3HD2K — Movie Detail Page Logic
-// ============================================================
 
-// ── STATE ───────────────────────────────────────────────────
 let currentMovie = null;
 let selectedDateIndex = 0;
 let galleryImages = [];
 let currentLightboxIdx = 0;
 
-// ── UTILITY ─────────────────────────────────────────────────
 function getMovieIdFromURL() {
     const params = new URLSearchParams(window.location.search);
     const id = params.get('id');
@@ -41,7 +36,6 @@ function formatRatingCount(n) {
     return n.toString();
 }
 
-// Generate next N dates from today
 function generateDates(count = 7) {
     const dates = [];
     const dayNames = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
@@ -60,7 +54,6 @@ function generateDates(count = 7) {
     return dates;
 }
 
-// ── TOAST ───────────────────────────────────────────────────
 function showToast(message) {
     const toast = document.getElementById('toast');
     toast.textContent = message;
@@ -68,22 +61,19 @@ function showToast(message) {
     setTimeout(() => toast.classList.remove('show'), 2800);
 }
 
-// ── RENDER HERO ─────────────────────────────────────────────
 function renderHero(movie) {
-    // Backdrop
+
     const backdrop = document.getElementById('hero-backdrop');
     if (backdrop) {
         backdrop.style.backgroundImage = `url('${movie.backdrop || movie.poster}')`;
     }
 
-    // Poster
     const heroPosterImg = document.getElementById('hero-poster-img');
     if (heroPosterImg) {
         heroPosterImg.src = movie.poster;
         heroPosterImg.alt = movie.title;
     }
 
-    // Title
     document.getElementById('hero-title').textContent = movie.title;
     const titleEn = document.getElementById('hero-title-en');
     if (movie.titleEn && movie.titleEn !== movie.title) {
@@ -92,7 +82,6 @@ function renderHero(movie) {
         titleEn.textContent = movie.year ? `(${movie.year})` : '';
     }
 
-    // Badges (age + formats)
     const badgesEl = document.getElementById('hero-badges');
     const ageClass = getAgeBadgeClass(movie.age);
     let badgesHtml = `<span class="detail-age-badge ${ageClass}">${movie.age}</span>`;
@@ -102,7 +91,6 @@ function renderHero(movie) {
     });
     badgesEl.innerHTML = badgesHtml;
 
-    // Meta row (year, duration, genre, rating)
     const metaRow = document.getElementById('hero-meta-row');
     metaRow.innerHTML = `
         <span class="detail-hero-meta-item"><i class="fas fa-calendar-alt"></i>${movie.year}</span>
@@ -115,17 +103,14 @@ function renderHero(movie) {
         </span>
     `;
 
-    // Trailer buttons
     const heroTrailerBtn = document.getElementById('hero-btn-trailer');
     if (heroTrailerBtn) {
         heroTrailerBtn.onclick = () => openTrailerModal(movie.trailer, movie.trailerWatch);
     }
 
-    // Page title & breadcrumb
     document.title = `${movie.title} - 3HD2K`;
     document.getElementById('breadcrumb-movie-name').textContent = movie.title;
 
-    // Breadcrumb: now showing vs coming soon
     const inNowShowing = nowShowingMovies.some(m => m.id === movie.id);
     const tabLink = document.getElementById('breadcrumb-tab-link');
     if (tabLink) {
@@ -134,13 +119,11 @@ function renderHero(movie) {
     }
 }
 
-// ── RENDER METADATA ─────────────────────────────────────────
 function renderMetadata(movie) {
-    // Synopsis
+
     const synopsisEl = document.getElementById('synopsis-text');
     if (synopsisEl) synopsisEl.textContent = movie.synopsis || '';
 
-    // Toggle synopsis
     const synopsisToggle = document.getElementById('synopsis-toggle');
     if (synopsisToggle) {
         synopsisToggle.addEventListener('click', () => {
@@ -158,7 +141,6 @@ function renderMetadata(movie) {
         });
     }
 
-    // Meta grid
     const metaGrid = document.getElementById('meta-grid');
     if (metaGrid) {
         metaGrid.innerHTML = `
@@ -189,7 +171,6 @@ function renderMetadata(movie) {
         `;
     }
 
-    // Cast
     const castList = document.getElementById('cast-list');
     if (castList && movie.cast) {
         castList.innerHTML = movie.cast.map(actor => `
@@ -201,7 +182,6 @@ function renderMetadata(movie) {
     }
 }
 
-// ── RENDER SHOWTIMES ─────────────────────────────────────────
 function renderDateTabs(dates) {
     const container = document.getElementById('date-tabs');
     if (!container) return;
@@ -218,7 +198,7 @@ function renderDateTabs(dates) {
 
 function selectDate(idx) {
     selectedDateIndex = idx;
-    // Update tabs
+
     document.querySelectorAll('.date-tab').forEach((btn, i) => {
         btn.classList.toggle('active', i === idx);
     });
@@ -247,7 +227,6 @@ function renderCinemaShowtimes() {
         filteredCinemas = filteredCinemas.filter(c => c.id === selectedCinema);
     }
 
-    // If we have API data available globally, use it, else fallback to empty
     const currentMovieShowtimes = window.currentMovieShowtimes || [];
 
     const cinemaCards = filteredCinemas.map(cinema => {
@@ -266,7 +245,7 @@ function renderCinemaShowtimes() {
             const rawShowtimes = currentMovieShowtimes.filter(s => {
                 return s.room && s.room.cinemaId === cinema.id && new Date(s.startTime).toLocaleDateString('vi-VN') === targetDateStr;
             });
-            
+
             if (rawShowtimes.length === 0) return '';
 
             const showtimes = rawShowtimes.map(s => {
@@ -277,12 +256,10 @@ function renderCinemaShowtimes() {
                 if (typeof selectedDateIndex !== 'undefined') {
                     const [h, m] = st.time.split(':').map(Number);
                     const now = new Date();
-                    
-                    // Tính chính xác mốc thời gian của suất chiếu cho ngày được chọn
+
                     const showDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), h, m, 0);
                     showDate.setDate(showDate.getDate() + selectedDateIndex);
-                    
-                    // Chỉ khóa (vô hiệu hóa) khi thời gian thực tế vượt quá giờ chiếu 60 phút
+
                     const lockTime = new Date(showDate.getTime() + 60 * 60000);
                     if (now >= lockTime) {
                         status = 'past';
@@ -293,7 +270,7 @@ function renderCinemaShowtimes() {
                     const title = status === 'full' ? 'Hết vé' : 'Đã chiếu';
                     return `<span class="showtime-btn ${status}" title="${title}">${st.time}</span>`;
                 }
-                return `<a href="#" class="showtime-btn ${status}" 
+                return `<a href="#" class="showtime-btn ${status}"
                             title="${status === 'almost-full' ? 'Sắp hết vé' : 'Còn vé'}"
                             onclick="handleBooking(event, '${cinema.name}', '${fmt}', '${st.time}')">
                             ${st.time}
@@ -360,18 +337,15 @@ function handleBooking(event, cinemaName, format, time) {
 let currentReviews = [];
 let currentRatingSelection = 5;
 
-// ── RENDER RATINGS ───────────────────────────────────────────
 function renderRatings(movie) {
     document.getElementById('rating-value').textContent = movie.rating.toFixed(1);
     document.getElementById('rating-count-text').textContent = `${movie.ratingCount.toLocaleString('vi-VN')} lượt đánh giá`;
 
-    // Stars large
     const starsLarge = document.getElementById('rating-stars-large');
     if (starsLarge) {
         starsLarge.innerHTML = renderStars(movie.rating);
     }
 
-    // External scores (mock values derived from our rating)
     const imdbScore = (movie.rating * 2.0).toFixed(1);
     const rtScore = Math.round(movie.rating * 20);
     document.getElementById('imdb-score').textContent = `${imdbScore}/10`;
@@ -411,23 +385,23 @@ function renderReviews() {
 
 function submitComment() {
     if (!window.requireAuth('Bạn cần đăng nhập để viết bình luận. Hãy đăng nhập hoặc tạo tài khoản để tiếp tục.')) return;
-    
+
     const input = document.getElementById('comment-input');
     const text = input.value.trim();
     if (!text) {
         showToast('Vui lòng nhập nội dung bình luận!');
         return;
     }
-    
+
     const userName = localStorage.getItem('userName') || 'Người dùng';
     const userAvatar = localStorage.getItem('userAvatar') || 'https://i.pravatar.cc/150?img=11';
-    
+
     const now = new Date();
     const dateStr = `${now.getDate().toString().padStart(2, '0')}/${(now.getMonth() + 1).toString().padStart(2, '0')}/${now.getFullYear()}`;
     const userBorder = 'avatar-border-' + (localStorage.getItem('userAvatarBorder') || 'member');
-    
+
     const vipPlan = localStorage.getItem('vip_plan') || '';
-    
+
     const newComment = {
         user: userName,
         date: dateStr,
@@ -437,26 +411,24 @@ function submitComment() {
         borderClass: userBorder,
         vipPlan: vipPlan
     };
-    
+
     currentReviews.unshift(newComment);
     input.value = '';
-    
-    // Update average rating
+
     const sum = currentReviews.reduce((acc, rev) => acc + rev.rating, 0);
     currentMovie.rating = sum / currentReviews.length;
     currentMovie.ratingCount = currentReviews.length;
-    
+
     renderHero(currentMovie);
     renderRatings(currentMovie);
     showToast('Bình luận của bạn đã được gửi!');
 }
 
-// ── YOUTUBE EMBED HELPER ────────────────────────────────────
 function getYouTubeEmbedUrl(url) {
     if (!url) return '';
     let cleanUrl = url.trim();
     let videoId = '';
-    
+
     if (cleanUrl.includes('embed/')) {
         videoId = cleanUrl.split('embed/')[1]?.split('?')[0]?.split('&')[0];
     } else if (cleanUrl.includes('v=')) {
@@ -468,8 +440,8 @@ function getYouTubeEmbedUrl(url) {
     }
 
     if (videoId) {
-        const origin = (typeof window !== 'undefined' && window.location && window.location.origin && window.location.origin !== 'null') 
-            ? encodeURIComponent(window.location.origin) 
+        const origin = (typeof window !== 'undefined' && window.location && window.location.origin && window.location.origin !== 'null')
+            ? encodeURIComponent(window.location.origin)
             : '';
         const originParam = origin ? `&origin=${origin}` : '';
         return `https://www.youtube-nocookie.com/embed/${videoId}?enablejsapi=1&rel=0${originParam}`;
@@ -477,9 +449,8 @@ function getYouTubeEmbedUrl(url) {
     return cleanUrl;
 }
 
-// ── MEDIA GALLERY ────────────────────────────────────────────
 function renderGallery(movie) {
-    // Trailer iframe
+
     const iframe = document.getElementById('detail-trailer-iframe');
     const fallback = document.getElementById('detail-trailer-fallback');
     const ytLink = document.getElementById('detail-trailer-yt-link');
@@ -495,7 +466,6 @@ function renderGallery(movie) {
         }
     }
 
-    // Gallery grid
     galleryImages = movie.gallery || [];
     const galleryGrid = document.getElementById('gallery-grid');
     if (galleryGrid) {
@@ -514,7 +484,6 @@ function switchMediaTab(tab) {
     });
 }
 
-// ── LIGHTBOX ─────────────────────────────────────────────────
 function openLightbox(idx) {
     currentLightboxIdx = idx;
     const overlay = document.getElementById('lightbox-overlay');
@@ -553,7 +522,6 @@ function lightboxNav(dir) {
     }
 }
 
-// ── RELATED MOVIES ───────────────────────────────────────────
 function renderRelatedMovies(movie) {
     const carousel = document.getElementById('related-carousel');
     if (!carousel) return;
@@ -579,7 +547,6 @@ function scrollRelated(dir) {
     if (carousel) carousel.scrollBy({ left: dir * 360, behavior: 'smooth' });
 }
 
-// ── TRAILER MODAL ────────────────────────────────────────────
 function openTrailerModal(embedUrl, watchUrl) {
     const modal = document.getElementById('trailer-modal');
     const iframe = document.getElementById('trailer-video');
@@ -613,14 +580,11 @@ function closeTrailerModal() {
     document.body.style.overflow = '';
 }
 
-
-// ── SCROLL HELPERS ───────────────────────────────────────────
 function scrollToShowtimes() {
     const el = document.getElementById('section-showtimes');
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-// ── KEYBOARD SUPPORT ─────────────────────────────────────────
 document.addEventListener('keydown', (e) => {
     const lightboxOpen = document.getElementById('lightbox-overlay')?.classList.contains('open');
     if (lightboxOpen) {
@@ -632,7 +596,6 @@ document.addEventListener('keydown', (e) => {
     if (modalOpen && e.key === 'Escape') closeTrailerModal();
 });
 
-// ── CLOSE MODAL ON BACKDROP ──────────────────────────────────
 document.addEventListener('DOMContentLoaded', async () => {
     const modal = document.getElementById('trailer-modal');
     const closeBtn = document.getElementById('close-modal');
@@ -641,19 +604,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (e.target === modal) closeTrailerModal();
     });
 
-    // Showtime filter changes
     ['filter-city', 'filter-cinema-brand', 'filter-showtime-format'].forEach(id => {
         document.getElementById(id)?.addEventListener('change', renderCinemaShowtimes);
     });
 
-    // ── INIT ──────────────────────────────────────────────────
     if (window.fetchMoviesPromise) await window.fetchMoviesPromise;
     if (window.fetchCinemasPromise) await window.fetchCinemasPromise;
 
     const movieId = getMovieIdFromURL();
 
     if (!movieId) {
-        // Fallback: use first nowShowing movie
+
         currentMovie = allMoviesData[0];
     } else {
         currentMovie = allMoviesData.find(m => m.id === movieId) || allMoviesData[0];
@@ -662,7 +623,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (typeof mockReviews !== 'undefined') {
         currentReviews = [...mockReviews];
     }
-    
+
     if (currentReviews.length > 0 && currentMovie) {
         const sum = currentReviews.reduce((acc, rev) => acc + rev.rating, 0);
         currentMovie.rating = sum / currentReviews.length;
@@ -682,13 +643,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
-    // Render all sections
     renderHero(currentMovie);
     renderMetadata(currentMovie);
 
     const dates = generateDates(7);
     renderDateTabs(dates);
-    
+
     if (window.fetchShowtimesByMovie && currentMovie) {
         window.currentMovieShowtimes = await window.fetchShowtimesByMovie(currentMovie.id);
     }
@@ -698,14 +658,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     renderGallery(currentMovie);
     renderRelatedMovies(currentMovie);
 
-    // Animate hero backdrop on load
     const backdrop = document.getElementById('hero-backdrop');
     if (backdrop) {
         backdrop.style.transform = 'scale(1.08)';
         setTimeout(() => { backdrop.style.transition = 'transform 1.5s ease'; backdrop.style.transform = 'scale(1.0)'; }, 100);
     }
 
-    // Comment Rating Selection
     const stars = document.querySelectorAll('#rating-stars-input i');
     const display = document.getElementById('rating-value-display');
     if (stars.length > 0 && display) {
@@ -727,7 +685,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
-// Lắng nghe sự kiện lỗi từ iframe YouTube để hiển thị fallback
 window.addEventListener('message', (e) => {
     if (!e.origin.includes('youtube.com') && !e.origin.includes('youtube-nocookie.com')) return;
     try {
