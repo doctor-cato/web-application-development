@@ -5,7 +5,6 @@ test.describe('Visual Regression Testing (Playwright Visual Comparison)', () => 
     await page.goto('/');
     await page.waitForLoadState('networkidle');
 
-    // Take screenshot of the entire viewport / main container
     await expect(page).toHaveScreenshot('homepage.png', {
       fullPage: true,
       maxDiffPixelRatio: 0.05

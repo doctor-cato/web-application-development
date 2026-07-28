@@ -9,7 +9,7 @@ namespace appweb.Controllers
     [Route("api/combos")]
     public class ApiCombosController : ControllerBase
     {
-        // In-memory / DB representation for Snack/Food combos
+
         private static readonly List<ComboDto> _combos = new List<ComboDto>
         {
             new ComboDto { Id = "cb_1", Name = "Combo Solo", Desc = "1 Bắp ngọt lớn + 1 Nước ngọt 22oz tự chọn", Price = 75000, Stock = 120, Image = "/shared/images/combo_solo.jpg" },

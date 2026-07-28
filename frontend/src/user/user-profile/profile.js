@@ -12,14 +12,11 @@ function renderRealHistory() {
     const container = document.getElementById('real-history-container');
     if (!container) return;
 
-    // Expose globally so inline scripts can call it
     window._renderRealHistory = renderRealHistory;
 
     let bookings = getBookings();
     if (!Array.isArray(bookings)) bookings = [];
 
-
-    // Assign missing IDs to legacy bookings and persist
     let needsSave = false;
     bookings.forEach(b => {
         if (!b.id) {
@@ -34,7 +31,6 @@ function renderRealHistory() {
         return;
     }
 
-    // Display newest first (use spread to avoid mutating original)
     const displayBookings = [...bookings].reverse();
     let html = '';
 
@@ -50,23 +46,20 @@ function renderRealHistory() {
 
                         let poster = booking.poster || '';
         let displayTitle = booking.movieTitle || 'Phim';
-        
-        // Try to lookup from data.js
+
         if (window.heroMovies || window.nowShowingMovies) {
             const allMovies = [
                 ...(window.heroMovies || []),
                 ...(window.nowShowingMovies || []),
                 ...(window.comingSoonMovies || [])
             ];
-            
-            // Try exact match first
+
             let foundMovie = allMovies.find(m => m.title && booking.movieTitle && m.title.toLowerCase() === booking.movieTitle.toLowerCase());
-            
-            // Try fuzzy match if exact match fails
+
             if (!foundMovie && booking.movieTitle) {
                 foundMovie = allMovies.find(m => m.title && (m.title.toLowerCase().includes(booking.movieTitle.toLowerCase()) || booking.movieTitle.toLowerCase().includes(m.title.toLowerCase())));
             }
-            
+
             if (foundMovie) {
                 poster = foundMovie.poster || foundMovie.bg || poster;
                 displayTitle = foundMovie.title || displayTitle;
@@ -131,7 +124,6 @@ function renderRealHistory() {
 
     container.innerHTML = html;
 
-    // Auto-open modal if URL has bookingId
     const urlParams = new URLSearchParams(window.location.search);
     const bookingIdToOpen = urlParams.get('bookingId');
     if (bookingIdToOpen) {
@@ -140,7 +132,7 @@ function renderRealHistory() {
             setTimeout(() => {
                 const idx = displayBookings.indexOf(target);
                 const btns = container.querySelectorAll('button');
-                // find the Xem ma ve button for this booking
+
                 const allViewBtns = container.querySelectorAll('button:last-child');
                 if (allViewBtns[idx]) {
                     allViewBtns[idx].scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -156,15 +148,13 @@ function initTabs() {
     const tabContents = document.querySelectorAll('.tab-content');
 
     function switchTab(tabId) {
-        // Remove active from all tabs and menus
+
         menuItems.forEach(m => m.classList.remove('active'));
         tabContents.forEach(t => t.classList.remove('active'));
-        
-        // Add active to the requested item
+
         const item = Array.from(menuItems).find(m => m.getAttribute('data-tab') === tabId);
         if (item) item.classList.add('active');
-        
-        // Show corresponding tab
+
         const targetId = 'tab-' + tabId;
         const targetTab = document.getElementById(targetId);
         if (targetTab) {
@@ -177,12 +167,11 @@ function initTabs() {
             e.preventDefault();
             const tabId = item.getAttribute('data-tab');
             switchTab(tabId);
-            // Optionally update URL
+
             window.history.pushState({}, '', '?tab=' + tabId);
         });
     });
 
-    // Handle initial load from URL
     const params = new URLSearchParams(window.location.search);
     const tab = params.get('tab');
     if (tab) {
@@ -191,11 +180,11 @@ function initTabs() {
 }
 
 function loadUserInfo() {
-    // ── 1. Detect login state ─────────────────────────────────────
+
     const isLogged = localStorage.getItem('isLoggedIn') === 'true';
     let session = null;
     try {
-        session = getCurrentUser(); // reads auth_token
+        session = getCurrentUser();
     } catch(e) {
         console.error("getCurrentUser error", e);
     }
@@ -203,14 +192,12 @@ function loadUserInfo() {
     console.log('[Profile] isLogged:', isLogged, '| session:', session);
 
     if (!session && !isLogged) {
-        // Truly not logged in
+
         const nameEl = document.getElementById('sidebar-name');
         if (nameEl) nameEl.innerText = 'Khách';
         return;
     }
 
-    // ── 2. Gather data from all available sources ─────────────────
-    // Priority: session (auth_token) > localStorage legacy keys > registered users list
     let name  = (session && session.name  && session.name  !== 'Khách') ? session.name  : '';
     let email = (session && session.email) ? session.email : '';
     let phone = (session && session.phone) ? session.phone : '';
@@ -218,7 +205,6 @@ function loadUserInfo() {
     let dob = (session && session.dob) ? session.dob : '';
     let gender = (session && session.gender) ? session.gender : '';
 
-    // Fallback to legacy localStorage keys ONLY if no session
     if (!session) {
         if (!name)   name   = localStorage.getItem('userName')  || '';
         if (!email)  email  = localStorage.getItem('userEmail') || '';
@@ -228,7 +214,6 @@ function loadUserInfo() {
         if (!gender) gender = localStorage.getItem('userGender') || 'male';
     }
 
-    // Last resort: look up from registered users using email
     if ((!name || name === 'Khách') && email) {
         try {
             const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
@@ -248,7 +233,6 @@ function loadUserInfo() {
 
     console.log('[Profile] Resolved name:', name, '| email:', email);
 
-    // ── 3. Update Sidebar ─────────────────────────────────────────
     const nameEl = document.getElementById('sidebar-name');
     if (nameEl) nameEl.innerText = name || (email ? email.split('@')[0] : 'User');
 
@@ -261,7 +245,6 @@ function loadUserInfo() {
         rewardsPoints = rewardsData.points || 0;
     } catch(_) {}
 
-    // Update VIP / Hạng thường display
     const vipEl = document.querySelector('.sidebar-vip');
     if (vipEl) {
         const isVip = localStorage.getItem('is_vip') === 'true';
@@ -274,7 +257,6 @@ function loadUserInfo() {
         }
     }
 
-    // ── 4. Update Form Inputs ─────────────────────────────────────
     const fullnameInput = document.getElementById('fullname');
     if (fullnameInput) fullnameInput.value = name || '';
 
@@ -306,27 +288,26 @@ function initLogout() {
 function setupProfileForm() {
     const form = document.getElementById('profile-form');
     if (!form) return;
-    
+
     form.addEventListener('submit', (e) => {
         e.preventDefault();
-        
+
         const fullnameInput = document.getElementById('fullname');
         const phoneInput = document.getElementById('phone');
         const dobInput = document.getElementById('dob');
         const genderInput = document.querySelector('input[name="gender"]:checked');
-        
+
         let updates = {};
 
         if (fullnameInput) {
             const newName = fullnameInput.value.trim();
             localStorage.setItem('userName', newName);
             updates.fullname = newName;
-            
-            // Update sidebar
+
             const nameEl = document.getElementById('sidebar-name');
             if (nameEl) nameEl.innerText = newName || 'User';
         }
-        
+
         if (phoneInput) {
             const newPhone = phoneInput.value.trim();
             localStorage.setItem('userPhone', newPhone);
@@ -345,14 +326,12 @@ function setupProfileForm() {
             updates.gender = newGender;
         }
 
-        // Try updating via authService to persist to registeredUsers
         try {
             updateProfile(updates);
         } catch (error) {
             console.error('[Profile] updateProfile error', error);
         }
 
-        // Show feedback
         const btn = form.querySelector('.btn-save');
         if (btn) {
             const origText = btn.innerText;
@@ -385,26 +364,22 @@ function initAvatarBorders() {
         'diamond': 2000
     };
 
-    // Load saved border
     let savedBorder = localStorage.getItem('userAvatarBorder') || 'member';
     if (points < requiredPoints[savedBorder]) {
         savedBorder = 'member';
         localStorage.setItem('userAvatarBorder', 'member');
     }
-    
-    // Apply initial border
+
     applyBorder(savedBorder);
 
-    // Setup click events
     borderOptions.forEach(option => {
         const borderType = option.getAttribute('data-border');
         const req = requiredPoints[borderType] || 0;
-        
-        // Add lock icon and styling if not enough points
+
         if (points < req) {
             option.classList.add('locked');
             option.title = `Cần ${req} điểm để mở khóa`;
-            // Add lock icon inside
+
             const iconEl = document.createElement('i');
             iconEl.className = 'fas fa-lock';
             iconEl.style.position = 'absolute';
@@ -428,11 +403,10 @@ function initAvatarBorders() {
     });
 
     function applyBorder(borderType) {
-        // Update avatar classes
-        avatarImg.className = ''; // reset classes
+
+        avatarImg.className = '';
         avatarImg.classList.add(`avatar-border-${borderType}`);
 
-        // Update UI selection
         borderOptions.forEach(opt => opt.classList.remove('active'));
         const activeOpt = document.querySelector(`.border-option[data-border="${borderType}"]`);
         if (activeOpt) activeOpt.classList.add('active');

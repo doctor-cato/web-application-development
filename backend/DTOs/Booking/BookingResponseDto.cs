@@ -2,7 +2,7 @@ using System;
 
 namespace appweb.DTOs
 {
-    // ĐÃ ĐỔI TÊN: Tránh tuyệt đối việc đặt tên class trùng lặp "Booking" gây lỗi Ambiguity
+
     public class BookingResponseDto
     {
         public Guid id { get; set; }

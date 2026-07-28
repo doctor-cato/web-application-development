@@ -1,7 +1,3 @@
-/**
- * storage.js
- * Simple wrapper around localStorage & sessionStorage for the demo.
- */
 
 export const KEYS = {
   USERS: 'cinema_users',
@@ -14,7 +10,6 @@ export const KEYS = {
   PENDING_PAYMENTS: 'cinema_pending_payments'
 };
 
-// LocalStorage helpers
 export function lsGet(key, defaultValue = null) {
   try {
     const v = localStorage.getItem(key);
@@ -37,7 +32,6 @@ export function lsRemove(key) {
   localStorage.removeItem(key);
 }
 
-// SessionStorage helpers
 export function ssGet(key, defaultValue = null) {
   try {
     const v = sessionStorage.getItem(key);
@@ -60,7 +54,6 @@ export function ssRemove(key) {
   sessionStorage.removeItem(key);
 }
 
-// Domain helpers
 export function getBookings() {
   return lsGet(KEYS.BOOKINGS, []);
 }
@@ -93,7 +86,6 @@ export function savePendingPayments(map) {
   lsSet(KEYS.PENDING_PAYMENTS, map);
 }
 
-// small user helpers (not used heavily here)
 export function getUsers() { return lsGet(KEYS.USERS, []); }
 export function saveUsers(users) { lsSet(KEYS.USERS, users); }
 

@@ -2,20 +2,17 @@ import { getLastBooking } from '/shared/utils/storage.js';
 
 function qs(sel) { return document.querySelector(sel); }
 
-// ── Tích điểm tự động khi đặt vé thành công ────────────────
 function awardLoyaltyPoints(booking) {
     if (!booking || !booking.id) return;
 
     const REWARDS_KEY = '3hd2k_rewards';
     const PROCESSED_KEY = '3hd2k_rewards_processed';
 
-    // Kiểm tra xem booking này đã được tích điểm chưa (tránh trùng lặp khi reload)
     let processed = [];
     try {
         processed = JSON.parse(localStorage.getItem(PROCESSED_KEY) || '[]');
     } catch (_) { processed = []; }
 
-    // Check VIP status to apply multiplier
     const isVip = localStorage.getItem('is_vip') === 'true';
     const vipPlan = localStorage.getItem('vip_plan') || '';
     let vipMultiplier = 1;
@@ -25,13 +22,12 @@ function awardLoyaltyPoints(booking) {
         else if (vipPlan === 'platinum') vipMultiplier = 2.0;
     }
 
-    // Check Loyalty Tier for multiplier
     let currentPoints = 0;
     try {
         const raw = localStorage.getItem('3hd2k_rewards');
         if (raw) currentPoints = JSON.parse(raw).points || 0;
     } catch (_) {}
-    
+
     let loyaltyMultiplier = 1;
     let loyaltyTierName = '';
     if (currentPoints >= 2000) { loyaltyMultiplier = 2.0; loyaltyTierName = 'DIAMOND'; }
@@ -42,13 +38,11 @@ function awardLoyaltyPoints(booking) {
     const finalMultiplier = Math.max(vipMultiplier, loyaltyMultiplier);
     const multiplierLabel = finalMultiplier > 1 ? (finalMultiplier === loyaltyMultiplier && loyaltyMultiplier > vipMultiplier ? `[${loyaltyTierName} x${finalMultiplier}]` : `[VIP x${finalMultiplier}]`) : '';
 
-    // Tính điểm: 50-150 PTS mỗi vé, tùy số ghế, nhân với hệ số VIP hoặc Hạng Thẻ
     const seatCount = Array.isArray(booking.seats) ? booking.seats.length
                     : (typeof booking.seats === 'string' && booking.seats.trim() !== '' ? booking.seats.split(',').length : 1);
-    const ptsPerSeat = Math.floor(Math.random() * 101) + 50; // 50~150
+    const ptsPerSeat = Math.floor(Math.random() * 101) + 50;
     const totalPts = Math.floor(ptsPerSeat * seatCount * finalMultiplier);
 
-    // Đọc state rewards hiện tại
     let rewardsState = { points: 0, history: [] };
     try {
         const raw = localStorage.getItem(REWARDS_KEY);
@@ -57,9 +51,8 @@ function awardLoyaltyPoints(booking) {
             rewardsState.points = parsed.points || 0;
             rewardsState.history = parsed.history || [];
         }
-    } catch (_) { /* first time */ }
+    } catch (_) {  }
 
-    // Cộng điểm
     rewardsState.points += totalPts;
     rewardsState.history.push({
         id: Date.now(),
@@ -72,14 +65,11 @@ function awardLoyaltyPoints(booking) {
         colorDark: '#3a1a1d'
     });
 
-    // Lưu lại
     localStorage.setItem(REWARDS_KEY, JSON.stringify(rewardsState));
 
-    // Đánh dấu booking đã được xử lý
     processed.push(booking.id);
     localStorage.setItem(PROCESSED_KEY, JSON.stringify(processed));
 
-    // Sync points to API backend when available (Issue #61)
     const userEmail = localStorage.getItem('user_email') || localStorage.getItem('email') || booking.userEmail || '';
     const userPhone = localStorage.getItem('user_phone') || localStorage.getItem('phone') || booking.userPhone || '';
     if (userEmail || userPhone) {
@@ -90,7 +80,6 @@ function awardLoyaltyPoints(booking) {
         }).catch(e => console.warn('API award points sync warning:', e));
     }
 
-    // Hiển thị thông báo tích điểm trên giao diện (nếu có element)
     const pointsBadge = document.getElementById('bs-points-earned');
     if (pointsBadge) {
         pointsBadge.textContent = `+${totalPts} PTS`;
@@ -101,21 +90,19 @@ function awardLoyaltyPoints(booking) {
 function init() {
     const booking = getLastBooking();
 
-    // If no booking found, redirect to home page
     if (!booking) {
         window.location.href = '../../index.html';
         return;
     }
 
-    // --- Cine-Match Creation Logic ---
     if (booking.isCineMatch) {
         const CINE_MATCH_PROCESSED_KEY = '3hd2k_cinematch_processed';
         let cmProcessed = [];
         try { cmProcessed = JSON.parse(localStorage.getItem(CINE_MATCH_PROCESSED_KEY) || '[]'); } catch (_) {}
-        
+
         if (!cmProcessed.includes(booking.id)) {
             const activeUserId = localStorage.getItem('user_id') || localStorage.getItem('currentUserId') || localStorage.getItem('userId') || null;
-            
+
             if (activeUserId) {
                 fetch('/api/cinematch/create', {
                     method: 'POST',
@@ -136,25 +123,22 @@ function init() {
         }
     }
 
-    // Update Hero Banner
     const heroImage = document.getElementById('bs-hero-image');
     let poster = booking.poster;
     let backdrop = null;
     let movieData = null;
 
-    // Tìm dữ liệu phim để lấy backdrop và tags
     if (window.allMoviesData) {
         movieData = window.allMoviesData.find(m => m.title === booking.movieTitle || m.id === booking.movieId);
     }
 
     if (movieData) {
-        backdrop = movieData.backdrop || movieData.bg; // heroMovies uses 'bg'
+        backdrop = movieData.backdrop || movieData.bg;
         if (backdrop && (backdrop.startsWith('images/') || backdrop.startsWith('assets/'))) {
             backdrop = '/shared/' + backdrop;
         }
     }
 
-    // Ưu tiên backdrop, nếu không có thì dùng poster
     let bgImage = backdrop || poster;
     if (!backdrop && poster && (poster.startsWith('images/') || poster.startsWith('assets/'))) {
         bgImage = '/shared/' + poster;
@@ -171,7 +155,7 @@ function init() {
 
     const tagsEl = document.getElementById('bs-movie-tags');
     if (tagsEl && movieData) {
-        // Cập nhật tags thực tế
+
         let tagsHtml = '';
         if (movieData.formats) {
             movieData.formats.forEach(f => {
@@ -184,7 +168,7 @@ function init() {
         if (movieData.rating) {
             tagsHtml += `<span class="tag rating" style="background: rgba(255,215,0,0.2); color: #ffd700; padding: 4px 10px; border-radius: 4px; border: 1px solid rgba(255,215,0,0.4);"><i class="fas fa-star star-icon"></i> ${movieData.rating}</span>`;
         }
-        // Thêm tag riêng cho heroMovies nếu không có format/language
+
         if (!tagsHtml && movieData.meta) {
              tagsHtml += `<span class="tag" style="background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.2);">${movieData.meta}</span>`;
         }
@@ -193,7 +177,6 @@ function init() {
         }
     }
 
-    // Update Details
     const roomEl = document.getElementById('bs-room');
     if (roomEl) {
         roomEl.textContent = booking.room || 'Phòng chiếu tiêu chuẩn';
@@ -201,8 +184,7 @@ function init() {
 
     const dateEl = document.getElementById('bs-date');
     if (dateEl) {
-        // Format date: "Thứ Sáu, 15 Th12, 2024"
-        // Ưu tiên booking.createdAt, fallback về Date.now()
+
         const rawDate = booking.createdAt || booking.bookingDate || new Date().toISOString();
         const d = new Date(rawDate);
         const isValid = !isNaN(d.getTime());
@@ -222,7 +204,7 @@ function init() {
 
     const timeEl = document.getElementById('bs-time');
     if (timeEl) {
-        // Ưu tiên showtimeText, fallback về giờ trong createdAt
+
         let timeStr = booking.showtimeText || '';
         if (!timeStr || timeStr.trim() === '') {
             const rawDate = booking.createdAt || null;
@@ -251,15 +233,14 @@ function init() {
 
     const codeEl = document.getElementById('bs-ticket-code');
     if (codeEl) {
-        // Ưu tiên: booking.id → booking.transactionId → tạo code từ timestamp
+
         let displayCode = booking.id || booking.transactionId || ('TK-' + Date.now().toString(36).toUpperCase());
-        // Nếu code quá dài (là UUID) thì rút gọn lấy 8 ký tự cuối
+
         if (typeof displayCode === 'string' && displayCode.length > 20) {
             displayCode = displayCode.replace(/-/g, '').slice(-10).toUpperCase();
         }
         codeEl.textContent = displayCode;
 
-        // Generate actual QR Code dynamically
         const qrContainer = document.getElementById('qrcode-container');
         if (qrContainer && typeof QRCode !== 'undefined') {
             qrContainer.innerHTML = '';
@@ -271,11 +252,11 @@ function init() {
                 colorLight : "#ffffff",
                 correctLevel : QRCode.CorrectLevel.M
             });
-            // Apply slight styling to the generated canvas/img for aesthetics
+
             setTimeout(() => {
                 const qrEls = qrContainer.querySelectorAll('canvas, img');
                 let hasImg = false;
-                
+
                 qrEls.forEach(qrEl => {
                     qrEl.style.width = '180px';
                     qrEl.style.height = '180px';
@@ -291,7 +272,7 @@ function init() {
                         }
                     }
                 });
-                
+
                 qrEls.forEach(qrEl => {
                     if (qrEl.tagName === 'CANVAS') {
                         qrEl.style.display = hasImg ? 'none' : 'block';
@@ -301,11 +282,10 @@ function init() {
         }
     }
 
-    // Render Per-Seat Individual Ticket QR Codes (Issue #62)
-    const seatsList = Array.isArray(booking.seats) 
-        ? booking.seats 
+    const seatsList = Array.isArray(booking.seats)
+        ? booking.seats
         : (typeof booking.seats === 'string' && booking.seats.trim() !== '' ? booking.seats.split(',').map(s => s.trim()).filter(Boolean) : []);
-    
+
     if (seatsList.length > 0) {
         if (!booking.tickets || !Array.isArray(booking.tickets) || booking.tickets.length < seatsList.length) {
             booking.tickets = seatsList.map(seat => ({
@@ -324,7 +304,7 @@ function init() {
                 const item = document.createElement('div');
                 item.className = 'per-seat-ticket-card';
                 item.style.cssText = 'background: rgba(255,255,255,0.04); border: 1px solid var(--glass-border); border-radius: 8px; padding: 10px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px;';
-                
+
                 const qrDivId = `qr-seat-${idx}`;
                 item.innerHTML = `
                     <span style="font-weight: 800; font-size: 0.9rem; color: #ff3b45;"><i class="fas fa-chair"></i> Ghế ${t.seat}</span>
@@ -353,18 +333,14 @@ function init() {
         }
     }
 
-    // Attach global function for printing individual tickets
     window.printIndividualTickets = function() {
         window.print();
     };
 
-    // Lưu đơn vé vào danh sách 3hd2k_bookings cho Admin Portal
     saveBookingToAdminStore(booking);
 
-    // Tích điểm tự động sau khi hiển thị thông tin booking
     awardLoyaltyPoints(booking);
-    
-    // Thêm thông báo đặt vé
+
     createBookingNotification(booking);
 }
 
@@ -373,7 +349,7 @@ function saveBookingToAdminStore(booking) {
     try {
         const userEmail = localStorage.getItem('userEmail') || localStorage.getItem('userName') || booking.userEmail || booking.username || 'khach';
         const userName = localStorage.getItem('userName') || booking.customerName || userEmail;
-        
+
         const entry = {
             id: booking.id,
             username: userEmail,
@@ -389,7 +365,6 @@ function saveBookingToAdminStore(booking) {
             showtimeId: booking.showtimeId || ''
         };
 
-        // Save to 3hd2k_bookings (admin portal reads this)
         let bookings3hd2k = JSON.parse(localStorage.getItem('3hd2k_bookings') || '[]');
         if (!Array.isArray(bookings3hd2k)) bookings3hd2k = [];
         if (!bookings3hd2k.some(b => b.id === booking.id)) {
@@ -397,7 +372,6 @@ function saveBookingToAdminStore(booking) {
             localStorage.setItem('3hd2k_bookings', JSON.stringify(bookings3hd2k));
         }
 
-        // Also save to cinema_bookings (profile, navbar, staff-sales read this)
         let bookingsCinema = JSON.parse(localStorage.getItem('cinema_bookings') || '[]');
         if (!Array.isArray(bookingsCinema)) bookingsCinema = [];
         if (!bookingsCinema.some(b => b.id === booking.id)) {
@@ -409,21 +383,20 @@ function saveBookingToAdminStore(booking) {
     }
 }
 
-
 function createBookingNotification(booking) {
     if (!booking || !booking.id) return;
-    
+
     const PROCESSED_NOTIF_KEY = '3hd2k_booking_notif_processed';
     let processed = [];
     try {
         processed = JSON.parse(localStorage.getItem(PROCESSED_NOTIF_KEY) || '[]');
     } catch (_) {}
 
-    if (processed.includes(booking.id)) return; // Đã thêm thông báo rồi
+    if (processed.includes(booking.id)) return;
 
     const seatCount = Array.isArray(booking.seats) ? booking.seats.length : 1;
     const room = booking.room || '3HD2K';
-    
+
     const d = new Date(booking.createdAt);
     const day = String(d.getDate()).padStart(2, '0');
     const month = String(d.getMonth() + 1).padStart(2, '0');

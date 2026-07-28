@@ -62,7 +62,7 @@ namespace appweb.Controllers
 
             match.MatchedUserId = req.UserId;
             match.Status = "matched";
-            
+
             await _context.SaveChangesAsync();
             return Ok(match);
         }
@@ -123,7 +123,7 @@ namespace appweb.Controllers
             {
                 match.IsRevealed = true;
                 await _context.SaveChangesAsync();
-                
+
                 return Ok(new
                 {
                     success = true,

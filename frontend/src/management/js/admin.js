@@ -1,10 +1,4 @@
-/**
- * 3HD2K ADMIN PORTAL ENGINE
- * Pure API-Driven Management Engine (No Mock Fallbacks)
- * Fully aligned with admin.html element IDs and handlers.
- */
 
-// --- STATE STORE ---
 let db = {
     movies: [],
     cinemas: [],
@@ -27,11 +21,9 @@ let currentVipRows = [4, 5];
 let currentDoubleRows = [7];
 let currentBrokenSeats = [];
 
-// --- FORMAT UTILITIES ---
 const formatVND = (amount) => (amount || 0).toLocaleString("vi-VN") + "đ";
 const formatMoney = formatVND;
 
-// --- TOAST NOTIFICATIONS ---
 function showToast(message, type = 'info') {
     let container = document.getElementById('toast-container');
     if (!container) {
@@ -53,7 +45,6 @@ function showToast(message, type = 'info') {
     }, 3200);
 }
 
-// --- REST API FETCHERS ---
 async function fetchMovies() {
     let deletedList = [];
     try {
@@ -75,7 +66,7 @@ async function fetchMovies() {
                         let d = parseInt(m.duration || m.durationMinutes, 10);
                         if (isNaN(d) || d <= 0) d = 120;
                         else if (d < 10) d = d * 60;
-                        
+
                         return {
                             id: m.id ? m.id.toString() : '',
                             title: m.title || '',
@@ -250,12 +241,12 @@ async function fetchUsers() {
         const r1 = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
         const r2 = JSON.parse(localStorage.getItem('3hd2k_users') || '[]');
         const r3 = JSON.parse(localStorage.getItem('cinema_users') || '[]');
-        
+
         let allRegistered = [];
         if (Array.isArray(r1)) allRegistered = allRegistered.concat(r1);
         if (Array.isArray(r2)) allRegistered = allRegistered.concat(r2);
         if (Array.isArray(r3)) allRegistered = allRegistered.concat(r3);
-        
+
         const registered = [];
         const seenEmails = new Set();
         allRegistered.forEach(u => {
@@ -357,10 +348,9 @@ async function reloadDatabase() {
     triggerTabRenders(activeTab);
 }
 
-// --- TAB SWITCHER ---
 function switchTab(tabId) {
     activeTab = tabId;
-    
+
     document.querySelectorAll('.sidebar-menu .menu-item').forEach(btn => {
         if (btn.getAttribute('data-tab') === tabId) {
             btn.classList.add('active');
@@ -372,13 +362,13 @@ function switchTab(tabId) {
     document.querySelectorAll('.tab-section').forEach(sec => {
         sec.classList.remove('active');
     });
-    
+
     const targetSection = document.getElementById(`tab-content-${tabId}`);
     if (targetSection) targetSection.classList.add('active');
 
     const titleEl = document.getElementById('tab-title');
     const subEl = document.getElementById('tab-subtitle');
-    
+
     const titles = {
         dashboard: { main: "Dashboard", sub: "Tổng quan tình hình kinh doanh của rạp chiếu phim" },
         movies: { main: "Quản lý phim", sub: "Xem danh sách phim, cập nhật trạng thái hiển thị và thông tin trailer" },
@@ -413,14 +403,13 @@ function triggerTabRenders(tabId) {
     }
 }
 
-// ================= 1. TAB: DASHBOARD =================
 function renderDashboard() {
     const totalMovies = db.movies.length;
     const totalShowtimes = db.showtimes.length;
     const paidBookings = db.bookings.filter(b => b.status === 'paid');
     let ticketsSold = 0;
     let ticketRevenue = 0;
-    
+
     paidBookings.forEach(b => {
         ticketsSold += b.seats ? b.seats.length : 1;
         ticketRevenue += b.totalAmount || 0;
@@ -463,8 +452,8 @@ function renderDashboard() {
             recentTbody.innerHTML = `<tr><td colspan="7" style="text-align: center;" class="text-muted">Chưa có đơn đặt vé nào từ API.</td></tr>`;
         } else {
             sorted.forEach(bk => {
-                let statusBadge = bk.status === 'paid' 
-                    ? `<span class="badge badge-green">Đã thanh toán</span>` 
+                let statusBadge = bk.status === 'paid'
+                    ? `<span class="badge badge-green">Đã thanh toán</span>`
                     : bk.status === 'pending' ? `<span class="badge badge-yellow">Chờ duyệt</span>` : `<span class="badge badge-red">Đã hủy</span>`;
                 recentTbody.innerHTML += `
                     <tr>
@@ -481,7 +470,6 @@ function renderDashboard() {
         }
     }
 
-    // --- Dynamic Top Movie Calculation (BÁN CHẠY NHẤT) ---
     const movieSalesMap = {};
     paidBookings.forEach(b => {
         const title = b.movieTitle;
@@ -533,12 +521,11 @@ function renderDashboard() {
     }
 }
 
-// --- YOUTUBE TRAILER HELPER & MODAL ---
 function getYouTubeEmbedUrl(url) {
     if (!url) return '';
     let cleanUrl = url.trim();
     let videoId = '';
-    
+
     if (cleanUrl.includes('embed/')) {
         videoId = cleanUrl.split('embed/')[1]?.split('?')[0]?.split('&')[0];
     } else if (cleanUrl.includes('v=')) {
@@ -550,8 +537,8 @@ function getYouTubeEmbedUrl(url) {
     }
 
     if (videoId) {
-        const origin = (typeof window !== 'undefined' && window.location && window.location.origin && window.location.origin !== 'null') 
-            ? encodeURIComponent(window.location.origin) 
+        const origin = (typeof window !== 'undefined' && window.location && window.location.origin && window.location.origin !== 'null')
+            ? encodeURIComponent(window.location.origin)
             : '';
         const originParam = origin ? `&origin=${origin}` : '';
         return `https://www.youtube-nocookie.com/embed/${videoId}?enablejsapi=1&autoplay=1&rel=0${originParam}`;
@@ -589,7 +576,6 @@ function parseDurationMinutes(val) {
     return match ? parseInt(match[0], 10) : 120;
 }
 
-// ================= 2. TAB: MOVIES =================
 function renderMoviesTable() {
     const searchEl = document.getElementById('movie-search');
     const filterEl = document.getElementById('movie-filter-status');
@@ -597,9 +583,9 @@ function renderMoviesTable() {
     const filter = filterEl ? filterEl.value : 'all';
     const tbody = document.getElementById('movies-tbody');
     if (!tbody) return;
-    
+
     tbody.innerHTML = '';
-    
+
     const filtered = db.movies.filter(m => {
         const matchesSearch = m.title.toLowerCase().includes(search);
         const matchesFilter = filter === 'all' || m.status === filter;
@@ -612,8 +598,8 @@ function renderMoviesTable() {
     }
 
     filtered.forEach(m => {
-        const badge = m.status === 'now-showing' 
-            ? `<span class="badge badge-green">Đang chiếu</span>` 
+        const badge = m.status === 'now-showing'
+            ? `<span class="badge badge-green">Đang chiếu</span>`
             : `<span class="badge badge-yellow">Sắp chiếu</span>`;
         const trailerLink = m.trailer || m.trailerUrl || '';
         const safeTitle = (m.title || '').replace(/'/g, "\\'");
@@ -621,7 +607,7 @@ function renderMoviesTable() {
 
         tbody.innerHTML += `
             <tr>
-                <td class="poster-td"><img src="${m.poster || 'https://via.placeholder.com/150'}" alt="poster" style="width:45px; height:60px; object-fit:cover; border-radius:4px;"></td>
+                <td class="poster-td"><img src="${m.poster || 'https:
                 <td><strong>${m.title}</strong></td>
                 <td>${m.genre}</td>
                 <td>${m.duration} phút</td>
@@ -665,8 +651,8 @@ function openEditMovieModal(id) {
     }
 }
 
-function closeMovieModal() { 
-    document.getElementById('movie-modal').style.display = 'none'; 
+function closeMovieModal() {
+    document.getElementById('movie-modal').style.display = 'none';
 }
 
 async function handleMovieSubmit(e) {
@@ -705,7 +691,7 @@ async function handleMovieSubmit(e) {
     // Save to LocalStorage '3hd2k_movies' & 'cinema_movies' so home page & detail page immediately sync
     let movieStore1 = JSON.parse(localStorage.getItem('3hd2k_movies') || '[]');
     let movieStore2 = JSON.parse(localStorage.getItem('cinema_movies') || '[]');
-    
+
     [movieStore1, movieStore2].forEach(store => {
         if (id) {
             const idx = store.findIndex(m => m.id === id);
@@ -810,7 +796,7 @@ function renderShowtimesTable() {
     const filter = filterEl ? filterEl.value : 'all';
     const tbody = document.getElementById('showtimes-tbody');
     if (!tbody) return;
-    
+
     tbody.innerHTML = '';
 
     const filtered = db.showtimes.filter(st => {
@@ -976,10 +962,10 @@ function openQuickShowtimeModal(cinemaId, roomName, timeSlot, dateStr) {
 function openAddShowtimeModal() {
     const mSelect = document.getElementById('st-movie-select');
     const cSelect = document.getElementById('st-cinema-select');
-    
+
     if (mSelect && cSelect) {
         mSelect.innerHTML = db.movies.map(m => `<option value="${m.id}">${m.title} (${m.status === 'now-showing' ? 'Đang chiếu' : 'Sắp chiếu'})</option>`).join('');
-        
+
         const defaultCinemas = [
             { id: "ha-dong", name: "3HD2K HÀ ĐÔNG" },
             { id: "le-trong-tan", name: "3HD2K LÊ TRỌNG TẤN" },
@@ -991,7 +977,7 @@ function openAddShowtimeModal() {
         const list = db.cinemas && db.cinemas.length > 0 ? db.cinemas : defaultCinemas;
         cSelect.innerHTML = list.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
         populateModalRooms();
-        
+
         const today = new Date().toISOString().split('T')[0];
         document.getElementById('st-date-input').value = today;
         document.getElementById('st-time-input').value = "19:00";
@@ -1016,8 +1002,8 @@ function populateModalRooms() {
     }
 }
 
-function closeShowtimeModal() { 
-    document.getElementById('showtime-modal').style.display = 'none'; 
+function closeShowtimeModal() {
+    document.getElementById('showtime-modal').style.display = 'none';
 }
 
 // --- OVERLAP CHECK ---
@@ -1127,7 +1113,7 @@ async function purgeAllMovieData() {
         localStorage.removeItem('cinema_bookings');
         localStorage.removeItem('cinema_last_booking');
         localStorage.removeItem('cinema_activity_log');
-        
+
         db.movies = [];
         db.showtimes = [];
         db.bookings = [];
@@ -1161,12 +1147,12 @@ function loadRoomSeatMap() {
 
     const showtimeSelect = document.getElementById('room-showtime-select');
     if (showtimeSelect) {
-        const matchingShowtimes = db.showtimes.filter(s => 
+        const matchingShowtimes = db.showtimes.filter(s =>
             (s.cinemaId === cinemaId || s.cinemaName?.includes(cinemaId)) &&
             (s.roomName === roomName || roomName.includes(s.roomName))
         );
 
-        showtimeSelect.innerHTML = `<option value="all">Tất cả suất chiếu trong ngày (Ghế đã đặt thực tế)</option>` + 
+        showtimeSelect.innerHTML = `<option value="all">Tất cả suất chiếu trong ngày (Ghế đã đặt thực tế)</option>` +
             matchingShowtimes.map(st => `<option value="${st.id}">${st.movieTitle} (${st.time} - ${st.date})</option>`).join('');
     }
 
@@ -1214,7 +1200,7 @@ function renderSeatingGrid() {
             }
         }
     });
-    
+
     grid.style.gridTemplateColumns = `repeat(${currentRoomCols}, 32px)`;
     grid.innerHTML = '';
 
@@ -1224,7 +1210,7 @@ function renderSeatingGrid() {
             const seatCode = `${rowLabel}${c.toString().padStart(2, '0')}`;
             const isBooked = !!bookedSeatMap[seatCode];
             let seatType = 'standard';
-            
+
             if (isBooked) seatType = 'occupied';
             else if (currentBrokenSeats.includes(seatCode)) seatType = 'broken';
             else if (currentDoubleRows.includes(r)) seatType = 'double';
@@ -1327,10 +1313,10 @@ function renderBookingsTable() {
     }
 
     filtered.forEach(bk => {
-        let statusBadge = bk.status === 'paid' 
-            ? `<span class="badge badge-green">Đã thanh toán</span>` 
+        let statusBadge = bk.status === 'paid'
+            ? `<span class="badge badge-green">Đã thanh toán</span>`
             : bk.status === 'pending' ? `<span class="badge badge-yellow">Chờ duyệt</span>` : `<span class="badge badge-red">Đã hủy</span>`;
-        
+
         tbody.innerHTML += `
             <tr>
                 <td><strong>#${bk.id}</strong></td>
@@ -1431,8 +1417,8 @@ function openEditComboModal(id) {
     }
 }
 
-function closeComboModal() { 
-    document.getElementById('combo-modal').style.display = 'none'; 
+function closeComboModal() {
+    document.getElementById('combo-modal').style.display = 'none';
 }
 
 async function handleComboSubmit(e) {
@@ -1506,10 +1492,10 @@ function renderUsersTable() {
 
     filtered.forEach(u => {
         const avatar = u.name.charAt(0).toUpperCase();
-        const roleBadge = u.role === 'admin' 
-            ? `<span class="badge badge-red">Admin</span>` 
+        const roleBadge = u.role === 'admin'
+            ? `<span class="badge badge-red">Admin</span>`
             : `<span class="badge badge-green">Khách hàng</span>`;
-        
+
         tbody.innerHTML += `
             <tr>
                 <td class="poster-td"><div class="admin-avatar" style="width:30px;height:30px;font-size:0.8rem; display:flex; justify-content:center; align-items:center; background:rgba(255,255,255,0.1); border-radius:50%; font-weight:bold;">${avatar}</div></td>
@@ -1548,14 +1534,14 @@ function viewUserHistory(username) {
 
     const tbody = document.getElementById('user-history-tbody');
     tbody.innerHTML = '';
-    
+
     const history = db.bookings.filter(b => b.username === username);
     if (history.length === 0) {
         tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;" class="text-muted">Chưa có lịch sử giao dịch.</td></tr>`;
     } else {
         history.forEach(bk => {
-            let statusBadge = bk.status === 'paid' 
-                ? `<span class="badge badge-green">Đã thanh toán</span>` 
+            let statusBadge = bk.status === 'paid'
+                ? `<span class="badge badge-green">Đã thanh toán</span>`
                 : bk.status === 'pending' ? `<span class="badge badge-yellow">Chờ duyệt</span>` : `<span class="badge badge-red">Đã hủy</span>`;
             tbody.innerHTML += `
                 <tr>
@@ -1594,7 +1580,7 @@ function renderStatsDashboard() {
 
     if (revenueChartInstance) revenueChartInstance.destroy();
     const revCtx = document.getElementById('revenue-chart')?.getContext('2d');
-    
+
     if (revCtx) {
         const redGradient = revCtx.createLinearGradient(0, 0, 0, 300);
         redGradient.addColorStop(0, 'rgba(229, 9, 20, 0.6)');
@@ -1637,7 +1623,7 @@ function renderStatsDashboard() {
 
     if (moviePieChartInstance) moviePieChartInstance.destroy();
     const pieCtx = document.getElementById('movie-pie-chart')?.getContext('2d');
-    
+
     if (pieCtx) {
         moviePieChartInstance = new Chart(pieCtx, {
             type: 'doughnut',
@@ -1754,11 +1740,11 @@ function renderAdminInventory() {
 
     const tableBody = document.getElementById("admin-inventory-table-body");
     if (!tableBody) return;
-    
+
     tableBody.innerHTML = filtered.map(item => {
         const check = getAdminStockStatus(item.qty, item.min);
         const stockPercent = Math.min(100, Math.round((item.qty / item.min) * 100));
-        
+
         let progressColor = "#0df286";
         if (check.status === "danger") progressColor = "#E50914";
         else if (check.status === "warning") progressColor = "#f59e0b";
@@ -1819,11 +1805,11 @@ function openAdminRestockModal(itemId) {
     const inventory = getAdminInventory();
     const selectEl = document.getElementById("admin-stock-select-item");
     if (!selectEl) return;
-    
+
     selectEl.innerHTML = inventory.map(item => `
         <option value="${item.id}" ${item.id === itemId ? 'selected' : ''}>${item.name} (${item.unit})</option>
     `).join("");
-    
+
     const modal = document.getElementById("admin-restock-modal");
     if (modal) modal.style.display = 'flex';
 }
@@ -1836,7 +1822,7 @@ function closeAdminRestockModal() {
 function submitAdminRestock() {
     const itemId = document.getElementById("admin-stock-select-item").value;
     const qty = parseFloat(document.getElementById("admin-stock-qty-input").value);
-    
+
     if (isNaN(qty) || qty <= 0) {
         showToast("Số lượng nhập kho không hợp lệ!", "error");
         return;
@@ -1857,7 +1843,7 @@ function loadAdminPOSLogs() {
     const logs = JSON.parse(localStorage.getItem("cinema_activity_log")) || [];
     const logsContainer = document.getElementById("admin-pos-logs");
     if (!logsContainer) return;
-    
+
     if (logs.length === 0) {
         logsContainer.innerHTML = `<div style="color: var(--text-muted); padding: 10px;">Chưa có lịch sử nhật ký.</div>`;
         return;
@@ -1904,9 +1890,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const comboModal = document.getElementById('combo-modal');
         const userHistoryModal = document.getElementById('user-history-modal');
         const adminRestockModal = document.getElementById('admin-restock-modal');
-        
+
         const trailerModal = document.getElementById('trailer-modal');
-        
+
         if (e.target === movieModal) closeMovieModal();
         if (e.target === trailerModal) closeTrailerModal();
         if (e.target === showtimeModal) closeShowtimeModal();

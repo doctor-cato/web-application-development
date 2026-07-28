@@ -1,6 +1,3 @@
-/**
- * movieService.js — small helper for price formatting
- */
 
 import { lsGet, lsSet } from '../../shared/utils/storage.js';
 

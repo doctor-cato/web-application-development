@@ -1,7 +1,6 @@
-/* Import fonts just in case, though they are in HTML */
+
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap');
 
-/* Reset & Variables */
 :root {
     --primary-red: #e50914;
     --primary-red-hover: #b20710;
@@ -27,7 +26,6 @@ body {
     flex-direction: column;
 }
 
-/* Header */
 .auth-header {
     position: absolute;
     top: 0;
@@ -54,12 +52,11 @@ body {
     transform: scale(1.05);
 }
 
-/* Main Layout */
 .auth-main {
     flex-grow: 1;
     display: flex;
     min-height: 100vh;
-    padding-top: 80px; /* For mobile header space */
+    padding-top: 80px;
 }
 
 @media (min-width: 1024px) {
@@ -68,9 +65,8 @@ body {
     }
 }
 
-/* Left side - Banner */
 .auth-banner {
-    display: none; /* hidden on small screens */
+    display: none;
     width: 50%;
     position: relative;
     flex-direction: column;
@@ -89,9 +85,9 @@ body {
     content: '';
     position: absolute;
     top: 0;
-    right: -1px; /* To prevent 1px gap rendering issues */
+    right: -1px;
     bottom: 0;
-    width: 30vw; /* 30% of viewport width for a very soft, wide fade */
+    width: 30vw;
     max-width: 400px;
     background: linear-gradient(to right, transparent 0%, var(--background) 100%);
     pointer-events: none;
@@ -153,7 +149,6 @@ body {
     transform: translateX(-4px);
 }
 
-/* Right side - Form Container */
 .auth-content {
     width: 100%;
     display: flex;
@@ -180,10 +175,9 @@ body {
 }
 
 .register-box {
-    max-width: 460px; /* Slightly wider for register */
+    max-width: 460px;
 }
 
-/* Tabs */
 .auth-tabs {
     display: flex;
     align-items: center;
@@ -217,7 +211,6 @@ body {
     opacity: 1;
 }
 
-/* Form Styles */
 .auth-form {
     display: flex;
     flex-direction: column;
@@ -317,12 +310,11 @@ body {
     background-color: var(--primary-red-hover);
 }
 
-/* Error Messages */
 .inline-error {
     color: #ff4d4d;
     font-size: 12px;
     margin-top: 4px;
-    display: none; /* Hidden by default */
+    display: none;
 }
 
 .inline-error.show {
@@ -347,7 +339,6 @@ body {
     animation: shake 0.4s ease-in-out;
 }
 
-/* Animations */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(-5px); }
     to { opacity: 1; transform: translateY(0); }
@@ -359,7 +350,6 @@ body {
     40%, 80% { transform: translateX(5px); }
 }
 
-/* Footer */
 .auth-footer {
     background-color: #0d0e0f;
     border-top: 1px solid var(--surface-border);
@@ -395,7 +385,6 @@ body {
     }
 }
 
-/* Avatar Upload styles specific for Register */
 .avatar-container {
     position: relative;
     width: 90px;
@@ -442,7 +431,6 @@ body {
     display: none;
 }
 
-/* ponytail: responsive form rows and layout adjustments for auth pages */
 .form-row-2col {
     display: flex;
     gap: 10px;

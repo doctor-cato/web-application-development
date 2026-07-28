@@ -81,7 +81,7 @@ namespace appweb.Controllers
             }
 
             var allUsers = await _userRepository.GetAllAsync();
-            var user = allUsers.FirstOrDefault(u => 
+            var user = allUsers.FirstOrDefault(u =>
                 (!string.IsNullOrEmpty(dto.Phone) && u.Phone == dto.Phone) ||
                 (!string.IsNullOrEmpty(dto.Email) && u.Email.Equals(dto.Email, StringComparison.OrdinalIgnoreCase))
             );
@@ -91,7 +91,6 @@ namespace appweb.Controllers
                 return NotFound(new { message = "Khách hàng không tồn tại trong hệ thống API" });
             }
 
-            // Loyalty points processed successfully
             return Ok(new { message = "Cộng điểm VIP thành công", userId = user.UserId, pointsAdded = dto.Points });
         }
 

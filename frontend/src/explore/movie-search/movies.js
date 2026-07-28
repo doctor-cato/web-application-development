@@ -1,12 +1,9 @@
-// ===== MOVIES PAGE LOGIC =====
 
-// --- STATE ---
-let currentTab = 'coming-soon'; // default tab
+let currentTab = 'coming-soon';
 let currentMovies = [];
 const MOVIES_PER_PAGE = 5;
 let visibleCount = MOVIES_PER_PAGE;
 
-// --- DOM ELEMENTS ---
 const moviesGrid = document.getElementById('movies-grid');
 const tabNowShowing = document.getElementById('tab-now-showing');
 const tabComingSoon = document.getElementById('tab-coming-soon');
@@ -19,7 +16,6 @@ const filterFormat = document.getElementById('movies-filter-format');
 const filterAge = document.getElementById('movies-filter-age');
 const sortSelect = document.getElementById('movies-sort');
 
-// --- READ URL PARAMS ---
 function getTabFromURL() {
     const params = new URLSearchParams(window.location.search);
     return params.get('tab') || 'coming-soon';
@@ -30,7 +26,6 @@ function getSearchQueryFromURL() {
     return params.get('q') || '';
 }
 
-// --- GET AGE BADGE CLASS ---
 function getAgeBadgeClass(age) {
     const ageMap = {
         'P': 'age-p',
@@ -42,7 +37,6 @@ function getAgeBadgeClass(age) {
     return ageMap[age] || 'age-t13';
 }
 
-// --- RENDER MOVIE GRID ---
 function renderMoviesGrid(movies) {
     if (!moviesGrid) return;
     moviesGrid.innerHTML = '';
@@ -91,7 +85,6 @@ function renderMoviesGrid(movies) {
         moviesGrid.innerHTML += cardHtml;
     });
 
-    // Show/hide load more button
     if (visibleCount >= movies.length) {
         loadMoreContainer.style.display = 'none';
     } else {
@@ -99,11 +92,9 @@ function renderMoviesGrid(movies) {
     }
 }
 
-// --- GET DATA FOR CURRENT TAB ---
 function getMoviesForTab(tab) {
     const searchQuery = getSearchQueryFromURL().toLowerCase();
-    
-    // If searching, we combine all movies from both tabs to give the best results
+
     if (searchQuery) {
         const nowShowing = typeof nowShowingMovies !== 'undefined' ? nowShowingMovies : [];
         const comingSoon = typeof comingSoonMovies !== 'undefined' ? comingSoonMovies : [];
@@ -114,9 +105,8 @@ function getMoviesForTab(tab) {
         }));
     }
 
-    // Normal behavior
     if (tab === 'now-showing') {
-        // Add genre field to nowShowingMovies if missing
+
         return nowShowingMovies.map(m => ({
             ...m,
             genre: m.genre || (m.tags ? m.tags.join(', ') : '')
@@ -126,7 +116,6 @@ function getMoviesForTab(tab) {
     }
 }
 
-// --- APPLY FILTERS ---
 function applyMoviesFilters() {
     let movies = getMoviesForTab(currentTab);
 
@@ -136,7 +125,6 @@ function applyMoviesFilters() {
     const sort = sortSelect ? sortSelect.value : 'newest';
     const searchQuery = getSearchQueryFromURL().toLowerCase();
 
-    // Filter by search query
     if (searchQuery) {
         movies = movies.filter(m => {
             const titleMatch = m.title && m.title.toLowerCase().includes(searchQuery);
@@ -145,7 +133,6 @@ function applyMoviesFilters() {
         });
     }
 
-    // Filter by genre
     if (genre !== 'all') {
         movies = movies.filter(m => {
             const movieGenre = m.genre || '';
@@ -153,7 +140,6 @@ function applyMoviesFilters() {
         });
     }
 
-    // Filter by format
     if (format !== 'all') {
         movies = movies.filter(m => {
             const movieTags = m.tags || m.formats || [];
@@ -161,12 +147,10 @@ function applyMoviesFilters() {
         });
     }
 
-    // Filter by age
     if (age !== 'all') {
         movies = movies.filter(m => m.age === age);
     }
 
-    // Sort
     switch (sort) {
         case 'name-az':
             movies.sort((a, b) => a.title.localeCompare(b.title, 'vi'));
@@ -184,7 +168,7 @@ function applyMoviesFilters() {
                 return getMins(b) - getMins(a);
             });
             break;
-        default: // newest — keep original order
+        default:
             break;
     }
 
@@ -193,24 +177,20 @@ function applyMoviesFilters() {
     renderMoviesGrid(currentMovies);
 }
 
-// --- SWITCH TABS ---
 function switchTab(tab) {
     currentTab = tab;
 
-    // Update active tab
     tabNowShowing.classList.toggle('active', tab === 'now-showing');
     tabComingSoon.classList.toggle('active', tab === 'coming-soon');
 
-    // Update breadcrumb
     if (breadcrumbCurrent) {
         breadcrumbCurrent.textContent = tab === 'now-showing' ? 'Phim Đang Chiếu' : 'Phim Sắp Chiếu';
     }
 
-    // Reset filters (both native select AND custom dropdown UI)
     [filterGenre, filterFormat, filterAge, sortSelect].forEach(sel => {
         if (!sel) return;
-        sel.value = sel.options[0].value; // reset to first option
-        // Sync custom dropdown UI
+        sel.value = sel.options[0].value;
+
         const wrapper = sel.parentNode.querySelector('.custom-select-wrapper');
         if (wrapper) {
             const selectedSpan = wrapper.querySelector('.custom-select-selected span');
@@ -222,12 +202,10 @@ function switchTab(tab) {
         }
     });
 
-    // Update URL without reload
     const sq = getSearchQueryFromURL();
     const newUrl = sq ? `index.html?tab=${tab}&q=${encodeURIComponent(sq)}` : `index.html?tab=${tab}`;
     window.history.replaceState(null, '', newUrl);
 
-    // Apply Cine-Match preset genre if active (only ONCE on initial load)
     if (!window.cinematch_genre_applied && localStorage.getItem('cinematch_active') === 'true') {
         const preGenre = localStorage.getItem('cinematch_genre');
         if (preGenre && filterGenre) {
@@ -236,15 +214,14 @@ function switchTab(tab) {
         }
     }
 
-    // Check URL params for search to update UI title
     if (sq) {
         if (breadcrumbCurrent) breadcrumbCurrent.innerText = `Tìm kiếm: "${sq}"`;
-        // Select the navbar search input and put the value back
+
         const searchInput = document.getElementById('search-input');
         if (searchInput) {
             searchInput.value = sq;
         }
-        // Maybe open the search pill
+
         const searchPill = document.getElementById('search-pill');
         if (searchPill) {
             searchPill.classList.add('active');
@@ -254,17 +231,15 @@ function switchTab(tab) {
             breadcrumbCurrent.textContent = tab === 'now-showing' ? 'Phim Đang Chiếu' : 'Phim Sắp Chiếu';
         }
     }
-    
+
     applyMoviesFilters();
 }
 
-// --- LOAD MORE ---
 function loadMore() {
     visibleCount += MOVIES_PER_PAGE;
     renderMoviesGrid(currentMovies);
 }
 
-// --- EVENT LISTENERS ---
 if (tabNowShowing) tabNowShowing.addEventListener('click', () => switchTab('now-showing'));
 if (tabComingSoon) tabComingSoon.addEventListener('click', () => switchTab('coming-soon'));
 if (btnLoadMore) btnLoadMore.addEventListener('click', loadMore);
@@ -274,7 +249,6 @@ if (filterFormat) filterFormat.addEventListener('change', applyMoviesFilters);
 if (filterAge) filterAge.addEventListener('change', applyMoviesFilters);
 if (sortSelect) sortSelect.addEventListener('change', applyMoviesFilters);
 
-// --- INIT ---
 document.addEventListener('DOMContentLoaded', () => {
     const initialTab = getTabFromURL();
     if (window.fetchMoviesPromise) {

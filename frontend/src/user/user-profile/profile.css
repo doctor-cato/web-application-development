@@ -1,4 +1,4 @@
-/* --- PROFILE DASHBOARD --- */
+
 .profile-dashboard {
     position: relative;
     min-height: calc(100vh - 80px);
@@ -31,7 +31,6 @@
     margin: 0 auto;
 }
 
-/* SIDEBAR */
 .profile-sidebar {
     width: 300px;
     flex-shrink: 0;
@@ -139,7 +138,6 @@
     border-top: 1px solid var(--glass-border);
 }
 
-/* MAIN CONTENT */
 .profile-content {
     flex-grow: 1;
     background: rgba(25, 25, 25, 0.4);
@@ -172,7 +170,6 @@
     font-size: 0.95rem;
 }
 
-/* FORM */
 .profile-form {
     display: flex;
     flex-direction: column;
@@ -228,12 +225,11 @@
     color: #666;
 }
 
-/* Custom Radio */
 .radio-group {
     display: flex;
     gap: 20px;
     align-items: center;
-    height: 44px; /* match input height */
+    height: 44px;
 }
 
 .radio-container {
@@ -253,7 +249,6 @@
     cursor: pointer;
 }
 
-/* Save Button */
 .form-actions {
     margin-top: 20px;
     padding-top: 30px;
@@ -289,30 +284,27 @@
     transform: scale(0.98);
 }
 
-/* Responsive */
 @media (max-width: 900px) {
     .profile-container {
         flex-direction: column;
         gap: 20px;
     }
-    
+
     .profile-sidebar {
         width: 100%;
         flex-shrink: unset;
     }
-    
+
     .form-row {
         flex-direction: column;
         gap: 20px;
     }
-    
+
     .profile-content {
         padding: 25px;
     }
 }
 
-
-/* TABS LOGIC */
 .tab-content {
     display: none;
     animation: fadeIn 0.3s ease-in-out;
@@ -327,7 +319,6 @@
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* HISTORY CARDS */
 .history-list {
     display: flex;
     flex-direction: column;
@@ -458,17 +449,16 @@
     background: rgba(229, 9, 20, 0.1);
 }
 
-/* RESPONSIVE HISTORY */
 @media (max-width: 600px) {
     .history-card {
         flex-direction: column;
     }
-    
+
     .history-img {
         width: 100%;
         height: 200px;
     }
-    
+
     .history-action {
         align-items: flex-start;
         gap: 15px;
@@ -477,7 +467,6 @@
     }
 }
 
-/* HISTORY FILTERS */
 .history-filters {
     display: flex;
     gap: 10px;
@@ -509,7 +498,6 @@
     font-weight: 600;
 }
 
-/* OFFERS GRID */
 .offers-grid {
     display: flex;
     flex-direction: column;
@@ -546,15 +534,15 @@
 }
 
 .offer-card.discount::before {
-    background: #e50914; /* Red */
+    background: #e50914;
 }
 
 .offer-card.gift::before {
-    background: #28a745; /* Green */
+    background: #28a745;
 }
 
 .offer-card.special::before {
-    background: #ffc107; /* Yellow */
+    background: #ffc107;
 }
 
 .offer-icon {
@@ -626,7 +614,6 @@
     color: var(--primary-red);
 }
 
-/* RESPONSIVE OFFERS */
 @media (max-width: 600px) {
     .offer-card {
         flex-direction: column;
@@ -638,7 +625,6 @@
     }
 }
 
-/* SETTINGS UI */
 .settings-body {
     padding: 0;
 }
@@ -709,7 +695,6 @@
     max-width: 100%;
 }
 
-/* Toggle Switch */
 .toggle-switch {
     position: relative;
     display: inline-block;
@@ -761,7 +746,6 @@ input:checked + .slider:before {
     border-radius: 50%;
 }
 
-/* Buttons inside Settings */
 .btn-outline-small {
     background: transparent;
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -790,7 +774,6 @@ input:checked + .slider:before {
     text-decoration: underline;
 }
 
-/* Device List */
 .device-list {
     width: 100%;
     display: flex;
@@ -843,7 +826,6 @@ input:checked + .slider:before {
     margin-left: auto;
 }
 
-/* Payment Info */
 .payment-info {
     display: flex;
     align-items: center;
@@ -886,7 +868,6 @@ input:checked + .slider:before {
     background: rgba(255, 255, 255, 0.02);
 }
 
-/* Select - hidden by custom dropdown JS */
 .form-select-small {
     background: #111;
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -897,7 +878,6 @@ input:checked + .slider:before {
     cursor: pointer;
 }
 
-/* Custom dropdown inside modal */
 .modal-body .custom-select-wrapper {
     width: 100%;
 }
@@ -941,11 +921,10 @@ input:checked + .slider:before {
     }
 }
 
-/* Accordion Styles */
 .settings-list {
     overflow: hidden;
     transition: max-height 0.4s ease-in-out;
-    padding: 0 25px; /* adjust padding so it hides smoothly */
+    padding: 0 25px;
 }
 
 .settings-section.expanded .settings-list {
@@ -974,16 +953,15 @@ input:checked + .slider:before {
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-/* MODAL STYLES */
 .modal-overlay {
-    display: none; 
-    position: fixed; 
-    z-index: 2000; 
+    display: none;
+    position: fixed;
+    z-index: 2000;
     left: 0;
     top: 0;
-    width: 100%; 
-    height: 100%; 
-    background-color: rgba(0,0,0,0.8); 
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.8);
     backdrop-filter: blur(5px);
     align-items: center;
     justify-content: center;
@@ -1089,7 +1067,6 @@ input:checked + .slider:before {
     background: #b80710;
 }
 
-/* --- RESPONSIVE ENHANCEMENTS FOR MOBILE --- */
 @media (max-width: 900px) {
     .profile-container {
         flex-direction: column;
@@ -1218,12 +1195,10 @@ input:checked + .slider:before {
     .modal-content {
         padding: 20px 15px;
     }
-    /* ponytail: responsive fixes for mobile ticket modal & cards */
+
     .ticket-wrapper { width: 100% !important; max-width: 320px; margin: 0 auto; }
 }
 
-
-/* --- AVATAR BORDERS --- */
 .avatar-border-options {
     display: flex;
     gap: 20px;
@@ -1274,5 +1249,4 @@ input:checked + .slider:before {
     font-weight: 600;
     color: rgba(255, 255, 255, 0.8);
 }
-
 

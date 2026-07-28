@@ -23,8 +23,7 @@ namespace appweb.Controllers
             try
             {
                 var filePath = await _fileService.UploadImageAsync(file);
-                // Return absolute URL or relative URL based on requirements
-                // It's returning relative URL like /uploads/images/filename.jpg
+
                 return Ok(new { url = filePath, message = "Upload successful" });
             }
             catch (ArgumentException ex)

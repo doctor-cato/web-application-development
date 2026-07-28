@@ -1,6 +1,3 @@
-/**
- * Xử lý các UI logic của trang Profile như Modals, Accordions, Filters
- */
 
 export function setupProfileUI() {
     setupHistoryFilters();
@@ -45,9 +42,9 @@ function setupAccordions() {
             const section = this.parentElement;
             const list = section.querySelector('.settings-list');
             const icon = this.querySelector('.accordion-icon');
-            
+
             section.classList.toggle('expanded');
-            
+
             if (section.classList.contains('expanded')) {
                 list.style.maxHeight = list.scrollHeight + "px";
                 if(icon) icon.style.transform = "rotate(180deg)";
@@ -61,7 +58,7 @@ function setupAccordions() {
     document.querySelectorAll('.settings-section').forEach((section) => {
         const list = section.querySelector('.settings-list');
         const icon = section.querySelector('.accordion-icon');
-        
+
         section.classList.remove('expanded');
         if(list) list.style.maxHeight = "0px";
         if(icon) icon.style.transform = "rotate(0deg)";
@@ -98,8 +95,7 @@ function setupPasswordModal() {
     if(pwdForm) {
         pwdForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            // Note: Password change logic should ideally go through authService.
-            // For now, simulating success as this is UI code.
+
             if(pwdError) pwdError.style.display = 'none';
             if(pwdSuccess) {
                 pwdSuccess.textContent = "Đổi mật khẩu thành công!";
@@ -152,7 +148,7 @@ function setupLogoutDeviceModal() {
 }
 
 function setupPaymentModals() {
-    // 1. Remove Payment
+
     const paymentModal = document.getElementById('remove-payment-modal');
     const btnCancelPayment = document.getElementById('btn-cancel-payment');
     const btnConfirmPayment = document.getElementById('btn-confirm-payment');
@@ -172,7 +168,7 @@ function setupPaymentModals() {
     document.querySelectorAll('.btn-remove-payment').forEach(attachRemoveEvent);
 
     if(btnCancelPayment && paymentModal) btnCancelPayment.addEventListener('click', () => paymentModal.style.display = 'none');
-    
+
     if(btnConfirmPayment && paymentModal) {
         btnConfirmPayment.addEventListener('click', () => {
             if (paymentItemToRemove) {
@@ -191,7 +187,6 @@ function setupPaymentModals() {
         if (paymentModal && e.target == paymentModal) paymentModal.style.display = 'none';
     });
 
-    // 2. Add Payment
     const addPaymentModal = document.getElementById('add-payment-modal');
     const btnAddPayment = document.querySelector('.btn-add-payment');
     const closeAddPayment = document.getElementById('close-add-payment');
@@ -201,7 +196,7 @@ function setupPaymentModals() {
         btnAddPayment.addEventListener('click', () => {
             addPaymentModal.style.display = 'flex';
             if(addPaymentForm) addPaymentForm.reset();
-            // Initialize custom dropdown for payment type select (only once)
+
             const paymentSelect = document.getElementById('new-payment-type');
             if (paymentSelect && !paymentSelect.dataset.customized && typeof initCustomDropdowns === 'function') {
                 initCustomDropdowns('#new-payment-type');
@@ -220,7 +215,7 @@ function setupPaymentModals() {
             e.preventDefault();
             const type = document.getElementById('new-payment-type')?.value;
             const number = document.getElementById('new-payment-number')?.value || '1234';
-            
+
             let iconHtml = '', title = '', desc = '', btnAction = 'Xóa';
 
             if (type === 'visa') {
@@ -254,7 +249,7 @@ function setupPaymentModals() {
             if(btnAddPayment) {
                 const container = btnAddPayment.closest('.settings-item');
                 container.parentNode.insertBefore(newItem, container);
-                
+
                 newItem.style.opacity = '0';
                 newItem.style.transform = 'translateY(-10px)';
                 newItem.style.transition = 'all 0.4s ease';
@@ -279,7 +274,7 @@ function setupMultiSelect() {
     const btnToggle = document.getElementById('btn-toggle-select');
     const btnDelete = document.getElementById('btn-delete-selected');
     const countSpan = document.getElementById('delete-count');
-    
+
     if (!tabHistory || !btnToggle || !btnDelete) return;
 
     let isSelectMode = false;
@@ -295,7 +290,7 @@ function setupMultiSelect() {
             tabHistory.classList.remove('select-mode');
             btnToggle.innerHTML = '<i class="fas fa-check-square"></i> Chọn nhiều';
             btnDelete.style.display = 'none';
-            // uncheck all
+
             document.querySelectorAll('.ticket-cb').forEach(cb => {
                 cb.checked = false;
                 cb.closest('.history-card').classList.remove('selected');
@@ -303,23 +298,20 @@ function setupMultiSelect() {
         }
     });
 
-    // Enhanced UX: Event delegation for clicking anywhere on the card during select mode
     tabHistory.addEventListener('click', (e) => {
         if (!isSelectMode) return;
-        
+
         const card = e.target.closest('.history-card');
         if (!card) return;
 
-        // Intercept all clicks inside the card during select mode
         e.stopPropagation();
         e.preventDefault();
 
         const cb = card.querySelector('.ticket-cb');
         if (cb) {
-            // Toggle the checkbox manually
+
             cb.checked = !cb.checked;
-            
-            // Update visual selection state
+
             if (cb.checked) {
                 card.classList.add('selected');
             } else {
@@ -327,7 +319,7 @@ function setupMultiSelect() {
             }
             updateCount();
         }
-    }, true); // useCapture to intercept before child elements handle it
+    }, true);
 
     function updateCount() {
         const checked = document.querySelectorAll('.ticket-cb:checked');
@@ -344,14 +336,14 @@ function setupMultiSelect() {
     btnDelete.addEventListener('click', () => {
         const checked = document.querySelectorAll('.ticket-cb:checked');
         if (checked.length === 0) return;
-        
+
         if (confirm(`Bạn có chắc chắn muốn xóa ${checked.length} vé đã chọn khỏi lịch sử?`)) {
-            // Get IDs for local storage removal
+
             const idsToRemove = [];
             checked.forEach(cb => {
                 const id = cb.getAttribute('data-id');
                 if (id) idsToRemove.push(id);
-                // Remove from UI
+
                 const card = cb.closest('.history-card');
                 card.style.transition = 'all 0.3s ease';
                 card.style.opacity = '0';
@@ -359,7 +351,6 @@ function setupMultiSelect() {
                 setTimeout(() => card.remove(), 300);
             });
 
-            // Update localStorage
             if (idsToRemove.length > 0) {
                 try {
                     let bookings = JSON.parse(localStorage.getItem('cinema_bookings') || '[]');
@@ -370,7 +361,6 @@ function setupMultiSelect() {
                 }
             }
 
-            // reset mode
             setTimeout(() => {
                 btnToggle.click();
             }, 300);

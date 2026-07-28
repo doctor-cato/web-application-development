@@ -11,9 +11,7 @@ export async function login(email, password) {
             headers: getHeaders(),
             body: JSON.stringify({ email, password }),
             signal: controller.signal
-        });
         clearTimeout(timeoutId);
-        
         const responseText = await response.text();
         let data;
         try {
@@ -55,14 +53,13 @@ export async function register(userData) {
             headers: getHeaders(),
             body: JSON.stringify(payload)
         });
-        
-        // Đọc response body dưới dạng text trước, rồi thử parse JSON
+
         const responseText = await response.text();
         let data;
         try {
             data = JSON.parse(responseText);
         } catch (parseError) {
-            // Server trả về text thô (ví dụ stack trace) thay vì JSON
+
             console.error('Server trả về response không phải JSON:', responseText.substring(0, 200));
             if (responseText.includes('UNIQUE') && responseText.includes('phone')) {
                 return { ok: false, error: 'Số điện thoại này đã được sử dụng.' };

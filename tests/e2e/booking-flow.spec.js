@@ -20,5 +20,3 @@ test('booking flow should work from homepage', async ({ page }) => {
   await expect(page.locator('#seat-map')).toBeVisible();
 });
 
-
-

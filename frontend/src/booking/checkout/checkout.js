@@ -3,7 +3,6 @@ import { createTransaction } from '/shared/utils/paymentService.js';
 import { formatPrice } from '/explore/home-page/movieService.js';
 import { requireAuth } from '/shared/utils/authGuard.js';
 
-// Kiểm tra đăng nhập ngay khi tải trang thanh toán
 if (!requireAuth('Bạn cần đăng nhập để thanh toán vé. Hãy đăng nhập hoặc tạo tài khoản để tiếp tục.')) {
     document.addEventListener('DOMContentLoaded', () => {
         const main = document.querySelector('main');
@@ -23,14 +22,11 @@ function renderCheckout() {
   const co = getCheckout();
   if (!co) return;
 
-  // Basic fields
   const titleEl = document.getElementById('order-summary-movie');
   if (titleEl && co.movieTitle) titleEl.innerText = co.movieTitle;
 
   const posterEl = document.getElementById('order-summary-poster');
   if (posterEl && co.poster) posterEl.src = co.poster;
-
-
 
   if (co.genre) {
     const g = document.getElementById('order-summary-genre');
@@ -43,7 +39,6 @@ function renderCheckout() {
   const roomEl = document.getElementById('order-summary-room');
   if (roomEl && co.room) roomEl.innerText = co.room;
 
-  // Seats
   const seatsEl = document.getElementById('order-summary-seats');
   if (seatsEl && Array.isArray(co.seats)) {
     seatsEl.innerHTML = '';
@@ -62,7 +57,6 @@ function renderCheckout() {
     changeSeatBtn.href = url;
   }
 
-  // amounts
   const seatsAmount = Number(co.seatAmount || co.total || 0) - Number(co.comboPrice || 0);
   const seatAmountEl = document.getElementById('order-summary-seat-amount');
   if (seatAmountEl) {
@@ -85,13 +79,11 @@ function updateTotal() {
   const seatsAmountEl = document.getElementById('order-summary-seat-amount');
   const seatsAmount = parseDataAmount(seatsAmountEl);
   const combo = getSelectedCombo();
-  
-  // Update Combo Row
+
   const comboRow = document.getElementById('order-summary-combo-row');
   const comboAmountEl = document.getElementById('order-summary-combo-amount');
   const foodListContainer = document.getElementById('order-summary-food-list');
-  
-  // Custom food from booking-food
+
   let customFoodPrice = 0;
   let customFoodArr = [];
   try {
@@ -103,15 +95,14 @@ function updateTotal() {
   } catch(e) {}
 
   let totalComboPrice = combo.price;
-  
+
   if (customFoodArr.length > 0) {
-      // If custom food is selected, override quick combos
+
       totalComboPrice = customFoodPrice;
-      
-      // Also uncheck radio buttons visually
+
       document.querySelectorAll('label.combo-card').forEach(x => x.classList.remove('selected'));
-      document.querySelector('input[name="combo"][value="none"]').checked = true; // reset underlying radio
-      
+      document.querySelector('input[name="combo"][value="none"]').checked = true;
+
       const upsellPanel = document.getElementById('food-upsell-panel');
       if (upsellPanel) {
           upsellPanel.innerHTML = `
@@ -145,15 +136,14 @@ function updateTotal() {
   }
 
   let total = seatsAmount + totalComboPrice;
-  
-  // Calculate discount
+
   let discountAmount = 0;
   if (currentPromoCode === 'GIAM50K' && total >= 200000) {
     discountAmount = 50000;
   } else if (currentPromoCode === 'BAPFREE') {
     discountAmount = 65000;
   } else if (currentPromoCode) {
-    // Code applied but condition not met or invalid code
+
     if (currentPromoCode === 'GIAM50K') {
       alert('Đơn hàng chưa đạt tối thiểu 200.000đ để áp dụng mã này.');
       removePromo();
@@ -162,8 +152,7 @@ function updateTotal() {
   }
 
   currentDiscount = discountAmount;
-  
-  // VIP Discount logic
+
   const isVip = localStorage.getItem('is_vip') === 'true';
   const vipPlan = localStorage.getItem('vip_plan') || '';
   let vipDiscountPercent = 0;
@@ -171,19 +160,18 @@ function updateTotal() {
       if (vipPlan === 'gold') vipDiscountPercent = 0.05;
       else if (vipPlan === 'platinum') vipDiscountPercent = 0.10;
   }
-  
+
   let vipDiscountAmount = 0;
   if (vipDiscountPercent > 0) {
       vipDiscountAmount = Math.floor(total * vipDiscountPercent);
   }
 
-  // Loyalty Tier Combo Discount logic
   let currentPoints = 0;
   try {
       const raw = localStorage.getItem('3hd2k_rewards');
       if (raw) currentPoints = JSON.parse(raw).points || 0;
   } catch (_) {}
-  
+
   let loyaltyComboDiscountPercent = 0;
   let loyaltyTierName = '';
   if (currentPoints >= 2000) { loyaltyComboDiscountPercent = 0.10; loyaltyTierName = 'DIAMOND'; }
@@ -196,11 +184,6 @@ function updateTotal() {
       loyaltyComboDiscountAmount = Math.floor(totalComboPrice * loyaltyComboDiscountPercent);
   }
 
-  // Determine which discount is better (we take the maximum of VIP total discount vs Loyalty Combo discount)
-  // or apply them separately? The user wants both or the best one. Since VIP applies to TOTAL and Loyalty applies to COMBO, VIP is likely better. Let's just use max.
-  // Actually, we will show BOTH rows but apply them independently. VIP applies to the Total, Loyalty applies to Combo. Both stack.
-  
-  // Update Discount Row
   const discountRow = document.getElementById('order-summary-discount-row');
   const discountAmountEl = document.getElementById('order-summary-discount-amount');
   if (discountRow && discountAmountEl) {
@@ -213,7 +196,6 @@ function updateTotal() {
     }
   }
 
-  // Update VIP Discount Row
   const vipDiscountRow = document.getElementById('order-summary-vip-discount-row');
   const vipDiscountAmountEl = document.getElementById('order-summary-vip-discount-amount');
   const vipDiscountLabelEl = document.getElementById('vip-discount-label');
@@ -230,7 +212,6 @@ function updateTotal() {
     }
   }
 
-  // Update Loyalty Discount Row
   const loyaltyDiscountRow = document.getElementById('order-summary-loyalty-discount-row');
   const loyaltyDiscountAmountEl = document.getElementById('order-summary-loyalty-discount-amount');
   const loyaltyDiscountLabelEl = document.getElementById('loyalty-discount-label');
@@ -259,9 +240,9 @@ function updateTotal() {
 function applyPromo(code) {
   currentPromoCode = code.toUpperCase();
   document.getElementById('promo-input').value = currentPromoCode;
-  
+
   updateTotal();
-  
+
   if (currentDiscount > 0) {
     document.getElementById('promo-input-group').style.display = 'none';
     document.getElementById('offers-list').style.display = 'none';
@@ -285,32 +266,29 @@ function getSelectedCombo() {
 }
 
 function getSelectedPayment() {
-  return document.querySelector('input[name="payment"]:checked')?.value || 'momo';
+  return document.querySelector('input[name="payment"]:checked')?.value || 'bank';
 }
 
 function init() {
   startCountdown(5 * 60);
-  
-  // Attach handlers
+
   const payBtn = document.getElementById('btn-pay');
   if (payBtn) payBtn.addEventListener('click', handlePayClick);
 
-  // combo radio behavior
   document.querySelectorAll('input[name="combo"]').forEach(radio => {
     radio.addEventListener('change', (e) => {
       document.querySelectorAll('label.combo-card').forEach(x => x.classList.remove('selected'));
       const card = e.target.closest('.combo-card');
       if (card) card.classList.add('selected');
-      localStorage.removeItem('checkoutFood'); // Clear custom food if they pick a quick combo
+      localStorage.removeItem('checkoutFood');
       updateTotal();
     });
   });
 
-  // payment radio behavior
   document.querySelectorAll('input[name="payment"]').forEach(radio => {
     radio.addEventListener('change', (e) => {
       document.querySelectorAll('label.payment-card').forEach(x => {
-        x.classList.remove('selected-momo', 'selected-vnpay');
+        x.classList.remove('selected-momo', 'selected-vnpay', 'selected-bank', 'selected-zalopay');
         const icon = x.querySelector('i');
         if (icon) icon.style.display = 'none';
       });
@@ -320,6 +298,8 @@ function init() {
       if (card) {
         if (selectedRadio.value === 'momo') card.classList.add('selected-momo');
         if (selectedRadio.value === 'vnpay') card.classList.add('selected-vnpay');
+        if (selectedRadio.value === 'bank') card.classList.add('selected-bank');
+        if (selectedRadio.value === 'zalopay') card.classList.add('selected-zalopay');
         const icon = card.querySelector('i');
         if (icon) icon.style.display = 'block';
       }
@@ -362,8 +342,6 @@ function init() {
     });
   });
 
-
-    // SPLIT & LOCK LOGIC
     const btnSplitPay = document.getElementById('btn-split-pay');
     const splitModal = document.getElementById('split-modal');
     const closeSplitModal = document.getElementById('close-split-modal');
@@ -371,7 +349,6 @@ function init() {
     const btnCopyLink = document.getElementById('btn-copy-link');
     const checkoutSessionData = getCheckout();
 
-    // Hide Split & Lock if user didn't turn on group booking OR seats < 2
     if (btnSplitPay) {
         const seatsCount = checkoutSessionData && checkoutSessionData.seats ? checkoutSessionData.seats.length : 0;
         const isGroupBooking = checkoutSessionData && checkoutSessionData.isGroupBooking;
@@ -383,29 +360,27 @@ function init() {
     if (btnSplitPay) {
         btnSplitPay.addEventListener('click', () => {
             const orderId = 'SPLIT-' + Math.random().toString(36).substring(2, 8).toUpperCase();
-            
+
             const baseUrl = window.location.href.split('?')[0].replace('checkout/checkout.html', 'group-booking/room.html');
             const splitLink = baseUrl + '?order=' + orderId;
             splitLinkInput.value = splitLink;
-            
-            // Gán link này cho nút MỞ TRANG THEO DÕI
+
             const openDashboardBtn = splitModal.querySelector('a.btn-primary');
             if (openDashboardBtn) openDashboardBtn.href = splitLink;
-            
+
             const splitData = {
                 orderId: orderId,
                 checkoutData: checkoutSessionData,
                 customFood: localStorage.getItem('selectedFood'),
                 status: 'PENDING',
-                paidSeats: [] // Khởi tạo trống để không bị lỗi người đầu tiên đã thanh toán
+                paidSeats: []
             };
             localStorage.setItem('splitOrder_' + orderId, JSON.stringify(splitData));
-            
-            // Tự động gán ghế đầu tiên cho Host (người tạo link)
+
             if (checkoutSessionData.seats && checkoutSessionData.seats.length > 0) {
                 localStorage.setItem('mySeatForOrder_' + orderId, checkoutSessionData.seats[0]);
             }
-            
+
             splitModal.style.display = 'flex';
         });
     }
@@ -420,11 +395,11 @@ function init() {
         btnCopyLink.addEventListener('click', () => {
             splitLinkInput.select();
             document.execCommand('copy');
-            
+
             const icon = btnCopyLink.querySelector('i');
             icon.className = 'fas fa-check';
             btnCopyLink.style.color = '#10b981';
-            
+
             setTimeout(() => {
                 icon.className = 'fas fa-copy';
                 btnCopyLink.style.color = 'var(--primary-red)';
@@ -432,7 +407,6 @@ function init() {
         });
     }
 
-  // render data from session
   renderCheckout();
   updateTotal();
 }
@@ -442,7 +416,7 @@ let isExpired = false;
 
 function handlePayClick(e) {
   e.preventDefault();
-  
+
   if (isExpired || (expireTime > 0 && Date.now() >= expireTime)) {
     alert('Thời gian giữ ghế đã hết! Vui lòng chọn lại ghế.');
     const co = getCheckout();
@@ -454,10 +428,9 @@ function handlePayClick(e) {
     window.location.href = url;
     return;
   }
-  
+
   const co = getCheckout();
-  
-  // read final total (including discount & combo) from DOM data attribute
+
   const totalEl = document.getElementById('order-total');
   const total = parseDataAmount(totalEl);
   const combo = getSelectedCombo();
@@ -466,9 +439,9 @@ function handlePayClick(e) {
   let customFood = customFoodStr ? JSON.parse(customFoodStr) : [];
 
   const checkoutData = {
-    // Preserve original fields from session (movieId, showtimeId, poster, etc.)
+
     ...co,
-    // Override với các giá trị mới nhất từ UI
+
     movieTitle: document.querySelector('#order-summary-movie')?.innerText || co?.movieTitle || 'Unknown',
     showtimeText: document.querySelector('#order-summary-showtime')?.innerText || co?.showtimeText || '',
     room: document.querySelector('#order-summary-room')?.innerText || co?.room || '',
@@ -480,39 +453,37 @@ function handlePayClick(e) {
     createdAt: new Date().toISOString()
   };
 
-  // save checkout into session in case needed later
   saveCheckout(checkoutData);
 
   const transaction = createTransaction(total, getSelectedPayment());
   const txId = transaction.transactionId;
   const provider = transaction.method;
-  
-  // redirect to payment simulator page
+
   window.location.href = `payment_simulation.html?provider=${encodeURIComponent(provider)}&txId=${encodeURIComponent(txId)}`;
 }
 
 function startCountdown(seconds) {
   const cdEl = document.getElementById('checkout-countdown');
   if (!cdEl) return;
-  
+
   expireTime = Date.now() + seconds * 1000;
-  
+
   const formatTime = (sec) => {
     const m = Math.floor(sec / 60).toString().padStart(2, '0');
     const s = (sec % 60).toString().padStart(2, '0');
     return `${m}:${s}`;
   };
-  
+
   cdEl.innerText = formatTime(seconds);
-  
+
   const timer = setInterval(() => {
     const remain = Math.max(0, Math.floor((expireTime - Date.now()) / 1000));
-    
+
     if (remain <= 0) {
       isExpired = true;
       clearInterval(timer);
       cdEl.innerText = '00:00';
-      
+
       const payBtn = document.getElementById('btn-pay');
       if (payBtn) {
         payBtn.disabled = true;
@@ -567,7 +538,7 @@ init();
 
                     const isHost = index === 0;
                     const hostLabel = isHost ? '<span style="font-size:0.7rem; color:var(--neon-green); border:1px solid; padding:2px; border-radius:3px;">BẠN</span>' : '';
-                    
+
                     row.innerHTML = `
                         <div style="display:flex; align-items:center; gap:0.5rem; width: 40%;">
                             <span style="color:#fff; font-weight:bold;">Ghế ${seat}</span>
@@ -583,7 +554,7 @@ init();
 
                 container.addEventListener('change', updatePreview);
             }
-            
+
             function updatePreview() {
                 const originalTotal = parseDataAmount(document.getElementById('order-total'));
                 const pricePerSeat = Math.floor(originalTotal / seats.length);
@@ -606,45 +577,45 @@ init();
             const orderId = 'SPLIT-' + Math.random().toString(36).substring(2, 8).toUpperCase();
             const baseUrl = window.location.href.split('?')[0].replace('checkout/checkout.html', 'group-booking/room.html');
             const splitLink = baseUrl + '?order=' + orderId;
-            
+
             const splitLinkInput = document.getElementById('split-link-input');
             if (splitLinkInput) splitLinkInput.value = splitLink;
-            
+
             const goLobbyBtn = document.getElementById('btn-go-lobby');
             if (goLobbyBtn) goLobbyBtn.href = splitLink;
-            
+
             const assignments = [];
             document.querySelectorAll('.split-user-input').forEach(input => {
-                if (input.disabled) return; 
+                if (input.disabled) return;
                 const seat = input.getAttribute('data-seat');
                 const username = input.value.trim();
                 const payForCb = document.getElementById('pay-for-' + seat);
                 const isPaidFor = payForCb ? payForCb.checked : false;
                 assignments.push({ seat, username, isPaidFor });
             });
-            
+
             const splitData = {
                 orderId: orderId,
                 checkoutData: checkoutSessionData,
                 customFood: localStorage.getItem('selectedFood'),
                 status: 'PENDING',
-                paidSeats: [checkoutSessionData.seats[0]], 
+                paidSeats: [checkoutSessionData.seats[0]],
                 assignments: assignments
             };
-            
+
             assignments.forEach(a => {
                 if (a.isPaidFor) splitData.paidSeats.push(a.seat);
             });
-            
+
             localStorage.setItem('splitOrder_' + orderId, JSON.stringify(splitData));
             localStorage.setItem('mySeatForOrder_' + orderId, checkoutSessionData.seats[0]);
-            
+
             let notifs = [];
             try { notifs = JSON.parse(localStorage.getItem('3hd2k_notifications') || '[]'); } catch(e) {}
-            
+
             const currentUser = localStorage.getItem('currentUser') ? JSON.parse(localStorage.getItem('currentUser')).username || 'Host' : 'Host';
             const movieTitle = checkoutSessionData.movieTitle || 'Phim ẩn danh';
-            
+
             assignments.forEach(a => {
                 if (a.username) {
                     if (a.isPaidFor) {
@@ -680,32 +651,32 @@ init();
                     }
                 }
             });
-            
+
             localStorage.setItem('3hd2k_notifications', JSON.stringify(notifs));
-            
+
             let hostTotalCost = 0;
             const originalTotal = parseDataAmount(document.getElementById('order-total'));
             const seatCount = checkoutSessionData.seats.length;
             const pricePerSeat = Math.floor(originalTotal / (seatCount || 1));
-            
-            let hostPaidCount = 1; 
+
+            let hostPaidCount = 1;
             assignments.forEach(a => {
                 if (a.isPaidFor) hostPaidCount++;
             });
             hostTotalCost = hostPaidCount * pricePerSeat;
-            
+
             const totalEl = document.getElementById('order-total');
             if (totalEl) {
                 totalEl.setAttribute('data-amount', hostTotalCost);
                 totalEl.innerText = hostTotalCost.toLocaleString() + ' đ';
             }
-            
+
             const seatAmountEl = document.getElementById('order-summary-seat-amount');
             if (seatAmountEl) {
                 seatAmountEl.setAttribute('data-amount', hostTotalCost);
                 seatAmountEl.innerText = hostTotalCost.toLocaleString() + ' đ';
             }
-            
+
             const seatsEl = document.getElementById('order-summary-seats');
             if (seatsEl) {
                 seatsEl.innerHTML = '';
@@ -714,7 +685,7 @@ init();
                 span.innerText = checkoutSessionData.seats[0] + (hostPaidCount > 1 ? ` (+${hostPaidCount-1} trả hộ)` : '');
                 seatsEl.appendChild(span);
             }
-            
+
             const orderData = {
                 checkoutData: checkoutSessionData,
                 paidSeats: [],
@@ -728,15 +699,15 @@ init();
             }).then(res => res.json())
               .then(data => {
                   console.log("Group Order Saved: ", data);
-                  
+
                   checkoutSessionData.seats = [checkoutSessionData.seats[0]];
                   checkoutSessionData.total = hostTotalCost;
                   saveCheckout(checkoutSessionData);
-                  
+
                   document.getElementById('split-link-section').style.display = 'flex';
                   confirmSplitBtn.style.display = 'none';
                   if (goLobbyBtn) goLobbyBtn.style.display = 'block';
-                  
+
                   alert('Đã gán ghế và tạo lời mời thành công! Link đã sẵn sàng.');
               }).catch(err => {
                   console.error("Lỗi khi lưu Vé Nhóm:", err);
