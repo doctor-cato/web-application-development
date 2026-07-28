@@ -16,7 +16,6 @@ namespace appweb.Repositories
             _context = context;
         }
 
-        // Sửa lỗi triệt để cho TicketVerificationService.cs gọi
         public async Task<Booking?> GetBookingByIdAsync(Guid id)
         {
             return await _context.Bookings

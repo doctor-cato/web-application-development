@@ -1,4 +1,4 @@
-/* Vanilla CSS for Group Booking - Cinematic/Gamified Theme */
+
 :root {
     --neon-red: #E50914;
     --neon-red-glow: rgba(229, 9, 20, 0.4);
@@ -291,8 +291,8 @@ body {
     cursor: pointer;
     transition: all 0.3s;
 }
-.btn-share.whatsapp { 
-    background-color: rgba(37, 211, 102, 0.1); 
+.btn-share.whatsapp {
+    background-color: rgba(37, 211, 102, 0.1);
     border: 1px solid #25D366;
     color: #25D366;
 }
@@ -301,8 +301,8 @@ body {
     color: #000;
     box-shadow: 0 0 15px rgba(37, 211, 102, 0.5);
 }
-.btn-share.messenger { 
-    background-color: rgba(0, 132, 255, 0.1); 
+.btn-share.messenger {
+    background-color: rgba(0, 132, 255, 0.1);
     border: 1px solid #0084FF;
     color: #0084FF;
 }
@@ -374,7 +374,7 @@ body {
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.2), inset 0 0 10px rgba(255, 255, 255, 0.2);
     overflow: hidden;
 }
-/* Scanline effect inside seats */
+
 .seat::before {
     content: '';
     position: absolute;
@@ -395,7 +395,7 @@ body {
     background: linear-gradient(to bottom, transparent, rgba(255, 0, 85, 0.8), transparent);
     animation-duration: 1.5s;
 }
-/* Crosshair Reticle */
+
 .seat.locked::after {
     content: '';
     position: absolute;
@@ -531,7 +531,6 @@ body {
     line-height: 1.5;
 }
 
-/* Payment Modal Styles */
 .modal-backdrop {
     position: fixed;
     inset: 0;
@@ -649,7 +648,7 @@ body {
     transform: translateY(-2px);
 }
 
-@keyframes pulse-neon { 
+@keyframes pulse-neon {
     0%, 100% { opacity: 1; text-shadow: 0 0 15px var(--neon-red); }
     50% { opacity: 0.7; text-shadow: 0 0 5px var(--neon-red); }
 }
@@ -671,7 +670,7 @@ body {
 }
 .seat.cancelled::before { display: none; }
 .seat.cancelled::after {
-    content: '\f00d'; /* X icon */
+    content: '\f00d';
     font-family: 'Font Awesome 6 Free';
     font-weight: 900;
     position: absolute;
@@ -747,7 +746,6 @@ body {
     .hero-title { font-size: 3.5rem; }
 }
 
-/* --- �? �N TH?C U?NG PANEL UPGRADE --- */
 .food-beverage-panel {
     background: linear-gradient(135deg, rgba(20,20,30,0.8), rgba(10,10,15,0.9));
     border: 1px solid rgba(255,255,255,0.05);
@@ -907,17 +905,13 @@ body {
     color: var(--primary-red);
 }
 
-
-
-/* ----- COMBO RADIO STYLES IMPORTED FROM BOOKING.CSS ----- */
-/* Combo List Horizontal */
 .combo-list-horizontal {
     display: flex;
     gap: 1rem;
     overflow-x: auto;
     padding-bottom: 1rem;
     padding-top: 0.5rem;
-    /* Hide scrollbar */
+
     -ms-overflow-style: none;
     scrollbar-width: none;
 }
@@ -925,7 +919,6 @@ body {
     display: none;
 }
 
-/* Combo Card V2 */
 .combo-card {
     position: relative;
     display: flex;
@@ -955,7 +948,6 @@ body {
     box-shadow: 0 8px 25px rgba(229, 9, 20, 0.4);
 }
 
-/* 3D Pop-out Image */
 .combo-img-wrap {
     width: 100px;
     height: 100px;
@@ -1001,11 +993,10 @@ body {
 .combo-price {
     font-weight: 900;
     font-size: 1rem;
-    color: #f59e0b; /* gradient có thể dùng background-clip, tạm thời dùng màu vàng cam */
+    color: #f59e0b;
     text-shadow: 0 2px 4px rgba(0,0,0,0.5);
 }
 
-/* Badges */
 .combo-badge {
     position: absolute;
     top: -10px;
@@ -1025,7 +1016,6 @@ body {
     background: linear-gradient(45deg, #10b981, #059669);
 }
 
-/* Checkmark animation */
 .combo-check {
     position: absolute;
     top: 10px;
@@ -1042,7 +1032,6 @@ body {
     transform: scale(1);
 }
 
-/* Food Upsell Button */
 .btn-upsell-food {
     display: inline-flex;
     align-items: center;
@@ -1059,7 +1048,7 @@ body {
     box-shadow: 0 0 10px rgba(229, 9, 20, 0.1);
     position: relative;
     overflow: hidden;
-    /* Hiệu ứng pulse nhẹ liên tục */
+
     animation: pulse-border 2s infinite;
 }
 
@@ -1084,7 +1073,7 @@ body {
     background: linear-gradient(135deg, rgba(229, 9, 20, 0.3), rgba(229, 9, 20, 0.6));
     border-color: var(--primary-red);
     transform: translateY(-2px);
-    animation: none; /* Dừng pulse khi hover */
+    animation: none;
     box-shadow: 0 5px 15px rgba(229, 9, 20, 0.4);
 }
 
@@ -1097,7 +1086,6 @@ body {
     font-size: 1.1rem;
 }
 
-/* Payment Card */
 .payment-card {
     display: flex;
     align-items: center;
@@ -1130,7 +1118,6 @@ body {
     object-fit: cover;
 }
 
-/* Invoice Specific */
 .invoice-container {
     max-width: 600px;
     margin: 0 auto;
@@ -1197,7 +1184,6 @@ body {
     height: 150px;
 }
 
-/* Group Seat Selector UI */
 .group-seat-selector {
     display: flex;
     align-items: center;
@@ -1259,7 +1245,6 @@ body {
     font-size: 1.1rem;
 }
 
-/* Hover Previews */
 .seat--preview-valid {
     box-shadow: 0 0 10px rgba(229, 9, 20, 0.8) !important;
     border-color: rgba(229, 9, 20, 1) !important;
@@ -1281,61 +1266,50 @@ body {
     75% { transform: translateX(2px); }
 }
 
-
-/* ==========================================================================
-   MOBILE RESPONSIVE TWEAKS FOR SEAT MAP
-   ========================================================================== */
 @media (max-width: 768px) {
-    /* Make the entire booking page fit the mobile screen better */
+
     .booking-page-container { padding-left: 0.5rem !important; padding-right: 0.5rem !important; }
     .booking-grid { gap: 1rem !important; }
     .booking-card { padding: 1rem !important; }
 
-    /* Shrink the seats so a full row fits on mobile */
-    .seat { 
-        width: 20px !important; 
-        height: 20px !important; 
-        font-size: 7px !important; 
+    .seat {
+        width: 20px !important;
+        height: 20px !important;
+        font-size: 7px !important;
         border-radius: 4px !important;
-        flex-shrink: 1 !important; 
+        flex-shrink: 1 !important;
     }
     .seat--couple { width: 44px !important; }
 
-    /* Force no wrap and shrink gaps */
-    .seat-row-seats { 
-        flex-wrap: nowrap !important; 
-        gap: 0.15rem !important; 
+    .seat-row-seats {
+        flex-wrap: nowrap !important;
+        gap: 0.15rem !important;
         width: 100%;
         justify-content: center;
     }
-    .seat-row-wrapper { 
-        gap: 0.15rem !important; 
+    .seat-row-wrapper {
+        gap: 0.15rem !important;
         flex-wrap: nowrap !important;
         width: 100%;
     }
     .seat-aisle { width: 0.5rem !important; }
 
-    /* Shrink labels */
-    .seat-row-label { 
-        width: 1rem !important; 
-        font-size: 0.65rem !important; 
+    .seat-row-label {
+        width: 1rem !important;
+        font-size: 0.65rem !important;
     }
 
-    /* Adjust screen glow width */
     .screen-glow { border-top: 2px solid var(--primary-red) !important; }
 
-    /* Movie details header adjustments */
     .movie-poster-sm { width: 60px !important; height: 85px !important; }
     .movie-details-sm h1 { font-size: 1.1rem !important; }
     .movie-details-sm p { font-size: 0.65rem !important; }
-    
-    /* Make total price bigger and centered */
+
     .summary-total { flex-direction: column; gap: 0.5rem; text-align: center; }
     .summary-total-price { font-size: 1.8rem !important; }
     .btn-continue { font-size: 1rem !important; padding: 0.5rem !important; }
 }
 
-/* PONYTAIL: Group booking mobile screen adjustments for <= 480px */
 @media (max-width: 480px) {
     .panel-section { padding: 1.25rem 1rem !important; border-radius: 1rem !important; }
     .panel-title { font-size: 1.4rem !important; margin-bottom: 1.25rem !important; }

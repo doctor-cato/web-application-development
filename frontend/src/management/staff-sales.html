@@ -5,15 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3HD2K - Nhân Viên Bán Hàng (POS)</title>
-    <!-- Google Fonts -->
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- FontAwesome for Icons -->
+
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    
+
     <style>
-        /* Base styles from Parent App (Cinematic Noir / Glassmorphism) */
+
         :root {
             --primary-red: #E50914;
             --neon-red-glow: 0 0 10px rgba(229, 9, 20, 0.4);
@@ -45,7 +45,6 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Glass Panel */
         .glass-panel {
             background: var(--glass-bg);
             border: 1px solid var(--glass-border);
@@ -54,7 +53,6 @@
             border-radius: 8px;
         }
 
-        /* Button base */
         .btn {
             display: inline-flex;
             align-items: center;
@@ -83,7 +81,6 @@
             text-transform: uppercase;
         }
 
-        /* LEFT COLUMN: STAFF SIDEBAR (APP QUEUE) */
         .admin-sidebar {
             width: 380px;
             height: 100vh;
@@ -123,7 +120,6 @@
             letter-spacing: 2px;
         }
 
-        /* Search input with absolute icon fix */
         .search-box {
             position: relative;
             width: 100%;
@@ -165,7 +161,6 @@
             color: var(--btn-green-color);
         }
 
-        /* App Orders Scroll List */
         .orders-list {
             flex: 1;
             overflow-y: auto;
@@ -175,7 +170,6 @@
             padding-right: 5px;
         }
 
-        /* Custom Scrollbar styling */
         ::-webkit-scrollbar {
             width: 6px;
         }
@@ -190,7 +184,6 @@
             background: rgba(255,255,255,0.25);
         }
 
-        /* App Order Card */
         .order-card {
             padding: 15px;
             display: flex;
@@ -261,7 +254,6 @@
             gap: 4px;
         }
 
-        /* Confirm Delivery Button */
         .btn-confirm-delivery {
             background-color: var(--btn-green-color);
             box-shadow: var(--btn-green-glow);
@@ -282,7 +274,6 @@
             transform: translateY(-1px);
         }
 
-        /* Profile in Sidebar Footer */
         .sidebar-footer {
             padding: 16px 24px;
             border-top: 1px solid var(--glass-border);
@@ -341,7 +332,6 @@
             text-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
         }
 
-        /* RIGHT COLUMN: MAIN CONTENT WRAPPER */
         .admin-wrapper {
             flex-grow: 1;
             height: 100vh;
@@ -352,7 +342,6 @@
             background-color: var(--bg-color);
         }
 
-        /* Header Styling matching 3HD2K_Admin */
         .admin-header {
             height: 70px;
             border-bottom: 1px solid var(--glass-border);
@@ -397,7 +386,7 @@
             border: 1px solid var(--glass-border);
             color: var(--text-main);
         }
-        
+
         .notification-pill {
             padding: 8px 12px;
             cursor: pointer;
@@ -433,7 +422,6 @@
             box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
         }
 
-        /* POS Filter Tab Bar */
         .pos-tabs {
             display: flex;
             gap: 10px;
@@ -465,7 +453,6 @@
             box-shadow: var(--neon-red-glow);
         }
 
-        /* POS Grid Scroll Area */
         .pos-grid-container {
             flex: 1;
             overflow-y: auto;
@@ -478,7 +465,6 @@
             gap: 18px;
         }
 
-        /* POS Item Card */
         .pos-item-card {
             background: var(--glass-bg);
             border: 1px solid var(--glass-border);
@@ -564,7 +550,6 @@
             letter-spacing: 0.5px;
         }
 
-        /* Bottom Checkout Panel */
         .checkout-panel {
             border-top: 1px solid var(--glass-border);
             background: rgba(18, 18, 18, 0.95);
@@ -579,7 +564,6 @@
             flex-wrap: wrap;
         }
 
-        /* Cart Column */
         .cart-section {
             flex: 1;
             display: flex;
@@ -673,7 +657,6 @@
             text-align: right;
         }
 
-        /* Loyalty Section */
         .loyalty-section {
             width: 260px;
             display: flex;
@@ -749,7 +732,6 @@
             gap: 6px;
         }
 
-        /* Checkout Action Column */
         .actions-section {
             width: 220px;
             display: flex;
@@ -830,7 +812,6 @@
             pointer-events: none;
         }
 
-        /* Success & VIP Modals */
         .modal {
             display: none;
             position: fixed;
@@ -872,7 +853,6 @@
             color: #fff;
         }
 
-        /* Toast notifications */
         #toast-notification {
             position: fixed;
             bottom: 240px;
@@ -896,7 +876,6 @@
             opacity: 1;
         }
 
-        /* ponytail: responsive fixes for mobile & tablet */
         @media (max-width: 900px) {
             body {
                 height: auto;
@@ -949,7 +928,7 @@
         }
     </style>
     <script>
-        // Auth check for Staff Sales
+
         (function() {
             const token = localStorage.getItem('auth_token') || localStorage.getItem('3hd2k_user');
             if (!token) {
@@ -967,7 +946,7 @@
                 } else {
                     user = JSON.parse(decodeURIComponent(atob(token)));
                 }
-                
+
                 const role = (user.role || user.Role || '').toUpperCase();
                 if (role !== 'ADMIN' && role !== 'STAFF') {
                     window.location.href = '../explore/home-page/index.html';
@@ -978,8 +957,7 @@
                 window.location.href = '/auth/user-login/login.html';
                 return;
             }
-            
-            // Hide Admin link if not Admin & load profile
+
             document.addEventListener('DOMContentLoaded', function() {
                 if (user) {
                     const role = (user.role || user.Role || '').toUpperCase();
@@ -992,7 +970,7 @@
                     const nameEl = document.querySelector('.admin-name');
                     const avatarEl = document.querySelector('.admin-avatar');
                     const roleEl = document.querySelector('.admin-role');
-                    
+
                     if (nameEl) nameEl.textContent = name;
                     if (avatarEl) avatarEl.textContent = name.charAt(0).toUpperCase();
                     if (roleEl) roleEl.textContent = role === 'ADMIN' ? 'Quản trị viên' : 'Nhân viên POS';
@@ -1003,14 +981,12 @@
 </head>
 <body class="admin-body">
 
-    <!-- LEFT COLUMN: STAFF SIDEBAR (APP QUEUE) -->
     <aside class="admin-sidebar">
         <div class="sidebar-header">
             <a href="../index.html" class="logo" title="Quay về trang chủ 3HD2K">3HD2K</a>
             <span class="portal-badge" style="color: var(--btn-green-color); text-shadow: 0 0 5px rgba(13, 242, 134, 0.3);">STAFF PORTAL</span>
         </div>
-        
-        <!-- App Queue content inside the sidebar -->
+
         <div style="flex-grow: 1; padding: 20px 24px; display: flex; flex-direction: column; gap: 15px; overflow: hidden;">
             <div class="column-header" style="margin-bottom: 5px;">
                 <h2 style="font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 8px;">
@@ -1019,15 +995,13 @@
                 <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 3px;">Nhập SĐT hoặc quét QR để giao đồ ăn uống</p>
             </div>
 
-            <!-- QR code / Phone search -->
             <div class="search-box">
                 <i class="fas fa-qrcode"></i>
                 <input type="text" id="order-scan-search" placeholder="Quét mã QR hoặc nhập SĐT..." oninput="filterAppOrders()">
             </div>
 
-            <!-- Scrollable list of orders -->
             <div class="orders-list" id="app-orders-container" style="flex-grow: 1; overflow-y: auto;">
-                <!-- Orders rendered dynamically -->
+
             </div>
         </div>
 
@@ -1045,9 +1019,8 @@
         </div>
     </aside>
 
-    <!-- RIGHT COLUMN: MAIN CONTENT (POS GRID & CHECKOUT) -->
     <div class="admin-wrapper" style="width: calc(100% - 380px);">
-        <!-- HEADER matching 3HD2K_Admin -->
+
         <header class="admin-header">
             <div class="header-left">
                 <h1>Quầy Bán Hàng</h1>
@@ -1075,7 +1048,6 @@
             </div>
         </header>
 
-        <!-- POS Filter Tab Bar -->
         <div class="pos-tabs" id="pos-category-tabs">
             <button class="pos-tab active" data-cat="tickets" onclick="filterPOSCategory('tickets')" style="border-color: var(--primary-red); color: #fff; background: rgba(229, 9, 20, 0.15); box-shadow: var(--neon-red-glow);">
                 <i class="fas fa-ticket-alt" style="color: var(--primary-red);"></i> 🎟️ Bán Vé Phim
@@ -1086,28 +1058,24 @@
             <button class="pos-tab" data-cat="Combo" onclick="filterPOSCategory('Combo')">Combo Ưu Đãi</button>
         </div>
 
-        <!-- POS Grid Scroll Area -->
         <div class="pos-grid-container">
             <div class="pos-grid" id="pos-products-grid">
-                <!-- Products rendered dynamically -->
+
             </div>
         </div>
 
-        <!-- Checkout Panel -->
         <div class="checkout-panel">
-            
-            <!-- Cart display -->
+
             <div class="cart-section">
                 <div class="cart-header">
                     <h3>Giỏ hàng trực tiếp</h3>
                     <button class="btn-clear-cart" onclick="clearCart()">Xóa tất cả</button>
                 </div>
                 <div class="cart-items-list" id="cart-container">
-                    <!-- Items rendered dynamically -->
+
                 </div>
             </div>
 
-            <!-- Loyalty / SĐT input -->
             <div class="loyalty-section">
                 <div class="loyalty-header">Khách hàng VIP / Tích điểm</div>
                 <div class="loyalty-input-wrapper">
@@ -1119,7 +1087,6 @@
                 </div>
             </div>
 
-            <!-- Action / Submit -->
             <div class="actions-section">
                 <div class="total-box">
                     <span class="total-label">Tổng tiền thanh toán</span>
@@ -1139,7 +1106,6 @@
 
     </div>
 
-    <!-- SUCCESS RECEIPT MODAL -->
     <div class="modal" id="success-modal">
         <div class="modal-content glass-panel" style="border-color: var(--btn-green-color); box-shadow: var(--btn-green-glow); max-width: 380px;">
             <button class="modal-close-btn" onclick="closeSuccessModal()">&times;</button>
@@ -1162,7 +1128,6 @@
         </div>
     </div>
 
-    <!-- QR PAYMENT MODAL -->
     <div class="modal" id="qr-modal">
         <div class="modal-content glass-panel" style="max-width: 350px; text-align: center; border-color: var(--btn-cyan-color); box-shadow: var(--btn-cyan-glow);">
             <button class="modal-close-btn" onclick="document.getElementById('qr-modal').style.display='none'">&times;</button>
@@ -1176,18 +1141,17 @@
         </div>
     </div>
 
-    <!-- POS SWIPE MODAL -->
     <div class="modal" id="pos-modal">
         <div class="modal-content glass-panel" style="max-width: 350px; text-align: center; border-color: var(--btn-cyan-color); box-shadow: var(--btn-cyan-glow);">
             <h3 style="color: #fff; margin-bottom: 10px;">Quẹt Thẻ POS</h3>
             <p id="pos-status-text" style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 25px;">Đang chờ quẹt thẻ / chạm thẻ POS...</p>
-            
+
             <div style="position: relative; height: 120px; display: flex; justify-content: center; align-items: center; margin-bottom: 25px; overflow: hidden; border-radius: 8px; background: rgba(0,0,0,0.2);">
                 <i class="fas fa-cash-register" style="font-size: 4rem; color: #555; position: relative; z-index: 1;"></i>
                 <i id="pos-card-icon" class="fas fa-credit-card" style="font-size: 3rem; color: var(--btn-cyan-color); position: absolute; top: -50px; z-index: 2; transition: all 1s cubic-bezier(0.25, 0.1, 0.25, 1);"></i>
                 <i id="pos-success-icon" class="fas fa-check-circle" style="font-size: 3.5rem; color: var(--btn-green-color); position: absolute; z-index: 3; display: none; background: #000; border-radius: 50%;"></i>
             </div>
-            
+
             <h2 id="pos-total-amount" style="color: var(--btn-cyan-color); margin-bottom: 10px;">0đ</h2>
             <div class="loader-line" id="pos-loader" style="width: 100%; height: 3px; background: rgba(255,255,255,0.1); overflow: hidden; border-radius: 2px;">
                 <style>
@@ -1198,7 +1162,6 @@
         </div>
     </div>
 
-    <!-- NEW VIP MEMBER REGISTRATION MODAL -->
     <div class="modal" id="vip-modal">
         <div class="modal-content glass-panel" style="border-color: var(--btn-cyan-color); box-shadow: 0 0 15px rgba(0, 240, 255, 0.3); max-width: 360px;">
             <button class="modal-close-btn" onclick="closeVIPModal()">&times;</button>
@@ -1221,11 +1184,10 @@
         </div>
     </div>
 
-    <!-- POS SEAT SELECTION MODAL -->
     <div class="modal" id="pos-ticket-seat-modal">
         <div class="modal-content glass-panel" style="max-width: 720px; width: 95%; border-color: var(--primary-red); box-shadow: var(--neon-red-glow);">
             <button class="modal-close-btn" onclick="closePOSSeatModal()">&times;</button>
-            
+
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--glass-border); padding-bottom: 12px; margin-bottom: 15px;">
                 <div>
                     <h3 id="seat-modal-movie-title" style="color: #fff; font-size: 1.2rem; display: flex; align-items: center; gap: 8px;">
@@ -1239,7 +1201,6 @@
                 </div>
             </div>
 
-            <!-- Seat legend -->
             <div style="display: flex; justify-content: center; gap: 18px; font-size: 0.8rem; margin-bottom: 15px; flex-wrap: wrap;">
                 <div style="display: flex; align-items: center; gap: 6px;"><span style="width: 16px; height: 16px; background: rgba(255,255,255,0.15); border: 1px solid var(--glass-border); border-radius: 3px; display: inline-block;"></span> Thường (80k)</div>
                 <div style="display: flex; align-items: center; gap: 6px;"><span style="width: 16px; height: 16px; background: rgba(245, 158, 11, 0.3); border: 1px solid #f59e0b; border-radius: 3px; display: inline-block;"></span> VIP (100k)</div>
@@ -1248,20 +1209,17 @@
                 <div style="display: flex; align-items: center; gap: 6px;"><span style="width: 16px; height: 16px; background: #222; opacity: 0.5; border: 1px solid #333; border-radius: 3px; display: inline-block;"></span> Đã đặt / Khóa</div>
             </div>
 
-            <!-- Screen indicator -->
             <div style="text-align: center; margin-bottom: 20px;">
                 <div style="height: 4px; background: linear-gradient(90deg, transparent, var(--btn-cyan-color), transparent); border-radius: 2px; width: 80%; margin: 0 auto 6px auto; box-shadow: 0 0 10px var(--btn-cyan-color);"></div>
                 <span style="font-size: 0.7rem; color: var(--text-muted); letter-spacing: 3px; text-transform: uppercase;">MÀN CHIẾU (SCREEN)</span>
             </div>
 
-            <!-- Seating Grid -->
             <div style="overflow-x: auto; padding: 10px 0; display: flex; justify-content: center;">
                 <div id="pos-seating-grid" style="display: grid; gap: 6px; user-select: none;">
-                    <!-- Rendered dynamically -->
+
                 </div>
             </div>
 
-            <!-- Footer / Cart add -->
             <div style="border-top: 1px solid var(--glass-border); margin-top: 15px; padding-top: 15px; display: flex; justify-content: space-between; align-items: center;">
                 <div>
                     <span style="font-size: 0.8rem; color: var(--text-muted);">Ghế đã chọn:</span>
@@ -1278,22 +1236,19 @@
         </div>
     </div>
 
-    <!-- PHYSICAL PRINT PREVIEW MODAL -->
     <div class="modal" id="physical-print-modal">
         <div class="modal-content glass-panel" style="max-width: 540px; border-color: var(--btn-cyan-color); box-shadow: var(--btn-cyan-glow);">
             <button class="modal-close-btn" onclick="document.getElementById('physical-print-modal').classList.remove('active')">&times;</button>
             <h3 style="color: #fff; text-align: center; margin-bottom: 5px;"><i class="fas fa-print"></i> XEM TRƯỚC VÉ IN VẬT LÝ</h3>
             <p style="color: var(--text-muted); font-size: 0.8rem; text-align: center; margin-bottom: 15px;">Vé được tách riêng biệt chuẩn máy in POS nhiệt 80mm</p>
-            
-            <!-- Print Ticket Tabs -->
+
             <div style="display: flex; gap: 10px; margin-bottom: 15px;">
                 <button class="pos-tab active" id="print-tab-movie" onclick="switchPrintTab('movie')" style="flex: 1;">🎟️ VÉ XEM PHIM</button>
                 <button class="pos-tab" id="print-tab-fnb" onclick="switchPrintTab('fnb')" style="flex: 1;">🍿 PHIẾU BẮP NƯỚC F&B</button>
             </div>
 
-            <!-- Print Content Area -->
             <div id="print-ticket-preview-area" style="background: #fff; color: #000; padding: 20px; border-radius: 8px; font-family: monospace; max-height: 380px; overflow-y: auto;">
-                <!-- Rendered dynamically -->
+
             </div>
 
             <div style="display: flex; gap: 12px; margin-top: 15px;">
@@ -1303,12 +1258,10 @@
         </div>
     </div>
 
-    <!-- TOAST NOTIFICATION CONTAINER -->
     <div id="toast-notification">Đã thêm vào giỏ hàng!</div>
 
-    <!-- SOUND PLAYBACK AND SCRIPT -->
     <script>
-        // --- Web Audio API Synth for Beep Sounds ---
+
         let audioCtx = null;
         function playBeep(type) {
             try {
@@ -1319,36 +1272,36 @@
                 const gain = audioCtx.createGain();
                 osc.connect(gain);
                 gain.connect(audioCtx.destination);
-                
+
                 if (type === 'scan') {
-                    // Quick high double beep
+
                     osc.type = 'sine';
-                    osc.frequency.setValueAtTime(880, audioCtx.currentTime); // A5
+                    osc.frequency.setValueAtTime(880, audioCtx.currentTime);
                     gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
                     osc.start();
                     osc.stop(audioCtx.currentTime + 0.08);
-                    
+
                     setTimeout(() => {
                         const osc2 = audioCtx.createOscillator();
                         const gain2 = audioCtx.createGain();
                         osc2.connect(gain2);
                         gain2.connect(audioCtx.destination);
                         osc2.type = 'sine';
-                        osc2.frequency.setValueAtTime(1200, audioCtx.currentTime); // Higher
+                        osc2.frequency.setValueAtTime(1200, audioCtx.currentTime);
                         gain2.gain.setValueAtTime(0.08, audioCtx.currentTime);
                         osc2.start();
                         osc2.stop(audioCtx.currentTime + 0.1);
                     }, 100);
                 } else if (type === 'success') {
-                    // Upward arpeggio
+
                     osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+                    osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
                     gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
                     osc.start();
                     gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
                     osc.stop(audioCtx.currentTime + 0.4);
                 } else if (type === 'click') {
-                    // Subtler short click
+
                     osc.type = 'sine';
                     osc.frequency.setValueAtTime(600, audioCtx.currentTime);
                     gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
@@ -1361,7 +1314,6 @@
             }
         }
 
-        // --- Mock Data Initialization ---
         const DEFAULT_INVENTORY = [
             { id: "INV-001", name: "Bắp Ngọt", category: "Nguyên liệu", qty: 120, min: 20, unit: "Hộp", expiry: "18/07/2026", online: true },
             { id: "INV-002", name: "Bắp Phô Mai", category: "Nguyên liệu", qty: 95, min: 20, unit: "Hộp", expiry: "18/07/2026", online: true },
@@ -1395,20 +1347,17 @@
             { id: "PROD-011", name: "Combo Gia Đình (3 Bắp + 3 Nước)", price: 155000, category: "Combo", image: "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=300&q=80", deduct: [{ id: "INV-001", qty: 3 }, { id: "INV-003", qty: 3 }, { id: "INV-007", qty: 3 }, { id: "INV-006", qty: 3 }] }
         ];
 
-        // Global variables for POS state
         let cart = [];
         let activePOSCategory = "tickets";
         let activePaymentMethod = "cash";
         let vipCustomer = null;
 
-        // Global variables for Ticket Booking at Counter
         let activeTicketMovie = null;
         let activeTicketShowtime = null;
         let selectedTicketSeats = [];
         let activePrintTab = "movie";
         let lastTransactionPrintData = null;
 
-        // Sample Movies & Showtimes Database for POS Counter
         const DEFAULT_MOVIES = [
             { id: "MV-001", title: "Lật Mặt 7: Một Điều Ước", genre: "Tình cảm, Gia đình", duration: 138, age: "T13", poster: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=300&q=80" },
             { id: "MV-002", title: "Deadpool & Wolverine", genre: "Hành động, Hài", duration: 128, age: "T18", poster: "https://images.unsplash.com/photo-1578242173167-73d84cbcd29d?auto=format&fit=crop&w=300&q=80" },
@@ -1449,13 +1398,12 @@
             return all;
         }
 
-        // Initialize LocalStorage Database if empty
         function dbInit() {
             let stored = localStorage.getItem("cinema_inventory");
             if (!stored) {
                 localStorage.setItem("cinema_inventory", JSON.stringify(DEFAULT_INVENTORY));
             } else {
-                // Merge new default items that don't exist yet
+
                 let current = JSON.parse(stored);
                 let currentIds = current.map(item => item.id);
                 let merged = [...current];
@@ -1475,7 +1423,6 @@
                 ]));
             }
 
-            // Sync with backend API combos dynamically
             fetch('/api/combos')
                 .then(res => res.json())
                 .then(combos => {
@@ -1495,7 +1442,6 @@
                 .catch(err => console.warn("API combos sync warning:", err));
         }
 
-        // --- Live Clock ---
         function updateClock() {
             const timeEl = document.getElementById("live-time");
             if (timeEl) {
@@ -1505,7 +1451,6 @@
         setInterval(updateClock, 1000);
         updateClock();
 
-        // --- Load & Render App Orders (Left Column) ---
         function renderAppOrders() {
             const container = document.getElementById("app-orders-container");
             if (!container) return;
@@ -1513,14 +1458,12 @@
             const orders = JSON.parse(localStorage.getItem("cinema_app_orders")) || [];
             const searchVal = document.getElementById("order-scan-search").value.trim().toLowerCase();
 
-            // Filter by ID (e.g. QR code scan) or Phone number
             const filtered = orders.filter(o => {
                 return o.id.toLowerCase().includes(searchVal) || o.phone.includes(searchVal);
             });
 
-            // If a exact match for a QR code is scanned (length matching or exact)
             if (searchVal.length > 5 && filtered.length === 1 && searchVal === filtered[0].id.toLowerCase()) {
-                // Play sound alert for barcode scanning
+
                 if (window.lastScannedCode !== filtered[0].id) {
                     window.lastScannedCode = filtered[0].id;
                     playBeep('scan');
@@ -1542,7 +1485,7 @@
                 <div class="order-card">
                     <div class="order-info">
                         <div class="order-customer">
-                            ${o.customerName} 
+                            ${o.customerName}
                             <span class="order-id">${o.id}</span>
                         </div>
                         <div class="order-items">${o.itemsText}</div>
@@ -1557,7 +1500,6 @@
             `).join("");
         }
 
-        // Giao đồ đặt trước qua App
         window.deliverAppOrder = function(orderId) {
             playBeep('success');
             const orders = JSON.parse(localStorage.getItem("cinema_app_orders")) || [];
@@ -1568,11 +1510,9 @@
             if (orderIndex === -1) return;
             const order = orders[orderIndex];
 
-            // 1. Check & Deduct Inventory
             let canDeduct = true;
             let missingItems = [];
 
-            // Compile the list of ingredients to deduct
             const deductList = {};
             if (Array.isArray(order.items)) {
                 order.items.forEach(item => {
@@ -1586,7 +1526,6 @@
                 });
             }
 
-            // Verify stock levels
             for (const invId in deductList) {
                 const invItem = inventory.find(i => i.id === invId);
                 if (!invItem || invItem.qty < deductList[invId]) {
@@ -1600,14 +1539,12 @@
                 return;
             }
 
-            // Deduct inventory
             for (const invId in deductList) {
                 const invItem = inventory.find(i => i.id === invId);
                 invItem.qty = parseFloat((invItem.qty - deductList[invId]).toFixed(2));
             }
             localStorage.setItem("cinema_inventory", JSON.stringify(inventory));
 
-            // 2. Credit VIP points (1 point per 10,000đ spent)
             const ptsEarned = Math.floor(order.totalAmount / 10000);
             let vipName = "Khách vãng lai";
             let pointsSummary = "";
@@ -1620,7 +1557,6 @@
                 pointsSummary = `${user.points} điểm VIP (+${ptsEarned})`;
             }
 
-            // 3. Log sales transaction for admin dashboard
             const logs = JSON.parse(localStorage.getItem("cinema_activity_log")) || [];
             logs.unshift({
                 time: new Date().toLocaleTimeString("vi-VN"),
@@ -1628,16 +1564,14 @@
             });
             localStorage.setItem("cinema_activity_log", JSON.stringify(logs.slice(0, 50)));
 
-            // 4. Remove order from queue
             orders.splice(orderIndex, 1);
             localStorage.setItem("cinema_app_orders", JSON.stringify(orders));
 
-            // 5. Show receipt modal
             document.getElementById("modal-receipt-id").textContent = order.id;
             document.getElementById("modal-receipt-customer").textContent = `${order.customerName} (${order.phone})`;
             document.getElementById("modal-receipt-details").textContent = order.itemsText;
             document.getElementById("modal-receipt-total").textContent = order.totalAmount.toLocaleString('vi-VN') + "đ";
-            
+
             if (pointsSummary) {
                 document.getElementById("modal-points-wrapper").style.display = "flex";
                 document.getElementById("modal-receipt-points").textContent = pointsSummary;
@@ -1647,24 +1581,19 @@
 
             document.getElementById("success-modal").classList.add("active");
 
-            // Reset search scan
             document.getElementById("order-scan-search").value = "";
             window.lastScannedCode = null;
 
-            // Re-render UI
             renderAppOrders();
             renderPOSProducts();
-            
-            // Notify other pages
+
             window.dispatchEvent(new Event("storage"));
         }
 
-        // Filter App Orders
         window.filterAppOrders = function() {
             renderAppOrders();
         }
 
-        // --- POS Product Direct Sales (Right Column) ---
         function getProductStockAvailable(prod) {
             const inventory = JSON.parse(localStorage.getItem("cinema_inventory")) || [];
             let maxAvailable = Infinity;
@@ -1778,7 +1707,6 @@
             renderPOSProducts();
         }
 
-        // --- POS Cart Handling ---
         window.addToCart = function(prodId) {
             const prod = SALE_PRODUCTS.find(p => p.id === prodId);
             if (!prod) return;
@@ -1868,24 +1796,22 @@
             submitBtn.disabled = false;
         }
 
-        // --- Payment Method Selector ---
         window.setPaymentMethod = function(method) {
             playBeep('click');
             activePaymentMethod = method;
             document.querySelectorAll(".payment-btn").forEach(b => b.classList.remove("active"));
-            
+
             if (method === 'cash') document.getElementById("pay-cash").classList.add("active");
             if (method === 'card') document.getElementById("pay-card").classList.add("active");
             if (method === 'qr') document.getElementById("pay-qr").classList.add("active");
         }
 
-        // --- VIP Customer Phone Lookup ---
         window.lookupVIPCustomer = async function() {
             const phoneInput = document.getElementById("loyalty-phone-input");
             if (!phoneInput) return;
             const phone = phoneInput.value.trim();
             const container = document.getElementById("loyalty-status-container");
-            
+
             if (!container) return;
 
             if (phone.length < 8) {
@@ -1932,12 +1858,11 @@
             }
         }
 
-        // Open VIP Card Registration Modal
         window.openVIPModal = function(phone) {
             playBeep('click');
             const phoneInput = document.getElementById("vip-modal-phone");
             const nameInput = document.getElementById("vip-modal-name");
-            
+
             phoneInput.value = phone;
             nameInput.value = "";
 
@@ -1974,7 +1899,6 @@
             users.push(newUser);
             localStorage.setItem("3hd2k_users", JSON.stringify(users));
 
-            // Select this new user in POS
             vipCustomer = newUser;
             const loyaltyInput = document.getElementById("loyalty-phone-input");
             if (loyaltyInput) loyaltyInput.value = phone;
@@ -1983,7 +1907,6 @@
             showToast("Đã kích hoạt thẻ VIP mới!");
         }
 
-        // --- Submit POS direct sale ---
         window.confirmQRPayment = function() {
             document.getElementById('qr-modal').style.display = 'none';
             submitPOSSale(true);
@@ -1992,13 +1915,12 @@
         window.confirmPOSPayment = function() {
             document.getElementById('pos-total-amount').innerText = document.getElementById('cart-total-value').innerText;
             document.getElementById('pos-modal').style.display = 'flex';
-            
-            // Reset animations
+
             const cardIcon = document.getElementById('pos-card-icon');
             const successIcon = document.getElementById('pos-success-icon');
             const statusText = document.getElementById('pos-status-text');
             const loader = document.getElementById('pos-loader');
-            
+
             cardIcon.style.transition = 'none';
             cardIcon.style.top = '-50px';
             cardIcon.style.opacity = '1';
@@ -2006,23 +1928,22 @@
             statusText.innerText = 'Đang chờ quẹt thẻ / chạm thẻ POS...';
             statusText.style.color = 'var(--text-muted)';
             loader.style.display = 'block';
-            
-            // Animation sequence
+
             setTimeout(() => {
-                // Swipe down
+
                 cardIcon.style.transition = 'all 0.8s cubic-bezier(0.25, 0.1, 0.25, 1)';
                 cardIcon.style.top = '30px';
                 statusText.innerText = 'Đang xử lý giao dịch máy chủ ngân hàng...';
-                
+
                 setTimeout(() => {
-                    // Success
+
                     cardIcon.style.opacity = '0';
                     successIcon.style.display = 'inline-block';
                     statusText.innerText = 'Thanh toán thẻ thành công!';
                     statusText.style.color = 'var(--btn-green-color)';
                     loader.style.display = 'none';
                     playBeep('success');
-                    
+
                     setTimeout(() => {
                         document.getElementById('pos-modal').style.display = 'none';
                         submitPOSSale(true);
@@ -2031,7 +1952,6 @@
             }, 800);
         }
 
-        // --- Ticket Seat Selection Modal Functions ---
         window.openPOSSeatModal = function(showtimeId, movieId) {
             playBeep('click');
             const allMovies = getPOSMovies();
@@ -2121,7 +2041,7 @@
                     seatBtn.textContent = seatCode;
                     seatBtn.style.cssText = `
                         width: 32px; height: 32px; font-size: 0.65rem; font-weight: 800; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s ease;
-                        ${isSelected ? 'background: var(--primary-red); color: #fff; border: 1px solid var(--primary-red); box-shadow: var(--neon-red-glow);' : 
+                        ${isSelected ? 'background: var(--primary-red); color: #fff; border: 1px solid var(--primary-red); box-shadow: var(--neon-red-glow);' :
                           isBooked || isBroken ? 'background: #222; color: #555; border: 1px solid #333; cursor: not-allowed; opacity: 0.4;' :
                           seatType === 'vip' ? 'background: rgba(245, 158, 11, 0.2); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.4);' :
                           seatType === 'double' ? 'background: rgba(236, 72, 153, 0.2); color: #ec4899; border: 1px solid rgba(236, 72, 153, 0.4);' :
@@ -2198,7 +2118,6 @@
             showToast(`Đã thêm ${selectedTicketSeats.length} vé phim vào giỏ hàng!`);
         };
 
-        // --- Physical Print Modal Functions ---
         window.openPhysicalPrintModal = function() {
             playBeep('click');
             const area = document.getElementById("print-ticket-preview-area");
@@ -2213,7 +2132,7 @@
             activePrintTab = type;
             document.getElementById("print-tab-movie").classList.remove("active");
             document.getElementById("print-tab-fnb").classList.remove("active");
-            
+
             if (type === 'movie') document.getElementById("print-tab-movie").classList.add("active");
             if (type === 'fnb') document.getElementById("print-tab-fnb").classList.add("active");
 
@@ -2236,7 +2155,7 @@
                     <div style="border-bottom: 2px dashed #000; padding-bottom: 15px; margin-bottom: 15px; text-align: center;">
                         <h2 style="margin: 0; font-size: 1.4rem; letter-spacing: 2px;">3HD2K CINEMA</h2>
                         <p style="margin: 2px 0 10px 0; font-size: 0.75rem;">--- VÉ XEM PHIM VẬT LÝ ---</p>
-                        
+
                         <div style="text-align: left; font-size: 0.85rem; line-height: 1.5;">
                             <div><strong>PHIM:</strong> ${t.movieTitle}</div>
                             <div><strong>SUẤT:</strong> ${t.showtime} (${t.date})</div>
@@ -2266,7 +2185,7 @@
                     <div style="text-align: center;">
                         <h2 style="margin: 0; font-size: 1.4rem; letter-spacing: 2px;">3HD2K POS SERVICE</h2>
                         <p style="margin: 2px 0 10px 0; font-size: 0.75rem;">--- PHIẾU XUẤT KHO / GIAO ĐỒ F&B ---</p>
-                        
+
                         <div style="text-align: left; font-size: 0.85rem; line-height: 1.5;">
                             <div><strong>MÃ ĐƠN:</strong> ${data.receiptId}</div>
                             <div><strong>THỜI GIAN:</strong> ${new Date().toLocaleTimeString('vi-VN')}</div>
@@ -2317,11 +2236,9 @@
             const inventory = JSON.parse(localStorage.getItem("cinema_inventory")) || [];
             const users = JSON.parse(localStorage.getItem("3hd2k_users")) || [];
 
-            // Separate ticket items and F&B items
             const ticketItems = cart.filter(item => item.product.isTicket);
             const fnbItems = cart.filter(item => !item.product.isTicket);
-            
-            // 1. Deduct ingredients for F&B items
+
             const deductList = {};
             fnbItems.forEach(item => {
                 if (item.product.deduct) {
@@ -2352,7 +2269,6 @@
             }
             localStorage.setItem("cinema_inventory", JSON.stringify(inventory));
 
-            // 2. Process Ticket Bookings & Save Booked Seats
             const ticketDetailsList = [];
             if (ticketItems.length > 0) {
                 const bookedSeatsStore = JSON.parse(localStorage.getItem("cinema_booked_seats")) || {};
@@ -2364,7 +2280,6 @@
                         const stId = tData.showtimeId;
                         bookedSeatsStore[stId] = [...(bookedSeatsStore[stId] || []), ...tData.seats];
 
-                        // Assign unique ticketCode to each individual seat (Issue #62)
                         const perSeatTickets = (tData.seats || []).map(seat => ({
                             seat: seat,
                             ticketCode: "TK-" + seat + "-" + Math.floor(100000 + Math.random() * 900000)
@@ -2407,7 +2322,6 @@
                 localStorage.setItem("cinema_bookings", JSON.stringify(localBookings));
             }
 
-            // Calculate total price
             let totalAmount = 0;
             const itemsText = cart.map(item => `${item.qty} ${item.product.name}`).join(" + ");
             cart.forEach(item => { totalAmount += (item.product.price * item.qty); });
@@ -2419,7 +2333,6 @@
                 fnbList.push({ name: item.product.name, price: item.product.price, qty: item.qty });
             });
 
-            // 3. VIP point accumulation & API sync (Issue #61)
             const pointsEarned = Math.floor(totalAmount / 10000);
             let customerName = "Khách vãng lai";
             let pointsSummary = "";
@@ -2442,7 +2355,6 @@
                 customerName = user.name || user.fullname || user.Fullname || "Khách VIP";
                 pointsSummary = `${user.points} điểm VIP (+${pointsEarned})`;
 
-                // Non-blocking API sync
                 fetch('/api/users/add-points', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -2454,7 +2366,6 @@
                 }).catch(e => console.warn("API add-points warning:", e));
             }
 
-            // Save data for physical printing
             const receiptId = "POS-" + Math.floor(10000 + Math.random() * 90000);
             window.lastTransactionPrintData = {
                 receiptId: receiptId,
@@ -2466,7 +2377,6 @@
                 fnbTotal: fnbTotal
             };
 
-            // 4. Log sale transaction to activity logs
             const logs = JSON.parse(localStorage.getItem("cinema_activity_log")) || [];
             const methodLabel = activePaymentMethod === 'cash' ? "Tiền mặt" : (activePaymentMethod === 'card' ? "Thẻ ATM" : "Quét QR");
             logs.unshift({
@@ -2475,7 +2385,6 @@
             });
             localStorage.setItem("cinema_activity_log", JSON.stringify(logs.slice(0, 50)));
 
-            // 5. Show success modal receipt
             document.getElementById("modal-receipt-id").textContent = receiptId;
             document.getElementById("modal-receipt-customer").textContent = `${customerName} ${vipCustomer ? '(' + (vipCustomer.phone || vipCustomer.Phone || '') + ')' : ''}`;
             document.getElementById("modal-receipt-details").textContent = itemsText;
@@ -2490,7 +2399,6 @@
 
             document.getElementById("success-modal").classList.add("active");
 
-            // 6. Reset POS checkout panel
             cart = [];
             document.getElementById("loyalty-phone-input").value = "";
             vipCustomer = null;
@@ -2501,24 +2409,21 @@
             renderCart();
             renderPOSProducts();
 
-            // Trigger cross-page sync event
             window.dispatchEvent(new Event("storage"));
         }
 
-        // --- Modal close functions ---
         window.closeSuccessModal = function() {
             playBeep('click');
             document.getElementById("success-modal").classList.remove("active");
         }
 
-        // Close modal when clicking on backdrop
         window.addEventListener('click', (e) => {
             const successModal = document.getElementById('success-modal');
             const qrModal = document.getElementById('qr-modal');
             const vipModal = document.getElementById('vip-modal');
             const seatModal = document.getElementById('pos-ticket-seat-modal');
             const printModal = document.getElementById('physical-print-modal');
-            
+
             if (e.target === successModal) closeSuccessModal();
             if (e.target === qrModal) qrModal.style.display = 'none';
             if (e.target === vipModal) closeVIPModal();
@@ -2526,7 +2431,6 @@
             if (e.target === printModal) printModal.classList.remove('active');
         });
 
-        // --- Custom Toasts ---
         function showToast(msg) {
             const toast = document.getElementById("toast-notification");
             if (!toast) return;
@@ -2535,7 +2439,6 @@
             setTimeout(() => { toast.classList.remove("show"); }, 2200);
         }
 
-        // --- Real-time sync listener ---
         window.addEventListener("storage", (e) => {
             if (e.key === "cinema_inventory" || e.key === "cinema_app_orders" || e.key === "3hd2k_users") {
                 renderAppOrders();
@@ -2545,7 +2448,6 @@
             }
         });
 
-        // --- Initial execution ---
         dbInit();
         renderAppOrders();
         renderPOSProducts();
@@ -2553,7 +2455,7 @@
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
     <script>
-        // --- SignalR Real-time Notifications ---
+
         try {
             const updateSignalRUI = (color, text) => {
                 const badge = document.getElementById("signalr-status-badge");
@@ -2595,7 +2497,7 @@
                 };
                 appOrders.unshift(newOrder);
                 localStorage.setItem("cinema_app_orders", JSON.stringify(appOrders));
-                
+
                 renderAppOrders();
 
                 playBeep('success');

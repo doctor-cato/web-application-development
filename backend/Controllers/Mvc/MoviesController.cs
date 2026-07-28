@@ -15,14 +15,12 @@ namespace appweb.Controllers
             _movieRepository = movieRepository;
         }
 
-        // Danh sách phim
         public async Task<IActionResult> Index()
         {
             var movies = await _movieRepository.GetAllAsync();
             return View(movies);
         }
 
-        // Chi tiết phim
         public async Task<IActionResult> Details(Guid id)
         {
             var movie = await _movieRepository.GetByIdAsync(id);
@@ -55,7 +53,7 @@ namespace appweb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, Movie movie)
         {
-            // Sửa lỗi: Đối chiếu khóa chính dùng movie.Id thay vì movie.MovieId
+
             if (id != movie.Id) return BadRequest();
 
             if (!ModelState.IsValid) return View(movie);

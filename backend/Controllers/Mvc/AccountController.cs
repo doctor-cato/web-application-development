@@ -35,7 +35,7 @@ namespace appweb.Controllers
 
             var user = new User
             {
-                FullName = model.Name, // Ánh xạ từ DTO sang trường FullName của Model
+                FullName = model.Name,
                 Email = model.Email,
                 Password = model.Password,
                 Role = "Customer"
@@ -68,7 +68,6 @@ namespace appweb.Controllers
                 return View(model);
             }
 
-            // Đồng bộ sử dụng user.FullName và thêm ?? string.Empty để tránh cảnh báo Null
             var claims = new List<System.Security.Claims.Claim>
             {
                 new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.NameIdentifier, user.Id.ToString()),

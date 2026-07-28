@@ -1,12 +1,9 @@
-// ===== MOVIES PAGE LOGIC =====
 
-// --- STATE ---
-let currentTab = 'coming-soon'; // default tab
+let currentTab = 'coming-soon';
 let currentMovies = [];
 const MOVIES_PER_PAGE = 5;
 let visibleCount = MOVIES_PER_PAGE;
 
-// --- DOM ELEMENTS ---
 const moviesGrid = document.getElementById('movies-grid');
 const tabNowShowing = document.getElementById('tab-now-showing');
 const tabComingSoon = document.getElementById('tab-coming-soon');
@@ -19,13 +16,11 @@ const filterFormat = document.getElementById('movies-filter-format');
 const filterAge = document.getElementById('movies-filter-age');
 const sortSelect = document.getElementById('movies-sort');
 
-// --- READ URL PARAMS ---
 function getTabFromURL() {
     const params = new URLSearchParams(window.location.search);
     return params.get('tab') || 'coming-soon';
 }
 
-// --- GET AGE BADGE CLASS ---
 function getAgeBadgeClass(age) {
     const ageMap = {
         'P': 'age-p',
@@ -37,7 +32,6 @@ function getAgeBadgeClass(age) {
     return ageMap[age] || 'age-t13';
 }
 
-// --- RENDER MOVIE GRID ---
 function renderMoviesGrid(movies) {
     if (!moviesGrid) return;
     moviesGrid.innerHTML = '';
@@ -75,7 +69,6 @@ function renderMoviesGrid(movies) {
         moviesGrid.innerHTML += cardHtml;
     });
 
-    // Show/hide load more button
     if (visibleCount >= movies.length) {
         loadMoreContainer.style.display = 'none';
     } else {
@@ -83,10 +76,9 @@ function renderMoviesGrid(movies) {
     }
 }
 
-// --- GET DATA FOR CURRENT TAB ---
 function getMoviesForTab(tab) {
     if (tab === 'now-showing') {
-        // Add genre field to nowShowingMovies if missing
+
         return nowShowingMovies.map(m => ({
             ...m,
             genre: m.genre || m.tags.join(', ')
@@ -96,7 +88,6 @@ function getMoviesForTab(tab) {
     }
 }
 
-// --- APPLY FILTERS ---
 function applyMoviesFilters() {
     let movies = getMoviesForTab(currentTab);
 
@@ -105,7 +96,6 @@ function applyMoviesFilters() {
     const age = filterAge ? filterAge.value : 'all';
     const sort = sortSelect ? sortSelect.value : 'newest';
 
-    // Filter by genre
     if (genre !== 'all') {
         movies = movies.filter(m => {
             const movieGenre = m.genre || '';
@@ -113,7 +103,6 @@ function applyMoviesFilters() {
         });
     }
 
-    // Filter by format
     if (format !== 'all') {
         movies = movies.filter(m => {
             const movieTags = m.tags || m.formats || [];
@@ -121,12 +110,10 @@ function applyMoviesFilters() {
         });
     }
 
-    // Filter by age
     if (age !== 'all') {
         movies = movies.filter(m => m.age === age);
     }
 
-    // Sort
     switch (sort) {
         case 'name-az':
             movies.sort((a, b) => a.title.localeCompare(b.title, 'vi'));
@@ -144,7 +131,7 @@ function applyMoviesFilters() {
                 return getMins(b) - getMins(a);
             });
             break;
-        default: // newest — keep original order
+        default:
             break;
     }
 
@@ -153,39 +140,32 @@ function applyMoviesFilters() {
     renderMoviesGrid(currentMovies);
 }
 
-// --- SWITCH TABS ---
 function switchTab(tab) {
     currentTab = tab;
 
-    // Update active tab
     tabNowShowing.classList.toggle('active', tab === 'now-showing');
     tabComingSoon.classList.toggle('active', tab === 'coming-soon');
 
-    // Update breadcrumb
     if (breadcrumbCurrent) {
         breadcrumbCurrent.textContent = tab === 'now-showing' ? 'Phim Đang Chiếu' : 'Phim Sắp Chiếu';
     }
 
-    // Reset filters
     if (filterGenre) filterGenre.value = 'all';
     if (filterFormat) filterFormat.value = 'all';
     if (filterAge) filterAge.value = 'all';
     if (sortSelect) sortSelect.value = 'newest';
 
-    // Update URL without reload
     const newUrl = `movies.html?tab=${tab}`;
     window.history.replaceState(null, '', newUrl);
 
     applyMoviesFilters();
 }
 
-// --- LOAD MORE ---
 function loadMore() {
     visibleCount += MOVIES_PER_PAGE;
     renderMoviesGrid(currentMovies);
 }
 
-// --- EVENT LISTENERS ---
 if (tabNowShowing) tabNowShowing.addEventListener('click', () => switchTab('now-showing'));
 if (tabComingSoon) tabComingSoon.addEventListener('click', () => switchTab('coming-soon'));
 if (btnLoadMore) btnLoadMore.addEventListener('click', loadMore);
@@ -195,7 +175,6 @@ if (filterFormat) filterFormat.addEventListener('change', applyMoviesFilters);
 if (filterAge) filterAge.addEventListener('change', applyMoviesFilters);
 if (sortSelect) sortSelect.addEventListener('change', applyMoviesFilters);
 
-// --- INIT ---
 document.addEventListener('DOMContentLoaded', () => {
     const initialTab = getTabFromURL();
     switchTab(initialTab);

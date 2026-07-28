@@ -53,7 +53,6 @@ namespace appweb.Models
         [Column("gender")]
         public string? Gender { get; set; }
 
-        // OTP Fields (Add columns to DB)
         [Column("otp_code")]
         public string? OtpCode { get; set; }
 

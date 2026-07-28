@@ -1,12 +1,5 @@
-/**
- * cancel-booking.js
- * Tính năng Hủy vé & Đổi suất chiếu + Lịch sử giao dịch
- * Domain: booking/cancel-booking
- */
 
 import { getBookings, saveBookings, lsGet, KEYS, getTransactions, addTransaction } from '../../shared/utils/storage.js';
-
-// ---------- Helpers ----------
 
 function escapeHtml(text) {
   return String(text)

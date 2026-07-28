@@ -6,11 +6,11 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Quên mật khẩu - 3HD2K Cinema</title>
     <meta name="description" content="Đặt lại mật khẩu tài khoản 3HD2K Cinema của bạn.">
-    <!-- Fonts -->
+
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Icons -->
+
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
-    <!-- CSS -->
+
     <link rel="stylesheet" href="../../auth/auth-services/auth.css">
 </head>
 <body>
@@ -20,7 +20,7 @@
     </header>
 
     <main class="auth-main">
-        <!-- Left Side: Banner -->
+
         <div class="auth-banner">
             <div class="auth-banner-bg">
                 <img src="../../shared/images/cinema_audience_smiling.png" alt="Cinema Background">
@@ -34,11 +34,9 @@
             </h1>
         </div>
 
-        <!-- Right Side: Form -->
         <div class="auth-content">
             <div class="auth-box">
 
-                <!-- Step 1: Nhập email -->
                 <div id="step-email">
                     <div class="auth-tabs" style="margin-bottom: 1.5rem;">
                         <span class="auth-tab active" style="cursor:default;">Quên Mật Khẩu</span>
@@ -72,7 +70,6 @@
                     </form>
                 </div>
 
-                <!-- Step 2: Nhập OTP & Mật khẩu mới -->
                 <div id="step-reset" style="display: none;">
                     <div class="auth-tabs" style="margin-bottom: 1.5rem;">
                         <span class="auth-tab active" style="cursor:default;">Đặt Lại Mật Khẩu</span>
@@ -105,7 +102,7 @@
                         <button type="submit" class="btn-submit" id="submitResetBtn">
                             Xác nhận đặt lại
                         </button>
-                        
+
                         <div style="text-align: center; margin-top: 0.5rem;">
                             <a href="#" id="btnResendOtp" style="font-size: 13px; color: var(--text-secondary); text-decoration: underline; background:none; border:none; cursor:pointer;">
                                 Gửi lại mã OTP
@@ -114,7 +111,6 @@
                     </form>
                 </div>
 
-                <!-- Step 3: Thành công -->
                 <div id="step-success" style="display: none; text-align: center; padding: 1rem 0;">
                     <div style="
                         width: 72px; height: 72px; border-radius: 50%;

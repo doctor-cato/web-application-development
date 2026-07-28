@@ -1,11 +1,4 @@
-/**
- * authGuard-global.js
- * ─────────────────────────────────────────────────────────────
- * Phiên bản non-module của auth guard.
- * Include bằng <script src="..."></script> (không có type="module")
- * Sau đó gọi: window.requireAuth() hoặc window.isAuthenticated()
- * ─────────────────────────────────────────────────────────────
- */
+
 (function() {
     const MODAL_ID = 'auth-guard-modal';
 
@@ -144,7 +137,6 @@
         return false;
     }
 
-    // Expose to window
     window.isAuthenticated = isAuthenticated;
     window.showAuthModal = showAuthModal;
     window.requireAuth = requireAuth;

@@ -5,7 +5,7 @@ namespace appweb.DTOs.Booking
     public class CreateBookingDto
     {
         [Required(ErrorMessage = "Vui lòng chọn suất chiếu")]
-        public string ShowtimeId { get; set; } = string.Empty; // Để string phục vụ cho Id của MongoDB
+        public string ShowtimeId { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Vui lòng chọn ít nhất một vị trí ghế")]
         public List<string> SeatIds { get; set; } = new List<string>();

@@ -10,7 +10,7 @@ namespace appweb.Services
     public class FileService : IFileService
     {
         private readonly IWebHostEnvironment _environment;
-        // Limit to 5MB
+
         private const int MaxFileSize = 5 * 1024 * 1024;
         private readonly string[] _allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
 
@@ -37,14 +37,12 @@ namespace appweb.Services
                 throw new ArgumentException("Invalid file extension. Allowed extensions are: " + string.Join(", ", _allowedExtensions));
             }
 
-            // Create uploads/images folder if it doesn't exist
             var uploadsFolder = Path.Combine(_environment.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot"), "uploads", "images");
             if (!Directory.Exists(uploadsFolder))
             {
                 Directory.CreateDirectory(uploadsFolder);
             }
 
-            // Generate unique filename
             var uniqueFileName = Guid.NewGuid().ToString() + "_" + DateTime.Now.Ticks + extension;
             var filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
@@ -53,7 +51,6 @@ namespace appweb.Services
                 await file.CopyToAsync(fileStream);
             }
 
-            // Return relative path for web access
             return $"/uploads/images/{uniqueFileName}";
         }
 
@@ -64,9 +61,8 @@ namespace appweb.Services
                 return false;
             }
 
-            // Extract just the filename if a full URL/path was passed
             var fileName = Path.GetFileName(imageFileName);
-            
+
             var uploadsFolder = Path.Combine(_environment.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot"), "uploads", "images");
             var filePath = Path.Combine(uploadsFolder, fileName);
 

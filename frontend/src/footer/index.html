@@ -6,12 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hỗ Trợ Khách Hàng - 3HD2K Cinema</title>
     <link rel="stylesheet" href="../shared/css/main.css">
-    
-    <!-- Load custom fonts: Inter for Headings, Inter for Body -->
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- FontAwesome for Icons -->
+
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
     <style>
@@ -58,7 +57,6 @@
             margin: 0 auto;
         }
 
-        /* Layout Grid */
         .support-grid {
             display: grid;
             grid-template-columns: 280px 1fr;
@@ -66,7 +64,6 @@
             align-items: start;
         }
 
-        /* Sidebar Navigation */
         .support-sidebar {
             display: flex;
             flex-direction: column;
@@ -121,7 +118,6 @@
             color: #ffffff;
         }
 
-        /* Main Content Glass Box */
         .support-content {
             position: relative;
         }
@@ -136,8 +132,7 @@
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
             margin-bottom: 30px;
         }
-        
-        /* Ensure minimum height for tabs that use a single card */
+
         .tab-panel.single-card .panel-card {
             min-height: 500px;
         }
@@ -186,7 +181,6 @@
             color: var(--primary-red);
         }
 
-        /* FAQ Styling */
         .faq-search-wrapper {
             position: relative;
             margin-bottom: 30px;
@@ -298,7 +292,6 @@
             padding-bottom: 20px;
         }
 
-        /* Contact Form */
         .contact-form-section {
             border-top: 1px solid rgba(255, 255, 255, 0.08);
             padding-top: 40px;
@@ -352,7 +345,6 @@
             box-shadow: 0 0 15px rgba(229, 9, 20, 0.1);
         }
 
-        /* Custom dropdown for contact form */
         #support-contact-form .custom-select-wrapper {
             width: 100%;
         }
@@ -421,7 +413,6 @@
             box-shadow: 0 6px 25px rgba(229, 9, 20, 0.45);
         }
 
-        /* Request History Section */
         .ticket-history-wrapper {
             margin-top: 40px;
             border-top: 1px solid rgba(255, 255, 255, 0.08);
@@ -481,7 +472,6 @@
             border: 1px solid rgba(245, 158, 11, 0.25);
         }
 
-        /* Document contents (Terms/Privacy) */
         .doc-section {
             margin-bottom: 30px;
         }
@@ -523,7 +513,6 @@
             font-weight: bold;
         }
 
-        /* Cookie Panel Dashboard */
         .cookie-dashboard {
             display: flex;
             flex-direction: column;
@@ -577,7 +566,6 @@
             line-height: 1.5;
         }
 
-        /* Beautiful Switch Toggle */
         .switch-toggle {
             position: relative;
             display: inline-block;
@@ -633,7 +621,6 @@
             cursor: not-allowed;
         }
 
-        /* Responsive styling */
         @media (max-width: 900px) {
             .support-grid {
                 grid-template-columns: 1fr;
@@ -674,7 +661,7 @@
                 align-self: flex-end;
             }
         }
-        /* ponytail: responsive fixes for mobile <= 480px */
+
         @media (max-width: 480px) {
             .support-header h1 { font-size: 2rem; }
             .panel-card { padding: 20px 15px; }
@@ -683,7 +670,7 @@
     </style>
 </head>
 <body>
-    <!-- Header/Navbar placeholder -->
+
     <div id="navbar-placeholder"></div>
 
     <main class="support-wrapper">
@@ -693,7 +680,7 @@
         </div>
 
         <div class="support-grid">
-            <!-- Sidebar Tabs Menu -->
+
             <aside class="support-sidebar">
                 <button class="sidebar-item active" data-target="help-tab">
                     <i class="fas fa-question-circle"></i>
@@ -713,26 +700,22 @@
                 </button>
             </aside>
 
-            <!-- Main Content Panels -->
             <section class="support-content">
-                
-                <!-- ═════════ TAB 1: HELP CENTER & FAQS ═════════ -->
+
                 <div class="tab-panel active" id="help-tab">
-                    
+
                     <div class="panel-card">
                         <h2 class="panel-title">
                             <i class="fas fa-question-circle"></i>
                             Trung tâm trợ giúp & Câu hỏi thường gặp
                         </h2>
-                        
-                        <!-- FAQ Search Bar -->
+
                         <div class="faq-search-wrapper">
                             <i class="fas fa-search"></i>
                             <input type="text" id="faq-search-input" class="faq-search-input" placeholder="Tìm câu trả lời hoặc từ khóa..." autocomplete="off">
                             <i class="fas fa-times faq-search-clear" id="faq-search-clear"></i>
                         </div>
 
-                        <!-- FAQ List -->
                         <div class="faq-list" id="faq-list">
                             <div class="faq-item" data-search="dat ve mua ve thanh toan loi giao dich online">
                                 <button class="faq-trigger">
@@ -786,7 +769,6 @@
                         </div>
                     </div>
 
-                    <!-- Contact/Support Form -->
                     <div class="contact-form-section panel-card">
                         <h2 class="panel-title" style="border-bottom:none; padding-bottom:0; margin-bottom:10px;">
                             <i class="fas fa-paper-plane"></i>
@@ -835,7 +817,6 @@
                         </form>
                     </div>
 
-                    <!-- Submitted Requests History -->
                     <div class="ticket-history-wrapper" id="ticket-history-wrapper" style="display: none;">
                         <h3 class="ticket-history-title">
                             <i class="fas fa-history"></i>
@@ -852,20 +833,19 @@
                                     </tr>
                                 </thead>
                                 <tbody id="ticket-history-tbody">
-                                    <!-- Rendered dynamically -->
+
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
 
-                <!-- ═════════ TAB 2: TERMS OF USE ═════════ -->
                 <div class="tab-panel" id="terms-tab">
                     <h2 class="panel-title">
                         <i class="fas fa-file-contract"></i>
                         Điều khoản sử dụng dịch vụ
                     </h2>
-                    
+
                     <div class="doc-section">
                         <h3>1. Chấp thuận các Điều khoản</h3>
                         <p>Chào mừng bạn đến với hệ thống rạp chiếu phim 3HD2K Cinema. Bằng việc truy cập, duyệt trang web hoặc thực hiện bất kỳ giao dịch đặt vé trực tuyến nào trên hệ thống của chúng tôi, bạn được coi là đã đọc, hiểu và đồng ý hoàn toàn bị ràng buộc bởi các điều khoản sử dụng này. Nếu không đồng ý với các điều khoản này, vui lòng ngưng sử dụng dịch vụ của chúng tôi.</p>
@@ -904,13 +884,12 @@
                     </div>
                 </div>
 
-                <!-- ═════════ TAB 3: PRIVACY POLICY ═════════ -->
                 <div class="tab-panel" id="privacy-tab">
                     <h2 class="panel-title">
                         <i class="fas fa-user-shield"></i>
                         Chính sách bảo mật thông tin
                     </h2>
-                    
+
                     <div class="doc-section">
                         <h3>1. Thu thập thông tin cá nhân</h3>
                         <p>Để mang lại trải nghiệm đặt vé nhanh chóng và quản lý tài khoản thành viên tích điểm PTS, 3HD2K thu thập một số thông tin cơ bản khi khách hàng tương tác trên hệ thống:</p>
@@ -947,7 +926,6 @@
                     </div>
                 </div>
 
-                <!-- ═════════ TAB 4: COOKIE PREFERENCES ═════════ -->
                 <div class="tab-panel" id="cookie-tab">
                     <h2 class="panel-title">
                         <i class="fas fa-cookie-bite"></i>
@@ -958,7 +936,7 @@
                     </p>
 
                     <div class="cookie-dashboard">
-                        <!-- Cookie Type 1 -->
+
                         <div class="cookie-card">
                             <div class="cookie-info">
                                 <h4>
@@ -973,7 +951,6 @@
                             </label>
                         </div>
 
-                        <!-- Cookie Type 2 -->
                         <div class="cookie-card">
                             <div class="cookie-info">
                                 <h4>Cookie hiệu suất & phân tích</h4>
@@ -985,7 +962,6 @@
                             </label>
                         </div>
 
-                        <!-- Cookie Type 3 -->
                         <div class="cookie-card">
                             <div class="cookie-info">
                                 <h4>Cookie quảng cáo & cá nhân hóa</h4>
@@ -1008,29 +984,23 @@
         </div>
     </main>
 
-    <!-- Footer placeholder -->
     <div id="footer-placeholder"></div>
 
-    <!-- Nhúng components và utilities -->
     <script type="module" src="../shared/components/navbar.js"></script>
     <script type="module" src="../shared/components/footer.js"></script>
     <script src="../shared/js/data.js"></script>
     <script src="../shared/js/main.js"></script>
     <script src="../shared/utils/authGuard-global.js"></script>
 
-    <!-- Script điều khiển Logic trang Hỗ Trợ -->
     <script type="module">
         import { toast } from '../shared/components/toast.js';
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Initialize custom dropdown for the contact subject
+
             if (typeof initCustomDropdowns !== 'undefined') {
                 initCustomDropdowns('#contact-subject');
             }
 
-            // ─────────────────────────────────────────────────────────────
-            // 1. TABS NAVIGATION CONTROL
-            // ─────────────────────────────────────────────────────────────
             const sidebarButtons = document.querySelectorAll('.sidebar-item');
             const tabPanels = document.querySelectorAll('.tab-panel');
 
@@ -1051,7 +1021,6 @@
                     }
                 });
 
-                // Scroll to top of panel on mobile view
                 if (window.innerWidth <= 900) {
                     const contentBox = document.querySelector('.support-content');
                     contentBox.scrollIntoView({ behavior: 'smooth' });
@@ -1061,17 +1030,16 @@
             sidebarButtons.forEach(button => {
                 button.addEventListener('click', () => {
                     const target = button.dataset.target;
-                    // Update URL params silently
+
                     const url = new URL(window.location);
                     const paramTab = target.replace('-tab', '');
                     url.searchParams.set('tab', paramTab);
                     window.history.pushState({}, '', url);
-                    
+
                     switchTab(target);
                 });
             });
 
-            // Read tab from query parameters on load
             const urlParams = new URLSearchParams(window.location.search);
             const tabParam = urlParams.get('tab');
             if (tabParam) {
@@ -1082,17 +1050,13 @@
                 }
             }
 
-            // ─────────────────────────────────────────────────────────────
-            // 2. FAQ SEARCH & ACCORDION
-            // ─────────────────────────────────────────────────────────────
             const faqSearchInput = document.getElementById('faq-search-input');
             const faqSearchClear = document.getElementById('faq-search-clear');
             const faqItems = document.querySelectorAll('.faq-item');
 
-            // Search filtering FAQ
             faqSearchInput.addEventListener('input', () => {
                 const query = faqSearchInput.value.toLowerCase().trim();
-                
+
                 if (query.length > 0) {
                     faqSearchClear.style.display = 'block';
                 } else {
@@ -1112,7 +1076,6 @@
                 });
             });
 
-            // Clear search text
             faqSearchClear.addEventListener('click', () => {
                 faqSearchInput.value = '';
                 faqSearchClear.style.display = 'none';
@@ -1120,15 +1083,13 @@
                 faqSearchInput.focus();
             });
 
-            // FAQ Accordion Click Collapse/Expand
             faqItems.forEach(item => {
                 const trigger = item.querySelector('.faq-trigger');
                 const content = item.querySelector('.faq-content');
 
                 trigger.addEventListener('click', () => {
                     const isActive = item.classList.contains('active');
-                    
-                    // Close other open FAQ items
+
                     faqItems.forEach(otherItem => {
                         if (otherItem !== item && otherItem.classList.contains('active')) {
                             otherItem.classList.remove('active');
@@ -1136,21 +1097,17 @@
                         }
                     });
 
-                    // Toggle current item
                     if (isActive) {
                         item.classList.remove('active');
                         content.style.maxHeight = '0px';
                     } else {
                         item.classList.add('active');
-                        // Calculate scrollHeight dynamically
+
                         content.style.maxHeight = content.scrollHeight + 'px';
                     }
                 });
             });
 
-            // ─────────────────────────────────────────────────────────────
-            // 3. CONTACT FORM & REQUESTS HISTORY
-            // ─────────────────────────────────────────────────────────────
             const supportForm = document.getElementById('support-contact-form');
             const ticketHistoryWrapper = document.getElementById('ticket-history-wrapper');
             const ticketHistoryTbody = document.getElementById('ticket-history-tbody');
@@ -1166,7 +1123,7 @@
 
             function saveSubmittedTicket(ticket) {
                 const tickets = getSubmittedTickets();
-                tickets.unshift(ticket); // Newest first
+                tickets.unshift(ticket);
                 localStorage.setItem('3hd2k_support_tickets', JSON.stringify(tickets));
             }
 
@@ -1192,10 +1149,8 @@
                 });
             }
 
-            // Initial render ticket history
             renderTicketHistory();
 
-            // Submit Support Form Handler
             supportForm.addEventListener('submit', (e) => {
                 e.preventDefault();
 
@@ -1210,7 +1165,6 @@
                     return;
                 }
 
-                // Generate random ticket id
                 const randomId = `#3HD2K-${Math.floor(100000 + Math.random() * 900000)}`;
                 const currentDate = new Date().toLocaleDateString('vi-VN', {
                     year: 'numeric',
@@ -1233,21 +1187,16 @@
 
                 saveSubmittedTicket(newTicket);
                 renderTicketHistory();
-                
+
                 toast.success(`Gửi yêu cầu thành công! Mã số của bạn là ${randomId}.`);
-                
-                // Clear Form
+
                 supportForm.reset();
             });
 
-            // ─────────────────────────────────────────────────────────────
-            // 4. COOKIE PREFERENCES SAVING
-            // ─────────────────────────────────────────────────────────────
             const cookieAnalytics = document.getElementById('cookie-analytics');
             const cookieMarketing = document.getElementById('cookie-marketing');
             const btnSaveCookies = document.getElementById('btn-save-cookies');
 
-            // Load saved cookie preferences
             try {
                 const savedPrefs = localStorage.getItem('3hd2k_cookie_prefs');
                 if (savedPrefs) {

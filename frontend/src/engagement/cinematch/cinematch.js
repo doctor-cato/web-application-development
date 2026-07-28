@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const stepCandidates = document.getElementById('step-candidates');
     const stepSync = document.getElementById('step-sync');
     const stepSharedRoom = document.getElementById('step-shared-room');
-    
+
     const prefGenre = document.getElementById('pref-genre');
     const statusText = document.getElementById('radar-status-text');
 
@@ -33,8 +33,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     let currentRoomId = null;
     let partnerInfo = null;
 
-    // -- SIGNALR SETUP --
-    const API_URL = "/cinematchHub"; 
+    const API_URL = "/cinematchHub";
     const connection = new signalR.HubConnectionBuilder()
         .withUrl(API_URL, {
             transport: signalR.HttpTransportType.WebSockets | signalR.HttpTransportType.LongPolling
@@ -75,15 +74,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     startSignalRConnection();
 
-    // --- SIGNALR EVENTS ---
-    
     connection.on("OnMatchFound", (data) => {
-        // Stop radar
+
         stepRadar.style.display = 'none';
         statusText.style.display = 'none';
         activeNodes.forEach(n => n.remove());
 
-        // Prepare data
         currentRoomId = data.roomId;
         partnerInfo = {
             id: data.partnerId,
@@ -93,9 +89,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             rating: data.rating
         };
 
-        // Render Candidates (Real match)
         stepCandidates.style.display = 'block';
-        renderCandidates([partnerInfo]); // Trong thực tế hệ thống hiện chỉ ghép 1-1, ta coi list chỉ có 1 ứng viên
+        renderCandidates([partnerInfo]);
     });
 
     connection.on("OnBothAccepted", () => {
@@ -125,8 +120,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     connection.on("OnMovieAgreed", (movieId) => {
         appendChat('Hệ thống', `Hai bạn đã cùng thống nhất xem chung bộ phim này! Đang chuyển hướng...`, 'system');
         localStorage.setItem('cinematch_active', 'true');
-        localStorage.setItem('cinematch_genre', prefGenre.value); 
-        
+        localStorage.setItem('cinematch_genre', prefGenre.value);
+
         setTimeout(() => {
             window.location.href = `../../explore/movie-details/index.html?id=${movieId}&cinematch=true`;
         }, 1500);
@@ -136,8 +131,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         alert("Đối tác đã ngắt kết nối hoặc rời khỏi phòng.");
         window.location.reload();
     });
-
-    // --- UI ACTIONS ---
 
     btnStart.addEventListener('click', async () => {
         stepForm.style.display = 'none';
@@ -164,7 +157,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             card.className = 'match-card';
             card.style.margin = '0';
             card.style.cursor = 'pointer';
-            
+
             card.innerHTML = `
                 <div class="mc-avatar-wrapper" style="width: 100px; height: 100px;">
                     <div class="mc-avatar" style="font-size: 2.5rem;"><i class="fas fa-user"></i></div>
@@ -172,7 +165,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </div>
                 <h3 style="color: white; font-size: 1.4rem; margin-bottom: 5px;">${cand.name} (Ẩn danh)</h3>
                 <p style="color: #aaa; font-size: 0.9rem; margin-bottom: 15px;"><i class="fas fa-map-marker-alt" style="color:var(--neon-red);"></i> Cùng thành phố</p>
-                
+
                 <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px; margin-bottom: 15px; text-align: left; font-size: 0.9rem;">
                     <div style="margin-bottom: 8px;"><i class="fas fa-link" style="color:#4CAF50; width: 20px;"></i> Đã kết nối: <b style="color:white;">${cand.connections} lần</b></div>
                     <div><i class="fas fa-star" style="color:#FFD700; width: 20px;"></i> Đánh giá: <b style="color:white;">${cand.rating}</b></div>
@@ -207,7 +200,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const container = document.getElementById('shared-movies-container');
         if (!container) return;
         container.innerHTML = '';
-        
+
         if (!sharedMovies || sharedMovies.length === 0) {
             container.innerHTML = `
                 <div style="grid-column: 1 / -1; width: 100%; padding: 30px; text-align: center; color: var(--text-muted);">
@@ -281,7 +274,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     function spawnNode() {
         const radarCircle = document.querySelector('.radar-circle');
         if (!radarCircle) return;
-        
+
         const node = document.createElement('div');
         node.className = 'match-avatar-node';
         const icons = ['fa-user', 'fa-user-secret', 'fa-mask', 'fa-smile'];
@@ -295,7 +288,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         node.style.left = `${x}px`;
         node.style.top = `${y}px`;
-        
+
         radarCircle.appendChild(node);
         activeNodes.push(node);
 

@@ -17,13 +17,11 @@ namespace appweb.Controllers.Mvc
             _context = context;
         }
 
-        // GET: USERS
-        public async Task<IActionResult> Index()    
+        public async Task<IActionResult> Index()
         {
             return View(await _context.Users.ToListAsync());
         }
 
-        // GET: USERS/Details/5
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
@@ -41,15 +39,11 @@ namespace appweb.Controllers.Mvc
             return View(user);
         }
 
-        // GET: USERS/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: USERS/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Fullname,Email,Password,Phone,Role,CreatedAt,Bookings")] User user)
@@ -63,7 +57,6 @@ namespace appweb.Controllers.Mvc
             return View(user);
         }
 
-        // GET: USERS/Edit/5
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
@@ -79,9 +72,6 @@ namespace appweb.Controllers.Mvc
             return View(user);
         }
 
-        // POST: USERS/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid? id, [Bind("Id,Fullname,Email,Password,Phone,Role,CreatedAt,Bookings")] User user)
@@ -114,7 +104,6 @@ namespace appweb.Controllers.Mvc
             return View(user);
         }
 
-        // GET: USERS/Delete/5
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)
@@ -132,7 +121,6 @@ namespace appweb.Controllers.Mvc
             return View(user);
         }
 
-        // POST: USERS/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid? id)

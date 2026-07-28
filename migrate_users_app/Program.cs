@@ -45,7 +45,6 @@ namespace MigrateUsers
                                 string email = reader.GetString(reader.GetOrdinal("email"));
                                 Console.WriteLine($"Migrating user: {email}");
 
-                                // Check if user exists on Somee
                                 string checkQuery = "SELECT COUNT(1) FROM Users WHERE user_id = @UserId";
                                 using (SqlCommand checkCommand = new SqlCommand(checkQuery, someeConnection))
                                 {
@@ -61,9 +60,9 @@ namespace MigrateUsers
                                         }
                                         string colNames = string.Join(", ", cols);
                                         string paramNames = string.Join(", ", cols.ConvertAll(c => "@" + c));
-                                        
+
                                         string insertQuery = $"INSERT INTO Users ({colNames}) VALUES ({paramNames})";
-                                        
+
                                         using (SqlCommand insertCommand = new SqlCommand(insertQuery, someeConnection))
                                         {
                                             for (int i = 0; i < reader.FieldCount; i++)
@@ -85,9 +84,9 @@ namespace MigrateUsers
                                                 sets.Add(reader.GetName(i) + " = @" + reader.GetName(i));
                                         }
                                         string setClause = string.Join(", ", sets);
-                                        
+
                                         string updateQuery = $"UPDATE Users SET {setClause} WHERE user_id = @user_id";
-                                            
+
                                         using (SqlCommand updateCommand = new SqlCommand(updateQuery, someeConnection))
                                         {
                                             for (int i = 0; i < reader.FieldCount; i++)

@@ -1,9 +1,6 @@
-/**
- * login.js — Xử lý form đăng nhập
- */
+
 import { login, isLoggedIn, getSession } from '../../auth/auth-services/authService.js?v=5';
 
-// Helper điều hướng theo role hoặc returnUrl
 function redirectAfterLogin(userRole) {
     const urlParams = new URLSearchParams(window.location.search);
     const returnUrl = urlParams.get('returnUrl') || urlParams.get('redirect');
@@ -20,7 +17,6 @@ function redirectAfterLogin(userRole) {
     }
 }
 
-// Redirect nếu đã đăng nhập từ trước
 if (isLoggedIn()) {
     const session = getSession();
     redirectAfterLogin(session?.role);
@@ -31,7 +27,6 @@ const errorBanner    = document.getElementById('form-error-banner');
 const passwordInput  = document.getElementById('password');
 const togglePassword = document.getElementById('togglePassword');
 
-// ── Toggle hiển thị mật khẩu ──────────────────────────────
 if (togglePassword && passwordInput) {
     togglePassword.addEventListener('click', function () {
         const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
@@ -40,7 +35,6 @@ if (togglePassword && passwordInput) {
     });
 }
 
-// ── Xử lý submit ──────────────────────────────────────────
 if (loginForm) {
     loginForm.addEventListener('submit', async function (e) {
         e.preventDefault();

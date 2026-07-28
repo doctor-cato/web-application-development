@@ -1,12 +1,9 @@
-/* ===== MOVIES PAGE STYLES ===== */
 
-/* --- PAGE CONTAINER --- */
 .movies-page {
     padding-top: 100px;
     min-height: 100vh;
 }
 
-/* --- BREADCRUMB --- */
 .breadcrumb {
     padding: 0 var(--page-padding);
     margin-bottom: 10px;
@@ -37,7 +34,6 @@
     font-weight: 500;
 }
 
-/* --- TABS --- */
 .page-tabs {
     padding: 0 var(--page-padding);
     margin-bottom: 35px;
@@ -88,7 +84,6 @@
     transform: scaleX(1);
 }
 
-/* --- FILTER BAR (Movies Page) --- */
 .movies-filters {
     padding: 0 var(--page-padding);
     margin-bottom: 40px;
@@ -172,7 +167,6 @@
     color: var(--text-muted);
 }
 
-/* --- MOVIE GRID (5 columns, wrapping) --- */
 .movies-grid-container {
     padding: 0 var(--page-padding);
 }
@@ -184,7 +178,6 @@
     margin-bottom: 50px;
 }
 
-/* --- MOVIE CARD (Movies Page variant) --- */
 .movies-grid .movie-card {
     min-width: 0;
     flex: unset;
@@ -212,7 +205,6 @@
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
 }
 
-/* --- POSTER HOVER OVERLAY --- */
 .movies-grid .poster-overlay {
     position: absolute;
     inset: 0;
@@ -283,7 +275,6 @@
     color: #fff;
 }
 
-/* Age badge on top-left of poster */
 .poster .age-badge-overlay {
     position: absolute;
     top: 10px;
@@ -315,7 +306,6 @@
     background: #3498db;
 }
 
-/* Movie info below poster */
 .movies-grid .info {
     padding: 0 2px;
 }
@@ -385,9 +375,6 @@
     letter-spacing: 0.5px;
 }
 
-
-
-/* --- LOAD MORE BUTTON --- */
 .load-more-container {
     display: flex;
     justify-content: center;
@@ -427,13 +414,10 @@
     transform: translateY(3px);
 }
 
-/* --- PLACEHOLDER --- */
 .movies-grid .poster.placeholder {
     background: linear-gradient(135deg, #111 0%, #222 100%);
 }
 
-/* --- RESPONSIVE ADJUSTMENTS --- */
-/* ponytail: responsive layout fixes for movie search page */
 @media (max-width: 1200px) {
     .movies-grid { grid-template-columns: repeat(4, 1fr); }
 }

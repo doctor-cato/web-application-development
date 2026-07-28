@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="3HD2K Cinema - Trải nghiệm hệ thống đặt vé xem phim trực tuyến hàng đầu. Đặt vé nhanh chóng, chọn ghế real-time, nhiều ưu đãi và tính năng ghép đôi Cine-Match.">
-    <!-- Open Graph / Social Media Meta Tags -->
+
     <meta property="og:type" content="website">
     <meta property="og:title" content="3HD2K - Premium Cinematic Experience">
     <meta property="og:description" content="Trải nghiệm hệ thống đặt vé xem phim trực tuyến hiện đại 3HD2K Cinema với giao diện ấn tượng, thanh toán tiện lợi và ưu đãi độc quyền.">
@@ -15,18 +15,18 @@
     <title>3HD2K - Premium Cinematic Experience | Hệ Thống Đặt Vé Phim Trực Tuyến</title>
     <link rel="stylesheet" href="/shared/css/main.css">
     <link rel="stylesheet" href="/explore/home-page/home.css?v=14">
-    <!-- Load custom fonts: Inter for Headings, Inter for Body -->
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
-    <!-- FontAwesome for Icons -->
+
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
     <div id="navbar-placeholder"></div>
 
     <main>
-        <!-- HERO SECTION -->
+
         <section class="hero" id="hero-section">
             <div class="hero-bg-overlay" id="hero-bg-overlay"></div>
             <div class="hero-hover-zone left-zone" id="hero-prev" role="button" aria-label="Phim trước đó">
@@ -47,7 +47,6 @@
             </div>
         </section>
 
-        <!-- FILTER BAR -->
         <section class="filters-container">
             <div class="filters glass-panel">
                 <div class="filter-item">
@@ -71,7 +70,6 @@
             </div>
         </section>
 
-        <!-- NOW SHOWING -->
         <section class="movie-section">
             <div class="section-header">
                 <h2>PHIM ĐANG CHIẾU</h2>
@@ -81,7 +79,6 @@
             </div>
         </section>
 
-        <!-- COMING SOON -->
         <section class="movie-section">
             <div class="section-header">
                 <h2>PHIM SẮP CHIẾU</h2>
@@ -91,9 +88,8 @@
             </div>
         </section>
 
-        <!-- FEATURE ZONES -->
         <section class="features-section">
-            <!-- Cine Predict -->
+
             <div class="feature-card cinepredict glass-panel" style="background: linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0.2)), url('/engagement/minigame/images/cine_predict_hero_2.png') center/cover no-repeat;">
                 <div class="feature-content">
                     <i class="fas fa-chart-line feature-icon" style="color: var(--primary-red); font-size: 2rem; margin-bottom: 10px;"></i>
@@ -104,7 +100,6 @@
             </div>
         </section>
 
-        <!-- REWARDS -->
         <section class="rewards-section glass-panel">
             <div class="rewards-info">
                 <h2 class="rewards-title"><i class="fas fa-star" style="color:var(--primary-red); margin-right: 8px;"></i>3HD2K REWARDS</h2>
@@ -116,7 +111,7 @@
             </div>
         </section>
         <script>
-            // Sync home page rewards points with localStorage
+
             try {
                 const rd = JSON.parse(localStorage.getItem('3hd2k_rewards') || '{}');
                 const pts = rd.points || 0;
@@ -124,10 +119,9 @@
                 if (el) el.textContent = pts + ' PTS';
             } catch(_) {}
         </script>
-        <!-- FOOTER: Rendered via footer.js -->
+
     </main>
 
-    <!-- TRAILER MODAL -->
     <div id="trailer-modal" class="modal">
         <div class="modal-content">
             <span class="close-btn" id="close-modal">&times;</span>
@@ -135,7 +129,7 @@
                 <iframe referrerpolicy="strict-origin-when-cross-origin" id="trailer-video" src="" title="YouTube video player" frameborder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowfullscreen></iframe>
-                <!-- Fallback khi YouTube block embed -->
+
                 <div id="trailer-fallback" style="display:none; position:absolute; inset:0; background:#0a0a0a; display:none; flex-direction:column; align-items:center; justify-content:center; gap:20px; border-radius:8px;">
                     <div style="font-size:3rem;">&#9654;</div>
                     <p style="color:rgba(255,255,255,0.7); font-family:'Inter',sans-serif; font-size:0.95rem; text-align:center; max-width:300px; line-height:1.6;">Video kh&#244;ng th&#7875; ph&#225;t tr&#7921;c ti&#7871;p.<br>Xem trailer tr&#234;n YouTube:</p>
@@ -150,7 +144,7 @@
     </div>
 
     <div id="footer-placeholder"></div>
-    <!-- Nhúng components -->
+
     <script type="module" src="/shared/components/navbar.js"></script>
     <script type="module" src="/shared/components/footer.js"></script>
     <script src="/shared/js/data.js"></script>
