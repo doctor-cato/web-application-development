@@ -219,44 +219,36 @@ function joinFirebaseQueue() {
         }
     });
 
-    // Chủ động tìm kiếm người khác
-    queueRef.on('child_added', (snapshot) => {
-        const partner = snapshot.val();
-        if (!partner || partner.userId === state.userId || partner.matchRoomId) return;
+    // Lắng nghe lời mời từ người khác
+    myQueueRef.child('invites').on('child_added', (snapshot) => {
+        const inviteData = snapshot.val();
+        const inviteKey = snapshot.key;
+        if (inviteData && typeof window.showInvitePopup === 'function') {
+            window.showInvitePopup(inviteData, inviteKey);
+        }
+    });
 
-        const genreMatch = partner.genre === state.preferences.genre || partner.genre === 'all' || state.preferences.genre === 'all';
-        const moodMatch = partner.mood === state.preferences.mood || partner.mood === 'any' || state.preferences.mood === 'any';
+    // Cập nhật danh sách sảnh chờ
+    queueRef.on('value', (snapshot) => {
+        const queueObj = snapshot.val() || {};
+        const candidates = [];
+        
+        Object.keys(queueObj).forEach(key => {
+            const partner = queueObj[key];
+            if (!partner || partner.userId === state.userId || partner.matchRoomId) return;
 
-        if (genreMatch && moodMatch) {
-            // Ngăn chặn race condition: chỉ người có userId nhỏ hơn mới tạo phòng
-            if (state.userId < partner.userId) {
-                // Tìm thấy!
-                queueRef.off('child_added'); // Dừng tìm kiếm
-                
-                const roomId = 'room_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
-                
-                database.ref('cinematch-rooms/' + roomId).set({
-                    user1: { userId: state.userId, userName: state.userName },
-                    user2: { userId: partner.userId, userName: partner.userName },
-                    user1Accepted: false,
-                    user2Accepted: false,
-                    createdAt: firebase.database.ServerValue.TIMESTAMP
-                }).then(() => {
-                    // Báo cho đối tác
-                    queueRef.child(partner.userId.replace(/[.#$\[\]]/g, '_')).update({
-                        matchRoomId: roomId,
-                        isUser1: false,
-                        partnerData: myData
-                    });
+            const genreMatch = partner.genre === state.preferences.genre || partner.genre === 'all' || state.preferences.genre === 'all';
+            const moodMatch = partner.mood === state.preferences.mood || partner.mood === 'any' || state.preferences.mood === 'any';
 
-                    // Báo cho chính mình (sẽ trigger listener on('value') ở trên)
-                    myQueueRef.update({
-                        matchRoomId: roomId,
-                        isUser1: true,
-                        partnerData: partner
-                    });
-                });
+            if (genreMatch && moodMatch) {
+                partner._key = key;
+                candidates.push(partner);
             }
+        });
+        
+        if (state.roomId) return;
+        if (typeof window.renderLobby === 'function') {
+            window.renderLobby(candidates);
         }
     });
 }
@@ -265,9 +257,9 @@ function leaveFirebaseQueue() {
     if (!database) return;
     if (myQueueRef) {
         myQueueRef.remove();
-        myQueueRef.off('value');
+        myQueueRef.off();
     }
-    queueRef?.off('child_added');
+    queueRef?.off('value');
 }
 
 function setupRoomListeners() {
