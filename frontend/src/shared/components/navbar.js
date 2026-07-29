@@ -149,7 +149,7 @@ export function renderNavbar() {
 }
 
 .nav-links a.active {
-    color: var(--primary-red);
+    color: #ff4b4b;
     font-weight: bold;
 }
 
@@ -515,7 +515,7 @@ export function renderNavbar() {
 .search-pill span {
     font-family: 'Inter', sans-serif;
     font-size: 1rem;
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.7);
     white-space: nowrap;
     transition: max-width 0.4s ease, opacity 0.3s ease, color 0.3s ease, margin-left 0.4s ease;
     max-width: 100px;
