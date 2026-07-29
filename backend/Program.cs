@@ -49,15 +49,25 @@ builder.Services.AddScoped<appweb.Repositories.BookingRepository>();
 builder.Services.AddScoped<appweb.Repositories.ShowtimeRepository>();
 builder.Services.AddScoped<appweb.Repositories.CinemaRepository>();
 
+builder.Services.AddHostedService<appweb.Services.SeatCleanupService>();
+
 var app = builder.Build();
+
+using var scope = app.Services.CreateScope();
+var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+Action<string> trySql = sql => {
+    try { context.Database.ExecuteSqlRaw(sql); }
+    catch (Exception ex) { Console.WriteLine($"SQL Error: {ex.Message} for {sql}"); }
+};
+trySql("ALTER TABLE Seats ADD Status NVARCHAR(50) DEFAULT 'Available' NOT NULL;");
+trySql("ALTER TABLE Seats ADD HeldByUserId NVARCHAR(MAX) NULL;");
+trySql("ALTER TABLE Seats ADD HeldUntil DATETIME2 NULL;");
+trySql("ALTER TABLE Seats ADD RowVersion rowversion NOT NULL;");
 
 if (builder.Configuration.GetValue<bool>("Database:InitializeOnStartup"))
 {
-    using var scope = app.Services.CreateScope();
     try
     {
-        var services = scope.ServiceProvider;
-        var context = services.GetRequiredService<ApplicationDbContext>();
         DbInitializer.Initialize(context);
     }
     catch (Exception ex)
@@ -100,5 +110,6 @@ app.MapControllers();
 
 app.MapHub<appweb.Hubs.NotificationHub>("/notificationHub");
 app.MapHub<appweb.Hubs.CineMatchHub>("/cinematchHub");
+app.MapHub<appweb.Hubs.SeatHub>("/seatHub");
 
 app.Run();

@@ -1,5 +1,5 @@
 
-import { getSeatMap, lockSeat, unlockSeat, subscribeSeatUpdates, closeSeatSyncChannel } from './bookingService.js';
+import { getSeatMap, lockSeat, unlockSeat, subscribeSeatUpdates, closeSeatSyncChannel, initSignalR } from './bookingService.js';
 import { renderSeatGrid, updateSeat, getSelectedSeats, getSeatType, setGroupSize, setCineMatchMode, getCineMatchAdjacentSeat } from '../../shared/components/seatGrid.js';
 import { saveCheckout } from '../../shared/utils/storage.js';
 import { requireAuth } from '../../shared/utils/authGuard.js';
@@ -150,6 +150,7 @@ async function init() {
   renderMovieInfo();
 
   const seatMap = getSeatMap(currentShowtimeId);
+  initSignalR(currentShowtimeId);
   const container = document.getElementById('seat-grid');
 
   try {

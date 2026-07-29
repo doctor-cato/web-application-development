@@ -15,6 +15,15 @@ public partial class Seat
 
     public string? SeatType { get; set; }
 
+    public string Status { get; set; } = "Available"; // Available, Held, Booked
+    
+    public string? HeldByUserId { get; set; }
+    
+    public DateTime? HeldUntil { get; set; }
+    
+    [System.ComponentModel.DataAnnotations.Timestamp]
+    public byte[]? RowVersion { get; set; }
+
     public virtual ICollection<BookingDetail> BookingDetails { get; set; } = new List<BookingDetail>();
 
     public virtual Room? Room { get; set; }

@@ -1,132 +1,101 @@
-
 import { lsGet, lsSet, getBookings, saveBookings, KEYS } from '../../shared/utils/storage.js';
+import { API_BASE_URL, getHeaders } from '../../shared/utils/apiConfig.js?v=4';
 
-const LOCK_DURATION_MS = 15 * 60 * 1000;
-let channel = null;
+let connection = null;
+let currentRoomId = null;
+let seatUpdateCallback = null;
 
-function getChannel() {
-  if (!channel) {
+const getSignalRUrl = () => {
     try {
-      channel = new BroadcastChannel('seat_sync');
+        const url = new URL(API_BASE_URL);
+        return `${url.protocol}//${url.host}/seatHub`;
     } catch (e) {
-      console.warn('BroadcastChannel initialization warning:', e);
+        return 'https://localhost:7198/seatHub'; // Fallback
     }
-  }
-  return channel;
-}
+};
 
-function makeBookingId() {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  let result = '';
-  for (let i = 0; i < 8; i++) {
-    result += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return 'bk_' + result;
-}
+export async function initSignalR(roomId) {
+    if (!window.signalR) {
+        console.error("SignalR is not loaded!");
+        return;
+    }
 
-function _getLocksMap() {
-  return lsGet(KEYS.SEAT_LOCKS, {});
-}
+    currentRoomId = roomId;
 
-function _saveLocksMap(m) {
-  lsSet(KEYS.SEAT_LOCKS, m);
+    connection = new signalR.HubConnectionBuilder()
+        .withUrl(getSignalRUrl())
+        .withAutomaticReconnect()
+        .build();
+
+    connection.on("SeatSelected", (seatId, userId) => {
+        if (seatUpdateCallback) {
+            seatUpdateCallback({ type: 'seat_locked', seatId, userId, showtimeId: roomId });
+        }
+    });
+
+    connection.on("SeatReleased", (seatId) => {
+        if (seatUpdateCallback) {
+            seatUpdateCallback({ type: 'seat_unlocked', seatId, showtimeId: roomId });
+        }
+    });
+
+    connection.on("SeatBooked", (seatId) => {
+        if (seatUpdateCallback) {
+            seatUpdateCallback({ type: 'seat_booked', seatId, showtimeId: roomId });
+        }
+    });
+
+    connection.on("SeatSelectionFailed", (seatId, reason) => {
+        alert(`Không thể chọn ghế ${seatId}: ${reason}`);
+        if (seatUpdateCallback) {
+            seatUpdateCallback({ type: 'seat_unlocked', seatId, showtimeId: roomId });
+        }
+    });
+
+    try {
+        await connection.start();
+        console.log("SignalR Connected.");
+        await connection.invoke("JoinRoom", roomId);
+    } catch (err) {
+        console.error("SignalR Connection Error: ", err);
+    }
 }
 
 export function subscribeSeatUpdates(callback) {
-  const ch = getChannel();
-  if (ch) {
-    ch.onmessage = (event) => {
-      callback(event.data);
-    };
-  }
+    seatUpdateCallback = callback;
 }
 
 export function closeSeatSyncChannel() {
-  if (channel) {
-    try {
-      channel.onmessage = null;
-      channel.close();
-    } catch (e) {
-      console.warn('Error closing seat_sync channel:', e);
-    } finally {
-      channel = null;
+    if (connection && currentRoomId) {
+        connection.invoke("LeaveRoom", currentRoomId).then(() => {
+            connection.stop();
+        }).catch(err => console.error(err));
     }
-  }
 }
 
 export function getSeatMap(showtimeId) {
-  const map = _getLocksMap();
-  const result = (map[showtimeId] && { ...map[showtimeId] }) || {};
-
-  const bookings = getBookings();
-  bookings.forEach(b => {
-    if (b.showtimeId === showtimeId && b.status !== 'Cancelled') {
-      (b.seats || []).forEach(seatId => {
-        result[seatId] = { seatId, status: 'booked', bookingId: b.id };
-      });
-    }
-  });
-
-  return result;
+    return {}; // Rely on SignalR or separate API fetch for initial state
 }
 
 export function lockSeat(showtimeId, seatId, userId) {
-
-  const bookings = getBookings();
-  const isBooked = bookings.some(b => b.status !== 'Cancelled' && b.showtimeId === showtimeId && (b.seats || []).includes(seatId));
-  if (isBooked) return false;
-
-  const map = _getLocksMap();
-  map[showtimeId] = map[showtimeId] || {};
-  if (map[showtimeId][seatId]) return false;
-
-  const expiresAt = Date.now() + LOCK_DURATION_MS;
-  map[showtimeId][seatId] = { seatId, userId, expiresAt };
-  _saveLocksMap(map);
-
-  try { getChannel()?.postMessage({ type: 'seat_locked', showtimeId, seatId, userId, expiresAt }); } catch (e) {}
-
-  setTimeout(() => {
-    const m = _getLocksMap();
-    if (m[showtimeId] && m[showtimeId][seatId] && m[showtimeId][seatId].expiresAt <= Date.now()) {
-      delete m[showtimeId][seatId];
-      _saveLocksMap(m);
-      try { getChannel()?.postMessage({ type: 'seat_unlocked', showtimeId, seatId }); } catch (e) {}
+    if (connection && connection.state === signalR.HubConnectionState.Connected) {
+        connection.invoke("SelectSeat", showtimeId, seatId, userId).catch(err => console.error(err));
+        return true; // Optimistic UI update
     }
-  }, LOCK_DURATION_MS + 1000);
-
-  return true;
+    return false;
 }
 
 export function unlockSeat(showtimeId, seatId, userId) {
-  const map = _getLocksMap();
-  if (map[showtimeId] && map[showtimeId][seatId]) {
-    delete map[showtimeId][seatId];
-    _saveLocksMap(map);
-    try { getChannel()?.postMessage({ type: 'seat_unlocked', showtimeId, seatId }); } catch (e) {}
-    return true;
-  }
-  return false;
+    if (connection && connection.state === signalR.HubConnectionState.Connected) {
+        connection.invoke("ReleaseSeat", showtimeId, seatId).catch(err => console.error(err));
+        return true;
+    }
+    return false;
 }
 
 export function releaseExpiredLocks() {
-  const map = _getLocksMap();
-  const now = Date.now();
-  let changed = false;
-  Object.keys(map).forEach(showId => {
-    Object.keys(map[showId]).forEach(seat => {
-      if (map[showId][seat].expiresAt <= now) {
-        delete map[showId][seat];
-        try { getChannel()?.postMessage({ type: 'seat_unlocked', showtimeId: showId, seatId: seat }); } catch (e) {}
-        changed = true;
-      }
-    });
-    if (Object.keys(map[showId]).length === 0) delete map[showId];
-  });
-  if (changed) _saveLocksMap(map);
+    // Handled by backend SeatCleanupService
 }
-
-import { API_BASE_URL, getHeaders } from '../../shared/utils/apiConfig.js?v=4';
 
 export async function confirmBooking(checkoutData) {
   try {
@@ -154,52 +123,14 @@ export async function confirmBooking(checkoutData) {
 
     if (response.ok) {
         const data = await response.json();
-        const finalId = data.bookingId || checkoutData.id || makeBookingId();
-
-        const booking = {
-            id: finalId,
-            movieTitle: checkoutData.movieTitle || 'Unknown Movie',
-            showtimeId: checkoutData.showtimeId || null,
-            showtimeText: checkoutData.showtimeText || checkoutData.selectedShowtime || '',
-            room: checkoutData.room || '',
-            seats: seatsArr,
-            tickets: perSeatTickets,
-            combo: checkoutData.combo || 'none',
-            total: payload.TotalPrice,
-            userId: checkoutData.userId || null,
-            transactionId: checkoutData.transactionId || null,
-            paymentMethod: checkoutData.paymentMethod || null,
-            poster: checkoutData.poster || '',
-            createdAt: checkoutData.createdAt || new Date().toISOString()
-        };
-
-        const map = _getLocksMap();
-        (booking.seats || []).forEach(s => {
-          if (map[booking.showtimeId] && map[booking.showtimeId][s]) {
-            delete map[booking.showtimeId][s];
-          }
-          try { getChannel()?.postMessage({ type: 'seat_booked', showtimeId: booking.showtimeId, seatId: s }); } catch (e) {}
-        });
-        _saveLocksMap(map);
-
-        if (checkoutData.customFood && checkoutData.customFood.length > 0) {
-            let appOrders = JSON.parse(localStorage.getItem("cinema_app_orders")) || [];
-            let itemsText = checkoutData.customFood.map(item => `${item.qty}x ${item.name}`).join(", ");
-            let userName = localStorage.getItem('userName') || 'Khách Vãng Lai';
-            let userPhone = localStorage.getItem('userPhone') || 'N/A';
-
-            appOrders.unshift({
-                id: 'APP-' + Math.random().toString(36).substr(2, 6).toUpperCase(),
-                customerName: userName,
-                phone: userPhone,
-                items: checkoutData.customFood.map(f => ({ prodId: f.id || 'f1', qty: f.qty })),
-                itemsText: itemsText,
-                timestamp: new Date().toISOString()
-            });
-            localStorage.setItem("cinema_app_orders", JSON.stringify(appOrders));
+        
+        if (connection && connection.state === signalR.HubConnectionState.Connected) {
+            for (const s of seatsArr) {
+                await connection.invoke("ConfirmBooking", checkoutData.showtimeId, s);
+            }
         }
 
-        return booking;
+        return data;
     } else {
         console.error('Booking failed at backend');
         return null;
@@ -218,8 +149,7 @@ export async function getUserBookings(userId) {
       headers: getHeaders()
     });
     if (response.ok) {
-      const data = await response.json();
-      return data;
+      return await response.json();
     }
   } catch (err) {
     console.error(err);
