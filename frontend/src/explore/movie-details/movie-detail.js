@@ -205,6 +205,74 @@ function selectDate(idx) {
     renderCinemaShowtimes();
 }
 
+function isShowtimeForCinema(s, cinema) {
+    if (!s || !cinema) return false;
+    const cId = String(cinema.id || '').toLowerCase().trim();
+    const cName = (cinema.name || '').toLowerCase().trim();
+
+    const sCinemaId = (s.cinemaId || (s.room ? s.room.cinemaId : '') || '').toLowerCase().trim();
+    const sCinemaName = (s.cinemaName || '').toLowerCase().trim();
+
+    if (sCinemaId && sCinemaId === cId) return true;
+    if (sCinemaName && cName && (sCinemaName.includes(cName) || cName.includes(sCinemaName))) return true;
+
+    const map = {
+        'ha-dong': ['ha-dong', 'c1', 'hà đông'],
+        'c1': ['ha-dong', 'c1', 'hà đông'],
+        'le-trong-tan': ['le-trong-tan', 'c2', 'lê trọng tấn'],
+        'c2': ['le-trong-tan', 'c2', 'lê trọng tấn'],
+        'cau-giay': ['cau-giay', 'c3', 'cầu giấy'],
+        'c3': ['cau-giay', 'c3', 'cầu giấy'],
+        'my-dinh': ['my-dinh', 'c4', 'mỹ đình'],
+        'c4': ['my-dinh', 'c4', 'mỹ đình'],
+        'lang-ha': ['lang-ha', 'c5', 'láng hạ'],
+        'c5': ['lang-ha', 'c5', 'láng hạ'],
+        'royal-city': ['royal-city', 'c6', 'royal'],
+        'c6': ['royal-city', 'c6', 'royal']
+    };
+
+    const keys = map[cId] || [];
+    return keys.some(k => sCinemaId.includes(k) || sCinemaName.includes(k));
+}
+
+function isShowtimeForMovie(s, movie) {
+    if (!s || !movie) return false;
+    const mIdStr = String(movie.id || '').toLowerCase().trim();
+    const stIdStr = String(s.movieId || '').toLowerCase().trim();
+    if (stIdStr && stIdStr === mIdStr) return true;
+
+    const mTitle = (movie.title || '').toLowerCase().trim();
+    const stTitle = (s.movieTitle || '').toLowerCase().trim();
+    if (mTitle && stTitle && (mTitle === stTitle || mTitle.includes(stTitle) || stTitle.includes(mTitle))) {
+        return true;
+    }
+    return false;
+}
+
+function isSameDay(stDateOrIso, targetDate) {
+    if (!stDateOrIso || !targetDate) return false;
+
+    const tYear = targetDate.getFullYear();
+    const tMonth = String(targetDate.getMonth() + 1).padStart(2, '0');
+    const tDay = String(targetDate.getDate()).padStart(2, '0');
+    const targetYMD = `${tYear}-${tMonth}-${tDay}`;
+
+    if (typeof stDateOrIso === 'string') {
+        const datePart = stDateOrIso.split('T')[0];
+        if (datePart === targetYMD) return true;
+
+        const parsed = new Date(stDateOrIso.includes('T') ? stDateOrIso : `${stDateOrIso}T00:00:00`);
+        if (!isNaN(parsed.getTime())) {
+            const pYear = parsed.getFullYear();
+            const pMonth = String(parsed.getMonth() + 1).padStart(2, '0');
+            const pDay = String(parsed.getDate()).padStart(2, '0');
+            const parsedYMD = `${pYear}-${pMonth}-${pDay}`;
+            if (parsedYMD === targetYMD) return true;
+        }
+    }
+    return false;
+}
+
 function renderCinemaShowtimes() {
     const listEl = document.getElementById('cinema-showtime-list');
     if (!listEl || !currentMovie) return;
@@ -229,7 +297,19 @@ function renderCinemaShowtimes() {
 
     const currentMovieShowtimes = window.currentMovieShowtimes || [];
 
+    const now = new Date();
+    const targetDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    targetDate.setDate(targetDate.getDate() + (typeof selectedDateIndex !== 'undefined' ? selectedDateIndex : 0));
+
     const cinemaCards = filteredCinemas.map(cinema => {
+        const matchingShowtimes = currentMovieShowtimes.filter(s => {
+            return isShowtimeForMovie(s, currentMovie) &&
+                   isShowtimeForCinema(s, cinema) &&
+                   isSameDay(s.date || s.startTime, targetDate);
+        });
+
+        if (matchingShowtimes.length === 0) return '';
+
         const formatsToShow = selectedFormat === 'all'
             ? movieFormats
             : movieFormats.filter(f => f === selectedFormat);
@@ -237,48 +317,36 @@ function renderCinemaShowtimes() {
         if (formatsToShow.length === 0) return '';
 
         const formatRows = formatsToShow.map(fmt => {
-            const now = new Date();
-            const targetDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-            targetDate.setDate(targetDate.getDate() + (typeof selectedDateIndex !== 'undefined' ? selectedDateIndex : 0));
-            const targetDateStr = targetDate.toLocaleDateString('vi-VN');
-
-            const rawShowtimes = currentMovieShowtimes.filter(s => {
-                return s.room && s.room.cinemaId === cinema.id && new Date(s.startTime).toLocaleDateString('vi-VN') === targetDateStr;
+            matchingShowtimes.sort((a, b) => {
+                const timeA = a.time || (a.startTime ? a.startTime.split('T')[1]?.substring(0,5) : '00:00');
+                const timeB = b.time || (b.startTime ? b.startTime.split('T')[1]?.substring(0,5) : '00:00');
+                return timeA.localeCompare(timeB);
             });
 
-            if (rawShowtimes.length === 0) return '';
+            const btns = matchingShowtimes.map(st => {
+                const timeStr = st.time || (st.startTime ? st.startTime.split('T')[1]?.substring(0,5) : '12:00');
+                let status = 'available';
 
-            const showtimes = rawShowtimes.map(s => {
-                 return { time: new Date(s.startTime).toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit'}), status: 'available' };
-            });
-            const btns = showtimes.map(st => {
-                let status = st.status;
-                if (typeof selectedDateIndex !== 'undefined') {
-                    const [h, m] = st.time.split(':').map(Number);
-                    const now = new Date();
-
+                if (typeof selectedDateIndex !== 'undefined' && selectedDateIndex === 0) {
+                    const [h, m] = timeStr.split(':').map(Number);
                     const showDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), h, m, 0);
-                    showDate.setDate(showDate.getDate() + selectedDateIndex);
-
-                    const lockTime = new Date(showDate.getTime() + 60 * 60000);
-                    if (now >= lockTime) {
+                    if (now >= showDate) {
                         status = 'past';
                     }
                 }
 
                 if (status === 'full' || status === 'past') {
                     const title = status === 'full' ? 'Hết vé' : 'Đã chiếu';
-                    return `<span class="showtime-btn ${status}" title="${title}">${st.time}</span>`;
+                    return `<span class="showtime-btn ${status}" title="${title}">${timeStr}</span>`;
                 }
                 return `<a href="#" class="showtime-btn ${status}"
                             title="${status === 'almost-full' ? 'Sắp hết vé' : 'Còn vé'}"
-                            onclick="handleBooking(event, '${cinema.name}', '${fmt}', '${st.time}')">
-                            ${st.time}
+                            onclick="handleBooking(event, '${cinema.name}', '${fmt}', '${timeStr}', '${st.id}')">
+                            ${timeStr}
                         </a>`;
             }).join('');
 
-            const formatLabel = fmt === '2D Lồng tiếng' ? fmt :
-                `${fmt} Phụ đề`;
+            const formatLabel = fmt === '2D Lồng tiếng' ? fmt : `${fmt} Phụ đề`;
 
             return `
                 <div class="format-showtime-row">
@@ -306,13 +374,13 @@ function renderCinemaShowtimes() {
                 <div class="cinema-showtime-formats">${formatRows}</div>
             </div>
         `;
-    }).join('');
+    }).filter(c => c.trim() !== '').join('');
 
     if (cinemaCards.trim() === '') {
         listEl.innerHTML = `
             <div style="padding:40px;text-align:center;color:var(--text-muted);">
                 <i class="fas fa-calendar-times" style="font-size:2.5rem;opacity:0.4;margin-bottom:12px;"></i>
-                <p>Không tìm thấy suất chiếu phù hợp.</p>
+                <p style="margin-top:8px;">Chưa có suất chiếu nào được xếp cho phim này tại cụm rạp đã chọn vào ngày này.</p>
             </div>
         `;
     } else {
@@ -320,13 +388,13 @@ function renderCinemaShowtimes() {
     }
 }
 
-function handleBooking(event, cinemaName, format, time) {
+function handleBooking(event, cinemaName, format, time, showtimeId) {
     event.preventDefault();
     if (!window.requireAuth('Bạn cần đăng nhập để đặt vé xem phim. Hãy đăng nhập hoặc tạo tài khoản để tiếp tục.')) return;
     showToast(`🎬 Đang chuyển đến trang đặt vé: ${cinemaName} — ${format} lúc ${time}`);
     setTimeout(() => {
         localStorage.removeItem('checkoutFood');
-        let targetUrl = `../../booking/seat-booking/booking.html?id=${currentMovie.id}&showtimeId=${time}`;
+        let targetUrl = `../../booking/seat-booking/booking.html?id=${currentMovie.id}&showtimeId=${showtimeId || time}`;
         if (new URLSearchParams(window.location.search).get('cinematch') === 'true' || localStorage.getItem('cinematch_active') === 'true') {
             targetUrl += '&cinematch=true';
         }

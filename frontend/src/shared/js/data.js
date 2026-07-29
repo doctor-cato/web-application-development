@@ -225,7 +225,7 @@ window.fetchMoviesPromise = fetchMovies().catch(() => getFallbackMovies());
 function getFallbackCinemas() {
     return [
         {
-            id: 'c1',
+            id: 'ha-dong',
             name: '3HD2K HÀ ĐÔNG',
             address: 'Tầng 5, AEON Mall Hà Đông, Dương Nội, Quận Hà Đông, Hà Nội',
             distance: '0.5 KM',
@@ -235,7 +235,7 @@ function getFallbackCinemas() {
             lng: 105.7580
         },
         {
-            id: 'c2',
+            id: 'le-trong-tan',
             name: '3HD2K LÊ TRỌNG TẤN',
             address: 'Tầng 4, Trung tâm TM Hồ Gươm Plaza, 102 Trần Phú, Quận Hà Đông, Hà Nội',
             distance: '2.1 KM',
@@ -245,7 +245,7 @@ function getFallbackCinemas() {
             lng: 105.7850
         },
         {
-            id: 'c3',
+            id: 'cau-giay',
             name: '3HD2K CẦU GIẤY',
             address: 'Tầng 3, 241 Xuân Thủy, Dịch Vọng Hậu, Cầu Giấy, Hà Nội',
             distance: '2.0 KM',
@@ -255,7 +255,7 @@ function getFallbackCinemas() {
             lng: 105.7820
         },
         {
-            id: 'c4',
+            id: 'my-dinh',
             name: '3HD2K MỸ ĐÌNH',
             address: 'Tầng 2, Keangnam Landmark 72, Phạm Hùng, Nam Từ Liêm, Hà Nội',
             distance: '5.3 KM',
@@ -265,7 +265,7 @@ function getFallbackCinemas() {
             lng: 105.7840
         },
         {
-            id: 'c5',
+            id: 'lang-ha',
             name: '3HD2K LÁNG HẠ',
             address: '88 Láng Hạ, Đống Đa, Hà Nội',
             distance: '1.7 KM',
@@ -275,7 +275,7 @@ function getFallbackCinemas() {
             lng: 105.8120
         },
         {
-            id: 'c6',
+            id: 'royal-city',
             name: '3HD2K ROYAL CITY',
             address: 'Tầng B2, Vincom Mega Mall Royal City, 72A Nguyễn Trãi, Thanh Xuân, Hà Nội',
             distance: '7.8 KM',
@@ -321,6 +321,71 @@ async function fetchCinemas() {
 }
 window.fetchCinemasPromise = fetchCinemas().catch(() => getFallbackCinemas());
 
+function getInitialSeedShowtimes() {
+    const today = new Date();
+    const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+    
+    return [
+        {
+            id: "st_seed_odyssey_1",
+            movieId: "6dba413d-5eb9-498c-8797-89f64d920032",
+            movieTitle: "The Odyssey",
+            cinemaId: "ha-dong",
+            cinemaName: "3HD2K HÀ ĐÔNG",
+            roomName: "Phòng IMAX",
+            date: todayStr,
+            time: "08:00",
+            price: 100000
+        },
+        {
+            id: "st_seed_yourname_1",
+            movieId: "your-name",
+            movieTitle: "YOUR NAME - TÊN CẬU LÀ GÌ",
+            cinemaId: "ha-dong",
+            cinemaName: "3HD2K HÀ ĐÔNG",
+            roomName: "Phòng chiếu 1",
+            date: todayStr,
+            time: "10:00",
+            price: 80000
+        },
+        {
+            id: "st_seed_backrooms_1",
+            movieId: "backrooms",
+            movieTitle: "BACKROOMS - Thực Thể Quỷ Quyết",
+            cinemaId: "ha-dong",
+            cinemaName: "3HD2K HÀ ĐÔNG",
+            roomName: "Phòng chiếu 2",
+            date: todayStr,
+            time: "14:00",
+            price: 80000
+        }
+    ];
+}
+
+function normalizeShowtime(s) {
+    const cId = s.cinemaId || (s.room ? s.room.cinemaId : 'ha-dong');
+    const cName = s.cinemaName || (s.room ? s.room.cinemaName : '3HD2K HÀ ĐÔNG');
+    const rName = s.roomName || (s.room ? s.room.name : 'Phòng chiếu 1');
+    const dStr = s.date || (s.startTime ? s.startTime.split('T')[0] : new Date().toISOString().split('T')[0]);
+    const tStr = s.time || (s.startTime ? s.startTime.split('T')[1]?.substring(0,5) : '12:00');
+    const isoStart = s.startTime || `${dStr}T${tStr}:00`;
+
+    return {
+        ...s,
+        id: s.id || ('st_' + Math.random().toString(36).substr(2, 9)),
+        movieId: s.movieId ? String(s.movieId) : '',
+        movieTitle: s.movieTitle || '',
+        cinemaId: cId,
+        cinemaName: cName,
+        roomName: rName,
+        room: { cinemaId: cId, name: rName },
+        date: dStr,
+        time: tStr,
+        startTime: isoStart,
+        price: s.price || 80000
+    };
+}
+
 function getFallbackShowtimes(movieId) {
     const showtimes = [];
     const now = new Date();
@@ -348,8 +413,14 @@ function getFallbackShowtimes(movieId) {
                 showtimes.push({
                     id: Math.random().toString(36).substr(2,9),
                     movieId: movieId,
-                    room: { cinemaId: cinema.id },
-                    startTime: st.toISOString()
+                    cinemaId: cinema.id,
+                    cinemaName: cinema.name,
+                    roomName: 'Phòng chiếu 1',
+                    room: { cinemaId: cinema.id, name: 'Phòng chiếu 1' },
+                    date: st.toISOString().split('T')[0],
+                    time: st.toTimeString().substring(0,5),
+                    startTime: st.toISOString(),
+                    price: 80000
                 });
             });
         });
@@ -358,16 +429,46 @@ function getFallbackShowtimes(movieId) {
 }
 
 async function fetchShowtimesByMovie(movieId) {
+    const targetIdStr = String(movieId || '').toLowerCase().trim();
+
     try {
         const response = await fetch(`/api/showtimes/movie/${movieId}`);
         if (response.ok) {
             const data = await response.json();
-            if (Array.isArray(data) && data.length > 0) return data;
+            if (Array.isArray(data) && data.length > 0) return data.map(normalizeShowtime);
         }
     } catch (e) {
-        console.error("Failed to fetch showtimes:", e);
+        console.error("Failed to fetch showtimes from API:", e);
     }
-    return getFallbackShowtimes(movieId);
+
+    try {
+        let localStr = localStorage.getItem('3hd2k_showtimes');
+        if (!localStr) {
+            const seeds = getInitialSeedShowtimes();
+            localStorage.setItem('3hd2k_showtimes', JSON.stringify(seeds));
+            localStr = JSON.stringify(seeds);
+        }
+
+        const localList = JSON.parse(localStr || '[]');
+        if (Array.isArray(localList) && localList.length > 0) {
+            const matching = localList.filter(s => {
+                const stIdStr = String(s.movieId || '').toLowerCase().trim();
+                if (stIdStr && stIdStr === targetIdStr) return true;
+                if (window.allMoviesData) {
+                    const targetMovie = window.allMoviesData.find(m => String(m.id).toLowerCase().trim() === targetIdStr);
+                    if (targetMovie && s.movieTitle && s.movieTitle.toLowerCase().trim() === targetMovie.title.toLowerCase().trim()) {
+                        return true;
+                    }
+                }
+                return false;
+            });
+            return matching.map(normalizeShowtime);
+        }
+    } catch (e) {
+        console.error("Failed to load local showtimes:", e);
+    }
+
+    return getFallbackShowtimes(movieId).map(normalizeShowtime);
 }
 window.fetchShowtimesByMovie = fetchShowtimesByMovie;
 
