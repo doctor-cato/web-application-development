@@ -393,8 +393,8 @@ function triggerTabRenders(tabId) {
     switch (tabId) {
         case 'dashboard': renderDashboard(); break;
         case 'movies': renderMoviesTable(); break;
-        case 'showtimes': populateCinemaDropdowns(); renderShowtimesTable(); renderAvailabilityMatrix(); break;
-        case 'rooms': populateRoomDropdown(); loadRoomSeatMap(); break;
+        case 'showtimes': renderShowtimesTable(); break;
+        case 'rooms': populateRoomDropdown(); loadBrokenSeats(); break;
         case 'bookings': renderBookingsTable(); break;
         case 'combos': renderCombosTable(); break;
         case 'users': renderUsersTable(); break;
@@ -1137,221 +1137,86 @@ function populateRoomDropdown() {
     });
 }
 
-function loadRoomSeatMap() {
+function loadBrokenSeats() {
     const roomKey = document.getElementById('room-select')?.value;
-    if (!roomKey) return;
+    const tbody = document.getElementById('broken-seats-table-body');
+    if (!roomKey || !tbody) return;
 
-    const parts = roomKey.split('_');
-    const cinemaId = parts[0] || '';
-    const roomName = parts[1] || '';
+    // Load from db.roomLayouts or just display empty if no layout config exists yet
+    const layout = db.roomLayouts[roomKey] || { brokenSeats: [] };
+    const brokenSeats = layout.brokenSeats || [];
 
-    const showtimeSelect = document.getElementById('room-showtime-select');
-    if (showtimeSelect) {
-        const matchingShowtimes = db.showtimes.filter(s =>
-            (s.cinemaId === cinemaId || s.cinemaName?.includes(cinemaId)) &&
-            (s.roomName === roomName || roomName.includes(s.roomName))
-        );
+    tbody.innerHTML = '';
 
-        showtimeSelect.innerHTML = `<option value="all">Tất cả suất chiếu trong ngày (Ghế đã đặt thực tế)</option>` +
-            matchingShowtimes.map(st => `<option value="${st.id}">${st.movieTitle} (${st.time} - ${st.date})</option>`).join('');
+    if (brokenSeats.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-muted); padding: 20px;">Phòng này không có ghế nào đang bảo trì</td></tr>`;
+        return;
     }
 
-    const layout = db.roomLayouts[roomKey] || { rows: 8, cols: 12, vipRows: [4,5], doubleRows: [7], brokenSeats: [] };
-    currentRoomRows = layout.rows;
-    currentRoomCols = layout.cols;
-    currentVipRows = layout.vipRows || [];
-    currentDoubleRows = layout.doubleRows || [];
-    currentBrokenSeats = layout.brokenSeats || [];
-
-    const rowsInput = document.getElementById('room-rows');
-    const colsInput = document.getElementById('room-cols');
-    if (rowsInput) rowsInput.value = currentRoomRows;
-    if (colsInput) colsInput.value = currentRoomCols;
-
-    renderSeatingGrid();
-}
-
-function renderSeatingGrid() {
-    const grid = document.getElementById('admin-seating-grid');
-    if (!grid) return;
-
-    const roomKey = document.getElementById('room-select')?.value || '';
     const parts = roomKey.split('_');
-    const cinemaId = parts[0] || '';
+    const cinemaName = db.cinemas.find(c => c.id === parts[0])?.name || parts[0];
     const roomName = parts[1] || '';
-    const selectedShowtimeId = document.getElementById('room-showtime-select')?.value || 'all';
 
-    // Cross-reference real-time booked seats for this room and showtime
-    const bookedSeatMap = {};
-    let allBookings = db.bookings || [];
-    try {
-        const storedBk = JSON.parse(localStorage.getItem('3hd2k_bookings') || localStorage.getItem('bookings') || '[]');
-        if (Array.isArray(storedBk) && storedBk.length > 0) {
-            allBookings = [...allBookings, ...storedBk];
-        }
-    } catch (_) {}
-
-    allBookings.forEach(b => {
-        if (b.status !== 'Cancelled') {
-            const matchesCinema = !b.cinemaId || b.cinemaId === cinemaId || cinemaId === '' || b.cinemaId === 'all';
-            const matchesRoom = !b.roomName || b.roomName === roomName || roomName.includes(b.roomName) || b.roomName.includes(roomName);
-            const matchesShowtime = selectedShowtimeId === 'all' || b.showtimeId === selectedShowtimeId || (b.showtime && b.showtime.includes(selectedShowtimeId));
-
-            if (matchesCinema && matchesRoom && matchesShowtime) {
-                const seatsList = Array.isArray(b.seats) ? b.seats : (typeof b.seats === 'string' ? b.seats.split(',') : []);
-                seatsList.forEach(s => {
-                    const rawSeat = s.trim().toUpperCase();
-                    if (rawSeat) {
-                        const rowLetter = rawSeat.charAt(0);
-                        const seatNum = parseInt(rawSeat.substring(1), 10);
-                        const cleanSeat = `${rowLetter}${seatNum}`;
-                        bookedSeatMap[cleanSeat] = b.customerName || b.username || 'Khách hàng';
-                        bookedSeatMap[rawSeat] = b.customerName || b.username || 'Khách hàng';
-                    }
-                });
-            }
-        }
+    brokenSeats.forEach(seatCode => {
+        tbody.innerHTML += `
+            <tr>
+                <td>${cinemaName} - ${roomName}</td>
+                <td><strong>${seatCode}</strong></td>
+                <td><span class="badge badge-red">Đang bảo trì</span></td>
+                <td>
+                    <button class="btn-mini" style="border-color: var(--btn-cyan-color); color: var(--btn-cyan-color);" onclick="removeBrokenSeat('${roomKey}', '${seatCode}')" title="Mở khóa ghế này"><i class="fas fa-unlock"></i></button>
+                </td>
+            </tr>
+        `;
     });
-
-    grid.style.display = 'flex';
-    grid.style.flexDirection = 'column';
-    grid.style.alignItems = 'center';
-    grid.style.width = '100%';
-    grid.innerHTML = '';
-
-    const gridContainer = document.createElement('div');
-    gridContainer.className = 'seat-grid-container';
-    gridContainer.style.cssText = 'display:flex; flex-direction:column; align-items:center; width:100%; gap:0.75rem;';
-
-    for (let r = 0; r < currentRoomRows; r++) {
-        const rowLabel = String.fromCharCode(65 + r);
-        const rowEl = document.createElement('div');
-        rowEl.className = 'seat-row-wrapper';
-        rowEl.style.cssText = 'display:flex; align-items:center; justify-content:center; gap:0.75rem; width:100%;';
-
-        const labelStart = document.createElement('div');
-        labelStart.className = 'seat-row-label text-right';
-        labelStart.style.cssText = 'width:1.5rem; font-size:0.875rem; color:var(--text-muted); font-weight:bold; text-align:right;';
-        labelStart.innerText = rowLabel;
-        rowEl.appendChild(labelStart);
-
-        const seatsContainer = document.createElement('div');
-        seatsContainer.className = 'seat-row-seats';
-        seatsContainer.style.cssText = 'display:flex; flex-wrap:nowrap; justify-content:center; gap:0.5rem;';
-
-        const isCoupleRow = currentDoubleRows.includes(r);
-        const numSeats = isCoupleRow ? Math.max(6, Math.floor(currentRoomCols / 2)) : currentRoomCols;
-
-        for (let c = 1; c <= numSeats; c++) {
-            const seatCode = `${rowLabel}${c}`;
-            const seatCodePadded = `${rowLabel}${c.toString().padStart(2, '0')}`;
-            const isBooked = !!bookedSeatMap[seatCode] || !!bookedSeatMap[seatCodePadded];
-            const isBroken = currentBrokenSeats.includes(seatCode) || currentBrokenSeats.includes(seatCodePadded);
-            const isVip = currentVipRows.includes(r);
-
-            const seatBtn = document.createElement('div');
-            seatBtn.className = 'seat';
-
-            if (isBooked) {
-                seatBtn.classList.add('seat--booked');
-                seatBtn.title = `Đã được đặt thực tế bởi: ${bookedSeatMap[seatCode] || bookedSeatMap[seatCodePadded]}`;
-                seatBtn.innerText = seatCode;
-                seatBtn.addEventListener('click', () => {
-                    showToast(`Ghế ${seatCode} đã được đặt thực tế!`, 'warning');
-                });
-            } else if (isBroken) {
-                seatBtn.classList.add('seat--locked');
-                seatBtn.title = `Ghế Khóa/Hỏng: ${seatCode}`;
-                seatBtn.innerText = '✕';
-                seatBtn.addEventListener('click', () => toggleSeatProperty(seatCode, r));
-            } else if (isCoupleRow) {
-                seatBtn.classList.add('seat--available', 'seat--couple');
-                seatBtn.innerText = seatCode;
-                seatBtn.addEventListener('click', () => toggleSeatProperty(seatCode, r));
-            } else if (isVip) {
-                seatBtn.classList.add('seat--available', 'seat--vip');
-                seatBtn.innerText = seatCode;
-                seatBtn.addEventListener('click', () => toggleSeatProperty(seatCode, r));
-            } else {
-                seatBtn.classList.add('seat--available');
-                seatBtn.innerText = seatCode;
-                seatBtn.addEventListener('click', () => toggleSeatProperty(seatCode, r));
-            }
-
-            seatsContainer.appendChild(seatBtn);
-
-            // Aisle gap in middle
-            if (c === Math.floor(numSeats / 2)) {
-                const aisle = document.createElement('div');
-                aisle.className = 'seat-aisle';
-                aisle.style.width = '2rem';
-                seatsContainer.appendChild(aisle);
-            }
-        }
-
-        rowEl.appendChild(seatsContainer);
-
-        const labelEnd = document.createElement('div');
-        labelEnd.className = 'seat-row-label text-left';
-        labelEnd.style.cssText = 'width:1.5rem; font-size:0.875rem; color:var(--text-muted); font-weight:bold; text-align:left;';
-        labelEnd.innerText = rowLabel;
-        rowEl.appendChild(labelEnd);
-
-        gridContainer.appendChild(rowEl);
-    }
-
-    grid.appendChild(gridContainer);
 }
 
-function toggleSeatProperty(seatCode, rowIndex) {
-    if (activeSeatType === 'broken') {
-        if (currentBrokenSeats.includes(seatCode)) {
-            currentBrokenSeats = currentBrokenSeats.filter(s => s !== seatCode);
-        } else {
-            currentBrokenSeats.push(seatCode);
-        }
-    } else if (activeSeatType === 'vip') {
-        currentBrokenSeats = currentBrokenSeats.filter(s => s !== seatCode);
-        if (!currentVipRows.includes(rowIndex)) {
-            currentVipRows.push(rowIndex);
-            currentDoubleRows = currentDoubleRows.filter(r => r !== rowIndex);
-        } else {
-            currentVipRows = currentVipRows.filter(r => r !== rowIndex);
-        }
-    } else if (activeSeatType === 'double') {
-        currentBrokenSeats = currentBrokenSeats.filter(s => s !== seatCode);
-        if (!currentDoubleRows.includes(rowIndex)) {
-            currentDoubleRows.push(rowIndex);
-            currentVipRows = currentVipRows.filter(r => r !== rowIndex);
-        } else {
-            currentDoubleRows = currentDoubleRows.filter(r => r !== rowIndex);
+function updateSeatStatus() {
+    const roomKey = document.getElementById('room-select')?.value;
+    const seatIdInput = document.getElementById('maintenance-seat-id');
+    const statusSelect = document.getElementById('maintenance-seat-status');
+    
+    if (!roomKey || !seatIdInput || !statusSelect) return;
+
+    const seatCode = seatIdInput.value.trim().toUpperCase();
+    const status = statusSelect.value;
+
+    if (!seatCode) {
+        showToast('Vui lòng nhập mã ghế!', 'error');
+        return;
+    }
+
+    // Initialize layout if missing
+    if (!db.roomLayouts[roomKey]) {
+        db.roomLayouts[roomKey] = { rows: 8, cols: 12, vipRows: [4,5], doubleRows: [7], brokenSeats: [] };
+    }
+    
+    let brokenSeats = db.roomLayouts[roomKey].brokenSeats || [];
+
+    if (status === 'broken') {
+        if (!brokenSeats.includes(seatCode)) {
+            brokenSeats.push(seatCode);
         }
     } else {
-        currentBrokenSeats = currentBrokenSeats.filter(s => s !== seatCode);
-        currentVipRows = currentVipRows.filter(r => r !== rowIndex);
-        currentDoubleRows = currentDoubleRows.filter(r => r !== rowIndex);
+        brokenSeats = brokenSeats.filter(s => s !== seatCode);
     }
-    renderSeatingGrid();
+
+    db.roomLayouts[roomKey].brokenSeats = brokenSeats;
+    localStorage.setItem('3hd2k_rooms_layouts', JSON.stringify(db.roomLayouts));
+    
+    seatIdInput.value = '';
+    showToast(`Đã cập nhật trạng thái ghế ${seatCode} thành công!`, 'success');
+    loadBrokenSeats();
 }
 
-function updateRoomGridSize() {
-    currentRoomRows = parseInt(document.getElementById('room-rows').value) || 8;
-    currentRoomCols = parseInt(document.getElementById('room-cols').value) || 12;
-    renderSeatingGrid();
-}
-
-function saveCurrentRoomLayout() {
-    const roomKey = document.getElementById('room-select').value;
-    if (roomKey) {
-        db.roomLayouts[roomKey] = {
-            rows: currentRoomRows,
-            cols: currentRoomCols,
-            vipRows: currentVipRows,
-            doubleRows: currentDoubleRows,
-            brokenSeats: currentBrokenSeats
-        };
-        localStorage.setItem('3hd2k_rooms_layouts', JSON.stringify(db.roomLayouts));
-        showToast("Đã lưu sơ đồ cấu hình ghế thành công!", "success");
+function removeBrokenSeat(roomKey, seatCode) {
+    if (confirm(`Bạn có chắc muốn mở khóa ghế ${seatCode}?`)) {
+        if (db.roomLayouts[roomKey] && db.roomLayouts[roomKey].brokenSeats) {
+            db.roomLayouts[roomKey].brokenSeats = db.roomLayouts[roomKey].brokenSeats.filter(s => s !== seatCode);
+            localStorage.setItem('3hd2k_rooms_layouts', JSON.stringify(db.roomLayouts));
+            showToast(`Đã mở khóa ghế ${seatCode}`, 'success');
+            loadBrokenSeats();
+        }
     }
 }
 

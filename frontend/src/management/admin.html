@@ -1490,102 +1490,55 @@
                 </div>
             </section>
 
-            <section id="tab-content-rooms" class="tab-section">
-                <div class="room-management-grid">
+                <div class="room-maintenance-container" style="max-width: 800px; margin: 0 auto;">
+                    <div class="glass-panel" style="padding: 30px;">
+                        <h3><i class="fas fa-tools"></i> Bảo trì & Quản lý ghế</h3>
+                        <p class="text-muted" style="margin-bottom: 25px;">Cập nhật trạng thái ghế (Bình thường / Hỏng) cho các phòng chiếu. Cấu trúc phòng được quản lý mặc định bởi hệ thống.</p>
 
-                    <div class="room-config-panel glass-panel">
-                        <h3><i class="fas fa-cog"></i> Cấu hình phòng chiếu</h3>
-                        <p class="text-muted" style="font-size: 0.8125rem; margin-bottom: 20px;">Chọn phòng và thay đổi cấu hình số lượng ghế, hàng ghế.</p>
-
-                        <div class="form-group">
+                        <div class="form-group" style="margin-bottom: 20px;">
                             <label for="room-select">Chọn phòng chiếu:</label>
-                            <select id="room-select" onchange="loadRoomSeatMap()">
-
+                            <select id="room-select" class="form-control" onchange="loadBrokenSeats()">
+                                <!-- Options will be loaded dynamically -->
                             </select>
                         </div>
 
-                        <div class="form-group" style="margin-top: 10px;">
-                            <label for="room-showtime-select" style="color: var(--btn-cyan-color);"><i class="fas fa-clock"></i> Suất chiếu thời gian thực:</label>
-                            <select id="room-showtime-select" onchange="renderSeatingGrid()">
-                                <option value="all">Tất cả suất chiếu trong ngày (Ghế đã đặt thực tế)</option>
-                            </select>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="room-rows">Hàng ghế (Row A-K):</label>
-                                <input type="number" id="room-rows" min="4" max="15" value="8">
+                        <div class="form-row" style="display: flex; gap: 15px; margin-bottom: 20px;">
+                            <div class="form-group" style="flex: 1;">
+                                <label for="maintenance-seat-id">Mã ghế (Ví dụ: C4):</label>
+                                <input type="text" id="maintenance-seat-id" class="form-control" placeholder="Nhập mã ghế..." style="text-transform: uppercase;">
                             </div>
-                            <div class="form-group">
-                                <label for="room-cols">Số ghế mỗi hàng:</label>
-                                <input type="number" id="room-cols" min="6" max="20" value="12">
+                            <div class="form-group" style="flex: 1;">
+                                <label for="maintenance-seat-status">Trạng thái:</label>
+                                <select id="maintenance-seat-status" class="form-control">
+                                    <option value="available">Bình thường (Mở bán)</option>
+                                    <option value="broken">Hỏng / Khóa (Bảo trì)</option>
+                                </select>
                             </div>
                         </div>
 
-                        <button class="btn btn-primary" style="width: 100%; margin-top: 10px;" onclick="updateRoomGridSize()">
-                            <i class="fas fa-save"></i> Cập nhật kích thước phòng
+                        <button class="btn btn-primary" style="width: 100%; margin-bottom: 30px;" onclick="updateSeatStatus()">
+                            <i class="fas fa-save"></i> Cập nhật trạng thái ghế
                         </button>
 
                         <hr style="border: none; border-top: 1px solid var(--glass-border); margin: 25px 0;">
 
-                        <h3><i class="fas fa-paint-roller"></i> Phân loại ghế</h3>
-                        <p class="text-muted" style="font-size: 0.8125rem; margin-bottom: 15px;">Chọn loại ghế dưới đây, sau đó nhấn trực tiếp lên sơ đồ ghế bên phải để thay đổi phân loại.</p>
-
-                        <div class="seat-type-selector">
-                            <div class="type-btn active" data-type="standard">
-                                <span class="seat-indicator standard"></span>
-                                <div>
-                                    <p class="type-name">Ghế Thường</p>
-                                    <p class="type-price">Giá gốc (80k - 100k)</p>
-                                </div>
-                            </div>
-                            <div class="type-btn" data-type="vip">
-                                <span class="seat-indicator vip"></span>
-                                <div>
-                                    <p class="type-name">Ghế VIP</p>
-                                    <p class="type-price">Phụ thu +30%</p>
-                                </div>
-                            </div>
-                            <div class="type-btn" data-type="double">
-                                <span class="seat-indicator double"></span>
-                                <div>
-                                    <p class="type-name">Ghế Đôi</p>
-                                    <p class="type-price">Giá x2 phòng đôi</p>
-                                </div>
-                            </div>
-                            <div class="type-btn" data-type="broken">
-                                <span class="seat-indicator broken"></span>
-                                <div>
-                                    <p class="type-name">Hỏng / Khóa</p>
-                                    <p class="type-price">Không thể đặt</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <button class="btn btn-outline" style="width: 100%; margin-top: 20px; border-color: var(--glass-border);" onclick="saveCurrentRoomLayout()">
-                            <i class="fas fa-check-circle"></i> Lưu thiết kế ghế
-                        </button>
-                    </div>
-
-                    <div class="room-map-panel glass-panel">
-                        <div class="map-header">
-                            <h3 id="room-map-title">Sơ đồ ghế Phòng Chiếu</h3>
-                            <div class="screen-label">MÀN HÌNH CHẤT LƯỢNG CAO</div>
-                            <div class="screen-line"></div>
-                        </div>
-
-                        <div class="seating-grid-wrapper">
-                            <div class="seating-grid" id="admin-seating-grid">
-
-                            </div>
-                        </div>
-
-                        <div class="map-legend">
-                            <div class="legend-item"><span class="seat seat--available" style="width:24px;height:24px;display:inline-flex;font-size:8px;"></span> Ghế Thường</div>
-                            <div class="legend-item"><span class="seat seat--available seat--vip" style="width:24px;height:24px;display:inline-flex;font-size:8px;"></span> Ghế VIP</div>
-                            <div class="legend-item"><span class="seat seat--available seat--couple" style="width:40px;height:24px;display:inline-flex;font-size:8px;"></span> Ghế Đôi</div>
-                            <div class="legend-item"><span class="seat seat--locked" style="width:24px;height:24px;display:inline-flex;font-size:10px;">✕</span> Khóa/Hỏng</div>
-                            <div class="legend-item"><span class="seat seat--booked" style="width:24px;height:24px;display:inline-flex;"></span> Đã đặt (Đang chiếu)</div>
+                        <h4><i class="fas fa-clipboard-list"></i> Danh sách ghế đang bảo trì</h4>
+                        <div class="table-responsive" style="margin-top: 15px;">
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>Phòng</th>
+                                        <th>Mã ghế</th>
+                                        <th>Trạng thái hiện tại</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="broken-seats-table-body">
+                                    <tr>
+                                        <td colspan="4" style="text-align: center; color: var(--text-muted);">Không có dữ liệu</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
