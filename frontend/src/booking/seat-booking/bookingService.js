@@ -23,7 +23,9 @@ export async function initSignalR(roomId) {
     currentRoomId = roomId;
 
     connection = new signalR.HubConnectionBuilder()
-        .withUrl(getSignalRUrl())
+        .withUrl(getSignalRUrl(), {
+            accessTokenFactory: () => localStorage.getItem('jwt_token') || ''
+        })
         .withAutomaticReconnect()
         .build();
 

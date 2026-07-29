@@ -1,12 +1,15 @@
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 using appweb.Infrastructure;
 using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Linq;
 
 namespace appweb.Hubs;
 
+[Authorize]
 public class SeatHub : Hub
 {
     private readonly ApplicationDbContext _dbContext;
@@ -30,6 +33,9 @@ public class SeatHub : Hub
     {
         if (!Guid.TryParse(seatIdStr, out var seatId)) return;
 
+        // Use authenticated user identity instead of trusting client-sent userId
+        var authenticatedUser = Context.User?.FindFirst(ClaimTypes.Email)?.Value ?? userId;
+
         var seat = await _dbContext.Seats.FindAsync(seatId);
         if (seat == null || seat.Status != "Available")
         {
@@ -38,7 +44,7 @@ public class SeatHub : Hub
         }
 
         seat.Status = "Held";
-        seat.HeldByUserId = userId;
+        seat.HeldByUserId = authenticatedUser;
         seat.HeldUntil = DateTime.UtcNow.AddMinutes(5);
 
         try
@@ -57,7 +63,9 @@ public class SeatHub : Hub
         if (!Guid.TryParse(seatIdStr, out var seatId)) return;
 
         var seat = await _dbContext.Seats.FindAsync(seatId);
-        if (seat != null && seat.Status == "Held")
+        var currentUser = Context.User?.FindFirst(ClaimTypes.Email)?.Value;
+
+        if (seat != null && seat.Status == "Held" && seat.HeldByUserId == currentUser)
         {
             seat.Status = "Available";
             seat.HeldByUserId = null;
@@ -73,7 +81,10 @@ public class SeatHub : Hub
         if (!Guid.TryParse(seatIdStr, out var seatId)) return;
 
         var seat = await _dbContext.Seats.FindAsync(seatId);
-        if (seat != null)
+        var currentUser = Context.User?.FindFirst(ClaimTypes.Email)?.Value;
+
+        // Only the user who held the seat can confirm it
+        if (seat != null && seat.HeldByUserId == currentUser)
         {
             seat.Status = "Booked";
             await _dbContext.SaveChangesAsync();

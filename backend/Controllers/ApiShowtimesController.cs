@@ -1,5 +1,6 @@
 using appweb.Models;
 using appweb.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace appweb.Controllers
@@ -37,6 +38,7 @@ namespace appweb.Controllers
             return Ok(showtime);
         }
 
+        [Authorize(Roles = "ADMIN")]
         [HttpPost]
         public async Task<IActionResult> CreateShowtime([FromBody] Showtime showtime)
         {
@@ -48,6 +50,7 @@ namespace appweb.Controllers
             return Ok(showtime);
         }
 
+        [Authorize(Roles = "ADMIN")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateShowtime(Guid id, [FromBody] Showtime showtime)
         {
@@ -63,6 +66,7 @@ namespace appweb.Controllers
             return Ok(existing);
         }
 
+        [Authorize(Roles = "ADMIN")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteShowtime(Guid id)
         {

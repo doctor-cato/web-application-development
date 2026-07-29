@@ -414,10 +414,8 @@ function renderRatings(movie) {
         starsLarge.innerHTML = renderStars(movie.rating);
     }
 
-    const imdbScore = (movie.rating * 2.0).toFixed(1);
-    const rtScore = Math.round(movie.rating * 20);
-    document.getElementById('imdb-score').textContent = `${imdbScore}/10`;
-    document.getElementById('rt-score').textContent = `${rtScore}%`;
+    // 👱‍♀️ ponytail: Removed fake third-party ratings (IMDb/RT) because YAGNI and they shouldn't be mathematically derived from our internal ratings.
+    // Upgrade path: Fetch real scores from OMDb or TMDB API when needed.
 
     if (currentReviews.length === 0 && typeof mockReviews !== 'undefined') {
         currentReviews = [...mockReviews];

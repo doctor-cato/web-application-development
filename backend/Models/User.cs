@@ -62,6 +62,9 @@ namespace appweb.Models
         [Column("vip_plan")]
         public string? VipPlan { get; set; }
 
+        [Column("points")]
+        public int Points { get; set; } = 0;
+
         [System.Text.Json.Serialization.JsonIgnore]
         public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
     }

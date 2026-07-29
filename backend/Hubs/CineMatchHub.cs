@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
@@ -23,6 +24,7 @@ namespace appweb.Hubs
         public bool User2Accepted { get; set; }
     }
 
+    [Authorize]
     public class CineMatchHub : Hub
     {
 

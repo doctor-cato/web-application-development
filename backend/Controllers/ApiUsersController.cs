@@ -19,6 +19,7 @@ namespace appweb.Controllers
             _userRepository = userRepository;
         }
 
+        [Authorize(Roles = "ADMIN")]
         [HttpGet]
         public async Task<IActionResult> GetUsers()
         {
@@ -72,6 +73,7 @@ namespace appweb.Controllers
             return Ok(new { message = "Role updated successfully", role = user.Role });
         }
 
+        [Authorize(Roles = "ADMIN,STAFF")]
         [HttpPost("add-points")]
         public async Task<IActionResult> AddUserPoints([FromBody] AddPointsDto dto)
         {

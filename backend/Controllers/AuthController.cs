@@ -9,9 +9,10 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using System.Net;
 using System.Net.Mail;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
+using System.Text;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authorization;
 
 namespace appweb.Controllers
@@ -100,53 +101,32 @@ namespace appweb.Controllers
             bool isPasswordValid = false;
             if (!string.IsNullOrEmpty(user.Password))
             {
-                try
+                if (user.Password.StartsWith("$2a$") || user.Password.StartsWith("$2b$") || user.Password.StartsWith("$2y$"))
                 {
-                    if (user.Password.StartsWith("$2a$") || user.Password.StartsWith("$2b$") || user.Password.StartsWith("$2y$"))
+                    // Legacy BCrypt hash — verify then re-hash to modern format
+                    isPasswordValid = BCrypt.Net.BCrypt.Verify(model.Password, user.Password);
+                    if (isPasswordValid)
                     {
-                        isPasswordValid = BCrypt.Net.BCrypt.Verify(model.Password, user.Password);
-                    }
-                    else
-                    {
-
-                        isPasswordValid = (user.Password == model.Password);
-                        if (isPasswordValid)
-                        {
-
-                            user.Password = BCrypt.Net.BCrypt.HashPassword(model.Password);
-                            await _userRepository.UpdateAsync(user);
-                        }
+                        user.Password = BCrypt.Net.BCrypt.HashPassword(model.Password);
+                        await _userRepository.UpdateAsync(user);
                     }
                 }
-                catch
+                else
                 {
-                    isPasswordValid = (user.Password == model.Password);
+                    // Modern BCrypt hash (re-hashed accounts)
+                    try { isPasswordValid = BCrypt.Net.BCrypt.Verify(model.Password, user.Password); }
+                    catch { isPasswordValid = false; }
                 }
             }
 
             if (!isPasswordValid)
                 return Unauthorized(new { message = "Tài khoản hoặc mật khẩu không chính xác." });
 
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, user.Email),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.Role ?? "CUSTOMER")
-            };
-
-            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-            await HttpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme,
-                new ClaimsPrincipal(claimsIdentity),
-                new AuthenticationProperties
-                {
-                    IsPersistent = true,
-                    ExpiresUtc = DateTimeOffset.UtcNow.AddDays(30)
-                });
+            var token = GenerateJwtToken(user);
 
             return Ok(new {
                 message = "Đăng nhập thành công",
+                token,
                 user = new {
                     email = user.Email,
                     fullname = user.Fullname,
@@ -161,10 +141,34 @@ namespace appweb.Controllers
         }
 
         [HttpPost("logout")]
-        public async Task<IActionResult> Logout()
+        public IActionResult Logout()
         {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            // JWT is stateless — client simply discards the token
             return Ok(new { message = "Đăng xuất thành công" });
+        }
+
+        private string GenerateJwtToken(User user)
+        {
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.Name, user.Email),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Role, user.Role ?? "CUSTOMER")
+            };
+
+            var expireMinutes = int.Parse(_configuration["Jwt:ExpireMinutes"] ?? "1440");
+            var token = new JwtSecurityToken(
+                issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
+                claims: claims,
+                expires: DateTime.UtcNow.AddMinutes(expireMinutes),
+                signingCredentials: creds
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
         [HttpPost("forgot-password")]

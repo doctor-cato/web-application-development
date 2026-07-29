@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Concurrent;
 using System.Text.Json;
@@ -11,6 +12,7 @@ namespace appweb.Controllers
 
         private static ConcurrentDictionary<string, string> _groupOrders = new ConcurrentDictionary<string, string>();
 
+        [Authorize]
         [HttpPost("{orderId}")]
         public IActionResult SaveOrder(string orderId, [FromBody] JsonElement orderData)
         {

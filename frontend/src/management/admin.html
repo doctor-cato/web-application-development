@@ -1405,32 +1405,8 @@
                             <span>Thông báo</span>
                             <span class="mark-read" onclick="markAllRead(event)">Đánh dấu đã đọc</span>
                         </div>
-                        <div class="notification-item">
-                            <div class="notification-icon">
-                                <i class="fas fa-ticket-alt"></i>
-                            </div>
-                            <div class="notification-content">
-                                <span class="notification-title">Có 5 đơn đặt vé mới đang chờ xử lý</span>
-                                <span class="notification-time">5 phút trước</span>
-                            </div>
-                        </div>
-                        <div class="notification-item">
-                            <div class="notification-icon warning">
-                                <i class="fas fa-box-open"></i>
-                            </div>
-                            <div class="notification-content">
-                                <span class="notification-title">Kho hàng bắp rang bơ sắp hết</span>
-                                <span class="notification-time">1 giờ trước</span>
-                            </div>
-                        </div>
-                        <div class="notification-item">
-                            <div class="notification-icon error">
-                                <i class="fas fa-exclamation-triangle"></i>
-                            </div>
-                            <div class="notification-content">
-                                <span class="notification-title">Phát hiện lỗi thanh toán giao dịch #4892</span>
-                                <span class="notification-time">2 giờ trước</span>
-                            </div>
+                        <div id="admin-notif-list-container" style="max-height: 320px; overflow-y: auto; display: flex; flex-direction: column;">
+                            <!-- Notifications rendered dynamically -->
                         </div>
                     </div>
                 </div>

@@ -45,13 +45,67 @@ function showToast(message, type = 'info') {
     }, 3200);
 }
 
+// --- Notifications Logic (Ponytail minimal implementation) ---
+function getAdminNotifications() {
+    let notifs = JSON.parse(localStorage.getItem("admin_notifications"));
+    if (!notifs) {
+        // Init with mock data for UI visual parity
+        notifs = [
+            { id: "1", type: "info", title: "Có 5 đơn đặt vé mới đang chờ xử lý", time: "5 phút trước", unread: true },
+            { id: "2", type: "warning", title: "Kho hàng bắp rang bơ sắp hết", time: "1 giờ trước", unread: true },
+            { id: "3", type: "error", title: "Phát hiện lỗi thanh toán giao dịch #4892", time: "2 giờ trước", unread: true }
+        ];
+        localStorage.setItem("admin_notifications", JSON.stringify(notifs));
+    }
+    return notifs;
+}
+
+function renderAdminNotifications() {
+    const notifs = getAdminNotifications();
+    const unreadCount = notifs.filter(n => n.unread).length;
+    const badgeEl = document.getElementById("notification-badge");
+    if (badgeEl) {
+        badgeEl.textContent = unreadCount;
+        badgeEl.style.display = unreadCount > 0 ? "flex" : "none";
+    }
+
+    const listContainer = document.getElementById("admin-notif-list-container");
+    if (!listContainer) return;
+
+    if (notifs.length === 0) {
+        listContainer.innerHTML = `<div style="padding: 20px; text-align: center; color: var(--text-muted); font-size: 0.8rem; font-style: italic;">Chưa có thông báo mới</div>`;
+        return;
+    }
+
+    listContainer.innerHTML = notifs.map(n => {
+        let iconClass = n.type === 'warning' ? 'fas fa-box-open' : (n.type === 'error' ? 'fas fa-exclamation-triangle' : 'fas fa-ticket-alt');
+        let colorClass = n.type === 'warning' ? 'warning' : (n.type === 'error' ? 'error' : '');
+        let bgStyle = n.unread ? 'background: rgba(255, 255, 255, 0.05);' : '';
+        return `
+            <div class="notification-item" style="${bgStyle}">
+                <div class="notification-icon ${colorClass}">
+                    <i class="${iconClass}"></i>
+                </div>
+                <div class="notification-content">
+                    <span class="notification-title" style="${n.unread ? 'font-weight: 700;' : 'font-weight: 500;'}">${n.title}</span>
+                    <span class="notification-time">${n.time}</span>
+                </div>
+            </div>
+        `;
+    }).join("");
+}
+
 function toggleNotificationDropdown(event) {
     if (event) {
         event.stopPropagation();
     }
     const dropdown = document.getElementById('notificationDropdown');
     if (dropdown) {
+        const isHidden = !dropdown.classList.contains('active');
         dropdown.classList.toggle('active');
+        if (isHidden) {
+            renderAdminNotifications();
+        }
     }
 }
 
@@ -59,10 +113,10 @@ function markAllRead(event) {
     if (event) {
         event.stopPropagation();
     }
-    const badge = document.getElementById('notification-badge');
-    if (badge) {
-        badge.style.display = 'none';
-    }
+    const notifs = getAdminNotifications();
+    notifs.forEach(n => n.unread = false);
+    localStorage.setItem("admin_notifications", JSON.stringify(notifs));
+    renderAdminNotifications();
     showToast('Đã đánh dấu tất cả là đã đọc', 'success');
 }
 
@@ -1819,6 +1873,8 @@ function loadAdminPOSLogs() {
 
 // --- GLOBAL EVENT BINDINGS & INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', () => {
+    renderAdminNotifications(); // Initialize dynamic notifications
+
     // Menu tab click handlers
     document.querySelectorAll('.sidebar-menu .menu-item').forEach(btn => {
         btn.addEventListener('click', () => {

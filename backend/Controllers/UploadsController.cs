@@ -1,4 +1,5 @@
 using appweb.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -17,6 +18,7 @@ namespace appweb.Controllers
             _fileService = fileService;
         }
 
+        [Authorize]
         [HttpPost("image")]
         public async Task<IActionResult> UploadImage(IFormFile file)
         {

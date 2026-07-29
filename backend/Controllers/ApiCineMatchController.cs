@@ -1,5 +1,6 @@
 using appweb.Infrastructure;
 using appweb.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,6 +26,7 @@ namespace appweb.Controllers
             public string MatchPreference { get; set; } = "any";
         }
 
+        [Authorize]
         [HttpPost("create")]
         public async Task<IActionResult> CreateMatch([FromBody] CreateMatchRequest req)
         {
@@ -51,6 +53,7 @@ namespace appweb.Controllers
             public Guid UserId { get; set; }
         }
 
+        [Authorize]
         [HttpPost("join")]
         public async Task<IActionResult> JoinMatch([FromBody] JoinMatchRequest req)
         {
@@ -109,6 +112,7 @@ namespace appweb.Controllers
             public string Code { get; set; } = string.Empty;
         }
 
+        [Authorize]
         [HttpPost("reveal")]
         public async Task<IActionResult> RevealMatch([FromBody] RevealRequest req)
         {

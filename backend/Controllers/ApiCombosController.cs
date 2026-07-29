@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -31,6 +32,7 @@ namespace appweb.Controllers
             return Ok(item);
         }
 
+        [Authorize(Roles = "ADMIN")]
         [HttpPost]
         public IActionResult CreateCombo([FromBody] ComboDto dto)
         {
@@ -42,6 +44,7 @@ namespace appweb.Controllers
             return Ok(dto);
         }
 
+        [Authorize(Roles = "ADMIN")]
         [HttpPut("{id}")]
         public IActionResult UpdateCombo(string id, [FromBody] ComboDto dto)
         {
@@ -57,6 +60,7 @@ namespace appweb.Controllers
             return Ok(item);
         }
 
+        [Authorize(Roles = "ADMIN")]
         [HttpDelete("{id}")]
         public IActionResult DeleteCombo(string id)
         {
