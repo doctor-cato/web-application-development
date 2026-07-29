@@ -255,19 +255,23 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 30px;
-            min-height: 400px;
+            gap: 40px;
+            min-height: 450px;
+            position: relative;
         }
 
         .radar-wrapper {
             position: relative;
-            width: 300px;
-            height: 300px;
+            width: 320px;
+            height: 320px;
             border-radius: 50%;
-            background: rgba(0, 240, 255, 0.05);
-            border: 1px solid rgba(0, 240, 255, 0.2);
-            box-shadow: 0 0 30px rgba(0, 240, 255, 0.1);
+            background: radial-gradient(circle at center, rgba(255, 42, 95, 0.08) 0%, rgba(0, 240, 255, 0.02) 70%, transparent 100%);
+            border: 2px solid rgba(0, 240, 255, 0.15);
+            box-shadow: 0 0 50px rgba(0, 240, 255, 0.1), inset 0 0 40px rgba(255, 42, 95, 0.05);
             overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .radar-wrapper::before, .radar-wrapper::after {
@@ -276,31 +280,35 @@
             top: 50%; left: 50%;
             transform: translate(-50%, -50%);
             border-radius: 50%;
-            border: 1px solid rgba(0, 240, 255, 0.1);
+            border: 1px dashed rgba(0, 240, 255, 0.2);
+            pointer-events: none;
         }
 
-        .radar-wrapper::before { width: 200px; height: 200px; }
-        .radar-wrapper::after { width: 100px; height: 100px; }
+        .radar-wrapper::before { width: 220px; height: 220px; }
+        .radar-wrapper::after { width: 120px; height: 120px; border: 1px solid rgba(255, 42, 95, 0.2); }
 
         .radar-beam {
             position: absolute;
             top: 50%; left: 50%;
-            width: 150px;
-            height: 150px;
-            background: conic-gradient(from 0deg, transparent 70%, rgba(0, 240, 255, 0.5) 100%);
+            width: 160px;
+            height: 160px;
+            background: conic-gradient(from 0deg, rgba(0, 240, 255, 0) 60%, rgba(0, 240, 255, 0.1) 80%, rgba(0, 240, 255, 0.8) 100%);
             transform-origin: 0 0;
             animation: scan 2s linear infinite;
+            border-radius: 100% 0 0 0;
+            pointer-events: none;
         }
         
         .radar-center {
             position: absolute;
             top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            width: 20px;
-            height: 20px;
+            width: 16px;
+            height: 16px;
             background: var(--neon-cyan);
             border-radius: 50%;
-            box-shadow: 0 0 15px var(--neon-cyan);
+            box-shadow: 0 0 20px 5px var(--neon-cyan), 0 0 40px 10px rgba(255, 255, 255, 0.5);
+            z-index: 2;
         }
 
         .radar-ripple {
@@ -310,24 +318,58 @@
             width: 20px; height: 20px;
             border-radius: 50%;
             border: 2px solid var(--neon-cyan);
-            animation: ripple 2s linear infinite;
+            animation: ripple 2.5s cubic-bezier(0.25, 0.8, 0.25, 1) infinite;
+            pointer-events: none;
+        }
+        
+        .radar-ripple.delay {
+            animation-delay: 1.25s;
+        }
+
+        .match-avatar-node {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--neon-red), #ff6b6b);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 15px rgba(255, 42, 95, 0.5);
+            transform: translate(-50%, -50%) scale(0);
+            opacity: 0;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease;
+            z-index: 5;
+            border: 2px solid white;
         }
 
         .radar-status {
             text-align: center;
+            background: rgba(0,0,0,0.4);
+            padding: 15px 30px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
         #radar-status-text {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--neon-cyan);
-            margin-bottom: 10px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--text-light);
+            margin-bottom: 5px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            letter-spacing: 0.5px;
         }
 
         #radar-timer {
-            font-size: 1.5rem;
-            font-family: monospace;
-            color: var(--text-muted);
+            font-size: 1.8rem;
+            font-family: 'Courier New', Courier, monospace;
+            color: var(--neon-red);
+            font-weight: 700;
+            text-shadow: 0 0 15px rgba(255, 42, 95, 0.6);
         }
 
         .cancel-btn {
@@ -610,8 +652,8 @@
             100% { transform: rotate(360deg); }
         }
         @keyframes ripple {
-            0% { width: 20px; height: 20px; opacity: 1; border-width: 2px; }
-            100% { width: 300px; height: 300px; opacity: 0; border-width: 0px; }
+            0% { width: 16px; height: 16px; opacity: 1; border-width: 2px; }
+            100% { width: 320px; height: 320px; opacity: 0; border-width: 0px; }
         }
         @keyframes heartbeat {
             0% { transform: scale(1); }
@@ -788,6 +830,7 @@
                         <div class="radar-beam"></div>
                         <div class="radar-center"></div>
                         <div class="radar-ripple"></div>
+                        <div class="radar-ripple delay"></div>
                         <!-- Random nodes will be added here by JS -->
                     </div>
                     <div class="radar-status">
