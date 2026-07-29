@@ -45,6 +45,38 @@ function showToast(message, type = 'info') {
     }, 3200);
 }
 
+function toggleNotificationDropdown(event) {
+    if (event) {
+        event.stopPropagation();
+    }
+    const dropdown = document.getElementById('notificationDropdown');
+    if (dropdown) {
+        dropdown.classList.toggle('active');
+    }
+}
+
+function markAllRead(event) {
+    if (event) {
+        event.stopPropagation();
+    }
+    const badge = document.getElementById('notification-badge');
+    if (badge) {
+        badge.style.display = 'none';
+    }
+    showToast('Đã đánh dấu tất cả là đã đọc', 'success');
+}
+
+document.addEventListener('click', function(event) {
+    const dropdown = document.getElementById('notificationDropdown');
+    const notificationPill = document.querySelector('.notification-pill');
+    
+    if (dropdown && dropdown.classList.contains('active')) {
+        if (!notificationPill.contains(event.target)) {
+            dropdown.classList.remove('active');
+        }
+    }
+});
+
 async function fetchMovies() {
     let deletedList = [];
     try {

@@ -437,6 +437,50 @@ function initAvatarBorders() {
     }
 }
 
+function setupAvatarUpload() {
+    const avatarInput = document.getElementById('avatar-input');
+    const avatarImg = document.getElementById('sidebar-avatar');
+
+    if (!avatarInput || !avatarImg) return;
+
+    avatarInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const base64Str = event.target.result;
+            
+            avatarImg.src = base64Str;
+            
+            localStorage.setItem('userAvatar', base64Str);
+            
+            let session = null;
+            try {
+                session = getCurrentUser();
+            } catch(e) {}
+            
+            if (session) {
+                session.avatar = base64Str;
+                setCurrentUser(session);
+            }
+            
+            try {
+                const email = session ? session.email : localStorage.getItem('userEmail');
+                if (email) {
+                    const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+                    const foundIndex = users.findIndex(u => u.email === email);
+                    if (foundIndex !== -1) {
+                        users[foundIndex].avatar = base64Str;
+                        localStorage.setItem('registeredUsers', JSON.stringify(users));
+                    }
+                }
+            } catch(e) {}
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
 function initProfile() {
     try { initTabs(); } catch(e) { console.error('initTabs error:', e); }
     try { loadUserInfo(); } catch(e) { console.error('loadUserInfo error:', e); }
@@ -445,6 +489,7 @@ function initProfile() {
     try { renderRealHistory(); } catch(e) { console.error('renderRealHistory error:', e); }
     try { initLogout(); } catch(e) { console.error('initLogout error:', e); }
     try { initAvatarBorders(); } catch(e) { console.error('initAvatarBorders error:', e); }
+    try { setupAvatarUpload(); } catch(e) { console.error('setupAvatarUpload error:', e); }
 }
 
 if (document.readyState === 'loading') {
