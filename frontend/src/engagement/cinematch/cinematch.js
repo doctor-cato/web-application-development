@@ -30,7 +30,7 @@ let database, queueRef, roomRef;
 const state = {
     userId: null,
     userName: null,
-    preferences: { mood: 'any', genre: 'all', time: 'any', gender: 'any' },
+    preferences: { mood: 'any', genre: 'all', time: 'any', gender: 'any', cinema: 'any' },
     currentMatch: null,
     roomId: null,
     bothAccepted: false,
@@ -77,6 +77,7 @@ function cacheDom() {
         buttons: {
             start: document.getElementById('btn-start'),
             cancelSearch: document.getElementById('btn-cancel-search'),
+            leaveLobby: document.getElementById('btn-leave-lobby'),
             sendChat: document.getElementById('btn-send-chat')
         }
     };
@@ -94,6 +95,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Cache DOM refs
     cacheDom();
+
+    // Load Cinemas
+    loadCinemas();
 
     // Session check
     const session = getSession();
@@ -138,6 +142,36 @@ function initFirebase() {
         console.log("Firebase initialized for CineMatch");
     } catch (e) {
         console.error("Firebase init error:", e);
+    }
+}
+
+// ============================================================
+// API
+// ============================================================
+async function loadCinemas() {
+    try {
+        const res = await fetch('/api/cinemas');
+        if (res.ok) {
+            const data = await res.json();
+            const container = document.getElementById('pref-cinema');
+            if (!container) return;
+            
+            data.forEach(cinema => {
+                const card = document.createElement('div');
+                card.className = 'pref-card';
+                card.dataset.group = 'cinema';
+                card.dataset.value = cinema.id || cinema.Id;
+                card.innerHTML = `
+                    <i class="fa-solid fa-building"></i>
+                    <span class="label">${cinema.name || cinema.Name}</span>
+                `;
+                container.appendChild(card);
+            });
+            
+            setupFormSelection();
+        }
+    } catch (e) {
+        console.error("Error loading cinemas:", e);
     }
 }
 
@@ -278,7 +312,7 @@ function setupRoomListeners() {
 // FORM SELECTION (Card-based UI)
 // ============================================================
 function setupFormSelection() {
-    const groups = ['mood', 'genre', 'time', 'gender'];
+    const groups = ['mood', 'genre', 'time', 'gender', 'cinema'];
     groups.forEach(group => {
         const cards = document.querySelectorAll(`.pref-card[data-group="${group}"]`);
         cards.forEach(card => {
@@ -297,7 +331,11 @@ function setupFormSelection() {
 function setupEventHandlers() {
     DOM.buttons.start?.addEventListener('click', startMatching);
     DOM.buttons.cancelSearch?.addEventListener('click', cancelSearch);
+    DOM.buttons.leaveLobby?.addEventListener('click', cancelSearch);
     DOM.buttons.sendChat?.addEventListener('click', () => sendChatMessage());
+
+    document.getElementById('btn-decline-invite')?.addEventListener('click', () => window.declineInvite());
+    document.getElementById('btn-accept-invite')?.addEventListener('click', () => window.acceptInvite());
 
     DOM.room.chatInput?.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') sendChatMessage();
@@ -335,6 +373,9 @@ function startMatching() {
     state.bothAccepted = false;
     state.currentMatch = null;
     state.isUser1 = false;
+    window.currentInviteData = null;
+    window.currentInviteKey = null;
+    
     if (roomRef) {
         roomRef.off();
         roomRef = null;
@@ -349,39 +390,20 @@ function startMatching() {
     // Radar animation
     clearInterval(state.timers.radar);
     state.timers.radar = setInterval(spawnRadarNode, 800);
-
-    // Status text cycling
-    const statuses = [
-        "Đang phân tích 1,420 hồ sơ phù hợp...",
-        "Đang quét khu vực lân cận...",
-        "Đang tính toán độ tương thích...",
-        "Đang kết nối Real-time & Chờ đối tác...",
-        "Gần tìm thấy rồi..."
-    ];
-    let statusIdx = 0;
-    if (DOM.radar.statusText) DOM.radar.statusText.innerText = statuses[0];
-    clearInterval(state.timers.status);
-    state.timers.status = setInterval(() => {
-        statusIdx = (statusIdx + 1) % statuses.length;
-        if (DOM.radar.statusText) DOM.radar.statusText.innerText = statuses[statusIdx];
-    }, 2000);
-
-    // Timer
-    let seconds = 0;
-    clearInterval(state.timers.matchTimer);
-    state.timers.matchTimer = setInterval(() => {
-        seconds++;
-        if (DOM.radar.timer) {
-            const m = Math.floor(seconds / 60);
-            const s = seconds % 60;
-            DOM.radar.timer.innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
-        }
-    }, 1000);
+    if (DOM.radar.statusText) DOM.radar.statusText.innerText = "Đang tìm kiếm sảnh chờ phù hợp...";
 
     if (DEMO_MODE) {
-        const delay = Math.floor(Math.random() * 2000) + 4000;
-        state.timers.demoMatch = setTimeout(() => onMatchFound(), delay);
+        setTimeout(() => {
+            switchStep('candidates');
+            window.renderLobby([
+                { userId: 'demo_1', userName: 'Trần B (Demo)', genre: 'Hành Động', mood: 'chill' },
+                { userId: 'demo_2', userName: 'Hoàng C (Demo)', genre: 'Tình Cảm', mood: 'romantic' }
+            ]);
+        }, 1500);
     } else {
+        setTimeout(() => {
+            if (!state.roomId) switchStep('candidates');
+        }, 1500);
         joinFirebaseQueue();
     }
 }
@@ -427,119 +449,140 @@ function spawnRadarNode() {
 // ============================================================
 // MATCH FOUND
 // ============================================================
-function onMatchFound(matchData) {
-    clearTimers();
-    state.activeNodes.forEach(n => { if (n.parentNode) n.parentNode.removeChild(n); });
-    state.activeNodes = [];
-
-    if (DEMO_MODE && !matchData) {
-        const names = ["Minh Anh", "Thu Hà", "Đức Huy", "Ngọc Linh", "Bảo Ngọc", "Hoàng Nam", "Thanh Trúc", "Quốc Bảo"];
-        matchData = {
-            name: names[Math.floor(Math.random() * names.length)],
-            matchPercent: Math.floor(Math.random() * 14) + 85,
-            genreMatch: Math.floor(Math.random() * 31) + 70,
-            moodMatch: Math.floor(Math.random() * 26) + 75,
-            timeMatch: Math.floor(Math.random() * 21) + 80,
-            connections: Math.floor(Math.random() * 26) + 5,
-            rating: (Math.random() + 4.0).toFixed(1)
-        };
+// ============================================================
+// LOBBY RENDERING & INVITATIONS
+// ============================================================
+window.renderLobby = function(candidates) {
+    if (!DOM.candidates.container) return;
+    
+    if (candidates.length === 0) {
+        DOM.candidates.container.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-muted);">
+                <i class="fa-solid fa-ghost" style="font-size: 3rem; margin-bottom: 20px; color: rgba(255,255,255,0.2);"></i>
+                <p>Hiện chưa có ai trong sảnh chờ phù hợp với tiêu chí của bạn.</p>
+                <p>Vui lòng đợi thêm hoặc thử mở rộng sở thích!</p>
+            </div>
+        `;
+        return;
     }
 
-    state.currentMatch = matchData;
-    switchStep('candidates');
-    renderCandidate(matchData);
-}
-
-// ============================================================
-// CANDIDATE RENDERING
-// ============================================================
-function renderCandidate(data) {
-    if (!DOM.candidates.container) return;
-    const anonName = data.name;
-
-    DOM.candidates.container.innerHTML = `
-        <div class="candidate-card" style="animation: fadeSlideUp 0.6s ease-out;">
-            <div style="text-align: center; margin-bottom: 20px;">
-                <div style="width: 100px; height: 100px; border-radius: 50%; background: linear-gradient(135deg, var(--neon-red), var(--neon-purple)); display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; filter: blur(1px); border: 3px solid rgba(255,255,255,0.1);">
-                    <i class="fas fa-user" style="font-size: 2.5rem; color: rgba(255,255,255,0.7);"></i>
+    DOM.candidates.container.innerHTML = candidates.map(data => {
+        const matchPercent = Math.floor(Math.random() * 15) + 85;
+        const anonName = data.userName;
+        
+        return `
+            <div class="candidate-card" style="background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border); border-radius: 16px; padding: 20px; text-align: center; animation: fadeSlideUp 0.5s ease-out;">
+                <div style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple)); display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;">
+                    <i class="fas fa-user" style="font-size: 2rem; color: rgba(255,255,255,0.8);"></i>
                 </div>
-                <div style="display: inline-block; background: linear-gradient(135deg, var(--neon-red), var(--neon-purple)); padding: 6px 18px; border-radius: 20px; font-weight: 700; font-size: 0.95rem; margin-bottom: 10px;">
-                    ${data.matchPercent}% Phù Hợp
+                <div style="display: inline-block; background: rgba(0,240,255,0.1); color: var(--neon-cyan); padding: 4px 12px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; margin-bottom: 10px; border: 1px solid var(--neon-cyan);">
+                    ${matchPercent}% Phù Hợp
                 </div>
-                <h3 style="color: white; font-size: 1.5rem; margin-bottom: 5px;">${anonName}</h3>
-                <div style="color: var(--text-muted); font-size: 0.85rem;">
-                    <span style="margin-right: 15px;"><i class="fas fa-link" style="color: var(--neon-green);"></i> ${data.connections} kết nối</span>
-                    <span><i class="fas fa-star" style="color: #FFD700;"></i> ${data.rating}</span>
-                </div>
-            </div>
-
-            <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); border-radius: 16px; padding: 20px; margin-bottom: 25px;">
-                <h4 style="color: white; font-size: 1rem; margin-bottom: 18px;"><i class="fas fa-chart-bar" style="color: var(--neon-cyan); margin-right: 8px;"></i>Mức Độ Tương Thích</h4>
-                
-                <div style="margin-bottom: 14px;">
-                    <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 6px; color: var(--text-muted);">
-                        <span>Thể loại phim</span><span style="color: var(--neon-green);">${data.genreMatch}%</span>
-                    </div>
-                    <div style="background: rgba(255,255,255,0.08); border-radius: 10px; height: 8px; overflow: hidden;">
-                        <div style="width: ${data.genreMatch}%; height: 100%; background: linear-gradient(90deg, var(--neon-green), #4CAF50); border-radius: 10px; transition: width 1s ease;"></div>
-                    </div>
-                </div>
-                
-                <div style="margin-bottom: 14px;">
-                    <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 6px; color: var(--text-muted);">
-                        <span>Tâm trạng</span><span style="color: var(--neon-cyan);">${data.moodMatch}%</span>
-                    </div>
-                    <div style="background: rgba(255,255,255,0.08); border-radius: 10px; height: 8px; overflow: hidden;">
-                        <div style="width: ${data.moodMatch}%; height: 100%; background: linear-gradient(90deg, var(--neon-cyan), #00bcd4); border-radius: 10px; transition: width 1s ease;"></div>
-                    </div>
-                </div>
-                
-                <div>
-                    <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 6px; color: var(--text-muted);">
-                        <span>Khung giờ</span><span style="color: #FFD700;">${data.timeMatch}%</span>
-                    </div>
-                    <div style="background: rgba(255,255,255,0.08); border-radius: 10px; height: 8px; overflow: hidden;">
-                        <div style="width: ${data.timeMatch}%; height: 100%; background: linear-gradient(90deg, #FFD700, #FFA000); border-radius: 10px; transition: width 1s ease;"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div style="display: flex; gap: 12px;">
-                <button onclick="window.skipMatch()" style="flex: 1; padding: 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.15); background: transparent; color: var(--text-muted); font-size: 1rem; cursor: pointer; font-family: 'Outfit', sans-serif; transition: all 0.3s;">
-                    <i class="fas fa-times" style="margin-right: 8px;"></i>Bỏ Qua
-                </button>
-                <button onclick="window.acceptMatch()" style="flex: 2; padding: 14px; border-radius: 12px; border: none; background: linear-gradient(135deg, var(--neon-red), var(--neon-purple)); color: white; font-size: 1rem; font-weight: 700; cursor: pointer; font-family: 'Outfit', sans-serif; box-shadow: 0 4px 20px rgba(255, 42, 95, 0.4); transition: all 0.3s;">
-                    <i class="fas fa-check" style="margin-right: 8px;"></i>Đồng Ý Kết Nối
+                <h3 style="color: white; font-size: 1.2rem; margin-bottom: 5px;">${anonName}</h3>
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 20px;">
+                    <i class="fa-solid fa-film"></i> ${data.genre !== 'all' ? data.genre : 'Bất kỳ thể loại'}
+                </p>
+                <button onclick="window.sendInvite('${data._key || data.userId}', '${anonName}')" style="width: 100%; padding: 12px; border-radius: 25px; border: none; background: var(--neon-red); color: white; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.3s; box-shadow: 0 0 15px rgba(255,42,95,0.4);">
+                    <i class="fa-solid fa-paper-plane" style="margin-right: 8px;"></i> Mời Xem Phim
                 </button>
             </div>
-        </div>
-    `;
-}
-
-// ============================================================
-// SKIP / ACCEPT / SYNC
-// ============================================================
-window.skipMatch = function() {
-    startMatching();
+        `;
+    }).join('');
 };
 
-window.acceptMatch = function() {
-    switchStep('sync');
-    if (DOM.sync.partnerName) {
-        DOM.sync.partnerName.innerText = state.currentMatch.name;
+window.sendInvite = function(partnerKey, partnerName) {
+    if (DEMO_MODE) {
+        switchStep('sync');
+        if (DOM.sync.partnerName) DOM.sync.partnerName.innerText = partnerName;
+        state.currentMatch = { name: partnerName };
+        setTimeout(onBothAccepted, 2000);
+        return;
     }
 
-    if (DEMO_MODE) {
-        setTimeout(onBothAccepted, 2000);
-    } else {
-        if (roomRef) {
-            if (state.isUser1) {
-                roomRef.child('user1Accepted').set(true);
-            } else {
-                roomRef.child('user2Accepted').set(true);
-            }
-        }
+    if (!database || !queueRef) return;
+
+    state.currentMatch = { name: partnerName };
+    switchStep('sync');
+    if (DOM.sync.partnerName) DOM.sync.partnerName.innerText = partnerName;
+
+    const myData = {
+        userId: state.userId,
+        userName: state.userName,
+        genre: state.preferences.genre,
+        mood: state.preferences.mood,
+        time: state.preferences.time,
+        gender: state.preferences.gender,
+        cinema: state.preferences.cinema
+    };
+
+    queueRef.child(partnerKey.replace(/[.#$\[\]]/g, '_')).child('invites').push({
+        from: myData,
+        timestamp: firebase.database.ServerValue.TIMESTAMP
+    });
+};
+
+window.showInvitePopup = function(inviteData, inviteKey) {
+    window.currentInviteData = inviteData;
+    window.currentInviteKey = inviteKey;
+    const modal = document.getElementById('invite-modal');
+    const senderName = document.getElementById('invite-sender-name');
+    if (modal && senderName) {
+        senderName.innerText = inviteData.from.userName;
+        modal.style.display = 'flex';
+        modal.style.animation = 'popIn 0.3s ease-out';
     }
+};
+
+window.declineInvite = function() {
+    const modal = document.getElementById('invite-modal');
+    if (modal) modal.style.display = 'none';
+
+    if (window.currentInviteKey && myQueueRef) {
+        myQueueRef.child('invites').child(window.currentInviteKey).remove();
+    }
+    window.currentInviteData = null;
+    window.currentInviteKey = null;
+};
+
+window.acceptInvite = function() {
+    const modal = document.getElementById('invite-modal');
+    if (modal) modal.style.display = 'none';
+
+    if (!window.currentInviteData) return;
+    
+    const partner = window.currentInviteData.from;
+    const partnerKey = partner.userId.replace(/[.#$\[\]]/g, '_');
+    
+    const roomId = 'room_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+    
+    database.ref('cinematch-rooms/' + roomId).set({
+        user1: { userId: state.userId, userName: state.userName },
+        user2: { userId: partner.userId, userName: partner.userName },
+        user1Accepted: true,
+        user2Accepted: true,
+        createdAt: firebase.database.ServerValue.TIMESTAMP
+    }).then(() => {
+        if (window.currentInviteKey && myQueueRef) {
+            myQueueRef.child('invites').child(window.currentInviteKey).remove();
+        }
+
+        queueRef.child(partnerKey).update({
+            matchRoomId: roomId,
+            isUser1: false,
+            partnerData: {
+                userId: state.userId,
+                userName: state.userName
+            }
+        });
+
+        myQueueRef.update({
+            matchRoomId: roomId,
+            isUser1: true,
+            partnerData: partner
+        });
+        
+        state.currentMatch = { name: partner.userName };
+    });
 };
 
 function onBothAccepted() {
