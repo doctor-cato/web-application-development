@@ -187,6 +187,22 @@
         
         .pref-card[data-group="gender"].selected { border-color: var(--neon-cyan); box-shadow: 0 0 15px rgba(0, 240, 255, 0.3); background: rgba(0, 240, 255, 0.1); }
         .pref-card[data-group="gender"].selected i { color: var(--neon-cyan); }
+        
+        /* Mood specific colors */
+        .pref-card[data-group="mood"][data-value="romantic"].selected { border-color: #ff3366; box-shadow: 0 0 15px rgba(255, 51, 102, 0.3); background: rgba(255, 51, 102, 0.1); }
+        .pref-card[data-group="mood"][data-value="romantic"].selected i { color: #ff3366; }
+        
+        .pref-card[data-group="mood"][data-value="adventure"].selected { border-color: #ff9900; box-shadow: 0 0 15px rgba(255, 153, 0, 0.3); background: rgba(255, 153, 0, 0.1); }
+        .pref-card[data-group="mood"][data-value="adventure"].selected i { color: #ff9900; }
+        
+        .pref-card[data-group="mood"][data-value="chill"].selected { border-color: #00ccff; box-shadow: 0 0 15px rgba(0, 204, 255, 0.3); background: rgba(0, 204, 255, 0.1); }
+        .pref-card[data-group="mood"][data-value="chill"].selected i { color: #00ccff; }
+        
+        .pref-card[data-group="mood"][data-value="thrilling"].selected { border-color: #cc00ff; box-shadow: 0 0 15px rgba(204, 0, 255, 0.3); background: rgba(204, 0, 255, 0.1); }
+        .pref-card[data-group="mood"][data-value="thrilling"].selected i { color: #cc00ff; }
+        
+        .pref-card[data-group="mood"][data-value="funny"].selected { border-color: #ffcc00; box-shadow: 0 0 15px rgba(255, 204, 0, 0.3); background: rgba(255, 204, 0, 0.1); }
+        .pref-card[data-group="mood"][data-value="funny"].selected i { color: #ffcc00; }
 
         .action-row {
             margin-top: 20px;
@@ -751,7 +767,22 @@
                             <i class="fa-solid fa-map"></i>
                             <span class="label">Bất kỳ rạp nào</span>
                         </div>
-                        <!-- Other cinemas will be loaded from API -->
+                        <div class="pref-card" data-group="cinema" data-value="ha-dong">
+                            <i class="fa-solid fa-building"></i>
+                            <span class="label">3HD2K Hà Đông</span>
+                            <span class="sublabel" style="font-size:0.7rem; text-align:center;">AEON Mall Hà Đông</span>
+                        </div>
+                        <div class="pref-card" data-group="cinema" data-value="le-trong-tan">
+                            <i class="fa-solid fa-building"></i>
+                            <span class="label">3HD2K Lê Trọng Tấn</span>
+                            <span class="sublabel" style="font-size:0.7rem; text-align:center;">Hồ Gươm Plaza</span>
+                        </div>
+                        <div class="pref-card" data-group="cinema" data-value="cau-giay">
+                            <i class="fa-solid fa-building"></i>
+                            <span class="label">3HD2K Cầu Giấy</span>
+                            <span class="sublabel" style="font-size:0.7rem; text-align:center;">Xuân Thủy</span>
+                        </div>
+                        <!-- API cinemas will be loaded by JS if available -->
                     </div>
                 </div>
 
