@@ -145,6 +145,16 @@ async function init() {
     }
   }
 
+  if (!movieData) {
+      movieData = {
+          id: movieId || 'unknown',
+          title: 'Phim Đang Cập Nhật',
+          poster: '/images/movies/placeholder.jpg',
+          genre: 'N/A',
+          tags: []
+      };
+  }
+
   console.log("[DEBUG] Calling renderMovieInfo with:", movieData.title);
 
   renderMovieInfo();
