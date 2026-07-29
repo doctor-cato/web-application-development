@@ -13,6 +13,7 @@ public partial class Cinema
 
     public string City { get; set; } = null!;
 
+    [System.Text.Json.Serialization.JsonIgnore]
     public virtual ICollection<Room> Rooms { get; set; } = new List<Room>();
 }
 

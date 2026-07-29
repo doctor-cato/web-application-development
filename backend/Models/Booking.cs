@@ -18,6 +18,7 @@ namespace appweb.Models
         public virtual User? User { get; set; }
         public virtual Movie? Movie { get; set; }
         public virtual Showtime? Showtime { get; set; }
+        [System.Text.Json.Serialization.JsonIgnore]
         public virtual ICollection<BookingDetail> BookingDetails { get; set; } = new List<BookingDetail>();
     }
 }

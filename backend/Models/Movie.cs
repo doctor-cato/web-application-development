@@ -45,6 +45,7 @@ namespace appweb.Models
         [Column("status")]
         public string Status { get; set; } = "now-showing";
 
+        [System.Text.Json.Serialization.JsonIgnore]
         public List<Showtime> Showtimes { get; set; } = new List<Showtime>();
     }
 }
