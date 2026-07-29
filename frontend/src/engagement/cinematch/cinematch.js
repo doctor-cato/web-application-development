@@ -556,24 +556,50 @@ function onBothAccepted() {
 // ============================================================
 // SHARED MOVIES
 // ============================================================
-function loadSharedMovies() {
+async function loadSharedMovies() {
     let movies = [];
 
-    // Try loading from localStorage
-    try {
-        const localData = localStorage.getItem('3hd2k_movies');
-        if (localData) {
-            const parsed = JSON.parse(localData);
-            movies = parsed.slice(0, 8).map(m => ({
-                id: m.id,
-                title: m.title || m.Title,
-                genre: m.genre || m.Genre || '',
-                poster: m.posterUrl || m.poster || m.Poster || ''
-            }));
-        }
-    } catch (e) {}
+    if (DOM.room.moviesContainer) {
+        DOM.room.moviesContainer.innerHTML = '<div style="color: white; text-align: center; grid-column: 1 / -1; padding: 20px;"><i class="fas fa-spinner fa-spin" style="margin-right: 8px;"></i>Đang tải danh sách phim từ hệ thống...</div>';
+    }
 
-    // Fallback movies
+    // 1. Lấy dữ liệu phim thật từ API
+    try {
+        const response = await fetch('/api/movies');
+        if (response.ok) {
+            const data = await response.json();
+            if (data && data.length > 0) {
+                // Trộn ngẫu nhiên danh sách phim để mỗi lần match có phim khác nhau (tùy chọn)
+                const shuffled = data.sort(() => 0.5 - Math.random());
+                movies = shuffled.slice(0, 8).map(m => ({
+                    id: m.id || m.Id || m.movieId,
+                    title: m.title || m.Title || '',
+                    genre: m.genre || m.Genre || 'Phim rạp',
+                    poster: m.posterUrl || m.poster || m.Poster || m.imageUrl || m.image || 'https://via.placeholder.com/300x450'
+                }));
+            }
+        }
+    } catch (e) {
+        console.error('Lỗi khi tải phim từ API:', e);
+    }
+
+    // 2. Dự phòng lấy từ localStorage nếu API lỗi
+    if (!movies || movies.length === 0) {
+        try {
+            const localData = localStorage.getItem('3hd2k_movies');
+            if (localData) {
+                const parsed = JSON.parse(localData);
+                movies = parsed.slice(0, 8).map(m => ({
+                    id: m.id,
+                    title: m.title || m.Title,
+                    genre: m.genre || m.Genre || '',
+                    poster: m.posterUrl || m.poster || m.Poster || ''
+                }));
+            }
+        } catch (e) {}
+    }
+
+    // 3. Dự phòng dữ liệu tĩnh nếu tất cả đều lỗi
     if (!movies || movies.length === 0) {
         movies = [
             { id: 'mov1', title: 'Lật Mặt 7', genre: 'Hành Động', poster: 'https://image.tmdb.org/t/p/w300/rktDFPbfHfUbArZ6OOOKsXcv0Bm.jpg' },
