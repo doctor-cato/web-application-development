@@ -2,8 +2,8 @@
 
 Ứng dụng web mô phỏng toàn bộ luồng đặt vé rạp chiếu phim chuyên nghiệp: xem phim, chọn ghế real-time, combo đồ ăn, thanh toán QR code, mini-game Cine-Match, chương trình VIP & Đổi thưởng, và quản lý tài khoản.
 
-![3HD2Kcinema Banner](https://img.shields.io/badge/3HD2Kcinema-v3.0.6-red?style=for-the-badge)
-![Git Commits](https://img.shields.io/badge/Commits-306-blue?style=for-the-badge)
+![3HD2Kcinema Banner](https://img.shields.io/badge/3HD2Kcinema-v3.0.7-red?style=for-the-badge)
+![Git Commits](https://img.shields.io/badge/Commits-360-blue?style=for-the-badge)
 ![Vercel Deployment](https://img.shields.io/badge/Vercel-32dk--web--app--project.vercel.app-000000?style=for-the-badge&logo=vercel&logoColor=white)
 ![Playwright Tests](https://img.shields.io/badge/Playwright-8%2F8%20Passed-brightgreen?style=for-the-badge&logo=playwright)
 ![MkDocs](https://img.shields.io/badge/Docs-MkDocs--Material-009688?style=for-the-badge)
@@ -21,22 +21,28 @@
 
 ## 🚀 Trạng thái Hiện tại của Dự án (Current Status & Version)
 
-- **Tổng số commits**: **306 commits** (được kiểm tra tự động qua Git history).
-- **Phiên bản hiện tại**: **`v3.0.6`** (Tuân thủ Semantic Versioning: Major 3, Minor 0, Patch 6).
+- **Tổng số commits**: **360 commits** (được kiểm tra tự động qua Git history).
+- **Phiên bản hiện tại**: **`v3.0.7`** (Tuân thủ Semantic Versioning: Major 3, Minor 0, Patch 7).
 - **Kiểm thử E2E (Playwright)**: **8/8 test suites PASS 100%** (bao gồm Responsive layout, Visual regression, Booking flow, Minigame, và Profile).
 - **Kiểm định Product Readiness**: Đã hoàn thành đợt kiểm tra toàn diện với các skill audit chuyên sâu (`ponytail-audit`, `modern-web-guidance`, `memory-leak-debugging`, `a11y-debugging`).
 
 ---
 
-## 📋 Đánh giá Product Readiness & Hạng mục Issues (#56 - #60)
+## 📋 Tính năng Mới & Cải tiến Kể từ v3.0.6 (#61 - #63)
 
-Dự án đã được rà soát chất lượng mã nguồn để chuẩn bị cho môi trường sản xuất. Các hạng mục cải tiến đã được ghi nhận trực tiếp trên GitHub Issues:
+Sau đợt audit v3.0.6, dự án tiếp tục phát triển với 101 commits bổ sung, tập trung vào tích hợp Backend thực và nâng cấp giao diện:
 
-1. **[#56 - Cleanup Dead Code]**(https://github.com/doctor-cato/web-application-development/issues/56): Dọn dẹp tệp log `build-storybook.log`, script phụ backend `fix_encoding.js`, và xóa các file trùng lặp trong sub-folder `/js/` (`booking-food`, `loyalty-points`, `cinema-map`, `movie-search`).
-2. **[#57 - Storage Architecture]**(https://github.com/doctor-cato/web-application-development/issues/57): Hợp nhất 2 module `storage.js` độc lập, loại bỏ các hàm deprecated `escape()` / `unescape()` để sử dụng chuẩn `TextEncoder/TextDecoder`.
-3. **[#58 - Modern Web & a11y]**(https://github.com/doctor-cato/web-application-development/issues/58): Bổ sung `loading="lazy"` cho hình ảnh/poster, `fetchpriority="high"` cho Hero Banner và chuẩn hóa ARIA labels cho Accessibility.
-4. **[#59 - Memory Leak Prevention]**(https://github.com/doctor-cato/web-application-development/issues/59): Quản lý vòng đời Event Listeners (`scroll`, `keydown`), Timers đếm ngược chọn ghế và đóng `BroadcastChannel` khi tab bị unload.
-5. **[#60 - Docker & DevOps]**(https://github.com/doctor-cato/web-application-development/issues/60): Xây dựng `Dockerfile` đa tầng cho ASP.NET Core 8 và file `docker-compose.yml` khởi chạy toàn bộ full-stack app.
+1. **[#61 - Seat Lock Sync & BroadcastChannel Cleanup]**(https://github.com/doctor-cato/web-application-development/issues/61): Giải quyết lỗi đồng bộ khóa ghế đa tab, dọn dẹp vòng đời `BroadcastChannel` và xóa dead code liên quan.
+2. **[#62 - POS Staff VIP Sync & SignalR Resilience]**(https://github.com/doctor-cato/web-application-development/issues/62): Đồng bộ dữ liệu VIP cho nhân viên bán vé tại quầy (Staff POS), cải thiện khả năng phục hồi kết nối SignalR và tạo mã QR riêng biệt cho từng ghế.
+3. **[#63 - Admin Portal & Staff POS Integration]**(https://github.com/doctor-cato/web-application-development/issues/63): Tích hợp dữ liệu người dùng thực và thống kê đặt vé trực tiếp, bổ sung quản lý suất chiếu (schedule, thêm/xóa showtime) trong Admin Portal.
+
+### Tính năng Nổi bật Thêm mới
+
+- **CineMatch Redesign**: Giao diện card-based mới với emoji chat, Firebase real-time, phân tích độ tương thích và match timer.
+- **QR Code Thanh toán Động**: Hỗ trợ 3 phương thức (Chuyển khoản Ngân hàng, ZaloPay, MoMo) với hình ảnh QR riêng biệt.
+- **Admin Portal Hoàn chỉnh 100% API-driven**: Toàn bộ dữ liệu phim, thống kê, quản lý suất chiếu đều kết nối API thực thay vì hardcode.
+- **Backend Database Seeding**: Nạp đầy đủ 12 bộ phim thực và suất chiếu vào SQL Server, đồng bộ dropdown quick-booking.
+- **Tối ưu Responsive Toàn diện**: Chuẩn hóa layout trên tất cả màn hình, sửa lỗi navbar, Admin Portal và Staff POS.
 
 ---
 

@@ -35,6 +35,17 @@ Toàn bộ các RESTful API của hệ thống hỗ trợ định dạng dữ li
 
 ---
 
+### Phân hệ Quản lý Suất chiếu (`/api/showtimes`) — Mới v3.0.7
+
+| HTTP Method | Endpoint | Mô tả | Quyền hạn |
+|---|---|---|---|
+| `GET` | `/api/showtimes` | Lấy toàn bộ suất chiếu | Public |
+| `GET` | `/api/showtimes?movieId={id}` | Lấy suất chiếu theo phim | Public |
+| `POST` | `/api/showtimes` | Tạo suất chiếu mới | Admin |
+| `DELETE` | `/api/showtimes/{id}` | Xóa suất chiếu | Admin |
+
+---
+
 ### Phân hệ Đặt vé & Ghế ngồi (`/api/bookings`)
 
 | HTTP Method | Endpoint | Mô tả | Quyền hạn |

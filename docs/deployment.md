@@ -20,6 +20,10 @@ graph LR
     D --> E[Deploy to gh-pages Branch]
     E --> F[Public Live Website]
     C -- No --> G[Fail Pipeline & Alert]
+    A --> H[Job 3: Auto Update Commit Badge]
+    H --> I[Đếm tổng số commits]
+    I --> J[Cập nhật badge README & docs/index.md]
+    J --> K[Commit & Push tự động]
 ```
 
 ### Các bước thực hiện thủ công (Manual Deploy)
@@ -33,6 +37,31 @@ pip install mkdocs-material
 # 2. Chạy lệnh deploy tự động tạo nhánh gh-pages
 mkdocs gh-deploy --force
 ```
+
+---
+
+## 🔢 Auto Update Commit Badge (`.github/workflows/update-commit-badge.yml`)
+
+Workflow **`update-commit-badge.yml`** tự động cập nhật badge số commit trong `README.md` và `docs/index.md` mỗi khi có push lên nhánh `main` hoặc `dev2`.
+
+### Cơ chế hoạt động
+
+```bash
+# Đếm tổng số commits bằng git
+git rev-list --count HEAD
+
+# Cập nhật badge bằng sed (Linux/ubuntu-latest)
+sed -i "s|Commits-[0-9]*-blue|Commits-${COUNT}-blue|g" README.md
+```
+
+### Kết quả tự động
+
+Mỗi khi push code lên `main`/`dev2`, bot `github-actions[bot]` sẽ:
+1. Đếm tổng số commits hiện tại.
+2. Cập nhật badge `Commits-NNN-blue` trong `README.md` và `docs/index.md`.
+3. Tự động commit và push với message: `chore(badge): auto-update commit count badge to NNN [skip ci]`.
+
+> **Lưu ý**: Tag `[skip ci]` trong commit message ngăn workflow chạy vòng lặp vô tận.
 
 ---
 

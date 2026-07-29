@@ -2,8 +2,8 @@
 
 Chào mừng đến với tài liệu kỹ thuật chính thức của **3HD2Kcinema** — Hệ thống đặt vé xem phim trực tuyến hiện đại.
 
-![3HD2Kcinema Banner](https://img.shields.io/badge/3HD2Kcinema-v2.7.7-red?style=for-the-badge)
-![Git Commits](https://img.shields.io/badge/Commits-277-blue?style=for-the-badge)
+![3HD2Kcinema Banner](https://img.shields.io/badge/3HD2Kcinema-v3.0.7-red?style=for-the-badge)
+![Git Commits](https://img.shields.io/badge/Commits-360-blue?style=for-the-badge)
 ![Vercel Live](https://img.shields.io/badge/Vercel-32dk--web--app--project.vercel.app-000000?style=for-the-badge&logo=vercel&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
 ![MkDocs](https://img.shields.io/badge/Docs-MkDocs--Material-009688?style=for-the-badge)
@@ -45,11 +45,12 @@ graph TD
 ```
 
 - 🎟️ **Đặt ghế Real-time**: Khóa ghế tạm thời 15 phút, giải phóng ghế tự động khi đóng tab và đồng bộ qua BroadcastChannel `seat_sync`.
-- 🍿 **Đặt Combo Đồ ăn**: Menu cuộn ngang responsive mượt mượt trên mọi kích thước di động.
+- 🍿 **Đặt Combo Đồ ăn**: Menu cuộn ngang responsive mượt trên mọi kích thước di động.
+- 💳 **Thanh toán QR Đa Khuọn**: Hỗ trợ QR Code Ngân hàng, ZaloPay và MoMo với hình ảnh riêng biệt cho từng phương thức.
 - 💎 **Hệ thống VIP & Loyalty**: Tự động áp dụng hệ số nhân điểm cao nhất (Silver 1.2x, Gold 1.5x, Platinum 2.0x, Tier VIP/Diamond lên đến 2.0x).
 - 📍 **Định vị Cụm rạp**: HTML5 Geolocation API kết hợp bản đồ Leaflet để tính khoảng cách thực tế đến các rạp 3HD2K gần nhất.
 - 🔄 **Hủy vé Linh hoạt**: Cho phép hủy toàn bộ hoặc từng phần vé ngay tại trang Hồ sơ, tự động hoàn ghế lại sơ đồ rạp.
-- 🎮 **Minigame Cinebet**: Dự án giải trí sau credit phim giúp người dùng đặt cược tích lũy thêm điểm thưởng.
+- 🎮 **CineMatch Minigame**: Giao diện card-based mới với emoji chat, Firebase real-time, phân tích độ tương thích và match timer.
 
 ---
 

@@ -113,3 +113,35 @@ backend/
 2. **Services**: Chịu trách nhiệm thực hiện các quy tắc nghiệp vụ (Business Rules), tính toán hệ số điểm VIP, áp mã giảm giá.
 3. **Repositories**: Tương tác trực tiếp với `ApplicationDbContext` để đọc/ghi dữ liệu SQL Server, cách ly hoàn toàn câu lệnh LINQ/EF Core khỏi Controller.
 
+---
+
+## 🖥️ 3. Admin Portal & Staff POS Architecture (v3.0.7+)
+
+Kể từ phiên bản v3.0.7, Admin Portal và Staff POS hoạt động hoàn toàn theo mô hình **100% API-driven** thay vì hardcode mock data.
+
+### Admin Portal (`management/admin/`)
+
+```text
+Admin Portal
+├── Quản lý Phim          → GET/POST/PUT/DELETE /api/movies
+├── Quản lý Suất chiếu    → GET/POST/DELETE /api/showtimes (tab mới v3.0.7)
+├── Thống kê Đặt vé       → Real-time từ LocalStorage + API
+├── Thống kê Người dùng   → GET /api/users (thực)
+└── Quản lý Combo         → Đồng bộ từ API combo images
+```
+
+### Staff POS (`management/staff/`)
+
+```text
+Staff POS
+├── Bán vé tại quầy       → Kết nối SignalR + LocalStorage sync
+├── Đồng bộ VIP           → Đọc loyalty tier từ user profile
+├── QR Code per-seat      → Mỗi ghế 1 mã QR độc lập
+└── Notification Center   → Thông báo real-time
+```
+
+### Nguyên tắc thiết kế Management Layer
+
+- **API-First**: Mọi dữ liệu thống kê và quản lý đều lấy từ API thực, không dùng hardcode.
+- **Graceful Fallback**: Khi backend unavailable, frontend tự động dùng LocalStorage cache (Vercel static deployment).
+- **Role Guard**: Kiểm tra quyền Admin/Staff trước khi render trang quản lý.

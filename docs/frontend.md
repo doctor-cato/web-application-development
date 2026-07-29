@@ -45,9 +45,9 @@ frontend/src/
 │   ├── vip-registration/        # Đăng ký Gói VIP Multiplier (Silver, Gold, Platinum)
 │   └── user-notifications/      # Trung tâm Thông báo tin nhắn hệ thống
 ├── engagement/                  # Phân hệ Tương tác
-│   └── minigame/                # Cinebet Minigame đặt cược điểm tích lũy
+│   └── minigame/                # CineMatch Minigame (card-based, Firebase real-time, emoji chat)
 └── shared/                      # Thành phần Dùng chung
-    ├── components/              # navbar.js (Tự đóng dropdown, tìm kiếm), footer.js
+    ├── components/              # navbar.js (Tự đóng dropdown, tìm kiếm, role-based navigation), footer.js
     ├── utils/                   # storage.js (Lớp thao tác Storage an toàn)
     └── css/                     # Dynamic Stylesheet & Design Tokens
 ```
@@ -90,5 +90,30 @@ Tại trang Hồ sơ cá nhân (`user/user-profile/profile.html`), người dùn
 
 ### 4. Tối ưu Giao diện Di động (Mobile First UX)
 
-- **Menu Bắp Nước**: Tối ưu cuộn ngang (`overflow-x: auto`) kèm hiệu ứng chạm mượt mượt trên điện thoại di động.
+- **Menu Bắp Nước**: Tối ưu cuộn ngang (`overflow-x: auto`) kèm hiệu ứng chạm mượt trên điện thoại di động.
 - **Tự đóng Dropdown**: Bất kỳ menu thả xuống nào (Avatar Profile, Notification Bell) sẽ tự động đóng lại khi người dùng nhấp hoặc chạm ra vùng ngoài màn hình (`click outside handler`).
+- **Responsive Toàn diện**: Chuẩn hóa layout trên tất cả trang — navbar, admin portal, staff POS, home page bằng Tailwind CSS breakpoints.
+
+---
+
+## 📡 5. CineMatch Minigame (Firebase Real-time)
+
+CineMatch là minigame kết nối người dùng với nhau dựa trên thị hiếu phim, được tiếp tục được nâng cấp lên giao diện card-based mới:
+
+- **Firebase Real-time Database**: Đồng bộ trạng thái match giữa các người dùng theo thời gian thực.
+- **Emoji Chat**: Người dùng có thể phản ứng nhanh bằng emoji trong quá trình soán tương thích.
+- **Compatibility Breakdown**: Phân tích chi tiết mức độ tương thích theo từng thể loại phim.
+- **Match Timer**: Đồng hồ đếm ngược để tạo áp lực và tăng tính cạnh tranh.
+- **SignalR Guard**: Kiểm tra `userId` và `username` trước khi gửi lên Hub, tránh lỗi khi user chưa đăng nhập.
+
+---
+
+## 💳 6. Thanh toán QR Code Đa Phương thức
+
+Checkout page hỗ trợ 3 phương thức QR Code với hình ảnh động:
+
+- **Chuyển khoản Ngân hàng**: QR code tài khoản ngân hàng.
+- **ZaloPay**: QR code đặc trưng ZaloPay.
+- **MoMo**: QR code ví MoMo.
+
+Mỗi ghế trong booking nhóm được cấp mã vé QR riêng biệt (độc lập) thay vì dùng chung một mã.

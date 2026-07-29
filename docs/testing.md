@@ -14,6 +14,7 @@ Hệ thống được trang bị 4 công cụ tiêu chuẩn hàng đầu:
 | **axe-core** | Kiểm tra chi tiết khả năng truy cập (Accessibility: contrast, label, keyboard, ARIA) | `tests/e2e/accessibility.spec.js` | `.github/workflows/playwright.yml` |
 | **Storybook + Chromatic** | Khởi chạy & kiểm thử visual UI component, phát hiện lỗi giao diện khi code thay đổi | `.storybook/`, `tests/stories/` | `.github/workflows/chromatic.yml` |
 | **Playwright** | Kiểm thử E2E và chụp screenshot so sánh giao diện tự động | `playwright.config.js`, `tests/e2e/` | `.github/workflows/playwright.yml` |
+| **Auto Badge Bot** | Tự động cập nhật badge số commit trong README.md & docs/index.md sau mỗi push | `.github/workflows/update-commit-badge.yml` | `.github/workflows/update-commit-badge.yml` |
 
 ---
 
@@ -90,3 +91,6 @@ Khi thực hiện cập nhật mã nguồn UI/UX, hãy kiểm tra danh sách che
 | 3 | Mobile Responsive | Mở DevTools chuyển chế độ Viewport iPhone SE (375px). Truy cập chọn Bắp nước. | Danh mục bắp nước cuộn ngang mượt mà, nút chọn không bị tràn khung. |
 | 4 | Partial Cancellation | Vào trang Hồ sơ cá nhân -> Xem chi tiết đơn hàng 2 ghế -> Bấm Hủy 1 ghế. | Ghế bị hủy chuyển trạng thái, điểm thưởng trừ tương ứng, hiện Toast báo thành công. |
 | 5 | Geolocation Map | Truy cập `cinema-map/cinemas.html` -> Cho phép vị trí. | Hiển thị vị trí thực của người dùng và sắp xếp các cụm rạp từ gần nhất đến xa nhất. |
+| 6 | QR Payment Methods | Vào trang Checkout -> Chuyển đổi giữa 3 phương thức thanh toán (Bank/ZaloPay/MoMo). | Hình ảnh QR code thay đổi tương ứng theo từng phương thức, kích thước container đúng. |
+| 7 | Admin Portal Showtimes | Đăng nhập Admin -> Vào tab Quản lý Suất chiếu -> Thêm suất chiếu mới. | Suất chiếu mới xuất hiện trong danh sách, dropdown quick-booking được cập nhật. |
+| 8 | CineMatch Real-time | Đăng nhập 2 tài khoản khác nhau -> Vào CineMatch -> Bắt đầu match. | Match timer chạy đúng, emoji chat đồng bộ giữa 2 tab, kết quả tương thích hiển thị. |
