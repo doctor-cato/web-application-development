@@ -611,7 +611,7 @@ function renderMoviesTable() {
                 <td><strong>${m.title}</strong></td>
                 <td>${m.genre}</td>
                 <td>${m.duration} phút</td>
-                <td>${badge}</td>
+                <td style="text-align: center;">${badge}</td>
                 <td>
                     <button class="btn-mini" onclick="openTrailerModal('${safeTrailer}', '${safeTitle}')" title="Xem Trailer YouTube" style="border-color: rgba(229,9,20,0.4); color: #ff4d4d;"><i class="fab fa-youtube"></i> Trailer</button>
                     <button class="btn-mini" onclick="openEditMovieModal('${m.id}')" title="Sửa"><i class="fas fa-edit"></i> Sửa</button>

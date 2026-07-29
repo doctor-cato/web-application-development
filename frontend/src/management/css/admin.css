@@ -622,12 +622,17 @@ select:focus {
 }
 
 .badge-admin {
-    display: inline-block;
-    padding: 4px 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 14px;
     border-radius: 20px;
     font-size: 0.75rem;
     font-weight: 600;
     text-align: center;
+    white-space: nowrap;
+    min-width: 105px;
+    box-sizing: border-box;
 }
 
 .badge-admin.now-showing { background: rgba(46, 139, 87, 0.15); color: #2ebd59; border: 1px solid rgba(46, 139, 87, 0.3); }

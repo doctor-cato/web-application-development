@@ -119,6 +119,7 @@
             transition: all 0.3s ease;
             border: none;
             color: #fff;
+            white-space: nowrap;
         }
 
         .btn:active {
@@ -161,12 +162,18 @@
         }
 
         .badge {
-            display: inline-block;
-            padding: 3px 8px;
-            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 5px 14px;
+            border-radius: 20px;
             font-size: 0.75rem;
             font-weight: 700;
             text-transform: uppercase;
+            white-space: nowrap;
+            text-align: center;
+            min-width: 105px;
+            box-sizing: border-box;
         }
 
         .badge-green { background: rgba(13, 242, 134, 0.15); color: #0df286; border: 1px solid rgba(13, 242, 134, 0.3); }
@@ -696,12 +703,18 @@
         }
 
         .badge-admin {
-            display: inline-block;
-            padding: 4px 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 5px 14px;
             border-radius: 20px;
             font-size: 0.72rem;
             font-weight: 700;
             text-transform: uppercase;
+            white-space: nowrap;
+            text-align: center;
+            min-width: 105px;
+            box-sizing: border-box;
         }
 
         .badge-admin.now-showing { background: rgba(13, 242, 134, 0.12); color: #0df286; border: 1px solid rgba(13,242,134,0.2); }
@@ -1389,7 +1402,7 @@
                             <option value="coming-soon">Sắp chiếu</option>
                         </select>
                         <button class="btn btn-primary" onclick="openAddMovieModal()">
-                            <i class="fas fa-plus"></i> Thêm phim mới
+                            Phim <i class="fas fa-plus"></i>
                         </button>
                     </div>
                 </div>
@@ -1403,7 +1416,7 @@
                                     <th>Tên phim</th>
                                     <th>Thể loại</th>
                                     <th>Thời lượng</th>
-                                    <th>Trạng thái</th>
+                                    <th style="text-align: center;">Trạng thái</th>
                                     <th>Hành động</th>
                                 </tr>
                             </thead>
