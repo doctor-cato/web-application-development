@@ -8,11 +8,17 @@ function formatPrice(amount) {
     return amount.toLocaleString('vi-VN') + 'đ';
 }
 
-function renderRealHistory() {
+async function renderRealHistory() {
     const container = document.getElementById('real-history-container');
     if (!container) return;
 
     window._renderRealHistory = renderRealHistory;
+
+    if (window.fetchMoviesPromise) {
+        try {
+            await window.fetchMoviesPromise;
+        } catch(e) {}
+    }
 
     let bookings = getBookings();
     if (!Array.isArray(bookings)) bookings = [];
@@ -47,17 +53,15 @@ function renderRealHistory() {
                         let poster = booking.poster || '';
         let displayTitle = booking.movieTitle || 'Phim';
 
-        if (window.heroMovies || window.nowShowingMovies) {
-            const allMovies = [
-                ...(window.heroMovies || []),
-                ...(window.nowShowingMovies || []),
-                ...(window.comingSoonMovies || [])
-            ];
-
-            let foundMovie = allMovies.find(m => m.title && booking.movieTitle && m.title.toLowerCase() === booking.movieTitle.toLowerCase());
+        if (window.allMoviesData) {
+            let foundMovie = window.allMoviesData.find(m => m.id === booking.movieId);
+            
+            if (!foundMovie && booking.movieTitle) {
+                foundMovie = window.allMoviesData.find(m => m.title && m.title.toLowerCase() === booking.movieTitle.toLowerCase());
+            }
 
             if (!foundMovie && booking.movieTitle) {
-                foundMovie = allMovies.find(m => m.title && (m.title.toLowerCase().includes(booking.movieTitle.toLowerCase()) || booking.movieTitle.toLowerCase().includes(m.title.toLowerCase())));
+                foundMovie = window.allMoviesData.find(m => m.title && (m.title.toLowerCase().includes(booking.movieTitle.toLowerCase()) || booking.movieTitle.toLowerCase().includes(m.title.toLowerCase())));
             }
 
             if (foundMovie) {
@@ -214,16 +218,16 @@ function loadUserInfo() {
         if (!gender) gender = localStorage.getItem('userGender') || 'male';
     }
 
-    if ((!name || name === 'Khách') && email) {
+    if (email) {
         try {
             const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
             const found = users.find(u => u.email === email);
             if (found) {
-                name  = found.fullname || found.name || name;
-                phone = found.phone || phone;
-                avatar = found.avatar || avatar;
-                dob = found.dob || dob;
-                gender = found.gender || gender;
+                if (!name || name === 'Khách') name = found.fullname || found.name || name;
+                if (!phone) phone = found.phone || phone;
+                if (!avatar) avatar = found.avatar || avatar;
+                if (!dob) dob = found.dob || dob;
+                if (!gender) gender = found.gender || gender;
                 console.log('[Profile] Found user in registeredUsers:', found);
             }
         } catch(e) {
@@ -271,6 +275,26 @@ function loadUserInfo() {
 
     const genderInput = document.querySelector(`input[name="gender"][value="${gender}"]`);
     if (genderInput) genderInput.checked = true;
+
+    let customerCode = localStorage.getItem('userCustomerCode');
+    if (!customerCode && (email || name)) {
+        customerCode = '3HD2K-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+        localStorage.setItem('userCustomerCode', customerCode);
+    }
+    const customerCodeInput = document.getElementById('customerCode');
+    if (customerCodeInput) customerCodeInput.value = customerCode || '';
+
+    const membershipInput = document.getElementById('membership');
+    if (membershipInput) {
+        const isVip = localStorage.getItem('is_vip') === 'true';
+        const vipPlan = (session && session.vip_plan) ? session.vip_plan : (localStorage.getItem('vip_plan') || '');
+        if (isVip || vipPlan) {
+            const planLabel = vipPlan ? vipPlan.charAt(0).toUpperCase() + vipPlan.slice(1) : '';
+            membershipInput.value = `VIP ${planLabel}`;
+        } else {
+            membershipInput.value = 'Thành viên thường';
+        }
+    }
 }
 
 function initLogout() {

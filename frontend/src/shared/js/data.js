@@ -91,6 +91,25 @@ function mapMovieObj(m) {
 function getFallbackMovies() {
     return [
         {
+            id: '6dba413d-5eb9-498c-8797-89f64d920032',
+            title: 'The Odyssey',
+            titleEn: 'The Odyssey',
+            description: 'Hành trình phiêu lưu không tưởng vượt qua những vì sao và không gian để tìm lại hy vọng cho nhân loại.',
+            meta: '2026 • Sci-Fi, Phiêu Lưu • 2h 15m',
+            releaseDate: '2026-05-15',
+            age: 'T13',
+            genre: 'Khoa Học Viễn Tưởng, Phiêu Lưu',
+            duration: 135,
+            status: 'now-showing',
+            posterUrl: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+            backdropUrl: 'https://images.unsplash.com/photo-1440404653325-ab127d49abc1?auto=format&fit=crop&w=1200&q=80',
+            rating: 4.8,
+            ratingCount: 1250,
+            director: 'Christopher Nolan',
+            trailer: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+            formats: ['IMAX', '4DX']
+        },
+        {
             id: 'mv_kimi_no_na_wa',
             title: 'Your Name',
             titleEn: 'Kimi no Na wa',
