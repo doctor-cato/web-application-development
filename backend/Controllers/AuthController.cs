@@ -154,6 +154,7 @@ namespace appweb.Controllers
                     dateOfBirth = user.DateOfBirth,
                     gender = user.Gender,
                     role = user.Role,
+                    vipPlan = user.VipPlan,
                     avatar = user.AvatarUrl
                 }
             });

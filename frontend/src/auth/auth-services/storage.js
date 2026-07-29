@@ -45,6 +45,15 @@ export function setCurrentUser(userPayload) {
     localStorage.setItem(KEYS.USER_NAME,     userPayload.fullname || userPayload.fullName || userPayload.name  || '');
     localStorage.setItem(KEYS.USER_EMAIL,    userPayload.email || '');
     localStorage.setItem(KEYS.USER_AVATAR,   userPayload.avatar || '');
+
+    const role = (userPayload.role || '').toLowerCase();
+    if (role === 'vip') {
+        localStorage.setItem('is_vip', 'true');
+        localStorage.setItem('vip_plan', userPayload.vipPlan || userPayload.vip_plan || '');
+    } else {
+        localStorage.removeItem('is_vip');
+        localStorage.removeItem('vip_plan');
+    }
 }
 
 export function clearCurrentUser() {
