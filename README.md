@@ -32,9 +32,9 @@
 
 Sau đợt audit v3.0.6, dự án tiếp tục phát triển với 101 commits bổ sung, tập trung vào tích hợp Backend thực và nâng cấp giao diện:
 
-1. **[#61 - Seat Lock Sync & BroadcastChannel Cleanup]**(https://github.com/doctor-cato/web-application-development/issues/61): Giải quyết lỗi đồng bộ khóa ghế đa tab, dọn dẹp vòng đời `BroadcastChannel` và xóa dead code liên quan.
-2. **[#62 - POS Staff VIP Sync & SignalR Resilience]**(https://github.com/doctor-cato/web-application-development/issues/62): Đồng bộ dữ liệu VIP cho nhân viên bán vé tại quầy (Staff POS), cải thiện khả năng phục hồi kết nối SignalR và tạo mã QR riêng biệt cho từng ghế.
-3. **[#63 - Admin Portal & Staff POS Integration]**(https://github.com/doctor-cato/web-application-development/issues/63): Tích hợp dữ liệu người dùng thực và thống kê đặt vé trực tiếp, bổ sung quản lý suất chiếu (schedule, thêm/xóa showtime) trong Admin Portal.
+1. [**#61 - Seat Lock Sync & BroadcastChannel Cleanup**](https://github.com/doctor-cato/web-application-development/issues/61): Giải quyết lỗi đồng bộ khóa ghế đa tab, dọn dẹp vòng đời `BroadcastChannel` và xóa dead code liên quan.
+2. [**#62 - POS Staff VIP Sync & SignalR Resilience**](https://github.com/doctor-cato/web-application-development/issues/62): Đồng bộ dữ liệu VIP cho nhân viên bán vé tại quầy (Staff POS), cải thiện khả năng phục hồi kết nối SignalR và tạo mã QR riêng biệt cho từng ghế.
+3. [**#63 - Admin Portal & Staff POS Integration**](https://github.com/doctor-cato/web-application-development/issues/63): Tích hợp dữ liệu người dùng thực và thống kê đặt vé trực tiếp, bổ sung quản lý suất chiếu (schedule, thêm/xóa showtime) trong Admin Portal.
 
 ### Tính năng Nổi bật Thêm mới
 
