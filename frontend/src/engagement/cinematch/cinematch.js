@@ -34,6 +34,7 @@ const state = {
     currentMatch: null,
     roomId: null,
     bothAccepted: false,
+    isUser1: false,
     activeNodes: [],
     timers: { radar: null, status: null, demoMatch: null, matchTimer: null }
 };
@@ -163,9 +164,11 @@ function joinFirebaseQueue() {
         const data = snap.val();
         if (data && data.matchRoomId) {
             state.roomId = data.matchRoomId;
+            state.isUser1 = data.isUser1 || false;
             roomRef = database.ref('cinematch-rooms/' + state.roomId);
             setupRoomListeners();
             myQueueRef.off('value'); // Dừng lắng nghe
+            queueRef.off('child_added'); // Dừng tìm kiếm luôn
             
             // Xóa khỏi queue vì đã có phòng
             myQueueRef.remove();
@@ -191,30 +194,35 @@ function joinFirebaseQueue() {
         const moodMatch = partner.mood === state.preferences.mood || partner.mood === 'any' || state.preferences.mood === 'any';
 
         if (genreMatch && moodMatch) {
-            // Tìm thấy!
-            queueRef.off('child_added'); // Dừng tìm kiếm
-            
-            const roomId = 'room_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
-            
-            database.ref('cinematch-rooms/' + roomId).set({
-                user1: { userId: state.userId, userName: state.userName },
-                user2: { userId: partner.userId, userName: partner.userName },
-                user1Accepted: false,
-                user2Accepted: false,
-                createdAt: firebase.database.ServerValue.TIMESTAMP
-            });
+            // Ngăn chặn race condition: chỉ người có userId nhỏ hơn mới tạo phòng
+            if (state.userId < partner.userId) {
+                // Tìm thấy!
+                queueRef.off('child_added'); // Dừng tìm kiếm
+                
+                const roomId = 'room_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+                
+                database.ref('cinematch-rooms/' + roomId).set({
+                    user1: { userId: state.userId, userName: state.userName },
+                    user2: { userId: partner.userId, userName: partner.userName },
+                    user1Accepted: false,
+                    user2Accepted: false,
+                    createdAt: firebase.database.ServerValue.TIMESTAMP
+                }).then(() => {
+                    // Báo cho đối tác
+                    queueRef.child(partner.userId.replace(/[.#$\[\]]/g, '_')).update({
+                        matchRoomId: roomId,
+                        isUser1: false,
+                        partnerData: myData
+                    });
 
-            // Báo cho đối tác
-            queueRef.child(partner.userId.replace(/[.#$\[\]]/g, '_')).update({
-                matchRoomId: roomId,
-                partnerData: myData
-            });
-
-            // Báo cho chính mình (sẽ trigger listener on('value') ở trên)
-            myQueueRef.update({
-                matchRoomId: roomId,
-                partnerData: partner
-            });
+                    // Báo cho chính mình (sẽ trigger listener on('value') ở trên)
+                    myQueueRef.update({
+                        matchRoomId: roomId,
+                        isUser1: true,
+                        partnerData: partner
+                    });
+                });
+            }
         }
     });
 }
@@ -511,14 +519,11 @@ window.acceptMatch = function() {
         setTimeout(onBothAccepted, 2000);
     } else {
         if (roomRef) {
-            roomRef.once('value').then(snap => {
-                const room = snap.val();
-                if (room && room.user1 && room.user1.userId === state.userId) {
-                    roomRef.child('user1Accepted').set(true);
-                } else {
-                    roomRef.child('user2Accepted').set(true);
-                }
-            });
+            if (state.isUser1) {
+                roomRef.child('user1Accepted').set(true);
+            } else {
+                roomRef.child('user2Accepted').set(true);
+            }
         }
     }
 };
