@@ -80,17 +80,15 @@ export function getSeatMap(showtimeId) {
 export function lockSeat(showtimeId, seatId, userId) {
     if (connection && connection.state === signalR.HubConnectionState.Connected) {
         connection.invoke("SelectSeat", showtimeId, seatId, userId).catch(err => console.error(err));
-        return true; // Optimistic UI update
     }
-    return false;
+    return true; // Optimistic UI update
 }
 
 export function unlockSeat(showtimeId, seatId, userId) {
     if (connection && connection.state === signalR.HubConnectionState.Connected) {
         connection.invoke("ReleaseSeat", showtimeId, seatId).catch(err => console.error(err));
-        return true;
     }
-    return false;
+    return true;
 }
 
 export function releaseExpiredLocks() {

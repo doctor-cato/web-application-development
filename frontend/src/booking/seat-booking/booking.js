@@ -116,32 +116,21 @@ async function init() {
     console.log("[DEBUG] movieId from URL:", movieId);
 
   if (movieId) {
-
-    try {
-      console.log("[DEBUG] Starting fetch...");
-      const response = await fetch('/api/movies');
-      if (response.ok) {
-        const allMovies = await response.json();
-        const foundMovie = allMovies.find(m => String(m.id).toLowerCase() === String(movieId).toLowerCase());
-        if (foundMovie) {
-          console.log("[DEBUG] Found movie:", foundMovie.title);
-          const imgUrl = foundMovie.posterUrl
-            ? `${foundMovie.posterUrl}`
-            : `/images/movies/placeholder.jpg`;
-          movieData = {
-            id: foundMovie.id,
-            title: foundMovie.title,
-            poster: imgUrl,
-            genre: foundMovie.genre,
-            tags: ["2D", "IMAX"]
-          };
-          console.log("[DEBUG] movieData updated:", movieData.title);
-        } else {
-          console.log("[DEBUG] Movie not found for id:", movieId);
-        }
-      }
-    } catch (e) {
-      console.error("Failed to fetch movie from API:", e);
+    const allMovies = window.allMoviesData || [];
+    const foundMovie = allMovies.find(m => String(m.id).toLowerCase() === String(movieId).toLowerCase());
+    if (foundMovie) {
+      console.log("[DEBUG] Found movie:", foundMovie.title);
+      const imgUrl = foundMovie.posterUrl || foundMovie.poster || `/images/movies/placeholder.jpg`;
+      movieData = {
+        id: foundMovie.id,
+        title: foundMovie.title,
+        poster: imgUrl,
+        genre: foundMovie.genre || foundMovie.tags?.join(', ') || 'N/A',
+        tags: foundMovie.tags || ["2D", "IMAX"]
+      };
+      console.log("[DEBUG] movieData updated:", movieData.title);
+    } else {
+      console.log("[DEBUG] Movie not found for id:", movieId);
     }
   }
 
