@@ -91,7 +91,7 @@
             </div>
         </section>
 
-        <section class="rewards-section glass-panel">
+        <section class="rewards-section glass-panel" id="home-rewards-section">
             <div class="rewards-info">
                 <h2 class="rewards-title"><i class="fas fa-star" style="color:var(--primary-red); margin-right: 8px;"></i>3HD2K REWARDS</h2>
                 <p>Tích điểm đổi vé, nhận bắp nước miễn phí và nhiều đặc quyền VIP.</p>
@@ -104,6 +104,12 @@
         <script>
 
             try {
+                const vipPlan = localStorage.getItem('3hd2k_vip_plan');
+                if (vipPlan === 'Platinum') {
+                    const rewardsSection = document.getElementById('home-rewards-section');
+                    if (rewardsSection) rewardsSection.style.display = 'none';
+                }
+
                 const rd = JSON.parse(localStorage.getItem('3hd2k_rewards') || '{}');
                 const pts = rd.points || 0;
                 const el = document.getElementById('home-rewards-pts');
