@@ -117,7 +117,21 @@ async function init() {
 
   if (movieId) {
     const allMovies = window.allMoviesData || [];
-    const foundMovie = allMovies.find(m => String(m.id).toLowerCase() === String(movieId).toLowerCase());
+    let foundMovie = allMovies.find(m => String(m.id).toLowerCase() === String(movieId).toLowerCase());
+
+    if (!foundMovie && currentShowtimeId) {
+      try {
+        const showtimesList = JSON.parse(localStorage.getItem('3hd2k_showtimes') || '[]');
+        const st = showtimesList.find(s => s.id === currentShowtimeId);
+        if (st && (st.movieTitle || st.movieId)) {
+          foundMovie = allMovies.find(m => 
+            (m.title && st.movieTitle && m.title.toLowerCase().trim() === st.movieTitle.toLowerCase().trim()) || 
+            (m.id && st.movieId && String(m.id).toLowerCase() === String(st.movieId).toLowerCase())
+          );
+        }
+      } catch (e) {}
+    }
+
     if (foundMovie) {
       console.log("[DEBUG] Found movie:", foundMovie.title);
       const imgUrl = foundMovie.posterUrl || foundMovie.poster || `/images/movies/placeholder.jpg`;

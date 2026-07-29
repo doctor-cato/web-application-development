@@ -185,8 +185,31 @@ async function fetchMovies() {
     });
 
     try {
-        const local1 = JSON.parse(localStorage.getItem('3hd2k_movies') || '[]');
-        const local2 = JSON.parse(localStorage.getItem('cinema_movies') || '[]');
+        let local1 = JSON.parse(localStorage.getItem('3hd2k_movies') || '[]');
+        let local2 = JSON.parse(localStorage.getItem('cinema_movies') || '[]');
+        let modified1 = false;
+        let modified2 = false;
+
+        if (Array.isArray(local1)) {
+            local1.forEach(lm => {
+                if (lm && lm.title && !lm.id && !lm.movieId) {
+                    lm.id = 'mv_' + Math.random().toString(36).substr(2, 9);
+                    modified1 = true;
+                }
+            });
+            if (modified1) localStorage.setItem('3hd2k_movies', JSON.stringify(local1));
+        }
+
+        if (Array.isArray(local2)) {
+            local2.forEach(lm => {
+                if (lm && lm.title && !lm.id && !lm.movieId) {
+                    lm.id = 'mv_' + Math.random().toString(36).substr(2, 9);
+                    modified2 = true;
+                }
+            });
+            if (modified2) localStorage.setItem('cinema_movies', JSON.stringify(local2));
+        }
+
         const combined = [...(Array.isArray(local1) ? local1 : []), ...(Array.isArray(local2) ? local2 : [])];
 
         combined.forEach(lm => {
