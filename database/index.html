@@ -759,6 +759,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#cau-hinh-ket-noi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cấu hình kết nối
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#so-o-bang-thuc-the-database-tables" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1050,6 +1061,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#cau-hinh-ket-noi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cấu hình kết nối
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#so-o-bang-thuc-the-database-tables" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1209,6 +1231,12 @@
 <hr />
 <h2 id="2-sql-server-relational-database-backend-scaffold">🗄️ 2. SQL Server Relational Database (Backend Scaffold)</h2>
 <p>Tên Database mặc định: <code>movie_booking_db</code></p>
+<h3 id="cau-hinh-ket-noi">Cấu hình kết nối</h3>
+<ul>
+<li>Backend dùng SQL Server Somee theo chuỗi <code>DefaultConnection</code> trong <code>backend/appsettings.json</code>; môi trường production cũng dùng file này, vì vậy không để chuỗi kết nối chỉ trong <code>appsettings.Development.json</code>.</li>
+<li><code>Database:InitializeOnStartup</code> mặc định là <code>false</code>. Database đã triển khai phải được tạo/cập nhật bằng script SQL hoặc migration có chủ đích, không dùng <code>EnsureCreated()</code> khi khởi động ứng dụng.</li>
+<li>Khi chạy frontend độc lập ở cổng <code>3000</code> hoặc <code>8080</code>, <code>shared/utils/apiConfig.js</code> tự gọi backend tại cổng <code>5111</code>. Khi frontend được phục vụ bởi ASP.NET Core hoặc Vercel, API vẫn dùng đường dẫn tương đối <code>/api</code>.</li>
+</ul>
 <h3 id="so-o-bang-thuc-the-database-tables">Sơ đồ Bảng &amp; Thực thể (Database Tables)</h3>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>erDiagram
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    users ||--o{ bookings : &quot;1:N&quot;

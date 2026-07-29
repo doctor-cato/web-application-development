@@ -726,6 +726,28 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#5-cinematch-minigame-firebase-real-time" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📡 5. CineMatch Minigame (Firebase Real-time)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-thanh-toan-qr-code-a-phuong-thuc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        💳 6. Thanh toán QR Code Đa Phương thức
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1076,6 +1098,28 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#5-cinematch-minigame-firebase-real-time" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📡 5. CineMatch Minigame (Firebase Real-time)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-thanh-toan-qr-code-a-phuong-thuc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        💳 6. Thanh toán QR Code Đa Phương thức
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1131,9 +1175,9 @@
 </span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>│   ├── vip-registration/        # Đăng ký Gói VIP Multiplier (Silver, Gold, Platinum)
 </span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>│   └── user-notifications/      # Trung tâm Thông báo tin nhắn hệ thống
 </span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>├── engagement/                  # Phân hệ Tương tác
-</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>│   └── minigame/                # Cinebet Minigame đặt cược điểm tích lũy
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>│   └── minigame/                # CineMatch Minigame (card-based, Firebase real-time, emoji chat)
 </span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>└── shared/                      # Thành phần Dùng chung
-</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>    ├── components/              # navbar.js (Tự đóng dropdown, tìm kiếm), footer.js
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>    ├── components/              # navbar.js (Tự đóng dropdown, tìm kiếm, role-based navigation), footer.js
 </span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>    ├── utils/                   # storage.js (Lớp thao tác Storage an toàn)
 </span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>    └── css/                     # Dynamic Stylesheet &amp; Design Tokens
 </span></code></pre></div>
@@ -1170,9 +1214,29 @@
 </ul>
 <h3 id="4-toi-uu-giao-dien-di-ong-mobile-first-ux">4. Tối ưu Giao diện Di động (Mobile First UX)</h3>
 <ul>
-<li><strong>Menu Bắp Nước</strong>: Tối ưu cuộn ngang (<code>overflow-x: auto</code>) kèm hiệu ứng chạm mượt mượt trên điện thoại di động.</li>
+<li><strong>Menu Bắp Nước</strong>: Tối ưu cuộn ngang (<code>overflow-x: auto</code>) kèm hiệu ứng chạm mượt trên điện thoại di động.</li>
 <li><strong>Tự đóng Dropdown</strong>: Bất kỳ menu thả xuống nào (Avatar Profile, Notification Bell) sẽ tự động đóng lại khi người dùng nhấp hoặc chạm ra vùng ngoài màn hình (<code>click outside handler</code>).</li>
+<li><strong>Responsive Toàn diện</strong>: Chuẩn hóa layout trên tất cả trang — navbar, admin portal, staff POS, home page bằng Tailwind CSS breakpoints.</li>
 </ul>
+<hr />
+<h2 id="5-cinematch-minigame-firebase-real-time">📡 5. CineMatch Minigame (Firebase Real-time)</h2>
+<p>CineMatch là minigame kết nối người dùng với nhau dựa trên thị hiếu phim, được tiếp tục được nâng cấp lên giao diện card-based mới:</p>
+<ul>
+<li><strong>Firebase Real-time Database</strong>: Đồng bộ trạng thái match giữa các người dùng theo thời gian thực.</li>
+<li><strong>Emoji Chat</strong>: Người dùng có thể phản ứng nhanh bằng emoji trong quá trình soán tương thích.</li>
+<li><strong>Compatibility Breakdown</strong>: Phân tích chi tiết mức độ tương thích theo từng thể loại phim.</li>
+<li><strong>Match Timer</strong>: Đồng hồ đếm ngược để tạo áp lực và tăng tính cạnh tranh.</li>
+<li><strong>SignalR Guard</strong>: Kiểm tra <code>userId</code> và <code>username</code> trước khi gửi lên Hub, tránh lỗi khi user chưa đăng nhập.</li>
+</ul>
+<hr />
+<h2 id="6-thanh-toan-qr-code-a-phuong-thuc">💳 6. Thanh toán QR Code Đa Phương thức</h2>
+<p>Checkout page hỗ trợ 3 phương thức QR Code với hình ảnh động:</p>
+<ul>
+<li><strong>Chuyển khoản Ngân hàng</strong>: QR code tài khoản ngân hàng.</li>
+<li><strong>ZaloPay</strong>: QR code đặc trưng ZaloPay.</li>
+<li><strong>MoMo</strong>: QR code ví MoMo.</li>
+</ul>
+<p>Mỗi ghế trong booking nhóm được cấp mã vé QR riêng biệt (độc lập) thay vì dùng chung một mã.</p>
 
 
 

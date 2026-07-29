@@ -688,6 +688,56 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#3-admin-portal-staff-pos-architecture-v307" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🖥️ 3. Admin Portal &amp; Staff POS Architecture (v3.0.7+)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🖥️ 3. Admin Portal &amp; Staff POS Architecture (v3.0.7+)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#admin-portal-managementadmin" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Admin Portal (management/admin/)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#staff-pos-managementstaff" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Staff POS (management/staff/)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nguyen-tac-thiet-ke-management-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nguyên tắc thiết kế Management Layer
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1054,6 +1104,56 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#3-admin-portal-staff-pos-architecture-v307" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🖥️ 3. Admin Portal &amp; Staff POS Architecture (v3.0.7+)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🖥️ 3. Admin Portal &amp; Staff POS Architecture (v3.0.7+)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#admin-portal-managementadmin" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Admin Portal (management/admin/)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#staff-pos-managementstaff" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Staff POS (management/staff/)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nguyen-tac-thiet-ke-management-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nguyên tắc thiết kế Management Layer
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1168,6 +1268,30 @@
 <li><strong>Services</strong>: Chịu trách nhiệm thực hiện các quy tắc nghiệp vụ (Business Rules), tính toán hệ số điểm VIP, áp mã giảm giá.</li>
 <li><strong>Repositories</strong>: Tương tác trực tiếp với <code>ApplicationDbContext</code> để đọc/ghi dữ liệu SQL Server, cách ly hoàn toàn câu lệnh LINQ/EF Core khỏi Controller.</li>
 </ol>
+<hr />
+<h2 id="3-admin-portal-staff-pos-architecture-v307">🖥️ 3. Admin Portal &amp; Staff POS Architecture (v3.0.7+)</h2>
+<p>Kể từ phiên bản v3.0.7, Admin Portal và Staff POS hoạt động hoàn toàn theo mô hình <strong>100% API-driven</strong> thay vì hardcode mock data.</p>
+<h3 id="admin-portal-managementadmin">Admin Portal (<code>management/admin/</code>)</h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>Admin Portal
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>├── Quản lý Phim          → GET/POST/PUT/DELETE /api/movies
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>├── Quản lý Suất chiếu    → GET/POST/DELETE /api/showtimes (tab mới v3.0.7)
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>├── Thống kê Đặt vé       → Real-time từ LocalStorage + API
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>├── Thống kê Người dùng   → GET /api/users (thực)
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>└── Quản lý Combo         → Đồng bộ từ API combo images
+</span></code></pre></div>
+<h3 id="staff-pos-managementstaff">Staff POS (<code>management/staff/</code>)</h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>Staff POS
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>├── Bán vé tại quầy       → Kết nối SignalR + LocalStorage sync
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>├── Đồng bộ VIP           → Đọc loyalty tier từ user profile
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>├── QR Code per-seat      → Mỗi ghế 1 mã QR độc lập
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>└── Notification Center   → Thông báo real-time
+</span></code></pre></div>
+<h3 id="nguyen-tac-thiet-ke-management-layer">Nguyên tắc thiết kế Management Layer</h3>
+<ul>
+<li><strong>API-First</strong>: Mọi dữ liệu thống kê và quản lý đều lấy từ API thực, không dùng hardcode.</li>
+<li><strong>Graceful Fallback</strong>: Khi backend unavailable, frontend tự động dùng LocalStorage cache (Vercel static deployment).</li>
+<li><strong>Role Guard</strong>: Kiểm tra quyền Admin/Staff trước khi render trang quản lý.</li>
+</ul>
 
 
 
