@@ -202,20 +202,10 @@ function joinFirebaseQueue() {
             roomRef = database.ref('cinematch-rooms/' + state.roomId);
             setupRoomListeners();
             myQueueRef.off('value'); // Dừng lắng nghe
-            queueRef.off('child_added'); // Dừng tìm kiếm luôn
-            
-            // Xóa khỏi queue vì đã có phòng
+            queueRef.off('value');
             myQueueRef.remove();
-            
-            onMatchFound({
-                name: data.partnerData.userName,
-                matchPercent: Math.floor(Math.random() * 14) + 85,
-                genreMatch: Math.floor(Math.random() * 31) + 70,
-                moodMatch: Math.floor(Math.random() * 26) + 75,
-                timeMatch: Math.floor(Math.random() * 21) + 80,
-                connections: Math.floor(Math.random() * 26) + 5,
-                rating: (Math.random() + 4.0).toFixed(1)
-            });
+            state.currentMatch = { name: data.partnerData.userName };
+            // Note: setupRoomListeners will trigger onBothAccepted because user1Accepted and user2Accepted are both true
         }
     });
 
