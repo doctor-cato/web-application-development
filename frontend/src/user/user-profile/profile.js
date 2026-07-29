@@ -198,7 +198,7 @@ function loadUserInfo() {
         return;
     }
 
-    let name  = (session && session.name  && session.name  !== 'Khách') ? session.name  : '';
+    let name  = (session && (session.fullname || session.fullName || session.name) && (session.fullname || session.fullName || session.name) !== 'Khách') ? (session.fullname || session.fullName || session.name) : '';
     let email = (session && session.email) ? session.email : '';
     let phone = (session && session.phone) ? session.phone : '';
     let avatar = (session && session.avatar) ? session.avatar : '';
