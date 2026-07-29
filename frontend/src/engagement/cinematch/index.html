@@ -168,24 +168,26 @@
             color: var(--text-muted);
         }
 
-        .pref-card:hover {
-            background: rgba(255, 255, 255, 0.08);
-            transform: translateY(-3px);
-            border-color: rgba(255,255,255,0.2);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
-
+        .pref-card:hover,
         .pref-card.selected {
             background: rgba(157, 0, 255, 0.1);
             border-color: var(--neon-purple);
             box-shadow: 0 0 15px rgba(157, 0, 255, 0.3), inset 0 0 10px rgba(157, 0, 255, 0.1);
+            transform: translateY(-3px);
         }
-
+        
+        .pref-card:hover i,
         .pref-card.selected i {
             color: var(--neon-purple);
         }
         
+        .pref-card.selected {
+            transform: translateY(0); /* Remove jump when actually selected */
+        }
+        
+        .pref-card[data-group="gender"]:hover,
         .pref-card[data-group="gender"].selected { border-color: var(--neon-cyan); box-shadow: 0 0 15px rgba(0, 240, 255, 0.3); background: rgba(0, 240, 255, 0.1); }
+        .pref-card[data-group="gender"]:hover i,
         .pref-card[data-group="gender"].selected i { color: var(--neon-cyan); }
         
         /* Mood specific colors */
