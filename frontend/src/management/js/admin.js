@@ -1183,8 +1183,16 @@ function renderSeatingGrid() {
 
     // Cross-reference real-time booked seats for this room and showtime
     const bookedSeatMap = {};
-    db.bookings.forEach(b => {
-        if (b.status === 'paid') {
+    let allBookings = db.bookings || [];
+    try {
+        const storedBk = JSON.parse(localStorage.getItem('3hd2k_bookings') || localStorage.getItem('bookings') || '[]');
+        if (Array.isArray(storedBk) && storedBk.length > 0) {
+            allBookings = [...allBookings, ...storedBk];
+        }
+    } catch (_) {}
+
+    allBookings.forEach(b => {
+        if (b.status !== 'Cancelled') {
             const matchesCinema = !b.cinemaId || b.cinemaId === cinemaId || cinemaId === '' || b.cinemaId === 'all';
             const matchesRoom = !b.roomName || b.roomName === roomName || roomName.includes(b.roomName) || b.roomName.includes(roomName);
             const matchesShowtime = selectedShowtimeId === 'all' || b.showtimeId === selectedShowtimeId || (b.showtime && b.showtime.includes(selectedShowtimeId));
@@ -1192,50 +1200,107 @@ function renderSeatingGrid() {
             if (matchesCinema && matchesRoom && matchesShowtime) {
                 const seatsList = Array.isArray(b.seats) ? b.seats : (typeof b.seats === 'string' ? b.seats.split(',') : []);
                 seatsList.forEach(s => {
-                    const cleanSeat = s.trim().toUpperCase();
-                    if (cleanSeat) {
+                    const rawSeat = s.trim().toUpperCase();
+                    if (rawSeat) {
+                        const rowLetter = rawSeat.charAt(0);
+                        const seatNum = parseInt(rawSeat.substring(1), 10);
+                        const cleanSeat = `${rowLetter}${seatNum}`;
                         bookedSeatMap[cleanSeat] = b.customerName || b.username || 'Khách hàng';
+                        bookedSeatMap[rawSeat] = b.customerName || b.username || 'Khách hàng';
                     }
                 });
             }
         }
     });
 
-    grid.style.gridTemplateColumns = `repeat(${currentRoomCols}, 32px)`;
+    grid.style.display = 'flex';
+    grid.style.flexDirection = 'column';
+    grid.style.alignItems = 'center';
+    grid.style.width = '100%';
     grid.innerHTML = '';
+
+    const gridContainer = document.createElement('div');
+    gridContainer.className = 'seat-grid-container';
+    gridContainer.style.cssText = 'display:flex; flex-direction:column; align-items:center; width:100%; gap:0.75rem;';
 
     for (let r = 0; r < currentRoomRows; r++) {
         const rowLabel = String.fromCharCode(65 + r);
-        for (let c = 1; c <= currentRoomCols; c++) {
-            const seatCode = `${rowLabel}${c.toString().padStart(2, '0')}`;
-            const isBooked = !!bookedSeatMap[seatCode];
-            let seatType = 'standard';
+        const rowEl = document.createElement('div');
+        rowEl.className = 'seat-row-wrapper';
+        rowEl.style.cssText = 'display:flex; align-items:center; justify-content:center; gap:0.75rem; width:100%;';
 
-            if (isBooked) seatType = 'occupied';
-            else if (currentBrokenSeats.includes(seatCode)) seatType = 'broken';
-            else if (currentDoubleRows.includes(r)) seatType = 'double';
-            else if (currentVipRows.includes(r)) seatType = 'vip';
+        const labelStart = document.createElement('div');
+        labelStart.className = 'seat-row-label text-right';
+        labelStart.style.cssText = 'width:1.5rem; font-size:0.875rem; color:var(--text-muted); font-weight:bold; text-align:right;';
+        labelStart.innerText = rowLabel;
+        rowEl.appendChild(labelStart);
 
-            const seatBtn = document.createElement('button');
-            seatBtn.className = `seat-btn-admin ${seatType}`;
-            seatBtn.textContent = seatCode;
+        const seatsContainer = document.createElement('div');
+        seatsContainer.className = 'seat-row-seats';
+        seatsContainer.style.cssText = 'display:flex; flex-wrap:nowrap; justify-content:center; gap:0.5rem;';
+
+        const isCoupleRow = currentDoubleRows.includes(r);
+        const numSeats = isCoupleRow ? Math.max(6, Math.floor(currentRoomCols / 2)) : currentRoomCols;
+
+        for (let c = 1; c <= numSeats; c++) {
+            const seatCode = `${rowLabel}${c}`;
+            const seatCodePadded = `${rowLabel}${c.toString().padStart(2, '0')}`;
+            const isBooked = !!bookedSeatMap[seatCode] || !!bookedSeatMap[seatCodePadded];
+            const isBroken = currentBrokenSeats.includes(seatCode) || currentBrokenSeats.includes(seatCodePadded);
+            const isVip = currentVipRows.includes(r);
+
+            const seatBtn = document.createElement('div');
+            seatBtn.className = 'seat';
 
             if (isBooked) {
-                seatBtn.title = `Đã được đặt thực tế bởi: ${bookedSeatMap[seatCode]}`;
-                seatBtn.style.backgroundColor = '#E50914';
-                seatBtn.style.color = '#ffffff';
-                seatBtn.style.boxShadow = '0 0 10px rgba(229, 9, 20, 0.9)';
-                seatBtn.style.fontWeight = 'bold';
-                seatBtn.style.cursor = 'not-allowed';
+                seatBtn.classList.add('seat--booked');
+                seatBtn.title = `Đã được đặt thực tế bởi: ${bookedSeatMap[seatCode] || bookedSeatMap[seatCodePadded]}`;
+                seatBtn.innerText = seatCode;
                 seatBtn.addEventListener('click', () => {
-                    showToast(`Ghế ${seatCode} đã được ${bookedSeatMap[seatCode]} đặt vé thực tế!`, 'warning');
+                    showToast(`Ghế ${seatCode} đã được đặt thực tế!`, 'warning');
                 });
+            } else if (isBroken) {
+                seatBtn.classList.add('seat--locked');
+                seatBtn.title = `Ghế Khóa/Hỏng: ${seatCode}`;
+                seatBtn.innerText = '✕';
+                seatBtn.addEventListener('click', () => toggleSeatProperty(seatCode, r));
+            } else if (isCoupleRow) {
+                seatBtn.classList.add('seat--available', 'seat--couple');
+                seatBtn.innerText = seatCode;
+                seatBtn.addEventListener('click', () => toggleSeatProperty(seatCode, r));
+            } else if (isVip) {
+                seatBtn.classList.add('seat--available', 'seat--vip');
+                seatBtn.innerText = seatCode;
+                seatBtn.addEventListener('click', () => toggleSeatProperty(seatCode, r));
             } else {
+                seatBtn.classList.add('seat--available');
+                seatBtn.innerText = seatCode;
                 seatBtn.addEventListener('click', () => toggleSeatProperty(seatCode, r));
             }
-            grid.appendChild(seatBtn);
+
+            seatsContainer.appendChild(seatBtn);
+
+            // Aisle gap in middle
+            if (c === Math.floor(numSeats / 2)) {
+                const aisle = document.createElement('div');
+                aisle.className = 'seat-aisle';
+                aisle.style.width = '2rem';
+                seatsContainer.appendChild(aisle);
+            }
         }
+
+        rowEl.appendChild(seatsContainer);
+
+        const labelEnd = document.createElement('div');
+        labelEnd.className = 'seat-row-label text-left';
+        labelEnd.style.cssText = 'width:1.5rem; font-size:0.875rem; color:var(--text-muted); font-weight:bold; text-align:left;';
+        labelEnd.innerText = rowLabel;
+        rowEl.appendChild(labelEnd);
+
+        gridContainer.appendChild(rowEl);
     }
+
+    grid.appendChild(gridContainer);
 }
 
 function toggleSeatProperty(seatCode, rowIndex) {
