@@ -41,11 +41,13 @@ function formatMovieDuration(rawDuration) {
 }
 
 function mapMovieObj(m) {
-    const rawPoster = m.posterUrl || m.poster || m.bg || m.backdropUrl;
-    const rawBg = m.bgUrl || m.backdropUrl || m.bg || m.posterUrl || m.poster;
+    // Tách biệt hoàn toàn: poster (ảnh dọc cho card) và backdrop (ảnh ngang cho hero banner)
+    const rawPoster = m.posterUrl || m.poster;
+    const rawBg = m.bgUrl || m.backdropUrl || m.bg;
 
     const posterImg = normalizeImagePath(rawPoster);
-    const bgImg = normalizeImagePath(rawBg);
+    // backdrop chỉ fallback về poster nếu thực sự không có ảnh ngang nào
+    const bgImg = rawBg ? normalizeImagePath(rawBg) : posterImg;
     const formattedDuration = formatMovieDuration(m.duration);
 
     let movieStatus = m.status;
