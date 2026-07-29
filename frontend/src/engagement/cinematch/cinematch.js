@@ -7,18 +7,19 @@ import { getSession } from '../../auth/auth-services/authService.js';
 // ============================================================
 
 const FIREBASE_CONFIG = {
-    apiKey: "AIzaSyDemo_REPLACE_WITH_YOUR_KEY",
-    authDomain: "cinematch-demo.firebaseapp.com",
-    databaseURL: "https://cinematch-demo-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "cinematch-demo",
-    storageBucket: "cinematch-demo.appspot.com",
-    messagingSenderId: "000000000000",
-    appId: "1:000000000000:web:demo"
+    apiKey: "AIzaSyDG5N9AUg5pksjgZpRL5PSEmY_xWMUs8YQ",
+    authDomain: "cinematch-3hd2k.firebaseapp.com",
+    databaseURL: "https://cinematch-3hd2k-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "cinematch-3hd2k",
+    storageBucket: "cinematch-3hd2k.firebasestorage.app",
+    messagingSenderId: "234989869102",
+    appId: "1:234989869102:web:4fdec7b23e11a24b5c27bf",
+    measurementId: "G-E6G51ERGQF"
 };
 
 // Set to true for local testing (simulates matching without Firebase)
 // Set to false when Firebase is configured for real cross-device matching
-const DEMO_MODE = true;
+const DEMO_MODE = false;
 
 // Firebase refs
 let database, queueRef, roomRef;
