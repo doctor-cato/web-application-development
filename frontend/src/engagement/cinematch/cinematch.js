@@ -330,6 +330,20 @@ function switchStep(stepName) {
 // MATCHING
 // ============================================================
 function startMatching() {
+    // Reset previous states to prevent stuck match
+    state.roomId = null;
+    state.bothAccepted = false;
+    state.currentMatch = null;
+    state.isUser1 = false;
+    if (roomRef) {
+        roomRef.off();
+        roomRef = null;
+    }
+    if (myQueueRef) {
+        myQueueRef.off();
+        myQueueRef = null;
+    }
+
     switchStep('radar');
 
     // Radar animation
@@ -441,7 +455,7 @@ function onMatchFound(matchData) {
 // ============================================================
 function renderCandidate(data) {
     if (!DOM.candidates.container) return;
-    const anonName = data.name.charAt(0) + '***';
+    const anonName = data.name;
 
     DOM.candidates.container.innerHTML = `
         <div class="candidate-card" style="animation: fadeSlideUp 0.6s ease-out;">
@@ -512,7 +526,7 @@ window.skipMatch = function() {
 window.acceptMatch = function() {
     switchStep('sync');
     if (DOM.sync.partnerName) {
-        DOM.sync.partnerName.innerText = state.currentMatch.name.charAt(0) + '***';
+        DOM.sync.partnerName.innerText = state.currentMatch.name;
     }
 
     if (DEMO_MODE) {
@@ -532,7 +546,7 @@ function onBothAccepted() {
     switchStep('room');
     const name = state.currentMatch.name;
     if (DOM.room.partnerName) DOM.room.partnerName.innerText = name;
-    if (DOM.room.partnerAvatarName) DOM.room.partnerAvatarName.innerText = name.charAt(0) + '***';
+    if (DOM.room.partnerAvatarName) DOM.room.partnerAvatarName.innerText = name;
 
     appendChat('Hệ thống', `Kết nối thành công với ${name}! Hãy cùng chọn phim để xem nhé.`, 'system');
     loadSharedMovies();
