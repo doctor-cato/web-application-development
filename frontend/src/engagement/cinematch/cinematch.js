@@ -33,6 +33,7 @@ const state = {
     preferences: { mood: 'any', genre: 'all', time: 'any', gender: 'any' },
     currentMatch: null,
     roomId: null,
+    bothAccepted: false,
     activeNodes: [],
     timers: { radar: null, status: null, demoMatch: null, matchTimer: null }
 };
@@ -139,10 +140,13 @@ function initFirebase() {
     }
 }
 
+let myQueueRef = null;
+
 function joinFirebaseQueue() {
     if (!database) return;
-    const userRef = queueRef.child(state.userId.replace(/[.#$\[\]]/g, '_'));
-    userRef.set({
+    myQueueRef = queueRef.child(state.userId.replace(/[.#$\[\]]/g, '_'));
+    
+    const myData = {
         userId: state.userId,
         userName: state.userName,
         genre: state.preferences.genre,
@@ -150,41 +154,24 @@ function joinFirebaseQueue() {
         time: state.preferences.time,
         gender: state.preferences.gender,
         timestamp: firebase.database.ServerValue.TIMESTAMP
-    });
+    };
+    
+    myQueueRef.set(myData);
 
-    // Listen for new users in queue
-    queueRef.on('child_added', (snapshot) => {
-        const partner = snapshot.val();
-        if (partner.userId === state.userId) return;
-
-        // Check matching criteria
-        const genreMatch = partner.genre === state.preferences.genre ||
-                           partner.genre === 'all' || state.preferences.genre === 'all';
-        const moodMatch = partner.mood === state.preferences.mood ||
-                          partner.mood === 'any' || state.preferences.mood === 'any';
-
-        if (genreMatch && moodMatch) {
-            // Create room
-            const roomId = 'room_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
-            state.roomId = roomId;
-            roomRef = database.ref('cinematch-rooms/' + roomId);
-
-            roomRef.set({
-                user1: { userId: state.userId, userName: state.userName },
-                user2: { userId: partner.userId, userName: partner.userName },
-                user1Accepted: false,
-                user2Accepted: false,
-                createdAt: firebase.database.ServerValue.TIMESTAMP
-            });
-
-            // Remove both from queue
-            queueRef.child(state.userId.replace(/[.#$\[\]]/g, '_')).remove();
-            snapshot.ref.remove();
-            queueRef.off('child_added');
-
-            // Notify match found
+    // Lắng nghe xem có ai ghép đôi với mình không
+    myQueueRef.on('value', (snap) => {
+        const data = snap.val();
+        if (data && data.matchRoomId) {
+            state.roomId = data.matchRoomId;
+            roomRef = database.ref('cinematch-rooms/' + state.roomId);
+            setupRoomListeners();
+            myQueueRef.off('value'); // Dừng lắng nghe
+            
+            // Xóa khỏi queue vì đã có phòng
+            myQueueRef.remove();
+            
             onMatchFound({
-                name: partner.userName,
+                name: data.partnerData.userName,
                 matchPercent: Math.floor(Math.random() * 14) + 85,
                 genreMatch: Math.floor(Math.random() * 31) + 70,
                 moodMatch: Math.floor(Math.random() * 26) + 75,
@@ -194,12 +181,89 @@ function joinFirebaseQueue() {
             });
         }
     });
+
+    // Chủ động tìm kiếm người khác
+    queueRef.on('child_added', (snapshot) => {
+        const partner = snapshot.val();
+        if (!partner || partner.userId === state.userId || partner.matchRoomId) return;
+
+        const genreMatch = partner.genre === state.preferences.genre || partner.genre === 'all' || state.preferences.genre === 'all';
+        const moodMatch = partner.mood === state.preferences.mood || partner.mood === 'any' || state.preferences.mood === 'any';
+
+        if (genreMatch && moodMatch) {
+            // Tìm thấy!
+            queueRef.off('child_added'); // Dừng tìm kiếm
+            
+            const roomId = 'room_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+            
+            database.ref('cinematch-rooms/' + roomId).set({
+                user1: { userId: state.userId, userName: state.userName },
+                user2: { userId: partner.userId, userName: partner.userName },
+                user1Accepted: false,
+                user2Accepted: false,
+                createdAt: firebase.database.ServerValue.TIMESTAMP
+            });
+
+            // Báo cho đối tác
+            queueRef.child(partner.userId.replace(/[.#$\[\]]/g, '_')).update({
+                matchRoomId: roomId,
+                partnerData: myData
+            });
+
+            // Báo cho chính mình (sẽ trigger listener on('value') ở trên)
+            myQueueRef.update({
+                matchRoomId: roomId,
+                partnerData: partner
+            });
+        }
+    });
 }
 
 function leaveFirebaseQueue() {
     if (!database) return;
-    queueRef?.child(state.userId.replace(/[.#$\[\]]/g, '_')).remove();
+    if (myQueueRef) {
+        myQueueRef.remove();
+        myQueueRef.off('value');
+    }
     queueRef?.off('child_added');
+}
+
+function setupRoomListeners() {
+    if (!roomRef) return;
+    
+    roomRef.on('value', (snap) => {
+        const room = snap.val();
+        if (room && room.user1Accepted && room.user2Accepted && !state.bothAccepted) {
+            state.bothAccepted = true;
+            onBothAccepted();
+        }
+    });
+
+    roomRef.child('messages').on('child_added', (snap) => {
+        const msg = snap.val();
+        if (msg.sender === state.userId) {
+            appendChat('Bạn', msg.message, 'me');
+        } else {
+            appendChat(msg.senderName, msg.message, 'partner');
+        }
+    });
+
+    roomRef.child('suggestedMovie').on('value', (snap) => {
+        const suggested = snap.val();
+        if (suggested) {
+            highlightSuggestedMovie(suggested.id);
+            if (suggested.sender !== state.userId) {
+                appendChat(suggested.senderName, `Đã đề xuất phim: <b>${suggested.title}</b>`, 'partner');
+            }
+        }
+    });
+
+    roomRef.child('agreedMovie').on('value', (snap) => {
+        const agreed = snap.val();
+        if (agreed) {
+            executeAgreeMovie(agreed.id);
+        }
+    });
 }
 
 // ============================================================
@@ -446,13 +510,13 @@ window.acceptMatch = function() {
     if (DEMO_MODE) {
         setTimeout(onBothAccepted, 2000);
     } else {
-        // Firebase: mark accepted and listen
         if (roomRef) {
-            roomRef.child('user1Accepted').set(true);
-            roomRef.on('value', (snap) => {
+            roomRef.once('value').then(snap => {
                 const room = snap.val();
-                if (room && room.user1Accepted && room.user2Accepted) {
-                    onBothAccepted();
+                if (room && room.user1 && room.user1.userId === state.userId) {
+                    roomRef.child('user1Accepted').set(true);
+                } else {
+                    roomRef.child('user2Accepted').set(true);
                 }
             });
         }
@@ -529,7 +593,24 @@ function renderMovieGrid(movies) {
 // MOVIE SUGGEST / AGREE
 // ============================================================
 window.suggestMovie = function(movieId, title) {
-    // Highlight the card
+    if (DEMO_MODE) {
+        highlightSuggestedMovie(movieId);
+        appendChat('Bạn', `Đã đề xuất phim: <b>${title}</b>`, 'me');
+        setTimeout(() => {
+            appendChat(state.currentMatch.name, `Phim "${title}" hay đấy! Mình đồng ý luôn nhé! 🎬`, 'partner');
+        }, 2000 + Math.random() * 1000);
+    } else if (roomRef) {
+        appendChat('Bạn', `Đã đề xuất phim: <b>${title}</b>`, 'me');
+        roomRef.child('suggestedMovie').set({
+            id: movieId,
+            title: title,
+            sender: state.userId,
+            senderName: state.userName
+        });
+    }
+};
+
+function highlightSuggestedMovie(movieId) {
     document.querySelectorAll('.shared-movie-card').forEach(card => {
         card.style.borderColor = 'var(--glass-border)';
         card.style.boxShadow = 'none';
@@ -544,17 +625,17 @@ window.suggestMovie = function(movieId, title) {
         const agreeBtn = card.querySelector('.btn-agree-movie');
         if (agreeBtn) agreeBtn.style.display = 'block';
     }
+}
 
-    appendChat('Bạn', `Đã đề xuất phim: <b>${title}</b>`, 'me');
-
+window.agreeMovie = function(movieId) {
     if (DEMO_MODE) {
-        setTimeout(() => {
-            appendChat(state.currentMatch.name, `Phim "${title}" hay đấy! Mình đồng ý luôn nhé! 🎬`, 'partner');
-        }, 2000 + Math.random() * 1000);
+        executeAgreeMovie(movieId);
+    } else if (roomRef) {
+        roomRef.child('agreedMovie').set({ id: movieId });
     }
 };
 
-window.agreeMovie = function(movieId) {
+function executeAgreeMovie(movieId) {
     appendChat('Hệ thống', 'Cả hai đã đồng ý! Đang chuyển đến trang phim...', 'system');
     localStorage.setItem('cinematch_active', 'true');
 
@@ -569,11 +650,10 @@ window.agreeMovie = function(movieId) {
 function sendChatMessage(textOverride) {
     const text = textOverride || (DOM.room.chatInput ? DOM.room.chatInput.value.trim() : '');
     if (!text) return;
-
-    appendChat('Bạn', text, 'me');
     if (DOM.room.chatInput && !textOverride) DOM.room.chatInput.value = '';
 
     if (DEMO_MODE) {
+        appendChat('Bạn', text, 'me');
         setTimeout(() => {
             const replies = ["Tuyệt vời!", "Mình cũng nghĩ vậy", "Hay đấy!", "Ok luôn!", "😊", "👍", "Nghe hay đó!", "Mình thích ý tưởng này!"];
             const reply = textOverride ? "👍" : replies[Math.floor(Math.random() * replies.length)];
