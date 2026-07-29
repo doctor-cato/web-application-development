@@ -122,7 +122,7 @@ async function init() {
       const response = await fetch('/api/movies');
       if (response.ok) {
         const allMovies = await response.json();
-        const foundMovie = allMovies.find(m => m.id === movieId);
+        const foundMovie = allMovies.find(m => String(m.id).toLowerCase() === String(movieId).toLowerCase());
         if (foundMovie) {
           console.log("[DEBUG] Found movie:", foundMovie.title);
           const imgUrl = foundMovie.posterUrl
