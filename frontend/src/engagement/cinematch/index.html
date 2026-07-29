@@ -862,19 +862,7 @@
                 </div>
             </div>
 
-            <!-- INVITE POPUP MODAL -->
-            <div id="invite-modal" class="step-container" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center; flex-direction: column;">
-                <div style="background: rgba(20,20,25,0.95); padding: 40px; border-radius: 20px; border: 1px solid var(--neon-cyan); text-align: center; max-width: 400px; box-shadow: 0 0 30px rgba(0, 240, 255, 0.2);">
-                    <i class="fa-solid fa-envelope-open-text heart-icon" style="color: var(--neon-cyan); filter: drop-shadow(0 0 10px var(--neon-cyan));"></i>
-                    <h2 style="color: white; margin: 20px 0 10px;">LỜI MỜI KẾT NỐI</h2>
-                    <p style="color: var(--text-muted); margin-bottom: 30px; font-size: 1.1rem;"><strong id="invite-sender-name" style="color: var(--neon-cyan);">Ai đó</strong> đang muốn cùng bạn xem phim!</p>
-                    
-                    <div style="display: flex; gap: 15px; justify-content: center;">
-                        <button id="btn-decline-invite" style="padding: 12px 25px; border-radius: 30px; border: 1px solid var(--text-muted); background: transparent; color: white; cursor: pointer; transition: all 0.3s;"><i class="fa-solid fa-xmark"></i> Từ chối</button>
-                        <button id="btn-accept-invite" style="padding: 12px 25px; border-radius: 30px; border: none; background: var(--neon-cyan); color: black; font-weight: bold; cursor: pointer; transition: all 0.3s; box-shadow: 0 0 15px var(--neon-cyan);"><i class="fa-solid fa-check"></i> Đồng ý</button>
-                    </div>
-                </div>
-            </div>
+
 
         </div>
     </main>
@@ -884,5 +872,18 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
     <script type="module" src="./cinematch.js"></script>
+    <!-- INVITE POPUP MODAL -->
+    <div id="invite-modal" class="step-container" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center; flex-direction: column;">
+        <div style="background: rgba(20,20,25,0.95); padding: 40px; border-radius: 20px; border: 1px solid var(--neon-cyan); text-align: center; max-width: 400px; box-shadow: 0 0 30px rgba(0, 240, 255, 0.2);">
+            <i class="fa-solid fa-envelope-open-text heart-icon" style="color: var(--neon-cyan); filter: drop-shadow(0 0 10px var(--neon-cyan));"></i>
+            <h2 style="color: white; margin: 20px 0 10px;">LỜI MỜI KẾT NỐI</h2>
+            <p style="color: var(--text-muted); margin-bottom: 30px; font-size: 1.1rem;"><strong id="invite-sender-name" style="color: var(--neon-cyan);">Ai đó</strong> đang muốn cùng bạn xem phim!</p>
+            
+            <div style="display: flex; gap: 15px; justify-content: center;">
+                <button id="btn-decline-invite" style="padding: 12px 25px; border-radius: 30px; border: 1px solid var(--text-muted); background: transparent; color: white; cursor: pointer; transition: all 0.3s;"><i class="fa-solid fa-xmark"></i> Từ chối</button>
+                <button id="btn-accept-invite" style="padding: 12px 25px; border-radius: 30px; border: none; background: var(--neon-cyan); color: black; font-weight: bold; cursor: pointer; transition: all 0.3s; box-shadow: 0 0 15px var(--neon-cyan);"><i class="fa-solid fa-check"></i> Đồng ý</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
