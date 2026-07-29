@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="vi" class="dark">
+<head>
+    <link rel="icon" type="image/jpeg" href="/assets/favicon.jpg?v=2">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thông Tin Doanh Nghiệp - 3HD2K Cinema</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/shared/css/main.css">
+    <link rel="stylesheet" href="/shared/css/style.css">
+    <style>
+        .company-page {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 120px 20px 80px;
+        }
+        .company-page h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 3.5rem;
+            text-align: center;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+        .company-page .subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 60px;
+        }
+        .info-table {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .info-row {
+            display: flex;
+            padding: 20px 30px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        .info-row:last-child { border-bottom: none; }
+        .info-row strong {
+            flex: 0 0 200px;
+            color: rgba(255,255,255,0.6);
+            font-weight: 600;
+        }
+        .info-row span {
+            flex: 1;
+            color: #fff;
+        }
+        @media (max-width: 768px) {
+            .info-row { flex-direction: column; gap: 10px; padding: 15px 20px; }
+            .info-row strong { flex: none; }
+        }
+    </style>
+</head>
+<body>
+    <div id="navbar-placeholder"></div>
+
+    <main class="company-page">
+        <h1>THÔNG TIN DOANH NGHIỆP</h1>
+        <p class="subtitle">Thông tin pháp lý và liên hệ của Công ty Cổ phần 3HD2K Cinema</p>
+
+        <div class="info-table">
+            <div class="info-row">
+                <strong>Tên công ty:</strong>
+                <span>CÔNG TY CỔ PHẦN 3HD2K CINEMA</span>
+            </div>
+            <div class="info-row">
+                <strong>Mã số thuế:</strong>
+                <span>0123456789</span>
+            </div>
+            <div class="info-row">
+                <strong>Giấy phép ĐKKD:</strong>
+                <span>Số 0123456789 do Sở KH & ĐT TP.HCM cấp ngày 01/01/2020</span>
+            </div>
+            <div class="info-row">
+                <strong>Địa chỉ trụ sở:</strong>
+                <span>123 Đường Nguyễn Huệ, Phường Bến Nghé, Quận 1, TP. Hồ Chí Minh</span>
+            </div>
+            <div class="info-row">
+                <strong>Người đại diện:</strong>
+                <span>Nguyễn Văn A - Giám đốc</span>
+            </div>
+            <div class="info-row">
+                <strong>Điện thoại:</strong>
+                <span>1900 1234</span>
+            </div>
+            <div class="info-row">
+                <strong>Email:</strong>
+                <span>contact@3hd2kcinema.vn</span>
+            </div>
+            <div class="info-row">
+                <strong>Website:</strong>
+                <span>https://32dk-web-app-project.vercel.app</span>
+            </div>
+        </div>
+
+        <div style="margin-top: 40px; padding: 30px; background: rgba(229,9,20,0.05); border: 1px solid rgba(229,9,20,0.2); border-radius: 12px;">
+            <h3 style="margin-bottom: 15px; font-family: 'Inter', sans-serif;"><i class="fas fa-shield-alt" style="color: var(--primary-red); margin-right: 10px;"></i>Chứng Nhận & Giấy Phép</h3>
+            <p style="color: var(--text-muted); line-height: 1.7;">
+                3HD2K Cinema cam kết tuân thủ đầy đủ các quy định pháp luật về hoạt động kinh doanh rạp chiếu phim. 
+                Tất cả các phim chiếu đều có giấy phép phổ biến phim hợp lệ từ Cục Điện ảnh.
+            </p>
+        </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script type="module" src="/shared/components/navbar.js"></script>
+    <script type="module" src="/shared/components/footer.js"></script>
+    <script type="module" src="/shared/js/main.js"></script>
+</body>
+</html>
