@@ -54,7 +54,7 @@ function cacheDom() {
             room: document.getElementById('step-shared-room')
         },
         radar: {
-            circle: document.querySelector('.radar-wrapper'),
+            circle: document.querySelector('.radar-circle'),
             statusText: document.getElementById('radar-status-text'),
             timer: document.getElementById('radar-timer')
         },
@@ -436,10 +436,10 @@ function spawnRadarNode() {
     DOM.radar.circle.appendChild(node);
     state.activeNodes.push(node);
 
-    setTimeout(() => { node.style.opacity = '0.7'; node.style.transform = 'translate(-50%, -50%) scale(1)'; }, 50);
+    setTimeout(() => { node.style.opacity = '0.7'; node.style.transform = 'scale(1)'; }, 50);
     setTimeout(() => {
         node.style.opacity = '0';
-        node.style.transform = 'translate(-50%, -50%) scale(0)';
+        node.style.transform = 'scale(0)';
         setTimeout(() => {
             if (DOM.radar.circle.contains(node)) DOM.radar.circle.removeChild(node);
         }, 500);
