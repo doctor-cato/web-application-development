@@ -67,6 +67,21 @@ jobs:
       - name: Build MkDocs Site
         run: mkdocs build --strict
 
-      - name: Deploy to GitHub Pages
+      - name: Upload artifact
         if: github.ref == 'refs/heads/main'
-        run: mkdocs gh-deploy --force
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./site
+
+  deploy-pages:
+    name: Deploy to GitHub Pages
+    needs: deploy
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

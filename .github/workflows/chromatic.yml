@@ -25,7 +25,7 @@ jobs:
         run: npm install
 
       - name: Publish Storybook to Chromatic
-        uses: chromaui/action@v1
+        uses: chromaui/action@v11
         with:
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           buildScriptName: build-storybook

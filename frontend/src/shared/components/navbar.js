@@ -149,7 +149,7 @@ export function renderNavbar() {
 }
 
 .nav-links a.active {
-    color: var(--primary-red);
+    color: #ff4b4b;
     font-weight: bold;
 }
 
@@ -515,7 +515,7 @@ export function renderNavbar() {
 .search-pill span {
     font-family: 'Inter', sans-serif;
     font-size: 1rem;
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.7);
     white-space: nowrap;
     transition: max-width 0.4s ease, opacity 0.3s ease, color 0.3s ease, margin-left 0.4s ease;
     max-width: 100px;
@@ -1325,11 +1325,15 @@ export function renderNavbar() {
 
                 const selectedCinemaId = qbCinema.value;
 
-                const cinemaShowtimes = currentShowtimes.filter(s => s.room && s.room.cinemaId === selectedCinemaId);
+                const cinemaShowtimes = currentShowtimes.filter(s => {
+                    const scId = (s.cinemaId || (s.room ? s.room.cinemaId : '')).toLowerCase();
+                    const selId = selectedCinemaId.toLowerCase();
+                    return scId === selId || scId.includes(selId) || selId.includes(scId);
+                });
 
                 qbDate.innerHTML = '<option value="" disabled selected>-- Chọn Ngày --</option>';
 
-                const uniqueDates = [...new Set(cinemaShowtimes.map(s => new Date(s.startTime).toLocaleDateString('vi-VN')))];
+                const uniqueDates = [...new Set(cinemaShowtimes.map(s => s.date || (s.startTime ? s.startTime.split('T')[0] : '')))].filter(Boolean);
 
                 if (uniqueDates.length === 0) {
                      const opt = document.createElement('option');
@@ -1353,13 +1357,14 @@ export function renderNavbar() {
                 qbShowtime.disabled = false;
                 qbShowtime.innerHTML = '<option value="" disabled selected>-- Chọn Suất Chiếu --</option>';
 
-                const selectedCinemaId = qbCinema.value;
+                const selectedCinemaId = qbCinema.value.toLowerCase();
                 const selectedDate = qbDate.value;
 
-                const filteredShowtimes = currentShowtimes.filter(s =>
-                    s.room && s.room.cinemaId === selectedCinemaId &&
-                    new Date(s.startTime).toLocaleDateString('vi-VN') === selectedDate
-                );
+                const filteredShowtimes = currentShowtimes.filter(s => {
+                    const scId = (s.cinemaId || (s.room ? s.room.cinemaId : '')).toLowerCase();
+                    const sDate = s.date || (s.startTime ? s.startTime.split('T')[0] : '');
+                    return (scId === selectedCinemaId || scId.includes(selectedCinemaId) || selectedCinemaId.includes(scId)) && sDate === selectedDate;
+                });
 
                 if (filteredShowtimes.length === 0) {
                     const opt = document.createElement('option');

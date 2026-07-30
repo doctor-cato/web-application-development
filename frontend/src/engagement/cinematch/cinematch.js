@@ -1,28 +1,29 @@
 import { renderNavbar } from '../../shared/components/navbar.js';
 import { renderFooter } from '../../shared/components/footer.js';
 import { getSession } from '../../auth/auth-services/authService.js';
+import { API_BASE_URL } from '../../shared/utils/apiConfig.js?v=4';
+
+
 
 // ============================================================
-// CineMatch Premium - Firebase Real-time Matching
+// CineMatch Premium - SignalR Real-time Matching
 // ============================================================
 
-const FIREBASE_CONFIG = {
-    apiKey: "AIzaSyDG5N9AUg5pksjgZpRL5PSEmY_xWMUs8YQ",
-    authDomain: "cinematch-3hd2k.firebaseapp.com",
-    databaseURL: "https://cinematch-3hd2k-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "cinematch-3hd2k",
-    storageBucket: "cinematch-3hd2k.firebasestorage.app",
-    messagingSenderId: "234989869102",
-    appId: "1:234989869102:web:4fdec7b23e11a24b5c27bf",
-    measurementId: "G-E6G51ERGQF"
+const getSignalRUrl = () => {
+    try {
+        const url = new URL(API_BASE_URL);
+        return `${url.protocol}//${url.host}/cinematchHub`;
+    } catch (e) {
+        return 'https://localhost:7198/cinematchHub'; // Fallback
+    }
 };
 
-// Set to true for local testing (simulates matching without Firebase)
-// Set to false when Firebase is configured for real cross-device matching
+// Set to true for local testing (simulates matching without SignalR)
+// Set to false when SignalR is configured for real cross-device matching
 const DEMO_MODE = false;
 
-// Firebase refs
-let database, queueRef, roomRef;
+// SignalR connection
+let connection = null;
 
 // ============================================================
 // STATE
@@ -30,10 +31,11 @@ let database, queueRef, roomRef;
 const state = {
     userId: null,
     userName: null,
-    preferences: { mood: 'any', genre: 'all', time: 'any', gender: 'any' },
+    preferences: { mood: 'any', genre: 'all', time: 'any', gender: 'any', cinema: 'any' },
     currentMatch: null,
     roomId: null,
     bothAccepted: false,
+    isUser1: false,
     activeNodes: [],
     timers: { radar: null, status: null, demoMatch: null, matchTimer: null }
 };
@@ -76,6 +78,7 @@ function cacheDom() {
         buttons: {
             start: document.getElementById('btn-start'),
             cancelSearch: document.getElementById('btn-cancel-search'),
+            leaveLobby: document.getElementById('btn-leave-lobby'),
             sendChat: document.getElementById('btn-send-chat')
         }
     };
@@ -94,6 +97,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Cache DOM refs
     cacheDom();
 
+    // Load Cinemas
+    loadCinemas();
+
     // Session check
     const session = getSession();
     if (!session && !DEMO_MODE) {
@@ -105,8 +111,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     state.userId = session?.email || 'demo_' + Math.random().toString(36).substr(2, 6);
     state.userName = session?.fullname || session?.name || session?.username || "Người dùng";
 
-    // Init Firebase if not demo
-    if (!DEMO_MODE) initFirebase();
+    // Init SignalR if not demo
+    if (!DEMO_MODE) initSignalR();
 
     // Setup interactions
     setupFormSelection();
@@ -121,156 +127,126 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 // ============================================================
-// FIREBASE
+// SIGNALR
 // ============================================================
-function initFirebase() {
-    try {
-        if (!window.firebase) {
-            console.warn("Firebase SDK not loaded");
-            return;
-        }
-        if (!firebase.apps.length) {
-            firebase.initializeApp(FIREBASE_CONFIG);
-        }
-        database = firebase.database();
-        queueRef = database.ref('cinematch-queue');
-        console.log("Firebase initialized for CineMatch");
-    } catch (e) {
-        console.error("Firebase init error:", e);
+async function initSignalR() {
+    if (!window.signalR) {
+        console.warn("SignalR SDK not loaded");
+        return;
     }
-}
 
-let myQueueRef = null;
+    connection = new signalR.HubConnectionBuilder()
+        .withUrl(getSignalRUrl(), {
+            accessTokenFactory: () => localStorage.getItem('jwt_token') || ''
+        })
+        .withAutomaticReconnect()
+        .build();
 
-function joinFirebaseQueue() {
-    if (!database) return;
-    myQueueRef = queueRef.child(state.userId.replace(/[.#$\[\]]/g, '_'));
-    
-    const myData = {
-        userId: state.userId,
-        userName: state.userName,
-        genre: state.preferences.genre,
-        mood: state.preferences.mood,
-        time: state.preferences.time,
-        gender: state.preferences.gender,
-        timestamp: firebase.database.ServerValue.TIMESTAMP
-    };
-    
-    myQueueRef.set(myData);
+    connection.on("OnMatchFound", (data) => {
+        state.roomId = data.roomId;
+        state.currentMatch = { name: data.partnerName };
+        state.isUser1 = true; // Simplification, not strictly needed for UI
 
-    // Lắng nghe xem có ai ghép đôi với mình không
-    myQueueRef.on('value', (snap) => {
-        const data = snap.val();
-        if (data && data.matchRoomId) {
-            state.roomId = data.matchRoomId;
-            roomRef = database.ref('cinematch-rooms/' + state.roomId);
-            setupRoomListeners();
-            myQueueRef.off('value'); // Dừng lắng nghe
-            
-            // Xóa khỏi queue vì đã có phòng
-            myQueueRef.remove();
-            
-            onMatchFound({
-                name: data.partnerData.userName,
-                matchPercent: Math.floor(Math.random() * 14) + 85,
-                genreMatch: Math.floor(Math.random() * 31) + 70,
-                moodMatch: Math.floor(Math.random() * 26) + 75,
-                timeMatch: Math.floor(Math.random() * 21) + 80,
-                connections: Math.floor(Math.random() * 26) + 5,
-                rating: (Math.random() + 4.0).toFixed(1)
-            });
-        }
-    });
+        switchStep('sync');
+        if (DOM.sync.partnerName) DOM.sync.partnerName.innerText = data.partnerName;
 
-    // Chủ động tìm kiếm người khác
-    queueRef.on('child_added', (snapshot) => {
-        const partner = snapshot.val();
-        if (!partner || partner.userId === state.userId || partner.matchRoomId) return;
-
-        const genreMatch = partner.genre === state.preferences.genre || partner.genre === 'all' || state.preferences.genre === 'all';
-        const moodMatch = partner.mood === state.preferences.mood || partner.mood === 'any' || state.preferences.mood === 'any';
-
-        if (genreMatch && moodMatch) {
-            // Tìm thấy!
-            queueRef.off('child_added'); // Dừng tìm kiếm
-            
-            const roomId = 'room_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
-            
-            database.ref('cinematch-rooms/' + roomId).set({
-                user1: { userId: state.userId, userName: state.userName },
-                user2: { userId: partner.userId, userName: partner.userName },
-                user1Accepted: false,
-                user2Accepted: false,
-                createdAt: firebase.database.ServerValue.TIMESTAMP
-            });
-
-            // Báo cho đối tác
-            queueRef.child(partner.userId.replace(/[.#$\[\]]/g, '_')).update({
-                matchRoomId: roomId,
-                partnerData: myData
-            });
-
-            // Báo cho chính mình (sẽ trigger listener on('value') ở trên)
-            myQueueRef.update({
-                matchRoomId: roomId,
-                partnerData: partner
-            });
-        }
-    });
-}
-
-function leaveFirebaseQueue() {
-    if (!database) return;
-    if (myQueueRef) {
-        myQueueRef.remove();
-        myQueueRef.off('value');
-    }
-    queueRef?.off('child_added');
-}
-
-function setupRoomListeners() {
-    if (!roomRef) return;
-    
-    roomRef.on('value', (snap) => {
-        const room = snap.val();
-        if (room && room.user1Accepted && room.user2Accepted && !state.bothAccepted) {
-            state.bothAccepted = true;
-            onBothAccepted();
-        }
-    });
-
-    roomRef.child('messages').on('child_added', (snap) => {
-        const msg = snap.val();
-        if (msg.sender === state.userId) {
-            appendChat('Bạn', msg.message, 'me');
-        } else {
-            appendChat(msg.senderName, msg.message, 'partner');
-        }
-    });
-
-    roomRef.child('suggestedMovie').on('value', (snap) => {
-        const suggested = snap.val();
-        if (suggested) {
-            highlightSuggestedMovie(suggested.id);
-            if (suggested.sender !== state.userId) {
-                appendChat(suggested.senderName, `Đã đề xuất phim: <b>${suggested.title}</b>`, 'partner');
+        setTimeout(() => {
+            if (connection && connection.state === signalR.HubConnectionState.Connected) {
+                connection.invoke("AcceptMatch", state.roomId).catch(err => console.error(err));
             }
+        }, 1500);
+    });
+
+    connection.on("OnBothAccepted", () => {
+        state.bothAccepted = true;
+        onBothAccepted();
+    });
+
+    connection.on("OnMessageReceived", (senderId, senderName, message) => {
+        if (senderId === state.userId) {
+            appendChat('Bạn', message, 'me');
+        } else {
+            appendChat(senderName, message, 'partner');
         }
     });
 
-    roomRef.child('agreedMovie').on('value', (snap) => {
-        const agreed = snap.val();
-        if (agreed) {
-            executeAgreeMovie(agreed.id);
+    connection.on("OnMovieSuggested", (senderId, movieId, movieTitle) => {
+        highlightSuggestedMovie(movieId);
+        if (senderId !== state.userId) {
+            appendChat(state.currentMatch.name, `Đã đề xuất phim: <b>${movieTitle}</b>`, 'partner');
         }
     });
+
+    connection.on("OnMovieAgreed", (movieId) => {
+        executeAgreeMovie(movieId);
+    });
+
+    connection.on("OnPartnerDisconnected", () => {
+        appendChat('Hệ thống', 'Đối tác đã ngắt kết nối. Vui lòng tải lại trang để tìm người mới.', 'system');
+    });
+
+    try {
+        await connection.start();
+        console.log("SignalR initialized for CineMatch");
+    } catch (e) {
+        console.error("SignalR init error:", e);
+    }
+}
+
+// ============================================================
+// API
+// ============================================================
+async function loadCinemas() {
+    try {
+        const res = await fetch('/api/cinemas');
+        if (res.ok) {
+            const data = await res.json();
+            const container = document.getElementById('pref-cinema');
+            if (!container) return;
+            
+            data.forEach(cinema => {
+                const cId = cinema.id || cinema.Id;
+                // Avoid duplicating hardcoded cinemas
+                if (container.querySelector(`.pref-card[data-value="${cId}"]`)) return;
+                
+                const card = document.createElement('div');
+                card.className = 'pref-card';
+                card.dataset.group = 'cinema';
+                card.dataset.value = cId;
+                const address = cinema.address || cinema.Address || '';
+                card.innerHTML = `
+                    <i class="fa-solid fa-building"></i>
+                    <span class="label">${cinema.name || cinema.Name}</span>
+                    <span class="sublabel" style="font-size:0.7rem; text-align:center;">${address.split(',')[0]}</span>
+                `;
+                container.appendChild(card);
+            });
+            
+            setupFormSelection();
+        }
+    } catch (e) {
+        console.error("Error loading cinemas (fallback will be used):", e);
+    }
+}
+
+function joinSignalRQueue() {
+    if (connection && connection.state === signalR.HubConnectionState.Connected) {
+        connection.invoke("FindMatch", state.userId, state.userName, state.preferences.genre)
+            .catch(err => console.error(err));
+    }
+}
+
+function leaveSignalRQueue() {
+    if (connection && connection.state === signalR.HubConnectionState.Connected) {
+        connection.stop().then(() => connection.start()).catch(err => console.error(err)); // Hacky way to leave queue by resetting connection
+    }
 }
 
 // ============================================================
 // FORM SELECTION (Card-based UI)
 // ============================================================
 function setupFormSelection() {
-    const groups = ['mood', 'genre', 'time', 'gender'];
+    const groups = ['mood', 'genre', 'time', 'gender', 'cinema'];
     groups.forEach(group => {
         const cards = document.querySelectorAll(`.pref-card[data-group="${group}"]`);
         cards.forEach(card => {
@@ -289,7 +265,11 @@ function setupFormSelection() {
 function setupEventHandlers() {
     DOM.buttons.start?.addEventListener('click', startMatching);
     DOM.buttons.cancelSearch?.addEventListener('click', cancelSearch);
+    DOM.buttons.leaveLobby?.addEventListener('click', cancelSearch);
     DOM.buttons.sendChat?.addEventListener('click', () => sendChatMessage());
+
+    document.getElementById('btn-decline-invite')?.addEventListener('click', () => window.declineInvite());
+    document.getElementById('btn-accept-invite')?.addEventListener('click', () => window.acceptInvite());
 
     DOM.room.chatInput?.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') sendChatMessage();
@@ -322,51 +302,44 @@ function switchStep(stepName) {
 // MATCHING
 // ============================================================
 function startMatching() {
+    // Reset previous states to prevent stuck match
+    state.roomId = null;
+    state.bothAccepted = false;
+    state.currentMatch = null;
+    state.isUser1 = false;
+    window.currentInviteData = null;
+    window.currentInviteKey = null;
+    
+    if (state.roomId && connection) {
+        connection.stop().then(() => connection.start()).catch(err => console.error(err));
+    }
+
     switchStep('radar');
 
     // Radar animation
     clearInterval(state.timers.radar);
     state.timers.radar = setInterval(spawnRadarNode, 800);
-
-    // Status text cycling
-    const statuses = [
-        "Đang phân tích 1,420 hồ sơ phù hợp...",
-        "Đang quét khu vực lân cận...",
-        "Đang tính toán độ tương thích...",
-        "Đang kết nối Real-time & Chờ đối tác...",
-        "Gần tìm thấy rồi..."
-    ];
-    let statusIdx = 0;
-    if (DOM.radar.statusText) DOM.radar.statusText.innerText = statuses[0];
-    clearInterval(state.timers.status);
-    state.timers.status = setInterval(() => {
-        statusIdx = (statusIdx + 1) % statuses.length;
-        if (DOM.radar.statusText) DOM.radar.statusText.innerText = statuses[statusIdx];
-    }, 2000);
-
-    // Timer
-    let seconds = 0;
-    clearInterval(state.timers.matchTimer);
-    state.timers.matchTimer = setInterval(() => {
-        seconds++;
-        if (DOM.radar.timer) {
-            const m = Math.floor(seconds / 60);
-            const s = seconds % 60;
-            DOM.radar.timer.innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
-        }
-    }, 1000);
+    if (DOM.radar.statusText) DOM.radar.statusText.innerText = "Đang tìm kiếm sảnh chờ phù hợp...";
 
     if (DEMO_MODE) {
-        const delay = Math.floor(Math.random() * 2000) + 4000;
-        state.timers.demoMatch = setTimeout(() => onMatchFound(), delay);
+        setTimeout(() => {
+            switchStep('candidates');
+            window.renderLobby([
+                { userId: 'demo_1', userName: 'Trần B (Demo)', genre: 'Hành Động', mood: 'chill' },
+                { userId: 'demo_2', userName: 'Hoàng C (Demo)', genre: 'Tình Cảm', mood: 'romantic' }
+            ]);
+        }, 1500);
     } else {
-        joinFirebaseQueue();
+        setTimeout(() => {
+            if (!state.roomId) switchStep('candidates');
+        }, 1500);
+        joinSignalRQueue();
     }
 }
 
 function cancelSearch() {
     clearTimers();
-    if (!DEMO_MODE) leaveFirebaseQueue();
+    if (!DEMO_MODE) leaveSignalRQueue();
     switchStep('form');
 }
 
@@ -405,129 +378,33 @@ function spawnRadarNode() {
 // ============================================================
 // MATCH FOUND
 // ============================================================
-function onMatchFound(matchData) {
-    clearTimers();
-    state.activeNodes.forEach(n => { if (n.parentNode) n.parentNode.removeChild(n); });
-    state.activeNodes = [];
-
-    if (DEMO_MODE && !matchData) {
-        const names = ["Minh Anh", "Thu Hà", "Đức Huy", "Ngọc Linh", "Bảo Ngọc", "Hoàng Nam", "Thanh Trúc", "Quốc Bảo"];
-        matchData = {
-            name: names[Math.floor(Math.random() * names.length)],
-            matchPercent: Math.floor(Math.random() * 14) + 85,
-            genreMatch: Math.floor(Math.random() * 31) + 70,
-            moodMatch: Math.floor(Math.random() * 26) + 75,
-            timeMatch: Math.floor(Math.random() * 21) + 80,
-            connections: Math.floor(Math.random() * 26) + 5,
-            rating: (Math.random() + 4.0).toFixed(1)
-        };
-    }
-
-    state.currentMatch = matchData;
-    switchStep('candidates');
-    renderCandidate(matchData);
-}
-
 // ============================================================
-// CANDIDATE RENDERING
+// LOBBY RENDERING & INVITATIONS
 // ============================================================
-function renderCandidate(data) {
-    if (!DOM.candidates.container) return;
-    const anonName = data.name.charAt(0) + '***';
-
-    DOM.candidates.container.innerHTML = `
-        <div class="candidate-card" style="animation: fadeSlideUp 0.6s ease-out;">
-            <div style="text-align: center; margin-bottom: 20px;">
-                <div style="width: 100px; height: 100px; border-radius: 50%; background: linear-gradient(135deg, var(--neon-red), var(--neon-purple)); display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; filter: blur(1px); border: 3px solid rgba(255,255,255,0.1);">
-                    <i class="fas fa-user" style="font-size: 2.5rem; color: rgba(255,255,255,0.7);"></i>
-                </div>
-                <div style="display: inline-block; background: linear-gradient(135deg, var(--neon-red), var(--neon-purple)); padding: 6px 18px; border-radius: 20px; font-weight: 700; font-size: 0.95rem; margin-bottom: 10px;">
-                    ${data.matchPercent}% Phù Hợp
-                </div>
-                <h3 style="color: white; font-size: 1.5rem; margin-bottom: 5px;">${anonName}</h3>
-                <div style="color: var(--text-muted); font-size: 0.85rem;">
-                    <span style="margin-right: 15px;"><i class="fas fa-link" style="color: var(--neon-green);"></i> ${data.connections} kết nối</span>
-                    <span><i class="fas fa-star" style="color: #FFD700;"></i> ${data.rating}</span>
-                </div>
-            </div>
-
-            <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); border-radius: 16px; padding: 20px; margin-bottom: 25px;">
-                <h4 style="color: white; font-size: 1rem; margin-bottom: 18px;"><i class="fas fa-chart-bar" style="color: var(--neon-cyan); margin-right: 8px;"></i>Mức Độ Tương Thích</h4>
-                
-                <div style="margin-bottom: 14px;">
-                    <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 6px; color: var(--text-muted);">
-                        <span>Thể loại phim</span><span style="color: var(--neon-green);">${data.genreMatch}%</span>
-                    </div>
-                    <div style="background: rgba(255,255,255,0.08); border-radius: 10px; height: 8px; overflow: hidden;">
-                        <div style="width: ${data.genreMatch}%; height: 100%; background: linear-gradient(90deg, var(--neon-green), #4CAF50); border-radius: 10px; transition: width 1s ease;"></div>
-                    </div>
-                </div>
-                
-                <div style="margin-bottom: 14px;">
-                    <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 6px; color: var(--text-muted);">
-                        <span>Tâm trạng</span><span style="color: var(--neon-cyan);">${data.moodMatch}%</span>
-                    </div>
-                    <div style="background: rgba(255,255,255,0.08); border-radius: 10px; height: 8px; overflow: hidden;">
-                        <div style="width: ${data.moodMatch}%; height: 100%; background: linear-gradient(90deg, var(--neon-cyan), #00bcd4); border-radius: 10px; transition: width 1s ease;"></div>
-                    </div>
-                </div>
-                
-                <div>
-                    <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 6px; color: var(--text-muted);">
-                        <span>Khung giờ</span><span style="color: #FFD700;">${data.timeMatch}%</span>
-                    </div>
-                    <div style="background: rgba(255,255,255,0.08); border-radius: 10px; height: 8px; overflow: hidden;">
-                        <div style="width: ${data.timeMatch}%; height: 100%; background: linear-gradient(90deg, #FFD700, #FFA000); border-radius: 10px; transition: width 1s ease;"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div style="display: flex; gap: 12px;">
-                <button onclick="window.skipMatch()" style="flex: 1; padding: 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.15); background: transparent; color: var(--text-muted); font-size: 1rem; cursor: pointer; font-family: 'Outfit', sans-serif; transition: all 0.3s;">
-                    <i class="fas fa-times" style="margin-right: 8px;"></i>Bỏ Qua
-                </button>
-                <button onclick="window.acceptMatch()" style="flex: 2; padding: 14px; border-radius: 12px; border: none; background: linear-gradient(135deg, var(--neon-red), var(--neon-purple)); color: white; font-size: 1rem; font-weight: 700; cursor: pointer; font-family: 'Outfit', sans-serif; box-shadow: 0 4px 20px rgba(255, 42, 95, 0.4); transition: all 0.3s;">
-                    <i class="fas fa-check" style="margin-right: 8px;"></i>Đồng Ý Kết Nối
-                </button>
-            </div>
-        </div>
-    `;
-}
-
-// ============================================================
-// SKIP / ACCEPT / SYNC
-// ============================================================
-window.skipMatch = function() {
-    startMatching();
+// The SignalR backend automatically matches, so lobby logic is mostly bypassed.
+window.renderLobby = function(candidates) {
+    // Left for Demo Mode compatibility
 };
 
-window.acceptMatch = function() {
-    switchStep('sync');
-    if (DOM.sync.partnerName) {
-        DOM.sync.partnerName.innerText = state.currentMatch.name.charAt(0) + '***';
-    }
-
+window.sendInvite = function(partnerKey, partnerName) {
+    // Only used in Demo Mode now
     if (DEMO_MODE) {
+        switchStep('sync');
+        if (DOM.sync.partnerName) DOM.sync.partnerName.innerText = partnerName;
+        state.currentMatch = { name: partnerName };
         setTimeout(onBothAccepted, 2000);
-    } else {
-        if (roomRef) {
-            roomRef.once('value').then(snap => {
-                const room = snap.val();
-                if (room && room.user1 && room.user1.userId === state.userId) {
-                    roomRef.child('user1Accepted').set(true);
-                } else {
-                    roomRef.child('user2Accepted').set(true);
-                }
-            });
-        }
     }
 };
+
+window.showInvitePopup = function(inviteData, inviteKey) {};
+window.declineInvite = function() {};
+window.acceptInvite = function() {};
 
 function onBothAccepted() {
     switchStep('room');
     const name = state.currentMatch.name;
     if (DOM.room.partnerName) DOM.room.partnerName.innerText = name;
-    if (DOM.room.partnerAvatarName) DOM.room.partnerAvatarName.innerText = name.charAt(0) + '***';
+    if (DOM.room.partnerAvatarName) DOM.room.partnerAvatarName.innerText = name;
 
     appendChat('Hệ thống', `Kết nối thành công với ${name}! Hãy cùng chọn phim để xem nhé.`, 'system');
     loadSharedMovies();
@@ -537,24 +414,50 @@ function onBothAccepted() {
 // ============================================================
 // SHARED MOVIES
 // ============================================================
-function loadSharedMovies() {
+async function loadSharedMovies() {
     let movies = [];
 
-    // Try loading from localStorage
-    try {
-        const localData = localStorage.getItem('3hd2k_movies');
-        if (localData) {
-            const parsed = JSON.parse(localData);
-            movies = parsed.slice(0, 8).map(m => ({
-                id: m.id,
-                title: m.title || m.Title,
-                genre: m.genre || m.Genre || '',
-                poster: m.posterUrl || m.poster || m.Poster || ''
-            }));
-        }
-    } catch (e) {}
+    if (DOM.room.moviesContainer) {
+        DOM.room.moviesContainer.innerHTML = '<div style="color: white; text-align: center; grid-column: 1 / -1; padding: 20px;"><i class="fas fa-spinner fa-spin" style="margin-right: 8px;"></i>Đang tải danh sách phim từ hệ thống...</div>';
+    }
 
-    // Fallback movies
+    // 1. Lấy dữ liệu phim thật từ API
+    try {
+        const response = await fetch('/api/movies');
+        if (response.ok) {
+            const data = await response.json();
+            if (data && data.length > 0) {
+                // Trộn ngẫu nhiên danh sách phim để mỗi lần match có phim khác nhau (tùy chọn)
+                const shuffled = data.sort(() => 0.5 - Math.random());
+                movies = shuffled.slice(0, 8).map(m => ({
+                    id: m.id || m.Id || m.movieId,
+                    title: m.title || m.Title || '',
+                    genre: m.genre || m.Genre || 'Phim rạp',
+                    poster: m.posterUrl || m.poster || m.Poster || m.imageUrl || m.image || 'https://via.placeholder.com/300x450'
+                }));
+            }
+        }
+    } catch (e) {
+        console.error('Lỗi khi tải phim từ API:', e);
+    }
+
+    // 2. Dự phòng lấy từ localStorage nếu API lỗi
+    if (!movies || movies.length === 0) {
+        try {
+            const localData = localStorage.getItem('3hd2k_movies');
+            if (localData) {
+                const parsed = JSON.parse(localData);
+                movies = parsed.slice(0, 8).map(m => ({
+                    id: m.id,
+                    title: m.title || m.Title,
+                    genre: m.genre || m.Genre || '',
+                    poster: m.posterUrl || m.poster || m.Poster || ''
+                }));
+            }
+        } catch (e) {}
+    }
+
+    // 3. Dự phòng dữ liệu tĩnh nếu tất cả đều lỗi
     if (!movies || movies.length === 0) {
         movies = [
             { id: 'mov1', title: 'Lật Mặt 7', genre: 'Hành Động', poster: 'https://image.tmdb.org/t/p/w300/rktDFPbfHfUbArZ6OOOKsXcv0Bm.jpg' },
@@ -599,14 +502,9 @@ window.suggestMovie = function(movieId, title) {
         setTimeout(() => {
             appendChat(state.currentMatch.name, `Phim "${title}" hay đấy! Mình đồng ý luôn nhé! 🎬`, 'partner');
         }, 2000 + Math.random() * 1000);
-    } else if (roomRef) {
+    } else if (connection && connection.state === signalR.HubConnectionState.Connected) {
         appendChat('Bạn', `Đã đề xuất phim: <b>${title}</b>`, 'me');
-        roomRef.child('suggestedMovie').set({
-            id: movieId,
-            title: title,
-            sender: state.userId,
-            senderName: state.userName
-        });
+        connection.invoke("SuggestMovie", state.roomId, movieId, title).catch(err => console.error(err));
     }
 };
 
@@ -630,8 +528,8 @@ function highlightSuggestedMovie(movieId) {
 window.agreeMovie = function(movieId) {
     if (DEMO_MODE) {
         executeAgreeMovie(movieId);
-    } else if (roomRef) {
-        roomRef.child('agreedMovie').set({ id: movieId });
+    } else if (connection && connection.state === signalR.HubConnectionState.Connected) {
+        connection.invoke("AgreeMovie", state.roomId, movieId).catch(err => console.error(err));
     }
 };
 
@@ -659,13 +557,8 @@ function sendChatMessage(textOverride) {
             const reply = textOverride ? "👍" : replies[Math.floor(Math.random() * replies.length)];
             appendChat(state.currentMatch.name, reply, 'partner');
         }, 1000 + Math.random() * 1500);
-    } else if (roomRef) {
-        roomRef.child('messages').push({
-            sender: state.userId,
-            senderName: state.userName,
-            message: text,
-            timestamp: firebase.database.ServerValue.TIMESTAMP
-        });
+    } else if (connection && connection.state === signalR.HubConnectionState.Connected) {
+        connection.invoke("SendMessage", state.roomId, text).catch(err => console.error(err));
     }
 }
 
@@ -743,5 +636,5 @@ function clearTimers() {
 
 function cleanup() {
     clearTimers();
-    if (!DEMO_MODE) leaveFirebaseQueue();
+    if (!DEMO_MODE) leaveSignalRQueue();
 }

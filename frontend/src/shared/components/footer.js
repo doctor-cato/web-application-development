@@ -1,4 +1,3 @@
-
 export function renderFooter() {
     const footerHTML = `
     <footer>
@@ -112,7 +111,6 @@ document.addEventListener('DOMContentLoaded', safeRenderFooter);
 if (document.readyState === 'interactive' || document.readyState === 'complete') {
     safeRenderFooter();
 }
-
 
 // Load chat widget
 import('./chat-widget.js');

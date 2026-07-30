@@ -2838,7 +2838,9 @@
             };
 
             const connection = new signalR.HubConnectionBuilder()
-                .withUrl("/notificationHub")
+                .withUrl("/notificationHub", {
+                    accessTokenFactory: () => localStorage.getItem('jwt_token') || ''
+                })
                 .withAutomaticReconnect([0, 2000, 5000, 10000, 30000])
                 .build();
 

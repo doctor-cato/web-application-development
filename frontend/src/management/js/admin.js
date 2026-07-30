@@ -45,6 +45,92 @@ function showToast(message, type = 'info') {
     }, 3200);
 }
 
+// --- Notifications Logic (Ponytail minimal implementation) ---
+function getAdminNotifications() {
+    let notifs = JSON.parse(localStorage.getItem("admin_notifications"));
+    if (!notifs) {
+        // Init with mock data for UI visual parity
+        notifs = [
+            { id: "1", type: "info", title: "Có 5 đơn đặt vé mới đang chờ xử lý", time: "5 phút trước", unread: true },
+            { id: "2", type: "warning", title: "Kho hàng bắp rang bơ sắp hết", time: "1 giờ trước", unread: true },
+            { id: "3", type: "error", title: "Phát hiện lỗi thanh toán giao dịch #4892", time: "2 giờ trước", unread: true }
+        ];
+        localStorage.setItem("admin_notifications", JSON.stringify(notifs));
+    }
+    return notifs;
+}
+
+function renderAdminNotifications() {
+    const notifs = getAdminNotifications();
+    const unreadCount = notifs.filter(n => n.unread).length;
+    const badgeEl = document.getElementById("notification-badge");
+    if (badgeEl) {
+        badgeEl.textContent = unreadCount;
+        badgeEl.style.display = unreadCount > 0 ? "flex" : "none";
+    }
+
+    const listContainer = document.getElementById("admin-notif-list-container");
+    if (!listContainer) return;
+
+    if (notifs.length === 0) {
+        listContainer.innerHTML = `<div style="padding: 20px; text-align: center; color: var(--text-muted); font-size: 0.8rem; font-style: italic;">Chưa có thông báo mới</div>`;
+        return;
+    }
+
+    listContainer.innerHTML = notifs.map(n => {
+        let iconClass = n.type === 'warning' ? 'fas fa-box-open' : (n.type === 'error' ? 'fas fa-exclamation-triangle' : 'fas fa-ticket-alt');
+        let colorClass = n.type === 'warning' ? 'warning' : (n.type === 'error' ? 'error' : '');
+        let bgStyle = n.unread ? 'background: rgba(255, 255, 255, 0.05);' : '';
+        return `
+            <div class="notification-item" style="${bgStyle}">
+                <div class="notification-icon ${colorClass}">
+                    <i class="${iconClass}"></i>
+                </div>
+                <div class="notification-content">
+                    <span class="notification-title" style="${n.unread ? 'font-weight: 700;' : 'font-weight: 500;'}">${n.title}</span>
+                    <span class="notification-time">${n.time}</span>
+                </div>
+            </div>
+        `;
+    }).join("");
+}
+
+function toggleNotificationDropdown(event) {
+    if (event) {
+        event.stopPropagation();
+    }
+    const dropdown = document.getElementById('notificationDropdown');
+    if (dropdown) {
+        const isHidden = !dropdown.classList.contains('active');
+        dropdown.classList.toggle('active');
+        if (isHidden) {
+            renderAdminNotifications();
+        }
+    }
+}
+
+function markAllRead(event) {
+    if (event) {
+        event.stopPropagation();
+    }
+    const notifs = getAdminNotifications();
+    notifs.forEach(n => n.unread = false);
+    localStorage.setItem("admin_notifications", JSON.stringify(notifs));
+    renderAdminNotifications();
+    showToast('Đã đánh dấu tất cả là đã đọc', 'success');
+}
+
+document.addEventListener('click', function(event) {
+    const dropdown = document.getElementById('notificationDropdown');
+    const notificationPill = document.querySelector('.notification-pill');
+    
+    if (dropdown && dropdown.classList.contains('active')) {
+        if (!notificationPill.contains(event.target)) {
+            dropdown.classList.remove('active');
+        }
+    }
+});
+
 async function fetchMovies() {
     let deletedList = [];
     try {
@@ -393,8 +479,8 @@ function triggerTabRenders(tabId) {
     switch (tabId) {
         case 'dashboard': renderDashboard(); break;
         case 'movies': renderMoviesTable(); break;
-        case 'showtimes': populateCinemaDropdowns(); renderShowtimesTable(); renderAvailabilityMatrix(); break;
-        case 'rooms': populateRoomDropdown(); loadRoomSeatMap(); break;
+        case 'showtimes': renderShowtimesTable(); renderAvailabilityMatrix(); break;
+        case 'rooms': populateRoomDropdown(); loadBrokenSeats(); break;
         case 'bookings': renderBookingsTable(); break;
         case 'combos': renderCombosTable(); break;
         case 'users': renderUsersTable(); break;
@@ -611,7 +697,7 @@ function renderMoviesTable() {
                 <td><strong>${m.title}</strong></td>
                 <td>${m.genre}</td>
                 <td>${m.duration} phút</td>
-                <td>${badge}</td>
+                <td style="text-align: center;">${badge}</td>
                 <td>
                     <button class="btn-mini" onclick="openTrailerModal('${safeTrailer}', '${safeTitle}')" title="Xem Trailer YouTube" style="border-color: rgba(229,9,20,0.4); color: #ff4d4d;"><i class="fab fa-youtube"></i> Trailer</button>
                     <button class="btn-mini" onclick="openEditMovieModal('${m.id}')" title="Sửa"><i class="fas fa-edit"></i> Sửa</button>
@@ -904,11 +990,13 @@ function renderAvailabilityMatrix() {
                 const slotMinutes = slotH * 60 + slotM;
 
                 const occupied = db.showtimes.find(st => {
-                    const matchesCinema = st.cinemaId === cinema.id || st.cinemaName.includes(cinema.name);
+                    const stCinemaName = st.cinemaName || '';
+                    const matchesCinema = st.cinemaId === cinema.id || stCinemaName.includes(cinema.name);
                     const matchesRoom = st.roomName === room;
                     const matchesDate = st.date === selectedDate;
                     if (!matchesCinema || !matchesRoom || !matchesDate) return false;
 
+                    if (!st.time) return false;
                     const [stH, stM] = st.time.split(':').map(Number);
                     const stMinutes = stH * 60 + stM;
                     return Math.abs(stMinutes - slotMinutes) < 90; // Overlaps slot window
@@ -941,6 +1029,16 @@ function renderAvailabilityMatrix() {
 
     html += `</tbody></table>`;
     container.innerHTML = html;
+}
+
+function changeMatrixDate(offset) {
+    const datePicker = document.getElementById('matrix-date-picker');
+    if (datePicker) {
+        let currentDate = new Date(datePicker.value || new Date());
+        currentDate.setDate(currentDate.getDate() + offset);
+        datePicker.value = currentDate.toISOString().split('T')[0];
+        renderAvailabilityMatrix();
+    }
 }
 
 function openQuickShowtimeModal(cinemaId, roomName, timeSlot, dateStr) {
@@ -1137,156 +1235,86 @@ function populateRoomDropdown() {
     });
 }
 
-function loadRoomSeatMap() {
+function loadBrokenSeats() {
     const roomKey = document.getElementById('room-select')?.value;
-    if (!roomKey) return;
+    const tbody = document.getElementById('broken-seats-table-body');
+    if (!roomKey || !tbody) return;
 
-    const parts = roomKey.split('_');
-    const cinemaId = parts[0] || '';
-    const roomName = parts[1] || '';
+    // Load from db.roomLayouts or just display empty if no layout config exists yet
+    const layout = db.roomLayouts[roomKey] || { brokenSeats: [] };
+    const brokenSeats = layout.brokenSeats || [];
 
-    const showtimeSelect = document.getElementById('room-showtime-select');
-    if (showtimeSelect) {
-        const matchingShowtimes = db.showtimes.filter(s =>
-            (s.cinemaId === cinemaId || s.cinemaName?.includes(cinemaId)) &&
-            (s.roomName === roomName || roomName.includes(s.roomName))
-        );
+    tbody.innerHTML = '';
 
-        showtimeSelect.innerHTML = `<option value="all">Tất cả suất chiếu trong ngày (Ghế đã đặt thực tế)</option>` +
-            matchingShowtimes.map(st => `<option value="${st.id}">${st.movieTitle} (${st.time} - ${st.date})</option>`).join('');
+    if (brokenSeats.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-muted); padding: 20px;">Phòng này không có ghế nào đang bảo trì</td></tr>`;
+        return;
     }
 
-    const layout = db.roomLayouts[roomKey] || { rows: 8, cols: 12, vipRows: [4,5], doubleRows: [7], brokenSeats: [] };
-    currentRoomRows = layout.rows;
-    currentRoomCols = layout.cols;
-    currentVipRows = layout.vipRows || [];
-    currentDoubleRows = layout.doubleRows || [];
-    currentBrokenSeats = layout.brokenSeats || [];
-
-    const rowsInput = document.getElementById('room-rows');
-    const colsInput = document.getElementById('room-cols');
-    if (rowsInput) rowsInput.value = currentRoomRows;
-    if (colsInput) colsInput.value = currentRoomCols;
-
-    renderSeatingGrid();
-}
-
-function renderSeatingGrid() {
-    const grid = document.getElementById('admin-seating-grid');
-    if (!grid) return;
-
-    const roomKey = document.getElementById('room-select')?.value || '';
     const parts = roomKey.split('_');
-    const cinemaId = parts[0] || '';
+    const cinemaName = db.cinemas.find(c => c.id === parts[0])?.name || parts[0];
     const roomName = parts[1] || '';
-    const selectedShowtimeId = document.getElementById('room-showtime-select')?.value || 'all';
 
-    // Cross-reference real-time booked seats for this room and showtime
-    const bookedSeatMap = {};
-    db.bookings.forEach(b => {
-        if (b.status === 'paid') {
-            const matchesCinema = !b.cinemaId || b.cinemaId === cinemaId || cinemaId === '' || b.cinemaId === 'all';
-            const matchesRoom = !b.roomName || b.roomName === roomName || roomName.includes(b.roomName) || b.roomName.includes(roomName);
-            const matchesShowtime = selectedShowtimeId === 'all' || b.showtimeId === selectedShowtimeId || (b.showtime && b.showtime.includes(selectedShowtimeId));
-
-            if (matchesCinema && matchesRoom && matchesShowtime) {
-                const seatsList = Array.isArray(b.seats) ? b.seats : (typeof b.seats === 'string' ? b.seats.split(',') : []);
-                seatsList.forEach(s => {
-                    const cleanSeat = s.trim().toUpperCase();
-                    if (cleanSeat) {
-                        bookedSeatMap[cleanSeat] = b.customerName || b.username || 'Khách hàng';
-                    }
-                });
-            }
-        }
+    brokenSeats.forEach(seatCode => {
+        tbody.innerHTML += `
+            <tr>
+                <td>${cinemaName} - ${roomName}</td>
+                <td><strong>${seatCode}</strong></td>
+                <td><span class="badge badge-red">Đang bảo trì</span></td>
+                <td>
+                    <button class="btn-mini" style="border-color: var(--btn-cyan-color); color: var(--btn-cyan-color);" onclick="removeBrokenSeat('${roomKey}', '${seatCode}')" title="Mở khóa ghế này"><i class="fas fa-unlock"></i></button>
+                </td>
+            </tr>
+        `;
     });
-
-    grid.style.gridTemplateColumns = `repeat(${currentRoomCols}, 32px)`;
-    grid.innerHTML = '';
-
-    for (let r = 0; r < currentRoomRows; r++) {
-        const rowLabel = String.fromCharCode(65 + r);
-        for (let c = 1; c <= currentRoomCols; c++) {
-            const seatCode = `${rowLabel}${c.toString().padStart(2, '0')}`;
-            const isBooked = !!bookedSeatMap[seatCode];
-            let seatType = 'standard';
-
-            if (isBooked) seatType = 'occupied';
-            else if (currentBrokenSeats.includes(seatCode)) seatType = 'broken';
-            else if (currentDoubleRows.includes(r)) seatType = 'double';
-            else if (currentVipRows.includes(r)) seatType = 'vip';
-
-            const seatBtn = document.createElement('button');
-            seatBtn.className = `seat-btn-admin ${seatType}`;
-            seatBtn.textContent = seatCode;
-
-            if (isBooked) {
-                seatBtn.title = `Đã được đặt thực tế bởi: ${bookedSeatMap[seatCode]}`;
-                seatBtn.style.backgroundColor = '#E50914';
-                seatBtn.style.color = '#ffffff';
-                seatBtn.style.boxShadow = '0 0 10px rgba(229, 9, 20, 0.9)';
-                seatBtn.style.fontWeight = 'bold';
-                seatBtn.style.cursor = 'not-allowed';
-                seatBtn.addEventListener('click', () => {
-                    showToast(`Ghế ${seatCode} đã được ${bookedSeatMap[seatCode]} đặt vé thực tế!`, 'warning');
-                });
-            } else {
-                seatBtn.addEventListener('click', () => toggleSeatProperty(seatCode, r));
-            }
-            grid.appendChild(seatBtn);
-        }
-    }
 }
 
-function toggleSeatProperty(seatCode, rowIndex) {
-    if (activeSeatType === 'broken') {
-        if (currentBrokenSeats.includes(seatCode)) {
-            currentBrokenSeats = currentBrokenSeats.filter(s => s !== seatCode);
-        } else {
-            currentBrokenSeats.push(seatCode);
-        }
-    } else if (activeSeatType === 'vip') {
-        currentBrokenSeats = currentBrokenSeats.filter(s => s !== seatCode);
-        if (!currentVipRows.includes(rowIndex)) {
-            currentVipRows.push(rowIndex);
-            currentDoubleRows = currentDoubleRows.filter(r => r !== rowIndex);
-        } else {
-            currentVipRows = currentVipRows.filter(r => r !== rowIndex);
-        }
-    } else if (activeSeatType === 'double') {
-        currentBrokenSeats = currentBrokenSeats.filter(s => s !== seatCode);
-        if (!currentDoubleRows.includes(rowIndex)) {
-            currentDoubleRows.push(rowIndex);
-            currentVipRows = currentVipRows.filter(r => r !== rowIndex);
-        } else {
-            currentDoubleRows = currentDoubleRows.filter(r => r !== rowIndex);
+function updateSeatStatus() {
+    const roomKey = document.getElementById('room-select')?.value;
+    const seatIdInput = document.getElementById('maintenance-seat-id');
+    const statusSelect = document.getElementById('maintenance-seat-status');
+    
+    if (!roomKey || !seatIdInput || !statusSelect) return;
+
+    const seatCode = seatIdInput.value.trim().toUpperCase();
+    const status = statusSelect.value;
+
+    if (!seatCode) {
+        showToast('Vui lòng nhập mã ghế!', 'error');
+        return;
+    }
+
+    // Initialize layout if missing
+    if (!db.roomLayouts[roomKey]) {
+        db.roomLayouts[roomKey] = { rows: 8, cols: 12, vipRows: [4,5], doubleRows: [7], brokenSeats: [] };
+    }
+    
+    let brokenSeats = db.roomLayouts[roomKey].brokenSeats || [];
+
+    if (status === 'broken') {
+        if (!brokenSeats.includes(seatCode)) {
+            brokenSeats.push(seatCode);
         }
     } else {
-        currentBrokenSeats = currentBrokenSeats.filter(s => s !== seatCode);
-        currentVipRows = currentVipRows.filter(r => r !== rowIndex);
-        currentDoubleRows = currentDoubleRows.filter(r => r !== rowIndex);
+        brokenSeats = brokenSeats.filter(s => s !== seatCode);
     }
-    renderSeatingGrid();
+
+    db.roomLayouts[roomKey].brokenSeats = brokenSeats;
+    localStorage.setItem('3hd2k_rooms_layouts', JSON.stringify(db.roomLayouts));
+    
+    seatIdInput.value = '';
+    showToast(`Đã cập nhật trạng thái ghế ${seatCode} thành công!`, 'success');
+    loadBrokenSeats();
 }
 
-function updateRoomGridSize() {
-    currentRoomRows = parseInt(document.getElementById('room-rows').value) || 8;
-    currentRoomCols = parseInt(document.getElementById('room-cols').value) || 12;
-    renderSeatingGrid();
-}
-
-function saveCurrentRoomLayout() {
-    const roomKey = document.getElementById('room-select').value;
-    if (roomKey) {
-        db.roomLayouts[roomKey] = {
-            rows: currentRoomRows,
-            cols: currentRoomCols,
-            vipRows: currentVipRows,
-            doubleRows: currentDoubleRows,
-            brokenSeats: currentBrokenSeats
-        };
-        localStorage.setItem('3hd2k_rooms_layouts', JSON.stringify(db.roomLayouts));
-        showToast("Đã lưu sơ đồ cấu hình ghế thành công!", "success");
+function removeBrokenSeat(roomKey, seatCode) {
+    if (confirm(`Bạn có chắc muốn mở khóa ghế ${seatCode}?`)) {
+        if (db.roomLayouts[roomKey] && db.roomLayouts[roomKey].brokenSeats) {
+            db.roomLayouts[roomKey].brokenSeats = db.roomLayouts[roomKey].brokenSeats.filter(s => s !== seatCode);
+            localStorage.setItem('3hd2k_rooms_layouts', JSON.stringify(db.roomLayouts));
+            showToast(`Đã mở khóa ghế ${seatCode}`, 'success');
+            loadBrokenSeats();
+        }
     }
 }
 
@@ -1857,6 +1885,8 @@ function loadAdminPOSLogs() {
 
 // --- GLOBAL EVENT BINDINGS & INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', () => {
+    renderAdminNotifications(); // Initialize dynamic notifications
+
     // Menu tab click handlers
     document.querySelectorAll('.sidebar-menu .menu-item').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -1947,6 +1977,7 @@ window.closeUserHistoryModal = closeUserHistoryModal;
 
 window.purgeAllMovieData = purgeAllMovieData;
 window.openQuickShowtimeModal = openQuickShowtimeModal;
+window.changeMatrixDate = changeMatrixDate;
 window.filterAdminInventoryTable = filterAdminInventoryTable;
 window.openAdminRestockModal = openAdminRestockModal;
 window.closeAdminRestockModal = closeAdminRestockModal;

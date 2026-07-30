@@ -24,7 +24,61 @@ export function renderSeatGrid(container, seatMap, callbacks) {
   const gridContainer = document.createElement('div');
   gridContainer.className = 'seat-grid-container';
 
-  const rows = ['A','B','C','D','E','F','G','H','I','J'];
+  let rows = ['A','B','C','D','E','F','G','H','I','J'];
+  let currentCols = 12;
+  let vipRows = ['F','G','H','I'];
+  let coupleRows = ['J'];
+  let brokenSeats = [];
+
+  try {
+      const roomLayouts = JSON.parse(localStorage.getItem('3hd2k_rooms_layouts') || '{}');
+      const urlParams = new URLSearchParams(window.location.search);
+      const showtimeId = urlParams.get('showtimeId');
+
+      let matchedLayout = null;
+      if (showtimeId) {
+          const showtimes = JSON.parse(localStorage.getItem('3hd2k_showtimes') || '[]');
+          const st = showtimes.find(s => s.id === showtimeId);
+          if (st) {
+              const key = `${st.cinemaId || ''}_${st.roomName || ''}`;
+              matchedLayout = roomLayouts[key];
+              if (!matchedLayout) {
+                  Object.keys(roomLayouts).forEach(k => {
+                      if (st.roomName && k.includes(st.roomName)) {
+                          matchedLayout = roomLayouts[k];
+                      }
+                  });
+              }
+          }
+      }
+
+      if (!matchedLayout && Object.keys(roomLayouts).length > 0) {
+          matchedLayout = Object.values(roomLayouts)[0];
+      }
+
+      if (matchedLayout) {
+          const numRows = matchedLayout.rows || 10;
+          rows = [];
+          for (let r = 0; r < numRows; r++) {
+              rows.push(String.fromCharCode(65 + r));
+          }
+          currentCols = matchedLayout.cols || 12;
+
+          if (Array.isArray(matchedLayout.vipRows)) {
+              vipRows = matchedLayout.vipRows.map(rIndex => String.fromCharCode(65 + rIndex));
+          }
+          if (Array.isArray(matchedLayout.doubleRows)) {
+              coupleRows = matchedLayout.doubleRows.map(rIndex => String.fromCharCode(65 + rIndex));
+          }
+          brokenSeats = (matchedLayout.brokenSeats || []).map(s => {
+              const letter = s.charAt(0);
+              const num = parseInt(s.substring(1), 10);
+              return `${letter}${num}`;
+          });
+      }
+  } catch (e) {
+      console.warn("Failed to load custom room layout:", e);
+  }
 
   rows.forEach(row => {
     const rowEl = document.createElement('div');
@@ -38,17 +92,24 @@ export function renderSeatGrid(container, seatMap, callbacks) {
     const seatsContainer = document.createElement('div');
     seatsContainer.className = 'seat-row-seats';
 
-    const isCoupleRow = row === 'J';
-    const numSeats = isCoupleRow ? 6 : 12;
+    const isCoupleRow = coupleRows.includes(row);
+    const numSeats = isCoupleRow ? Math.max(6, Math.floor(currentCols / 2)) : currentCols;
 
     for (let i = 1; i <= numSeats; i++) {
-      const seatId = isCoupleRow ? `J${i}` : `${row}${i}`;
-      const seatInfo = seatMap[seatId] || null;
-      const seatEl = _createSeatEl(seatId, seatInfo);
+      const seatId = `${row}${i}`;
+      const seatPadded = `${row}${i.toString().padStart(2, '0')}`;
+      const isBroken = brokenSeats.includes(seatId) || brokenSeats.includes(seatPadded);
+
+      let seatInfo = seatMap[seatId] || seatMap[seatPadded] || null;
+      if (isBroken) {
+          seatInfo = { status: 'locked', broken: true };
+      }
+
+      const seatEl = _createSeatEl(seatId, seatInfo, vipRows, coupleRows);
       _seatElements[seatId] = seatEl;
       seatsContainer.appendChild(seatEl);
 
-      if ((isCoupleRow && i === 3) || (!isCoupleRow && i === 6)) {
+      if (i === Math.floor(numSeats / 2)) {
          const aisle = document.createElement('div');
          aisle.className = 'seat-aisle';
          seatsContainer.appendChild(aisle);
@@ -106,7 +167,7 @@ export function clearSelection() {
   _selectedSeats.clear();
 }
 
-function _createSeatEl(seatId, seatInfo) {
+function _createSeatEl(seatId, seatInfo, vipRows = ['F','G','H','I'], coupleRows = ['J']) {
 
   const el = document.createElement('div');
   el.className = 'seat seat--available';
@@ -116,15 +177,14 @@ function _createSeatEl(seatId, seatInfo) {
   el.innerText = seatId;
   el.dataset.id = seatId;
 
-  const type = getSeatType(seatId);
-  if (type === 'vip') {
-    el.classList.add('seat--vip');
-  } else if (type === 'couple') {
+  const row = seatId.charAt(0);
+  if (coupleRows.includes(row)) {
     el.classList.add('seat--couple');
+  } else if (vipRows.includes(row)) {
+    el.classList.add('seat--vip');
   }
 
-  const row = seatId.charAt(0);
-  if (row === 'F' || row === 'G') {
+  if (row === 'F' || row === 'G' || vipRows.includes(row)) {
       el.classList.add('seat-social-zone');
   }
 
@@ -133,10 +193,11 @@ function _createSeatEl(seatId, seatInfo) {
       el.classList.remove('seat--available');
       el.classList.add('seat--booked');
       el.title = `Seat ${seatId} (Booked)`;
-    } else if (seatInfo.expiresAt) {
+    } else if (seatInfo.status === 'locked' || seatInfo.expiresAt || seatInfo.broken) {
       el.classList.remove('seat--available');
       el.classList.add('seat--locked');
-      el.title = `Seat ${seatId} (Locked)`;
+      if (seatInfo.broken) el.innerText = '✕';
+      el.title = `Seat ${seatId} (Locked/Broken)`;
     }
   }
 

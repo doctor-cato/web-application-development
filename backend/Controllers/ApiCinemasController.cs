@@ -1,5 +1,6 @@
 using appweb.Models;
 using appweb.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace appweb.Controllers
@@ -30,6 +31,7 @@ namespace appweb.Controllers
             return Ok(cinema);
         }
 
+        [Authorize(Roles = "ADMIN")]
         [HttpPost]
         public async Task<IActionResult> CreateCinema([FromBody] Cinema cinema)
         {
@@ -41,6 +43,7 @@ namespace appweb.Controllers
             return Ok(cinema);
         }
 
+        [Authorize(Roles = "ADMIN")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCinema(Guid id, [FromBody] Cinema cinema)
         {
@@ -54,6 +57,7 @@ namespace appweb.Controllers
             return Ok(existing);
         }
 
+        [Authorize(Roles = "ADMIN")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCinema(Guid id)
         {

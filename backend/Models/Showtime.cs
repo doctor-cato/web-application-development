@@ -16,9 +16,10 @@ public partial class Showtime
     public DateTime EndTime { get; set; }
 
     public decimal TicketPrice { get; set; }
-
+    [System.Text.Json.Serialization.JsonIgnore]
     public virtual ICollection<BookingDetail> BookingDetails { get; set; } = new List<BookingDetail>();
 
+    [System.Text.Json.Serialization.JsonIgnore]
     public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
 
     public virtual Movie? Movie { get; set; }

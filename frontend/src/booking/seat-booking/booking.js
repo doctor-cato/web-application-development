@@ -1,5 +1,5 @@
 
-import { getSeatMap, lockSeat, unlockSeat, subscribeSeatUpdates, closeSeatSyncChannel } from './bookingService.js';
+import { getSeatMap, lockSeat, unlockSeat, subscribeSeatUpdates, closeSeatSyncChannel, initSignalR } from './bookingService.js';
 import { renderSeatGrid, updateSeat, getSelectedSeats, getSeatType, setGroupSize, setCineMatchMode, getCineMatchAdjacentSeat } from '../../shared/components/seatGrid.js';
 import { saveCheckout } from '../../shared/utils/storage.js';
 import { requireAuth } from '../../shared/utils/authGuard.js';
@@ -116,33 +116,46 @@ async function init() {
     console.log("[DEBUG] movieId from URL:", movieId);
 
   if (movieId) {
+    const allMovies = window.allMoviesData || [];
+    let foundMovie = allMovies.find(m => String(m.id).toLowerCase() === String(movieId).toLowerCase());
 
-    try {
-      console.log("[DEBUG] Starting fetch...");
-      const response = await fetch('/api/movies');
-      if (response.ok) {
-        const allMovies = await response.json();
-        const foundMovie = allMovies.find(m => m.id === movieId);
-        if (foundMovie) {
-          console.log("[DEBUG] Found movie:", foundMovie.title);
-          const imgUrl = foundMovie.posterUrl
-            ? `${foundMovie.posterUrl}`
-            : `/images/movies/placeholder.jpg`;
-          movieData = {
-            id: foundMovie.id,
-            title: foundMovie.title,
-            poster: imgUrl,
-            genre: foundMovie.genre,
-            tags: ["2D", "IMAX"]
-          };
-          console.log("[DEBUG] movieData updated:", movieData.title);
-        } else {
-          console.log("[DEBUG] Movie not found for id:", movieId);
+    if (!foundMovie && currentShowtimeId) {
+      try {
+        const showtimesList = JSON.parse(localStorage.getItem('3hd2k_showtimes') || '[]');
+        const st = showtimesList.find(s => s.id === currentShowtimeId);
+        if (st && (st.movieTitle || st.movieId)) {
+          foundMovie = allMovies.find(m => 
+            (m.title && st.movieTitle && m.title.toLowerCase().trim() === st.movieTitle.toLowerCase().trim()) || 
+            (m.id && st.movieId && String(m.id).toLowerCase() === String(st.movieId).toLowerCase())
+          );
         }
-      }
-    } catch (e) {
-      console.error("Failed to fetch movie from API:", e);
+      } catch (e) {}
     }
+
+    if (foundMovie) {
+      console.log("[DEBUG] Found movie:", foundMovie.title);
+      const imgUrl = foundMovie.posterUrl || foundMovie.poster || `/images/movies/placeholder.jpg`;
+      movieData = {
+        id: foundMovie.id,
+        title: foundMovie.title,
+        poster: imgUrl,
+        genre: foundMovie.genre || foundMovie.tags?.join(', ') || 'N/A',
+        tags: foundMovie.tags || ["2D", "IMAX"]
+      };
+      console.log("[DEBUG] movieData updated:", movieData.title);
+    } else {
+      console.log("[DEBUG] Movie not found for id:", movieId);
+    }
+  }
+
+  if (!movieData) {
+      movieData = {
+          id: movieId || 'unknown',
+          title: 'Phim Đang Cập Nhật',
+          poster: '/images/movies/placeholder.jpg',
+          genre: 'N/A',
+          tags: []
+      };
   }
 
   console.log("[DEBUG] Calling renderMovieInfo with:", movieData.title);
@@ -150,6 +163,7 @@ async function init() {
   renderMovieInfo();
 
   const seatMap = getSeatMap(currentShowtimeId);
+  initSignalR(currentShowtimeId);
   const container = document.getElementById('seat-grid');
 
   try {

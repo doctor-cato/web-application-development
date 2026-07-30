@@ -1,164 +1,766 @@
 <!DOCTYPE html>
-<html lang="vi" class="dark">
-<head>
+<html lang="vi">
+<head><meta name="referrer" content="strict-origin-when-cross-origin">
     <link rel="icon" type="image/jpeg" href="/assets/favicon.jpg?v=2">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Về Chúng Tôi - 3HD2K Cinema</title>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <meta name="description" content="Tìm hiểu về 3HD2K Cinema - hệ thống rạp chiếu phim hiện đại hàng đầu Việt Nam. Khám phá câu chuyện thương hiệu, thông tin doanh nghiệp và cơ hội tuyển dụng.">
+    <link rel="stylesheet" href="../shared/css/main.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/shared/css/main.css">
-    <link rel="stylesheet" href="/shared/css/style.css">
+
     <style>
-        .about-hero {
-            padding: 120px 20px 80px;
-            text-align: center;
-            background: linear-gradient(180deg, rgba(229,9,20,0.1) 0%, rgba(0,0,0,0) 100%);
+        :root {
+            --accent-glow: rgba(229, 9, 20, 0.15);
+            --border-hover: rgba(229, 9, 20, 0.4);
         }
-        .about-hero h1 {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 4rem;
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* ── PAGE WRAPPER ── */
+        .about-wrapper {
+            margin-top: 100px;
+            padding: 0 var(--page-padding) 60px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* ── HERO HEADER ── */
+        .about-header {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .about-header .eyebrow {
+            font-size: 0.75rem;
+            font-weight: 700;
             letter-spacing: 3px;
-            margin-bottom: 1rem;
-            background: linear-gradient(180deg, #fff 30%, rgba(255,255,255,0.6) 100%);
+            color: var(--primary-red);
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+
+        .about-header h1 {
+            font-family: 'Inter', sans-serif;
+            font-size: 3.5rem;
+            color: #ffffff;
+            letter-spacing: 2px;
+            margin-bottom: 16px;
+            background: linear-gradient(180deg, #ffffff 30%, rgba(255, 255, 255, 0.6) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        .about-hero p {
-            font-size: 1.2rem;
+
+        .about-header p {
             color: var(--text-muted);
-            max-width: 700px;
+            font-size: 1.1rem;
+            max-width: 600px;
             margin: 0 auto;
-        }
-        .about-section {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 60px 20px;
-        }
-        .about-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-top: 40px;
-        }
-        .about-card {
-            background: rgba(255,255,255,0.02);
-            border: 1px solid var(--glass-border);
-            border-radius: 16px;
-            padding: 30px;
-            transition: all 0.3s;
-        }
-        .about-card:hover {
-            border-color: rgba(229,9,20,0.4);
-            background: rgba(229,9,20,0.05);
-            transform: translateY(-5px);
-        }
-        .about-card i {
-            font-size: 2.5rem;
-            color: var(--primary-red);
-            margin-bottom: 20px;
-        }
-        .about-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-            font-family: 'Inter', sans-serif;
-        }
-        .about-card p {
-            color: var(--text-muted);
             line-height: 1.7;
         }
+
+        /* ── LAYOUT GRID ── */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        /* ── SIDEBAR ── */
+        .about-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            position: sticky;
+            top: 100px;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            text-align: left;
+            width: 100%;
+        }
+
+        .sidebar-item i {
+            width: 20px;
+            text-align: center;
+            font-size: 1rem;
+            transition: color 0.25s ease;
+        }
+
+        .sidebar-item:hover {
+            background: rgba(229, 9, 20, 0.06);
+            border-color: var(--border-hover);
+            color: var(--text-main);
+        }
+
+        .sidebar-item.active {
+            background: rgba(229, 9, 20, 0.1);
+            border-color: rgba(229, 9, 20, 0.5);
+            color: var(--primary-red);
+            font-weight: 600;
+        }
+
+        .sidebar-item.active i { color: var(--primary-red); }
+
+        /* ── TAB PANELS ── */
+        .about-content {
+            min-width: 0;
+        }
+
+        .tab-panel {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── PANEL CARD ── */
+        .panel-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 36px;
+            margin-bottom: 24px;
+        }
+
+        .panel-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .panel-title i { color: var(--primary-red); font-size: 1.1rem; }
+
+        /* ── DOC SECTION ── */
+        .doc-section {
+            margin-bottom: 28px;
+            padding-bottom: 28px;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+
+        .doc-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .doc-section h3 {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-main);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .doc-section p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.75;
+            margin-bottom: 12px;
+        }
+
+        .doc-section p:last-child { margin-bottom: 0; }
+
+        .doc-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .doc-section ul li {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.7;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .doc-section ul li::before {
+            content: '▸';
+            color: var(--primary-red);
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        /* ── STAT CARDS ── */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 20px;
-            margin: 60px 0;
+            margin-bottom: 24px;
         }
-        .stat-item {
+
+        .stat-card {
+            background: rgba(229, 9, 20, 0.06);
+            border: 1px solid rgba(229, 9, 20, 0.2);
+            border-radius: 12px;
+            padding: 24px 20px;
             text-align: center;
-            padding: 30px;
+        }
+
+        .stat-card .stat-value {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--primary-red);
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-card .stat-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* ── TIMELINE ── */
+        .timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            position: relative;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 16px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--primary-red), rgba(229,9,20,0.1));
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 24px;
+            padding-bottom: 28px;
+            position: relative;
+        }
+
+        .timeline-item:last-child { padding-bottom: 0; }
+
+        .timeline-dot {
+            width: 34px;
+            height: 34px;
+            min-width: 34px;
+            border-radius: 50%;
+            background: var(--primary-red);
+            border: 3px solid var(--bg-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: white;
+            position: relative;
+            z-index: 1;
+        }
+
+        .timeline-content {
+            padding-top: 4px;
+            flex: 1;
+        }
+
+        .timeline-year {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--primary-red);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 4px;
+        }
+
+        .timeline-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .timeline-desc {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* ── TEAM / VALUE CARDS ── */
+        .value-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .value-card {
             background: rgba(255,255,255,0.02);
             border: 1px solid var(--glass-border);
             border-radius: 12px;
+            padding: 20px;
+            transition: border-color 0.25s ease;
         }
-        .stat-item .number {
-            font-size: 3rem;
-            font-weight: 700;
+
+        .value-card:hover { border-color: var(--border-hover); }
+
+        .value-card .vc-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: rgba(229, 9, 20, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
             color: var(--primary-red);
-            font-family: 'Bebas Neue', sans-serif;
-            letter-spacing: 2px;
+            margin-bottom: 12px;
         }
-        .stat-item .label {
+
+        .value-card h4 {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-main);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .value-card p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* ── BUSINESS INFO ── */
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .info-table tr {
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+
+        .info-table tr:last-child { border-bottom: none; }
+
+        .info-table td {
+            padding: 14px 0;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .info-table td:first-child {
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            width: 200px;
+            min-width: 160px;
+        }
+
+        .info-table td:last-child {
+            color: var(--text-main);
+        }
+
+        /* ── CAREERS ── */
+        .career-hero {
+            background: linear-gradient(135deg, rgba(229,9,20,0.12) 0%, rgba(229,9,20,0.03) 100%);
+            border: 1px solid rgba(229,9,20,0.2);
+            border-radius: 16px;
+            padding: 40px 36px;
+            margin-bottom: 28px;
+            text-align: center;
+        }
+
+        .career-hero h2 {
+            font-size: 1.8rem;
+            color: white;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+        }
+
+        .career-hero p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.7;
+            max-width: 540px;
+            margin: 0 auto 24px;
+        }
+
+        .career-stats {
+            display: flex;
+            justify-content: center;
+            gap: 48px;
+            flex-wrap: wrap;
+        }
+
+        .career-stat { text-align: center; }
+
+        .career-stat .val {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary-red);
+            line-height: 1;
+            display: block;
+        }
+
+        .career-stat .lbl {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 4px;
+            display: block;
+        }
+
+        /* ── JOB LISTINGS ── */
+        .job-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .job-card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 22px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .job-card:hover {
+            background: rgba(229,9,20,0.05);
+            border-color: var(--border-hover);
+            transform: translateX(4px);
+        }
+
+        .job-card .job-info { flex: 1; min-width: 0; }
+
+        .job-card .job-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-main);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .job-card .job-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .job-tag {
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .job-tag.dept {
+            background: rgba(229,9,20,0.12);
+            color: var(--primary-red);
+            border: 1px solid rgba(229,9,20,0.25);
+        }
+
+        .job-tag.loc {
+            background: rgba(255,255,255,0.05);
+            color: var(--text-muted);
+            border: 1px solid var(--glass-border);
+        }
+
+        .job-tag.type {
+            background: rgba(34,197,94,0.1);
+            color: #4ade80;
+            border: 1px solid rgba(34,197,94,0.2);
+        }
+
+        .job-arrow {
             color: var(--text-muted);
             font-size: 0.9rem;
-            margin-top: 10px;
+            transition: color 0.25s ease, transform 0.25s ease;
         }
-        @media (max-width: 768px) {
-            .about-hero h1 { font-size: 2.5rem; }
+
+        .job-card:hover .job-arrow {
+            color: var(--primary-red);
+            transform: translateX(4px);
+        }
+
+        /* ── PERKS ── */
+        .perks-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-top: 4px;
+        }
+
+        .perk-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 16px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+        }
+
+        .perk-item i {
+            font-size: 1.1rem;
+            color: var(--primary-red);
+            margin-top: 2px;
+        }
+
+        .perk-item .perk-text h5 {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--text-main);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .perk-item .perk-text p {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* ── APPLY CTA ── */
+        .apply-cta {
+            background: rgba(229,9,20,0.06);
+            border: 1px solid rgba(229,9,20,0.2);
+            border-radius: 12px;
+            padding: 28px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            margin-top: 24px;
+        }
+
+        .apply-cta .cta-text h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-main);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+
+        .apply-cta .cta-text p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .btn-apply {
+            background: var(--primary-red);
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.25s ease, transform 0.2s ease;
+            text-decoration: none;
+        }
+
+        .btn-apply:hover {
+            background: #cc0812;
+            transform: translateY(-2px);
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 900px) {
+            .about-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .about-sidebar {
+                position: static;
+                flex-direction: row;
+                overflow-x: auto;
+                gap: 8px;
+                padding-bottom: 4px;
+            }
+
+            .sidebar-item {
+                white-space: nowrap;
+                min-width: fit-content;
+                padding: 12px 16px;
+                font-size: 0.82rem;
+            }
+
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .perks-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 600px) {
+            .about-wrapper { margin-top: 80px; }
+            .about-header h1 { font-size: 2.5rem; }
+            .panel-card { padding: 24px 18px; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .value-grid { grid-template-columns: 1fr; }
+            .perks-grid { grid-template-columns: 1fr; }
+            .apply-cta { flex-direction: column; text-align: center; }
+            .btn-apply { width: 100%; justify-content: center; }
+            .info-table td:first-child { width: 130px; min-width: 120px; }
+            .career-stats { gap: 28px; }
+            .job-card { flex-direction: column; align-items: flex-start; }
         }
     </style>
 </head>
 <body>
+
     <div id="navbar-placeholder"></div>
 
-    <main style="padding-top: 80px;">
-        <div class="about-hero">
+    <main class="about-wrapper" style="margin-top: 100px;">
+
+        <div class="about-header">
+            <div class="eyebrow">Dự án mã nguồn mở</div>
             <h1>VỀ CHÚNG TÔI</h1>
-            <p>Trải nghiệm điện ảnh đỉnh cao, mang Hollywood đến gần bạn hơn. Chúng tôi cam kết mang đến những trải nghiệm xem phim tuyệt vời nhất với công nghệ hiện đại và dịch vụ tận tâm.</p>
+            <p>Dự án 3HD2K Cinema được phát triển bởi đội ngũ đam mê công nghệ nhằm mang đến giải pháp đặt vé xem phim trực tuyến hiện đại, trực quan và tối ưu trải nghiệm người dùng.</p>
         </div>
 
-        <div class="about-section">
-            <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 20px; font-family: 'Inter', sans-serif;">Tầm Nhìn & Sứ Mệnh</h2>
-            <p style="text-align: center; color: var(--text-muted); max-width: 800px; margin: 0 auto 40px;">3HD2K Cinema hướng tới trở thành chuỗi rạp chiếu phim hàng đầu Việt Nam với trải nghiệm xem phim đẳng cấp quốc tế.</p>
+        <section class="about-content">
+            <div class="tab-panel active" id="about-tab">
 
-            <div class="about-grid">
-                <div class="about-card">
-                    <i class="fas fa-film"></i>
-                    <h3>Công Nghệ Hiện Đại</h3>
-                    <p>Trang bị hệ thống âm thanh Dolby Atmos, màn hình IMAX, ghế rung 4DX mang đến trải nghiệm đắm chìm tuyệt đối.</p>
+                <!-- Số liệu thực tế của dự án -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value">360+</div>
+                        <div class="stat-label">Commits</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">6</div>
+                        <div class="stat-label">Contributors</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">v3.0.7</div>
+                        <div class="stat-label">Phiên bản hiện tại</div>
+                    </div>
                 </div>
-                <div class="about-card">
-                    <i class="fas fa-users"></i>
-                    <h3>Dịch Vụ Tận Tâm</h3>
-                    <p>Đội ngũ nhân viên chuyên nghiệp, nhiệt tình, luôn sẵn sàng phục vụ và mang đến trải nghiệm tốt nhất cho khách hàng.</p>
-                </div>
-                <div class="about-card">
-                    <i class="fas fa-star"></i>
-                    <h3>Phim Đa Dạng</h3>
-                    <p>Cập nhật liên tục các bom tấn Hollywood, phim Châu Á, phim nghệ thuật đáp ứng mọi sở thích khán giả.</p>
-                </div>
-            </div>
 
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <div class="number">15+</div>
-                    <div class="label">CỤM RẠP</div>
-                </div>
-                <div class="stat-item">
-                    <div class="number">120+</div>
-                    <div class="label">PHÒNG CHIẾU</div>
-                </div>
-                <div class="stat-item">
-                    <div class="number">5M+</div>
-                    <div class="label">KHÁCH HÀNG/NĂM</div>
-                </div>
-                <div class="stat-item">
-                    <div class="number">500+</div>
-                    <div class="label">PHIM MỖI NĂM</div>
-                </div>
-            </div>
+                <!-- Đội ngũ phát triển -->
+                <div class="panel-card">
+                    <h2 class="panel-title">
+                        <i class="fas fa-code-branch"></i>
+                        Đội ngũ phát triển
+                    </h2>
 
-            <div style="text-align: center; padding: 60px 20px; background: rgba(229,9,20,0.05); border-radius: 16px; border: 1px solid rgba(229,9,20,0.2); margin-top: 60px;">
-                <i class="fas fa-heart" style="font-size: 3rem; color: var(--primary-red); margin-bottom: 20px;"></i>
-                <h2 style="font-size: 2rem; margin-bottom: 15px;">Cảm Ơn Bạn Đã Tin Tưởng</h2>
-                <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto;">Chúng tôi không ngừng cải tiến để mang đến cho bạn những giây phút giải trí tuyệt vời nhất.</p>
+                    <div class="doc-section">
+                        <h3>Những người đóng góp chính (Contributors)</h3>
+                        <p>Dự án này là thành quả đóng góp miệt mài của các thành viên tài năng. Đây là những contributors chính đã tham gia xây dựng và phát triển 3HD2K Cinema từ những ngày đầu (từ 09/06/2026):</p>
+                        <ul>
+                            <li><strong>githubuser2777</strong></li>
+                            <li><strong>Khanh</strong></li>
+                            <li><strong>doctor-cato</strong></li>
+                            <li><strong>LeeMinKhuong</strong></li>
+                            <li><strong>dothanh-1427</strong></li>
+                            <li><strong>izuki1780n</strong></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Giới thiệu dự án -->
+                <div class="panel-card">
+                    <h2 class="panel-title">
+                        <i class="fas fa-star"></i>
+                        Về Dự Án
+                    </h2>
+
+                    <div class="doc-section">
+                        <h3>Mục tiêu</h3>
+                        <p>Tạo ra một nền tảng website đặt vé phim có giao diện đẹp mắt (ứng dụng Glassmorphism), dễ sử dụng và đáp ứng được các nghiệp vụ cơ bản của một rạp chiếu phim hiện đại như hiển thị lịch chiếu, chọn ghế, mua vé, và quản lý người dùng.</p>
+                    </div>
+                    
+                    <div class="doc-section">
+                        <h3>Công nghệ sử dụng</h3>
+                        <ul>
+                            <li>Giao diện: HTML5, CSS3 (CSS Variables, Flexbox, Grid), Vanilla JavaScript</li>
+                            <li>Thiết kế: Glassmorphism, Micro-animations, FontAwesome</li>
+                            <li>Kiến trúc: Vanilla Web Application</li>
+                        </ul>
+                    </div>
+                </div>
+
             </div>
-        </div>
+        </section>
     </main>
 
     <div id="footer-placeholder"></div>
 
-    <script type="module" src="/shared/components/navbar.js"></script>
-    <script type="module" src="/shared/components/footer.js"></script>
-    <script type="module" src="/shared/js/main.js"></script>
+    <script type="module" src="../shared/components/navbar.js"></script>
+    <script type="module" src="../shared/components/footer.js"></script>
+    <script src="../shared/js/data.js"></script>
+    <script src="../shared/js/main.js"></script>
+    <script src="../shared/utils/authGuard-global.js"></script>
+
+
 </body>
 </html>

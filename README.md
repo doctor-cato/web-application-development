@@ -3,7 +3,7 @@
 Ứng dụng web mô phỏng toàn bộ luồng đặt vé rạp chiếu phim chuyên nghiệp: xem phim, chọn ghế real-time, combo đồ ăn, thanh toán QR code, mini-game Cine-Match, chương trình VIP & Đổi thưởng, và quản lý tài khoản.
 
 ![3HD2Kcinema Banner](https://img.shields.io/badge/3HD2Kcinema-v3.0.7-red?style=for-the-badge)
-![Git Commits](https://img.shields.io/badge/Commits-364-blue?style=for-the-badge)
+![Git Commits](https://img.shields.io/badge/Commits-456-blue?style=for-the-badge)
 ![Vercel Deployment](https://img.shields.io/badge/Vercel-32dk--web--app--project.vercel.app-000000?style=for-the-badge&logo=vercel&logoColor=white)
 ![Playwright Tests](https://img.shields.io/badge/Playwright-8%2F8%20Passed-brightgreen?style=for-the-badge&logo=playwright)
 ![MkDocs](https://img.shields.io/badge/Docs-MkDocs--Material-009688?style=for-the-badge)
@@ -32,9 +32,9 @@
 
 Sau đợt audit v3.0.6, dự án tiếp tục phát triển với 101 commits bổ sung, tập trung vào tích hợp Backend thực và nâng cấp giao diện:
 
-1. **[#61 - Seat Lock Sync & BroadcastChannel Cleanup]**(https://github.com/doctor-cato/web-application-development/issues/61): Giải quyết lỗi đồng bộ khóa ghế đa tab, dọn dẹp vòng đời `BroadcastChannel` và xóa dead code liên quan.
-2. **[#62 - POS Staff VIP Sync & SignalR Resilience]**(https://github.com/doctor-cato/web-application-development/issues/62): Đồng bộ dữ liệu VIP cho nhân viên bán vé tại quầy (Staff POS), cải thiện khả năng phục hồi kết nối SignalR và tạo mã QR riêng biệt cho từng ghế.
-3. **[#63 - Admin Portal & Staff POS Integration]**(https://github.com/doctor-cato/web-application-development/issues/63): Tích hợp dữ liệu người dùng thực và thống kê đặt vé trực tiếp, bổ sung quản lý suất chiếu (schedule, thêm/xóa showtime) trong Admin Portal.
+1. [**#61 - Seat Lock Sync & BroadcastChannel Cleanup**](https://github.com/doctor-cato/web-application-development/issues/61): Giải quyết lỗi đồng bộ khóa ghế đa tab, dọn dẹp vòng đời `BroadcastChannel` và xóa dead code liên quan.
+2. [**#62 - POS Staff VIP Sync & SignalR Resilience**](https://github.com/doctor-cato/web-application-development/issues/62): Đồng bộ dữ liệu VIP cho nhân viên bán vé tại quầy (Staff POS), cải thiện khả năng phục hồi kết nối SignalR và tạo mã QR riêng biệt cho từng ghế.
+3. [**#63 - Admin Portal & Staff POS Integration**](https://github.com/doctor-cato/web-application-development/issues/63): Tích hợp dữ liệu người dùng thực và thống kê đặt vé trực tiếp, bổ sung quản lý suất chiếu (schedule, thêm/xóa showtime) trong Admin Portal.
 
 ### Tính năng Nổi bật Thêm mới
 

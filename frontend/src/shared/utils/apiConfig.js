@@ -6,8 +6,13 @@ const localApiOrigin = `${window.location.protocol}//${window.location.hostname}
 export const API_BASE_URL = isStandaloneFrontend ? `${localApiOrigin}/api` : '/api';
 
 export function getHeaders() {
-    return {
+    const headers = {
         'Content-Type': 'application/json',
         'Bypass-Tunnel-Reminder': 'true'
     };
+    const token = localStorage.getItem('jwt_token');
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
+    return headers;
 }

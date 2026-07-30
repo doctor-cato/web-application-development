@@ -19,15 +19,13 @@ export async function login(email, password) {
             data = JSON.parse(responseText);
         } catch (parseError) {
             console.error('Login: Server trả về response không phải JSON:', responseText.substring(0, 200));
-            if (email.toLowerCase() === 'admin@gmail.com' && password === '123456') {
-                const adminUser = { email: 'admin@gmail.com', fullname: 'Admin 3HD2K', role: 'ADMIN' };
-                setCurrentUser(adminUser);
-                return { ok: true, user: adminUser };
-            }
             return { ok: false, error: 'Máy chủ gặp lỗi xử lý. Vui lòng thử lại sau.' };
         }
 
         if (response.ok) {
+            if (data.token) {
+                localStorage.setItem('jwt_token', data.token);
+            }
             setCurrentUser(data.user);
             return { ok: true, user: data.user };
         } else {
@@ -36,17 +34,6 @@ export async function login(email, password) {
     } catch (error) {
         clearTimeout(timeoutId);
         console.error('Login network error:', error);
-
-        if (email.toLowerCase() === 'admin@gmail.com' && password === '123456') {
-            const adminUser = { email: 'admin@gmail.com', fullname: 'Admin 3HD2K', role: 'ADMIN' };
-            setCurrentUser(adminUser);
-            return { ok: true, user: adminUser };
-        }
-        if (email.toLowerCase() === 'staff@gmail.com' && password === '123456') {
-            const staffUser = { email: 'staff@gmail.com', fullname: 'Staff POS', role: 'STAFF' };
-            setCurrentUser(staffUser);
-            return { ok: true, user: staffUser };
-        }
 
         if (error.name === 'AbortError') {
             return { ok: false, error: 'Hết thời gian chờ phản hồi từ máy chủ (Timeout). Vui lòng kiểm tra lại server Backend.' };
@@ -108,6 +95,7 @@ export async function logout() {
     } catch (error) {
         console.error('Logout error:', error);
     }
+    localStorage.removeItem('jwt_token');
     clearCurrentUser();
     window.location.href = '/auth/user-login/login.html';
 }

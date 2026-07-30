@@ -119,6 +119,7 @@
             transition: all 0.3s ease;
             border: none;
             color: #fff;
+            white-space: nowrap;
         }
 
         .btn:active {
@@ -161,12 +162,18 @@
         }
 
         .badge {
-            display: inline-block;
-            padding: 3px 8px;
-            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 5px 14px;
+            border-radius: 20px;
             font-size: 0.75rem;
             font-weight: 700;
             text-transform: uppercase;
+            white-space: nowrap;
+            text-align: center;
+            min-width: 105px;
+            box-sizing: border-box;
         }
 
         .badge-green { background: rgba(13, 242, 134, 0.15); color: #0df286; border: 1px solid rgba(13, 242, 134, 0.3); }
@@ -357,6 +364,8 @@
             align-items: center;
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 100;
         }
 
         .admin-header h1 {
@@ -398,12 +407,119 @@
             font-size: 0.65rem;
             width: 18px;
             height: 18px;
+            padding: 0;
+            min-width: 0;
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
             font-weight: 800;
         }
+
+        .notification-dropdown {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            width: 320px;
+            background: rgba(15, 15, 20, 0.95);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            display: none;
+            flex-direction: column;
+            z-index: 1000;
+            overflow: hidden;
+            animation: fadeIn 0.2s ease-out;
+            cursor: default;
+        }
+
+        .notification-dropdown.active {
+            display: flex;
+        }
+
+        .notification-dropdown-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+        }
+        
+        .notification-dropdown-header .mark-read {
+            font-size: 0.8rem;
+            color: var(--btn-cyan-color);
+            cursor: pointer;
+            font-weight: normal;
+        }
+        
+        .notification-dropdown-header .mark-read:hover {
+            text-decoration: underline;
+        }
+
+        .notification-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+            transition: background 0.2s;
+            text-align: left;
+            text-decoration: none;
+            color: var(--text-main);
+            cursor: pointer;
+        }
+
+        .notification-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+
+        .notification-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(0, 240, 255, 0.1);
+            color: var(--btn-cyan-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 1.1rem;
+        }
+
+        .notification-icon.warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+        }
+
+        .notification-icon.error {
+            background: rgba(229, 9, 20, 0.1);
+            color: var(--primary-red);
+        }
+        
+        .notification-content {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .notification-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        .notification-time {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
 
         .admin-content {
             padding: 40px;
@@ -696,12 +812,18 @@
         }
 
         .badge-admin {
-            display: inline-block;
-            padding: 4px 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 5px 14px;
             border-radius: 20px;
             font-size: 0.72rem;
             font-weight: 700;
             text-transform: uppercase;
+            white-space: nowrap;
+            text-align: center;
+            min-width: 105px;
+            box-sizing: border-box;
         }
 
         .badge-admin.now-showing { background: rgba(13, 242, 134, 0.12); color: #0df286; border: 1px solid rgba(13,242,134,0.2); }
@@ -991,7 +1113,7 @@
             position: fixed;
             top: 0;
             left: 0;
-            width: 100vw;
+            width: 100%;
             height: 100vh;
             background: rgba(0, 0, 0, 0.8);
             display: none;
@@ -1272,11 +1394,21 @@
             <div class="header-right">
                 <div class="time-widget glass-panel">
                     <i class="far fa-clock"></i>
-                    <span id="current-time">15:02:55</span>
+                    <span id="current-time">--:--:--</span>
                 </div>
-                <div class="notification-pill glass-panel">
+                <div class="notification-pill glass-panel" onclick="toggleNotificationDropdown(event)">
                     <i class="fas fa-bell"></i>
-                    <span class="badge">3</span>
+                    <span class="badge" id="notification-badge">3</span>
+                    
+                    <div class="notification-dropdown" id="notificationDropdown">
+                        <div class="notification-dropdown-header">
+                            <span>Thông báo</span>
+                            <span class="mark-read" onclick="markAllRead(event)">Đánh dấu đã đọc</span>
+                        </div>
+                        <div id="admin-notif-list-container" style="max-height: 320px; overflow-y: auto; display: flex; flex-direction: column;">
+                            <!-- Notifications rendered dynamically -->
+                        </div>
+                    </div>
                 </div>
                 <a href="../index.html" class="view-site-btn btn-outline-small" style="color: var(--btn-cyan-color); border-color: rgba(0, 240, 255, 0.4); margin-right: 8px;">
                     <i class="fas fa-home"></i> Trang chủ Website
@@ -1389,7 +1521,7 @@
                             <option value="coming-soon">Sắp chiếu</option>
                         </select>
                         <button class="btn btn-primary" onclick="openAddMovieModal()">
-                            <i class="fas fa-plus"></i> Thêm phim mới
+                            Phim <i class="fas fa-plus"></i>
                         </button>
                     </div>
                 </div>
@@ -1403,7 +1535,7 @@
                                     <th>Tên phim</th>
                                     <th>Thể loại</th>
                                     <th>Thời lượng</th>
-                                    <th>Trạng thái</th>
+                                    <th style="text-align: center;">Trạng thái</th>
                                     <th>Hành động</th>
                                 </tr>
                             </thead>
@@ -1461,7 +1593,9 @@
                         </h3>
                         <div style="display: flex; align-items: center; gap: 10px;">
                             <label for="matrix-date-picker" style="font-size: 0.85rem; color: var(--text-muted);">Ngày:</label>
+                            <button class="btn-mini" onclick="changeMatrixDate(-1)" style="background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: #fff; cursor: pointer; padding: 6px 10px; border-radius: 6px;" title="Ngày hôm trước"><i class="fas fa-chevron-left"></i></button>
                             <input type="date" id="matrix-date-picker" onchange="renderAvailabilityMatrix()" style="background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border); color: #fff; padding: 8px 12px; border-radius: 6px; font-family: inherit; outline: none;">
+                            <button class="btn-mini" onclick="changeMatrixDate(1)" style="background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: #fff; cursor: pointer; padding: 6px 10px; border-radius: 6px;" title="Ngày hôm sau"><i class="fas fa-chevron-right"></i></button>
                         </div>
                     </div>
                     <div style="display: flex; gap: 15px; margin-bottom: 15px; flex-wrap: wrap;">
@@ -1478,101 +1612,55 @@
             </section>
 
             <section id="tab-content-rooms" class="tab-section">
-                <div class="room-management-grid">
+                <div class="room-maintenance-container" style="max-width: 800px; margin: 0 auto;">
+                    <div class="glass-panel" style="padding: 30px;">
+                        <h3><i class="fas fa-tools"></i> Bảo trì & Quản lý ghế</h3>
+                        <p class="text-muted" style="margin-bottom: 25px;">Cập nhật trạng thái ghế (Bình thường / Hỏng) cho các phòng chiếu. Cấu trúc phòng được quản lý mặc định bởi hệ thống.</p>
 
-                    <div class="room-config-panel glass-panel">
-                        <h3><i class="fas fa-cog"></i> Cấu hình phòng chiếu</h3>
-                        <p class="text-muted" style="font-size: 0.8125rem; margin-bottom: 20px;">Chọn phòng và thay đổi cấu hình số lượng ghế, hàng ghế.</p>
-
-                        <div class="form-group">
+                        <div class="form-group" style="margin-bottom: 20px;">
                             <label for="room-select">Chọn phòng chiếu:</label>
-                            <select id="room-select" onchange="loadRoomSeatMap()">
-
+                            <select id="room-select" class="form-control" onchange="loadBrokenSeats()">
+                                <!-- Options will be loaded dynamically -->
                             </select>
                         </div>
 
-                        <div class="form-group" style="margin-top: 10px;">
-                            <label for="room-showtime-select" style="color: var(--btn-cyan-color);"><i class="fas fa-clock"></i> Suất chiếu thời gian thực:</label>
-                            <select id="room-showtime-select" onchange="renderSeatingGrid()">
-                                <option value="all">Tất cả suất chiếu trong ngày (Ghế đã đặt thực tế)</option>
-                            </select>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="room-rows">Hàng ghế (Row A-K):</label>
-                                <input type="number" id="room-rows" min="4" max="15" value="8">
+                        <div class="form-row" style="display: flex; gap: 15px; margin-bottom: 20px;">
+                            <div class="form-group" style="flex: 1;">
+                                <label for="maintenance-seat-id">Mã ghế (Ví dụ: C4):</label>
+                                <input type="text" id="maintenance-seat-id" class="form-control" placeholder="Nhập mã ghế..." style="text-transform: uppercase;">
                             </div>
-                            <div class="form-group">
-                                <label for="room-cols">Số ghế mỗi hàng:</label>
-                                <input type="number" id="room-cols" min="6" max="20" value="12">
+                            <div class="form-group" style="flex: 1;">
+                                <label for="maintenance-seat-status">Trạng thái:</label>
+                                <select id="maintenance-seat-status" class="form-control">
+                                    <option value="available">Bình thường (Mở bán)</option>
+                                    <option value="broken">Hỏng / Khóa (Bảo trì)</option>
+                                </select>
                             </div>
                         </div>
 
-                        <button class="btn btn-primary" style="width: 100%; margin-top: 10px;" onclick="updateRoomGridSize()">
-                            <i class="fas fa-save"></i> Cập nhật kích thước phòng
+                        <button class="btn btn-primary" style="width: 100%; margin-bottom: 30px;" onclick="updateSeatStatus()">
+                            <i class="fas fa-save"></i> Cập nhật trạng thái ghế
                         </button>
 
                         <hr style="border: none; border-top: 1px solid var(--glass-border); margin: 25px 0;">
 
-                        <h3><i class="fas fa-paint-roller"></i> Phân loại ghế</h3>
-                        <p class="text-muted" style="font-size: 0.8125rem; margin-bottom: 15px;">Chọn loại ghế dưới đây, sau đó nhấn trực tiếp lên sơ đồ ghế bên phải để thay đổi phân loại.</p>
-
-                        <div class="seat-type-selector">
-                            <div class="type-btn active" data-type="standard">
-                                <span class="seat-indicator standard"></span>
-                                <div>
-                                    <p class="type-name">Ghế Thường</p>
-                                    <p class="type-price">Giá gốc (80k - 100k)</p>
-                                </div>
-                            </div>
-                            <div class="type-btn" data-type="vip">
-                                <span class="seat-indicator vip"></span>
-                                <div>
-                                    <p class="type-name">Ghế VIP</p>
-                                    <p class="type-price">Phụ thu +30%</p>
-                                </div>
-                            </div>
-                            <div class="type-btn" data-type="double">
-                                <span class="seat-indicator double"></span>
-                                <div>
-                                    <p class="type-name">Ghế Đôi</p>
-                                    <p class="type-price">Giá x2 phòng đôi</p>
-                                </div>
-                            </div>
-                            <div class="type-btn" data-type="broken">
-                                <span class="seat-indicator broken"></span>
-                                <div>
-                                    <p class="type-name">Hỏng / Khóa</p>
-                                    <p class="type-price">Không thể đặt</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <button class="btn btn-outline" style="width: 100%; margin-top: 20px; border-color: var(--glass-border);" onclick="saveCurrentRoomLayout()">
-                            <i class="fas fa-check-circle"></i> Lưu thiết kế ghế
-                        </button>
-                    </div>
-
-                    <div class="room-map-panel glass-panel">
-                        <div class="map-header">
-                            <h3 id="room-map-title">Sơ đồ ghế Phòng Chiếu</h3>
-                            <div class="screen-label">MÀN HÌNH CHẤT LƯỢNG CAO</div>
-                            <div class="screen-line"></div>
-                        </div>
-
-                        <div class="seating-grid-wrapper">
-                            <div class="seating-grid" id="admin-seating-grid">
-
-                            </div>
-                        </div>
-
-                        <div class="map-legend">
-                            <div class="legend-item"><span class="seat-indicator standard"></span> Ghế Thường</div>
-                            <div class="legend-item"><span class="seat-indicator vip"></span> Ghế VIP</div>
-                            <div class="legend-item"><span class="seat-indicator double"></span> Ghế Đôi</div>
-                            <div class="legend-item"><span class="seat-indicator broken"></span> Khóa/Hỏng</div>
-                            <div class="legend-item"><span class="seat-indicator occupied"></span> Đã đặt (Đang chiếu)</div>
+                        <h4><i class="fas fa-clipboard-list"></i> Danh sách ghế đang bảo trì</h4>
+                        <div class="table-responsive" style="margin-top: 15px;">
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>Phòng</th>
+                                        <th>Mã ghế</th>
+                                        <th>Trạng thái hiện tại</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="broken-seats-table-body">
+                                    <tr>
+                                        <td colspan="4" style="text-align: center; color: var(--text-muted);">Không có dữ liệu</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>

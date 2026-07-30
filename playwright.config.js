@@ -23,7 +23,7 @@ module.exports = defineConfig({
     }
   },
   webServer: {
-    command: 'python3 -m http.server 3000 -d ./frontend/src',
+    command: 'python -m http.server 3000 -d ./frontend/src',
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,

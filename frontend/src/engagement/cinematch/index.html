@@ -168,25 +168,53 @@
             color: var(--text-muted);
         }
 
-        .pref-card:hover {
-            background: rgba(255, 255, 255, 0.08);
-            transform: translateY(-3px);
-            border-color: rgba(255,255,255,0.2);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
-
+        .pref-card:hover,
         .pref-card.selected {
             background: rgba(157, 0, 255, 0.1);
             border-color: var(--neon-purple);
             box-shadow: 0 0 15px rgba(157, 0, 255, 0.3), inset 0 0 10px rgba(157, 0, 255, 0.1);
+            transform: translateY(-3px);
         }
-
+        
+        .pref-card:hover i,
         .pref-card.selected i {
             color: var(--neon-purple);
         }
         
+        .pref-card.selected {
+            transform: translateY(0); /* Remove jump when actually selected */
+        }
+        
+        .pref-card[data-group="gender"]:hover,
         .pref-card[data-group="gender"].selected { border-color: var(--neon-cyan); box-shadow: 0 0 15px rgba(0, 240, 255, 0.3); background: rgba(0, 240, 255, 0.1); }
+        .pref-card[data-group="gender"]:hover i,
         .pref-card[data-group="gender"].selected i { color: var(--neon-cyan); }
+        
+        /* Mood specific colors */
+        .pref-card[data-group="mood"][data-value="romantic"]:hover,
+        .pref-card[data-group="mood"][data-value="romantic"].selected { border-color: #ff3366; box-shadow: 0 0 15px rgba(255, 51, 102, 0.3); background: rgba(255, 51, 102, 0.1); }
+        .pref-card[data-group="mood"][data-value="romantic"]:hover i,
+        .pref-card[data-group="mood"][data-value="romantic"].selected i { color: #ff3366; }
+        
+        .pref-card[data-group="mood"][data-value="adventure"]:hover,
+        .pref-card[data-group="mood"][data-value="adventure"].selected { border-color: #ff9900; box-shadow: 0 0 15px rgba(255, 153, 0, 0.3); background: rgba(255, 153, 0, 0.1); }
+        .pref-card[data-group="mood"][data-value="adventure"]:hover i,
+        .pref-card[data-group="mood"][data-value="adventure"].selected i { color: #ff9900; }
+        
+        .pref-card[data-group="mood"][data-value="chill"]:hover,
+        .pref-card[data-group="mood"][data-value="chill"].selected { border-color: #00ccff; box-shadow: 0 0 15px rgba(0, 204, 255, 0.3); background: rgba(0, 204, 255, 0.1); }
+        .pref-card[data-group="mood"][data-value="chill"]:hover i,
+        .pref-card[data-group="mood"][data-value="chill"].selected i { color: #00ccff; }
+        
+        .pref-card[data-group="mood"][data-value="thrilling"]:hover,
+        .pref-card[data-group="mood"][data-value="thrilling"].selected { border-color: #cc00ff; box-shadow: 0 0 15px rgba(204, 0, 255, 0.3); background: rgba(204, 0, 255, 0.1); }
+        .pref-card[data-group="mood"][data-value="thrilling"]:hover i,
+        .pref-card[data-group="mood"][data-value="thrilling"].selected i { color: #cc00ff; }
+        
+        .pref-card[data-group="mood"][data-value="funny"]:hover,
+        .pref-card[data-group="mood"][data-value="funny"].selected { border-color: #ffcc00; box-shadow: 0 0 15px rgba(255, 204, 0, 0.3); background: rgba(255, 204, 0, 0.1); }
+        .pref-card[data-group="mood"][data-value="funny"]:hover i,
+        .pref-card[data-group="mood"][data-value="funny"].selected i { color: #ffcc00; }
 
         .action-row {
             margin-top: 20px;
@@ -745,6 +773,32 @@
                 </div>
 
                 <div class="pref-section">
+                    <div class="section-label"><i class="fa-solid fa-location-dot"></i> Rạp chiếu mong muốn</div>
+                    <div class="pref-grid" id="pref-cinema">
+                        <div class="pref-card selected" data-group="cinema" data-value="any">
+                            <i class="fa-solid fa-map"></i>
+                            <span class="label">Bất kỳ rạp nào</span>
+                        </div>
+                        <div class="pref-card" data-group="cinema" data-value="ha-dong">
+                            <i class="fa-solid fa-building"></i>
+                            <span class="label">3HD2K Hà Đông</span>
+                            <span class="sublabel" style="font-size:0.7rem; text-align:center;">AEON Mall Hà Đông</span>
+                        </div>
+                        <div class="pref-card" data-group="cinema" data-value="le-trong-tan">
+                            <i class="fa-solid fa-building"></i>
+                            <span class="label">3HD2K Lê Trọng Tấn</span>
+                            <span class="sublabel" style="font-size:0.7rem; text-align:center;">Hồ Gươm Plaza</span>
+                        </div>
+                        <div class="pref-card" data-group="cinema" data-value="cau-giay">
+                            <i class="fa-solid fa-building"></i>
+                            <span class="label">3HD2K Cầu Giấy</span>
+                            <span class="sublabel" style="font-size:0.7rem; text-align:center;">Xuân Thủy</span>
+                        </div>
+                        <!-- API cinemas will be loaded by JS if available -->
+                    </div>
+                </div>
+
+                <div class="pref-section">
                     <div class="section-label"><i class="fa-solid fa-user-group"></i> Muốn ghép đôi với</div>
                     <div class="pref-grid" id="pref-gender">
                         <div class="pref-card" data-group="gender" data-value="opposite">
@@ -787,11 +841,12 @@
                 </div>
             </div>
 
-            <!-- STEP 3: CANDIDATES -->
+            <!-- STEP 3: CANDIDATES LOBBY -->
             <div id="step-candidates" class="step-container" style="display: none;">
                 <div class="candidates-header">
-                    <h2 class="candidates-title">ỨNG VIÊN PHÙ HỢP</h2>
-                    <p class="subtitle">Chúng tôi đã tìm thấy một số người có cùng sở thích với bạn!</p>
+                    <h2 class="candidates-title">SẢNH CHỜ (LOBBY)</h2>
+                    <p class="subtitle">Hãy chọn một người bạn đồng hành phù hợp với bạn!</p>
+                    <button id="btn-leave-lobby" class="cancel-btn" style="margin-top:15px;"><i class="fa-solid fa-arrow-left"></i> Rời sảnh</button>
                 </div>
                 <div id="candidates-container">
                     <!-- Cards will be injected by JS -->
@@ -850,13 +905,27 @@
                 </div>
             </div>
 
+
+
         </div>
     </main>
 
     <div id="footer-placeholder"></div>
 
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
     <script type="module" src="./cinematch.js"></script>
+    <!-- INVITE POPUP MODAL -->
+    <div id="invite-modal" class="step-container" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center; flex-direction: column;">
+        <div style="background: rgba(20,20,25,0.95); padding: 40px; border-radius: 20px; border: 1px solid var(--neon-cyan); text-align: center; max-width: 400px; box-shadow: 0 0 30px rgba(0, 240, 255, 0.2);">
+            <i class="fa-solid fa-envelope-open-text heart-icon" style="color: var(--neon-cyan); filter: drop-shadow(0 0 10px var(--neon-cyan));"></i>
+            <h2 style="color: white; margin: 20px 0 10px;">LỜI MỜI KẾT NỐI</h2>
+            <p style="color: var(--text-muted); margin-bottom: 30px; font-size: 1.1rem;"><strong id="invite-sender-name" style="color: var(--neon-cyan);">Ai đó</strong> đang muốn cùng bạn xem phim!</p>
+            
+            <div style="display: flex; gap: 15px; justify-content: center;">
+                <button id="btn-decline-invite" style="padding: 12px 25px; border-radius: 30px; border: 1px solid var(--text-muted); background: transparent; color: white; cursor: pointer; transition: all 0.3s;"><i class="fa-solid fa-xmark"></i> Từ chối</button>
+                <button id="btn-accept-invite" style="padding: 12px 25px; border-radius: 30px; border: none; background: var(--neon-cyan); color: black; font-weight: bold; cursor: pointer; transition: all 0.3s; box-shadow: 0 0 15px var(--neon-cyan);"><i class="fa-solid fa-check"></i> Đồng ý</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

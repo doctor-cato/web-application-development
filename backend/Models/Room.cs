@@ -15,8 +15,10 @@ public partial class Room
 
     public virtual Cinema? Cinema { get; set; }
 
+    [System.Text.Json.Serialization.JsonIgnore]
     public virtual ICollection<Seat> Seats { get; set; } = new List<Seat>();
 
+    [System.Text.Json.Serialization.JsonIgnore]
     public virtual ICollection<Showtime> Showtimes { get; set; } = new List<Showtime>();
 }
 
