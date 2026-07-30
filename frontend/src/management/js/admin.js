@@ -822,6 +822,7 @@ function openAddMovieModal() {
     document.getElementById('movie-form').reset();
     document.getElementById('movie-duration-input').value = 120;
     document.getElementById('movie-modal-title').textContent = "Thêm phim mới";
+    document.getElementById('movie-img-preview').style.display = 'none';
     document.getElementById('movie-modal').style.display = 'flex';
 }
 
@@ -834,10 +835,13 @@ function openEditMovieModal(id) {
         document.getElementById('movie-duration-input').value = m.duration || 120;
         document.getElementById('movie-age-input').value = m.age || 'T13';
         document.getElementById('movie-status-input').value = m.status || 'now-showing';
-        document.getElementById('movie-poster-input').value = m.poster || '';
+        document.getElementById('movie-poster-input').value = m.poster || m.posterUrl || '';
+        document.getElementById('movie-backdrop-input').value = m.backdrop || m.backdropUrl || m.bg || '';
         document.getElementById('movie-trailer-input').value = m.trailer || m.trailerUrl || '';
         document.getElementById('movie-desc-input').value = m.desc || '';
         document.getElementById('movie-modal-title').textContent = "Sửa thông tin phim";
+        // Hiện preview nếu có ảnh
+        updateImgPreview();
         document.getElementById('movie-modal').style.display = 'flex';
     }
 }
@@ -845,6 +849,38 @@ function openEditMovieModal(id) {
 function closeMovieModal() {
     document.getElementById('movie-modal').style.display = 'none';
 }
+
+// Live preview ảnh poster & backdrop khi admin nhập URL
+function updateImgPreview() {
+    const posterUrl = document.getElementById('movie-poster-input')?.value || '';
+    const backdropUrl = document.getElementById('movie-backdrop-input')?.value || '';
+    const previewDiv = document.getElementById('movie-img-preview');
+    const previewPoster = document.getElementById('preview-poster');
+    const previewBackdrop = document.getElementById('preview-backdrop');
+
+    if (!previewDiv) return;
+
+    const hasPoster = posterUrl.trim() !== '';
+    const hasBackdrop = backdropUrl.trim() !== '';
+
+    if (hasPoster || hasBackdrop) {
+        previewDiv.style.display = 'flex';
+        if (hasPoster) { previewPoster.src = posterUrl; previewPoster.style.display = 'block'; }
+        else previewPoster.style.display = 'none';
+        if (hasBackdrop) { previewBackdrop.src = backdropUrl; previewBackdrop.style.display = 'block'; }
+        else previewBackdrop.style.display = 'none';
+    } else {
+        previewDiv.style.display = 'none';
+    }
+}
+
+// Gắn event listener preview khi DOM sẵn sàng
+document.addEventListener('DOMContentLoaded', () => {
+    const posterInput = document.getElementById('movie-poster-input');
+    const backdropInput = document.getElementById('movie-backdrop-input');
+    if (posterInput) posterInput.addEventListener('input', updateImgPreview);
+    if (backdropInput) backdropInput.addEventListener('input', updateImgPreview);
+});
 
 async function handleMovieSubmit(e) {
     if (e) e.preventDefault();
@@ -860,6 +896,7 @@ async function handleMovieSubmit(e) {
     const age = document.getElementById('movie-age-input').value;
     const status = document.getElementById('movie-status-input').value;
     const poster = document.getElementById('movie-poster-input').value;
+    const backdrop = document.getElementById('movie-backdrop-input').value;
     const trailer = document.getElementById('movie-trailer-input').value;
     const desc = document.getElementById('movie-desc-input').value;
 
@@ -873,9 +910,12 @@ async function handleMovieSubmit(e) {
         age: age,
         status: status,
         poster: poster,
-        bg: poster,
-        backdrop: poster,
+        posterUrl: poster,
+        backdrop: backdrop || poster,   // fallback về poster nếu không có backdrop
+        backdropUrl: backdrop || poster,
+        bg: backdrop || poster,
         trailer: trailer,
+        trailerUrl: trailer,
         desc: desc
     };
 
@@ -905,6 +945,7 @@ async function handleMovieSubmit(e) {
         director: "Đang cập nhật",
         cast: "Đang cập nhật",
         posterUrl: poster,
+        backdropUrl: backdrop || null,
         trailerUrl: trailer,
         ageRating: age,
         status: status

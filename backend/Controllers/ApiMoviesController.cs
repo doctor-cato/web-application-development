@@ -54,6 +54,7 @@ namespace appweb.Controllers
             existingMovie.Description = movie.Description;
             existingMovie.TrailerUrl = movie.TrailerUrl;
             existingMovie.PosterUrl = movie.PosterUrl;
+            existingMovie.BackdropUrl = movie.BackdropUrl;
             existingMovie.Duration = movie.Duration;
             existingMovie.AgeRating = movie.AgeRating;
             existingMovie.Genre = movie.Genre;

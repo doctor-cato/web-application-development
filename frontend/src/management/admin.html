@@ -1947,8 +1947,27 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="movie-poster-input">Link hình ảnh (Poster URL):</label>
+                    <label for="movie-poster-input">🖼️ Ảnh Poster (dọc — dùng cho card phim):</label>
                     <input type="url" id="movie-poster-input" placeholder="https://example.com/poster.jpg">
+                    <small style="color: var(--text-muted); font-size: 0.78rem; margin-top: 4px; display: block;">Ảnh tỉ lệ dọc (2:3) — hiển thị ở danh sách phim, tìm kiếm</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="movie-backdrop-input">🎬 Ảnh Banner (ngang — dùng cho Hero Banner):</label>
+                    <input type="url" id="movie-backdrop-input" placeholder="https://example.com/backdrop.jpg">
+                    <small style="color: var(--text-muted); font-size: 0.78rem; margin-top: 4px; display: block;">Ảnh tỉ lệ ngang (16:9) — hiển thị ở banner trang chủ</small>
+                </div>
+
+                <!-- Preview ảnh -->
+                <div id="movie-img-preview" style="display:none; gap: 15px; margin-bottom: 15px;">
+                    <div style="flex: 1; text-align: center;">
+                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 6px;">POSTER</div>
+                        <img id="preview-poster" src="" alt="Poster preview" style="height: 120px; width: auto; border-radius: 8px; border: 1px solid var(--glass-border); object-fit: cover;">
+                    </div>
+                    <div style="flex: 2; text-align: center;">
+                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 6px;">BANNER</div>
+                        <img id="preview-backdrop" src="" alt="Backdrop preview" style="height: 120px; width: 100%; border-radius: 8px; border: 1px solid var(--glass-border); object-fit: cover;">
+                    </div>
                 </div>
 
                 <div class="form-group">

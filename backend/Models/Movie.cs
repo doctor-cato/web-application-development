@@ -36,6 +36,9 @@ namespace appweb.Models
         [Column("poster_url")]
         public string PosterUrl { get; set; } = string.Empty;
 
+        [Column("backdrop_url")]
+        public string? BackdropUrl { get; set; }
+
         [Column("trailer_url")]
         public string? TrailerUrl { get; set; }
 
