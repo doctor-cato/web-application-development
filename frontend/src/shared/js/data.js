@@ -9,11 +9,17 @@ const mockCast = [];
 
 function normalizeImagePath(path) {
     if (!path) return '/shared/images/avatar.jpg';
-    if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:') || path.startsWith('/shared/') || path.startsWith('../')) {
+    if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) {
         return path;
     }
-    const filename = path.split('/').pop();
-    return `/shared/images/${filename}`;
+    if (path.startsWith('/shared/') || path.startsWith('../')) {
+        return path;
+    }
+    // Use real data from Somee
+    if (path.startsWith('/')) {
+        return `http://3hd2k-api.somee.com${path}`;
+    }
+    return `http://3hd2k-api.somee.com/${path}`;
 }
 
 function formatMovieDuration(rawDuration) {
