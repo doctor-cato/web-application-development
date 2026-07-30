@@ -479,7 +479,7 @@ function triggerTabRenders(tabId) {
     switch (tabId) {
         case 'dashboard': renderDashboard(); break;
         case 'movies': renderMoviesTable(); break;
-        case 'showtimes': renderShowtimesTable(); break;
+        case 'showtimes': renderShowtimesTable(); renderAvailabilityMatrix(); break;
         case 'rooms': populateRoomDropdown(); loadBrokenSeats(); break;
         case 'bookings': renderBookingsTable(); break;
         case 'combos': renderCombosTable(); break;
@@ -990,11 +990,13 @@ function renderAvailabilityMatrix() {
                 const slotMinutes = slotH * 60 + slotM;
 
                 const occupied = db.showtimes.find(st => {
-                    const matchesCinema = st.cinemaId === cinema.id || st.cinemaName.includes(cinema.name);
+                    const stCinemaName = st.cinemaName || '';
+                    const matchesCinema = st.cinemaId === cinema.id || stCinemaName.includes(cinema.name);
                     const matchesRoom = st.roomName === room;
                     const matchesDate = st.date === selectedDate;
                     if (!matchesCinema || !matchesRoom || !matchesDate) return false;
 
+                    if (!st.time) return false;
                     const [stH, stM] = st.time.split(':').map(Number);
                     const stMinutes = stH * 60 + stM;
                     return Math.abs(stMinutes - slotMinutes) < 90; // Overlaps slot window
