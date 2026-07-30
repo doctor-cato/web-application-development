@@ -3,6 +3,8 @@ using appweb.Models;
 using appweb.Repositories;
 using appweb.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Http;
+using System.Text.Json;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.IO;
@@ -57,10 +59,11 @@ namespace appweb.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            // Check if SMTP is configured
+            // Check if SMTP or Resend is configured
             var smtpSettings = _configuration.GetSection("SmtpSettings");
             var senderEmail = smtpSettings["SenderEmail"];
-            bool isSmtpConfigured = !string.IsNullOrEmpty(senderEmail) && senderEmail != "YOUR_GMAIL_HERE@gmail.com";
+            var resendApiKey = smtpSettings["ResendApiKey"];
+            bool isSmtpConfigured = (!string.IsNullOrEmpty(senderEmail) && senderEmail != "YOUR_GMAIL_HERE@gmail.com") || !string.IsNullOrEmpty(resendApiKey);
 
             var user = new User
             {
@@ -478,8 +481,41 @@ namespace appweb.Controllers
                 var smtpSettings = _configuration.GetSection("SmtpSettings");
                 var senderEmail = smtpSettings["SenderEmail"];
                 var password = smtpSettings["Password"];
+                var resendApiKey = smtpSettings["ResendApiKey"];
+                var senderName = smtpSettings["SenderName"] ?? "3HD2K Cinema";
 
-                if (!string.IsNullOrEmpty(senderEmail) && senderEmail != "YOUR_GMAIL_HERE@gmail.com")
+                if (!string.IsNullOrEmpty(resendApiKey))
+                {
+                    using var httpClient = new HttpClient();
+                    httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", resendApiKey);
+                    
+                    // Resend default sandbox sender
+                    var fromEmail = "onboarding@resend.dev";
+                    
+                    var payload = new
+                    {
+                        from = $"{senderName} <{fromEmail}>",
+                        to = new[] { toEmail },
+                        subject = subject,
+                        text = body
+                    };
+
+                    var jsonPayload = JsonSerializer.Serialize(payload);
+                    var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+
+                    var response = await httpClient.PostAsync("https://api.resend.com/emails", content);
+                    var responseString = await response.Content.ReadAsStringAsync();
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        Console.WriteLine("Đã gửi email thành công qua Resend API.");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Lỗi khi gửi email Resend API: {response.StatusCode} - {responseString}");
+                    }
+                }
+                else if (!string.IsNullOrEmpty(senderEmail) && senderEmail != "YOUR_GMAIL_HERE@gmail.com")
                 {
                     var client = new SmtpClient(smtpSettings["Server"], int.Parse(smtpSettings["Port"] ?? "587"))
                     {
@@ -489,7 +525,7 @@ namespace appweb.Controllers
 
                     var mailMessage = new MailMessage
                     {
-                        From = new MailAddress(senderEmail, smtpSettings["SenderName"]),
+                        From = new MailAddress(senderEmail, senderName),
                         Subject = subject,
                         Body = body,
                         IsBodyHtml = false,
@@ -501,13 +537,13 @@ namespace appweb.Controllers
                 }
                 else
                 {
-                    Console.WriteLine("SMTP chưa được cấu hình. (Mock Email send)");
+                    Console.WriteLine("SMTP/Resend chưa được cấu hình. (Mock Email send)");
                     Console.WriteLine($"To: {toEmail}\nSubject: {subject}\nBody: {body}");
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Lỗi khi gửi email SMTP: " + ex.Message);
+                Console.WriteLine("Lỗi khi gửi email: " + ex.Message);
             }
         }
     }
