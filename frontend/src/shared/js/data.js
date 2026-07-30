@@ -94,87 +94,6 @@ function mapMovieObj(m) {
     };
 }
 
-function getFallbackMovies() {
-    return [
-        {
-            id: '6dba413d-5eb9-498c-8797-89f64d920032',
-            title: 'The Odyssey',
-            titleEn: 'The Odyssey',
-            description: 'Hành trình phiêu lưu không tưởng vượt qua những vì sao và không gian để tìm lại hy vọng cho nhân loại.',
-            meta: '2026 • Sci-Fi, Phiêu Lưu • 2h 15m',
-            releaseDate: '2026-05-15',
-            age: 'T13',
-            genre: 'Khoa Học Viễn Tưởng, Phiêu Lưu',
-            duration: 135,
-            status: 'now-showing',
-            posterUrl: '/shared/images/Moon_Fall.jpg',
-            backdropUrl: '/shared/images/battle_la.jpg',
-            rating: 4.8,
-            ratingCount: 1250,
-            director: 'Christopher Nolan',
-            trailer: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-            formats: ['IMAX', '4DX']
-        },
-        {
-            id: 'mv_kimi_no_na_wa',
-            title: 'Your Name',
-            titleEn: 'Kimi no Na wa',
-            description: 'Hai người xa lạ tìm thấy nhau qua một phép màu kỳ lạ. Họ hoán đổi cơ thể trong giấc mơ và bắt đầu một hành trình tìm kiếm nhau giữa không gian và thời gian.',
-            meta: '2016 • Anime, Tình Cảm • 1h 46m',
-            releaseDate: '2016-08-26',
-            age: 'T13',
-            genre: 'Anime, Tình Cảm, Kỳ Ảo',
-            duration: 106,
-            status: 'now-showing',
-            posterUrl: '/shared/images/Kimi-no-Na-wa.-Visual.jpg',
-            backdropUrl: '/shared/images/Kimi-no-Na-wa.-Visual.jpg',
-            rating: 4.9,
-            ratingCount: 15420,
-            director: 'Makoto Shinkai',
-            trailer: 'https://www.youtube.com/embed/xU47nhruN-Q',
-            formats: ['2D Lồng tiếng', '2D Phụ đề']
-        },
-        {
-            id: 'mv_avengers_endgame',
-            title: 'Avengers: Endgame',
-            titleEn: 'Avengers: Endgame',
-            description: 'Sau sự kiện tàn khốc của Infinity War, vũ trụ đang chìm trong đống đổ nát. Với sự giúp đỡ của các đồng minh còn lại, Avengers tập hợp một lần nữa để đảo ngược hành động của Thanos.',
-            meta: '2019 • Hành Động, Viễn Tưởng • 3h 1m',
-            releaseDate: '2019-04-26',
-            age: 'T13',
-            genre: 'Hành Động, Viễn Tưởng',
-            duration: 181,
-            status: 'now-showing',
-            posterUrl: '/shared/images/iron_man2.jpg',
-            backdropUrl: '/shared/images/iron_man2.jpg',
-            rating: 4.8,
-            ratingCount: 23150,
-            director: 'Anthony Russo, Joe Russo',
-            trailer: 'https://www.youtube.com/embed/TcMBFSGVi1c',
-            formats: ['IMAX', '3D', '4DX']
-        },
-        {
-            id: 'mv_dune_part_two',
-            title: 'Dune: Hành Tinh Cát - Phần 2',
-            titleEn: 'Dune: Part Two',
-            description: 'Paul Atreides hợp sức với Chani và người Fremen để trả thù những kẻ đã phá hoại gia đình anh, đồng thời cố gắng ngăn chặn một tương lai khủng khiếp mà chỉ mình anh thấy được.',
-            meta: '2024 • Khoa Học Viễn Tưởng • 2h 46m',
-            releaseDate: '2024-03-01',
-            age: 'T16',
-            genre: 'Khoa Học Viễn Tưởng, Hành Động',
-            duration: 166,
-            status: 'coming-soon',
-            posterUrl: '/shared/images/Ke_Kien_Tao_2.jpg',
-            backdropUrl: '/shared/images/Ke_Kien_Tao_2.jpg',
-            rating: 4.7,
-            ratingCount: 5240,
-            director: 'Denis Villeneuve',
-            trailer: 'https://www.youtube.com/embed/Way9Dexny3w',
-            formats: ['IMAX', '4DX']
-        }
-    ];
-}
-
 async function fetchMovies() {
     let deletedList = [];
     try {
@@ -189,18 +108,18 @@ async function fetchMovies() {
             if (Array.isArray(data) && data.length > 0) {
                 allMoviesData = data.map(m => mapMovieObj(m));
             } else {
-                allMoviesData = getFallbackMovies().map(mapMovieObj);
+                allMoviesData = [];
             }
         } else {
-            allMoviesData = getFallbackMovies().map(mapMovieObj);
+            allMoviesData = [];
         }
     } catch (e) {
-        console.warn("Failed to fetch movies from API, using default/localStorage fallbacks:", e);
-        allMoviesData = getFallbackMovies().map(mapMovieObj);
+        console.warn("Failed to fetch movies from API:", e);
+        allMoviesData = [];
     }
 
-    if (!Array.isArray(allMoviesData) || allMoviesData.length === 0) {
-        allMoviesData = getFallbackMovies().map(mapMovieObj);
+    if (!Array.isArray(allMoviesData)) {
+        allMoviesData = [];
     }
 
     allMoviesData = allMoviesData.filter(m => {
