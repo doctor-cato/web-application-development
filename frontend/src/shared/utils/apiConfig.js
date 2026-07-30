@@ -1,4 +1,5 @@
-const isStandaloneFrontend = ['3000', '8080'].includes(window.location.port);
+// ponytail: assume any port other than empty or 5111 means local dev server. ceiling: non-standard production ports.
+const isStandaloneFrontend = window.location.port && window.location.port !== '5111';
 const localApiOrigin = `${window.location.protocol}//${window.location.hostname}:5111`;
 
 // Use the backend directly when the Vanilla frontend is served on its own port.

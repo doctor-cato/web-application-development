@@ -76,7 +76,7 @@ function mapMovieObj(m) {
         duration: formattedDuration,
         age: m.ageRating || m.age || 'P',
         genre: m.genre || (m.tags ? m.tags.join(', ') : 'Chưa phân loại'),
-        status: movieStatus,
+        status: (movieStatus || 'coming-soon').toString().toLowerCase().trim(),
         poster: posterImg,
         bg: bgImg,
         backdrop: bgImg,

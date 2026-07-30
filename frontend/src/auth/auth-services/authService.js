@@ -20,6 +20,10 @@ export async function login(email, password) {
             if (!response.ok && response.status === 429 && !data.message) {
                 data.message = 'Quá nhiều yêu cầu. Vui lòng thử lại sau 1 phút.';
             }
+            if (!response.ok && data.errors && !data.message) {
+                const firstErrorKey = Object.keys(data.errors)[0];
+                data.message = data.errors[firstErrorKey][0];
+            }
         } catch (parseError) {
             console.error('Login: Server trả về response không phải JSON:', responseText.substring(0, 200));
             return { ok: false, error: 'Máy chủ gặp lỗi xử lý. Vui lòng thử lại sau.' };
@@ -71,6 +75,10 @@ export async function register(userData) {
             data = responseText ? JSON.parse(responseText) : {};
             if (!response.ok && response.status === 429 && !data.message) {
                 data.message = 'Quá nhiều yêu cầu. Vui lòng thử lại sau 1 phút.';
+            }
+            if (!response.ok && data.errors && !data.message) {
+                const firstErrorKey = Object.keys(data.errors)[0];
+                data.message = data.errors[firstErrorKey][0];
             }
         } catch (parseError) {
 
