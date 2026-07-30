@@ -142,16 +142,13 @@ namespace appweb.Controllers
                 if (user.Password.StartsWith("$2a$") || user.Password.StartsWith("$2b$") || user.Password.StartsWith("$2y$"))
                 {
                     isPasswordValid = BCrypt.Net.BCrypt.Verify(model.Password, user.Password);
-                    if (isPasswordValid)
-                    {
-                        user.Password = BCrypt.Net.BCrypt.HashPassword(model.Password);
-                        await _userRepository.UpdateAsync(user);
-                    }
                 }
-                else
+                else if (user.Password == model.Password)
                 {
-                    try { isPasswordValid = BCrypt.Net.BCrypt.Verify(model.Password, user.Password); }
-                    catch { isPasswordValid = false; }
+                    isPasswordValid = true;
+                    // Migrate plaintext to hash
+                    user.Password = BCrypt.Net.BCrypt.HashPassword(model.Password);
+                    await _userRepository.UpdateAsync(user);
                 }
             }
 
