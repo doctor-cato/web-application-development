@@ -52,9 +52,9 @@ function getRandomResponse(intent) {
     return responses[Math.floor(Math.random() * responses.length)];
 }
 
-function renderChatWidget() {
-    if (document.getElementById('chat-widget')) return;
+let chatHistory = [];
 
+function renderChatWidget() {
     const chatHTML = `
     <div class="chat-widget" id="chat-widget">
         <div class="chat-header">
@@ -99,7 +99,7 @@ function renderChatWidget() {
         width: 380px;
         max-height: 600px;
         background: #1a1a1a;
-        border: 1px solid var(--glass-border, rgba(255,255,255,0.1));
+        border: 1px solid var(--glass-border);
         border-radius: 16px;
         box-shadow: 0 20px 60px rgba(0,0,0,0.7);
         display: none;
@@ -120,7 +120,7 @@ function renderChatWidget() {
         align-items: center;
         padding: 20px;
         background: linear-gradient(135deg, rgba(229,9,20,0.15), rgba(229,9,20,0.05));
-        border-bottom: 1px solid var(--glass-border, rgba(255,255,255,0.1));
+        border-bottom: 1px solid var(--glass-border);
         border-radius: 16px 16px 0 0;
     }
     
@@ -171,7 +171,7 @@ function renderChatWidget() {
         width: 32px;
         height: 32px;
         border-radius: 50%;
-        background: var(--primary-red, #e50914);
+        background: var(--primary-red);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -194,7 +194,7 @@ function renderChatWidget() {
     }
     
     .chat-message.user .chat-bubble {
-        background: var(--primary-red, #e50914);
+        background: var(--primary-red);
         border-radius: 16px 16px 0 16px;
     }
     
@@ -212,7 +212,7 @@ function renderChatWidget() {
     .quick-btn {
         padding: 8px 14px;
         background: rgba(255,255,255,0.05);
-        border: 1px solid var(--glass-border, rgba(255,255,255,0.1));
+        border: 1px solid var(--glass-border);
         border-radius: 20px;
         color: white;
         font-size: 0.8rem;
@@ -222,20 +222,20 @@ function renderChatWidget() {
     }
     .quick-btn:hover {
         background: rgba(229,9,20,0.2);
-        border-color: var(--primary-red, #e50914);
+        border-color: var(--primary-red);
     }
     
     .chat-input-wrapper {
         display: flex;
         gap: 10px;
         padding: 15px 20px;
-        border-top: 1px solid var(--glass-border, rgba(255,255,255,0.1));
+        border-top: 1px solid var(--glass-border);
     }
     
     .chat-input {
         flex: 1;
         background: rgba(255,255,255,0.05);
-        border: 1px solid var(--glass-border, rgba(255,255,255,0.1));
+        border: 1px solid var(--glass-border);
         border-radius: 24px;
         padding: 10px 16px;
         color: white;
@@ -244,7 +244,7 @@ function renderChatWidget() {
         transition: all 0.3s;
     }
     .chat-input:focus {
-        border-color: var(--primary-red, #e50914);
+        border-color: var(--primary-red);
         background: rgba(255,255,255,0.08);
     }
     
@@ -252,7 +252,7 @@ function renderChatWidget() {
         width: 40px;
         height: 40px;
         border-radius: 50%;
-        background: var(--primary-red, #e50914);
+        background: var(--primary-red);
         border: none;
         color: white;
         cursor: pointer;
