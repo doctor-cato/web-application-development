@@ -1752,14 +1752,23 @@
                 <div class="action-bar glass-panel">
                     <div class="search-box">
                         <i class="fas fa-search"></i>
-                        <input type="text" id="user-search" placeholder="Tìm người dùng theo tên hoặc email..." oninput="filterUsersTable()">
+                        <input type="text" id="user-search" placeholder="Tìm người dùng theo tên, email, SĐT..." oninput="filterUsersTable()">
                     </div>
-                    <div class="filter-actions">
+                    <div class="filter-actions" style="display: flex; gap: 10px; align-items: center;">
                         <select id="user-filter-role" onchange="filterUsersTable()">
                             <option value="all">Tất cả vai trò</option>
                             <option value="admin">Quản trị viên</option>
+                            <option value="staff">Nhân viên</option>
                             <option value="customer">Khách hàng</option>
                         </select>
+                        <select id="user-filter-status" onchange="filterUsersTable()">
+                            <option value="all">Tất cả trạng thái</option>
+                            <option value="active">Hoạt động</option>
+                            <option value="banned">Bị khóa</option>
+                        </select>
+                        <button class="btn btn-primary" onclick="openAddUserModal()" style="display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-user-plus"></i> Thêm người dùng
+                        </button>
                     </div>
                 </div>
 
@@ -1770,7 +1779,7 @@
                                 <tr>
                                     <th>Avatar</th>
                                     <th>Họ & Tên</th>
-                                    <th>Email</th>
+                                    <th>Email & SĐT</th>
                                     <th>Vai trò</th>
                                     <th>Trạng thái</th>
                                     <th>Hành động</th>
@@ -2068,6 +2077,45 @@
             <div class="form-actions" style="margin-top: 20px;">
                 <button type="button" class="btn btn-primary" onclick="closeUserHistoryModal()">Đóng</button>
             </div>
+        </div>
+    </div>
+
+    <!-- Modal Add/Edit User -->
+    <div id="user-modal" class="modal-admin">
+        <div class="modal-admin-content glass-panel" style="max-width: 480px; padding: 25px; border-radius: 12px;">
+            <span class="close-admin-modal" onclick="closeUserModal()">&times;</span>
+            <h3 id="user-modal-title" style="margin-bottom: 20px; color: var(--primary-red);"><i class="fas fa-user-plus"></i> Thêm người dùng mới</h3>
+            <form id="user-form" onsubmit="saveUserForm(event)">
+                <input type="hidden" id="user-modal-id">
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 600;">Họ và Tên *</label>
+                    <input type="text" id="user-modal-fullname" required placeholder="Ví dụ: Nguyễn Văn A" class="admin-input" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--glass-border); background: rgba(255,255,255,0.05); color: #fff;">
+                </div>
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 600;">Email *</label>
+                    <input type="email" id="user-modal-email" required placeholder="example@domain.com" class="admin-input" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--glass-border); background: rgba(255,255,255,0.05); color: #fff;">
+                </div>
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 600;">Số điện thoại</label>
+                    <input type="text" id="user-modal-phone" placeholder="0901234567" class="admin-input" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--glass-border); background: rgba(255,255,255,0.05); color: #fff;">
+                </div>
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 600;">Mật khẩu</label>
+                    <input type="password" id="user-modal-password" placeholder="Để trống nếu không đổi (Mặc định: 123456)" class="admin-input" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--glass-border); background: rgba(255,255,255,0.05); color: #fff;">
+                </div>
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 600;">Vai trò</label>
+                    <select id="user-modal-role" class="admin-input" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--glass-border); background: #1a1a24; color: #fff;">
+                        <option value="CUSTOMER">Khách hàng (Customer)</option>
+                        <option value="STAFF">Nhân viên (Staff)</option>
+                        <option value="ADMIN">Quản trị viên (Admin)</option>
+                    </select>
+                </div>
+                <div class="form-actions" style="display: flex; justify-content: flex-end; gap: 10px;">
+                    <button type="button" class="btn btn-secondary" onclick="closeUserModal()" style="padding: 8px 16px;">Hủy</button>
+                    <button type="submit" class="btn btn-primary" style="padding: 8px 16px;"><i class="fas fa-save"></i> Lưu tài khoản</button>
+                </div>
+            </form>
         </div>
     </div>
 

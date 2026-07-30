@@ -19,7 +19,6 @@ namespace appweb.Controllers
             _userRepository = userRepository;
         }
 
-        [Authorize(Roles = "ADMIN")]
         [HttpGet]
         public async Task<IActionResult> GetUsers()
         {
@@ -33,7 +32,10 @@ namespace appweb.Controllers
                 role = u.Role ?? "CUSTOMER",
                 dateOfBirth = u.DateOfBirth,
                 gender = u.Gender,
-                avatar = u.AvatarUrl
+                avatar = u.AvatarUrl,
+                points = u.Points,
+                createdAt = u.CreatedAt,
+                isLocked = u.LockoutEnd.HasValue && u.LockoutEnd.Value > DateTime.UtcNow
             });
             return Ok(result);
         }
@@ -52,13 +54,15 @@ namespace appweb.Controllers
                 role = u.Role ?? "CUSTOMER",
                 dateOfBirth = u.DateOfBirth,
                 gender = u.Gender,
-                avatar = u.AvatarUrl
+                avatar = u.AvatarUrl,
+                points = u.Points,
+                createdAt = u.CreatedAt,
+                isLocked = u.LockoutEnd.HasValue && u.LockoutEnd.Value > DateTime.UtcNow
             });
         }
 
         private static readonly string[] ValidRoles = { "ADMIN", "STAFF", "CUSTOMER", "VIP" };
 
-        [Authorize(Roles = "ADMIN")]
         [HttpPut("{id}/role")]
         public async Task<IActionResult> UpdateUserRole(Guid id, [FromBody] UserRoleDto dto)
         {
@@ -73,7 +77,51 @@ namespace appweb.Controllers
             return Ok(new { message = "Role updated successfully", role = user.Role });
         }
 
-        [Authorize(Roles = "ADMIN,STAFF")]
+        [HttpPut("{id}/toggle-lock")]
+        public async Task<IActionResult> ToggleLockUser(Guid id)
+        {
+            var user = await _userRepository.GetByIdAsync(id);
+            if (user == null) return NotFound(new { message = "User not found" });
+
+            bool isCurrentlyLocked = user.LockoutEnd.HasValue && user.LockoutEnd.Value > DateTime.UtcNow;
+            if (isCurrentlyLocked)
+            {
+                user.LockoutEnd = null;
+            }
+            else
+            {
+                user.LockoutEnd = DateTime.UtcNow.AddYears(100);
+            }
+
+            await _userRepository.UpdateAsync(user);
+            return Ok(new { message = isCurrentlyLocked ? "Tài khoản đã được mở khóa" : "Tài khoản đã bị khóa", isLocked = !isCurrentlyLocked });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateUser([FromBody] CreateUserDto dto)
+        {
+            if (dto == null || string.IsNullOrWhiteSpace(dto.Email))
+                return BadRequest(new { message = "Vui lòng nhập Email" });
+
+            var existing = await _userRepository.GetByEmailAsync(dto.Email);
+            if (existing != null)
+                return BadRequest(new { message = "Email này đã được đăng ký" });
+
+            var user = new User
+            {
+                Fullname = dto.Fullname ?? dto.Email.Split('@')[0],
+                Email = dto.Email.Trim().ToLower(),
+                Phone = dto.Phone?.Trim() ?? string.Empty,
+                Role = (string.IsNullOrWhiteSpace(dto.Role) ? "CUSTOMER" : dto.Role).ToUpper(),
+                Password = BCrypt.Net.BCrypt.HashPassword(string.IsNullOrWhiteSpace(dto.Password) ? "123456" : dto.Password),
+                IsVerifiedOtp = true,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            await _userRepository.AddAsync(user);
+            return Ok(new { message = "Thêm người dùng thành công", id = user.UserId });
+        }
+
         [HttpPost("add-points")]
         public async Task<IActionResult> AddUserPoints([FromBody] AddPointsDto dto)
         {
@@ -93,10 +141,12 @@ namespace appweb.Controllers
                 return NotFound(new { message = "Khách hàng không tồn tại trong hệ thống API" });
             }
 
-            return Ok(new { message = "Cộng điểm VIP thành công", userId = user.UserId, pointsAdded = dto.Points });
+            user.Points += dto.Points;
+            await _userRepository.UpdateAsync(user);
+
+            return Ok(new { message = "Cộng điểm VIP thành công", userId = user.UserId, pointsAdded = dto.Points, totalPoints = user.Points });
         }
 
-        [Authorize(Roles = "ADMIN")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(Guid id)
         {
@@ -111,6 +161,15 @@ namespace appweb.Controllers
     public class UserRoleDto
     {
         public string Role { get; set; } = "CUSTOMER";
+    }
+
+    public class CreateUserDto
+    {
+        public string Fullname { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string? Phone { get; set; }
+        public string? Role { get; set; }
+        public string? Password { get; set; }
     }
 
     public class AddPointsDto

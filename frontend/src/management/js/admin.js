@@ -306,16 +306,22 @@ async function fetchBookings() {
 async function fetchUsers() {
     let usersList = [];
     try {
-        const res = await fetch('/api/users');
+        const token = localStorage.getItem('jwt_token') || localStorage.getItem('auth_token');
+        const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+        const res = await fetch('/api/users', { headers });
         if (res.ok) {
             const data = await res.json();
             if (Array.isArray(data) && data.length > 0) {
                 usersList = data.map(u => ({
-                    username: u.username || u.email,
-                    name: u.fullname || u.name || u.username || 'Thành viên',
+                    id: u.id,
+                    username: u.email || u.phone || u.id,
+                    name: u.fullname || u.name || (u.email ? u.email.split('@')[0] : 'Thành viên'),
                     email: u.email || '',
-                    role: (u.role || 'CUSTOMER').toLowerCase() === 'admin' ? 'admin' : 'customer',
-                    status: u.isLocked ? 'banned' : 'active'
+                    phone: u.phone || '',
+                    role: (u.role || 'CUSTOMER').toLowerCase(),
+                    status: u.isLocked ? 'banned' : 'active',
+                    points: u.points || 0,
+                    createdAt: u.createdAt
                 }));
             }
         }
@@ -323,62 +329,30 @@ async function fetchUsers() {
         console.error('Fetch users API error:', e);
     }
 
-    if (usersList.length === 0) {
-        const r1 = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
-        const r2 = JSON.parse(localStorage.getItem('3hd2k_users') || '[]');
-        const r3 = JSON.parse(localStorage.getItem('cinema_users') || '[]');
+    const r1 = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+    const r2 = JSON.parse(localStorage.getItem('3hd2k_users') || '[]');
+    const r3 = JSON.parse(localStorage.getItem('cinema_users') || '[]');
 
-        let allRegistered = [];
-        if (Array.isArray(r1)) allRegistered = allRegistered.concat(r1);
-        if (Array.isArray(r2)) allRegistered = allRegistered.concat(r2);
-        if (Array.isArray(r3)) allRegistered = allRegistered.concat(r3);
+    let allRegistered = [];
+    if (Array.isArray(r1)) allRegistered = allRegistered.concat(r1);
+    if (Array.isArray(r2)) allRegistered = allRegistered.concat(r2);
+    if (Array.isArray(r3)) allRegistered = allRegistered.concat(r3);
 
-        const registered = [];
-        const seenEmails = new Set();
-        allRegistered.forEach(u => {
-            const e = u.email || u.username;
-            if (e && !seenEmails.has(e)) {
-                seenEmails.add(e);
-                registered.push(u);
-            }
-        });
-        if (Array.isArray(registered)) {
-            registered.forEach(u => {
-                const email = u.email || u.username || '';
-                if (email && !usersList.some(x => x.email === email)) {
-                    usersList.push({
-                        username: u.username || email,
-                        name: u.name || u.fullname || email.split('@')[0],
-                        email: email,
-                        role: (u.role || 'customer').toLowerCase() === 'admin' ? 'admin' : 'customer',
-                        status: u.status || 'active'
-                    });
-                }
+    allRegistered.forEach(u => {
+        const email = u.email || u.username || '';
+        if (email && !usersList.some(x => x.email === email)) {
+            usersList.push({
+                id: u.id || ('local-' + Math.random().toString(36).substr(2, 9)),
+                username: u.username || email,
+                name: u.name || u.fullname || email.split('@')[0],
+                email: email,
+                phone: u.phone || '',
+                role: (u.role || 'customer').toLowerCase(),
+                status: u.status || 'active',
+                points: u.points || 0
             });
         }
-    }
-
-    const activeToken = localStorage.getItem('auth_token') || localStorage.getItem('3hd2k_user');
-    if (activeToken) {
-        try {
-            let activeUser = null;
-            if (activeToken.startsWith('{')) activeUser = JSON.parse(activeToken);
-            else {
-                const payloadBase64 = activeToken.split('.')[1] || activeToken;
-                activeUser = JSON.parse(decodeURIComponent(escape(atob(payloadBase64.replace(/-/g, '+').replace(/_/g, '/')))));
-            }
-            if (activeUser && (activeUser.email || activeUser.name) && !usersList.some(x => x.email === (activeUser.email || activeUser.name))) {
-                const userEmail = activeUser.email || (activeUser.name + '@3hd2k.com');
-                usersList.unshift({
-                    username: activeUser.username || userEmail,
-                    name: activeUser.fullname || activeUser.name || 'Admin 3HD2K',
-                    email: userEmail,
-                    role: (activeUser.role || 'ADMIN').toLowerCase(),
-                    status: 'active'
-                });
-            }
-        } catch (_) {}
-    }
+    });
 
     db.users = usersList;
 }
@@ -1645,41 +1619,52 @@ async function deleteCombo(id) {
 // ================= 7. TAB: USERS =================
 function renderUsersTable() {
     const searchEl = document.getElementById('user-search');
-    const filterEl = document.getElementById('user-filter-role');
-    const search = searchEl ? searchEl.value.toLowerCase() : '';
-    const filter = filterEl ? filterEl.value : 'all';
+    const roleFilterEl = document.getElementById('user-filter-role');
+    const statusFilterEl = document.getElementById('user-filter-status');
+    const search = searchEl ? searchEl.value.toLowerCase().trim() : '';
+    const roleFilter = roleFilterEl ? roleFilterEl.value.toLowerCase() : 'all';
+    const statusFilter = statusFilterEl ? statusFilterEl.value.toLowerCase() : 'all';
     const tbody = document.getElementById('users-tbody');
     if (!tbody) return;
 
     tbody.innerHTML = '';
 
-    const filtered = db.users.filter(u => {
-        const matchesSearch = u.name.toLowerCase().includes(search) || u.email.toLowerCase().includes(search);
-        const matchesFilter = filter === 'all' || u.role === filter;
-        return matchesSearch && matchesFilter;
+    const filtered = (db.users || []).filter(u => {
+        const matchesSearch = (u.name || '').toLowerCase().includes(search) || 
+                              (u.email || '').toLowerCase().includes(search) ||
+                              (u.phone || '').toLowerCase().includes(search);
+        const matchesRole = roleFilter === 'all' || (u.role || '').toLowerCase() === roleFilter;
+        const matchesStatus = statusFilter === 'all' || (u.status || '').toLowerCase() === statusFilter;
+        return matchesSearch && matchesRole && matchesStatus;
     });
 
     if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 30px;" class="text-muted">Chưa có người dùng từ API</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 30px;" class="text-muted">Không tìm thấy người dùng phù hợp.</td></tr>`;
         return;
     }
 
     filtered.forEach(u => {
-        const avatar = u.name.charAt(0).toUpperCase();
-        const roleBadge = u.role === 'admin'
-            ? `<span class="badge badge-red">Admin</span>`
-            : `<span class="badge badge-green">Khách hàng</span>`;
+        const avatar = (u.name || u.email || 'U').charAt(0).toUpperCase();
+        let roleBadge = `<span class="badge badge-green">Khách hàng</span>`;
+        if (u.role === 'admin') roleBadge = `<span class="badge badge-red">Admin</span>`;
+        else if (u.role === 'staff') roleBadge = `<span class="badge badge-yellow">Nhân viên</span>`;
+
+        const contactInfo = `<strong>${u.email || '-'}</strong>` + (u.phone ? `<br><small class="text-muted"><i class="fas fa-phone"></i> ${u.phone}</small>` : '');
+        const isBanned = u.status === 'banned';
+        const statusBadge = `<span class="badge ${isBanned ? 'badge-red' : 'badge-green'}">${isBanned ? 'Bị khóa' : 'Hoạt động'}</span>`;
 
         tbody.innerHTML += `
             <tr>
-                <td class="poster-td"><div class="admin-avatar" style="width:30px;height:30px;font-size:0.8rem; display:flex; justify-content:center; align-items:center; background:rgba(255,255,255,0.1); border-radius:50%; font-weight:bold;">${avatar}</div></td>
+                <td class="poster-td"><div class="admin-avatar" style="width:34px;height:34px;font-size:0.9rem; display:flex; justify-content:center; align-items:center; background:rgba(229,9,20,0.2); color:#fff; border-radius:50%; font-weight:bold;">${avatar}</div></td>
                 <td><strong>${u.name}</strong></td>
-                <td>${u.email}</td>
+                <td>${contactInfo}</td>
                 <td>${roleBadge}</td>
-                <td><span class="badge ${u.status === 'active' ? 'badge-green' : 'badge-red'}">${u.status === 'active' ? 'Hoạt động' : 'Bị khóa'}</span></td>
+                <td>${statusBadge}</td>
                 <td>
-                    <button class="btn-mini" onclick="toggleUserStatus('${u.username}')" title="Khóa/Mở khóa"><i class="fas fa-lock"></i></button>
-                    <button class="btn-mini" onclick="viewUserHistory('${u.username}')" title="Lịch sử giao dịch"><i class="fas fa-history"></i></button>
+                    <button class="btn-mini" onclick="toggleUserStatus('${u.id || u.username}')" title="${isBanned ? 'Mở khóa' : 'Khóa tài khoản'}"><i class="fas ${isBanned ? 'fa-unlock' : 'fa-lock'}" style="color:${isBanned ? '#0df286' : '#ff4757'};"></i></button>
+                    <button class="btn-mini" onclick="changeUserRolePrompt('${u.id || u.username}')" title="Đổi vai trò"><i class="fas fa-user-tag"></i></button>
+                    <button class="btn-mini" onclick="viewUserHistory('${u.username || u.email}')" title="Lịch sử giao dịch"><i class="fas fa-history"></i></button>
+                    <button class="btn-mini" onclick="deleteUserConfirm('${u.id || u.username}')" title="Xóa tài khoản" style="color:#ff4757;"><i class="fas fa-trash"></i></button>
                 </td>
             </tr>
         `;
@@ -1690,13 +1675,162 @@ function filterUsersTable() {
     renderUsersTable();
 }
 
-function toggleUserStatus(username) {
-    const u = db.users.find(user => user.username === username);
-    if (u) {
-        u.status = u.status === 'active' ? 'banned' : 'active';
-        showToast(`Cập nhật trạng thái tài khoản ${username}`, 'info');
-        renderUsersTable();
+async function toggleUserStatus(idOrUsername) {
+    const u = db.users.find(user => user.id === idOrUsername || user.username === idOrUsername);
+    if (!u) return;
+
+    if (u.id && !u.id.toString().startsWith('local-')) {
+        try {
+            const token = localStorage.getItem('jwt_token') || localStorage.getItem('auth_token');
+            const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+            const res = await fetch(`/api/users/${u.id}/toggle-lock`, { method: 'PUT', headers });
+            if (res.ok) {
+                const resData = await res.json();
+                u.status = resData.isLocked ? 'banned' : 'active';
+                showToast(resData.message || 'Cập nhật trạng thái thành công', 'success');
+                renderUsersTable();
+                return;
+            }
+        } catch (e) {
+            console.error('Toggle status error:', e);
+        }
     }
+
+    u.status = u.status === 'active' ? 'banned' : 'active';
+    showToast(`Đã ${u.status === 'banned' ? 'khóa' : 'mở khóa'} tài khoản ${u.name}`, 'info');
+    renderUsersTable();
+}
+
+async function changeUserRolePrompt(idOrUsername) {
+    const u = db.users.find(user => user.id === idOrUsername || user.username === idOrUsername);
+    if (!u) return;
+
+    const newRole = prompt(`Chọn vai trò mới cho ${u.name}:\n(ADMIN, STAFF, CUSTOMER)`, u.role.toUpperCase());
+    if (!newRole) return;
+
+    const formattedRole = newRole.trim().toUpperCase();
+    if (!['ADMIN', 'STAFF', 'CUSTOMER', 'VIP'].includes(formattedRole)) {
+        showToast('Vai trò không hợp lệ. Vui lòng chọn ADMIN, STAFF, hoặc CUSTOMER.', 'warning');
+        return;
+    }
+
+    if (u.id && !u.id.toString().startsWith('local-')) {
+        try {
+            const token = localStorage.getItem('jwt_token') || localStorage.getItem('auth_token');
+            const headers = { 'Content-Type': 'application/json' };
+            if (token) headers['Authorization'] = `Bearer ${token}`;
+
+            const res = await fetch(`/api/users/${u.id}/role`, {
+                method: 'PUT',
+                headers,
+                body: JSON.stringify({ role: formattedRole })
+            });
+
+            if (res.ok) {
+                u.role = formattedRole.toLowerCase();
+                showToast(`Cập nhật vai trò thành ${formattedRole}`, 'success');
+                renderUsersTable();
+                return;
+            }
+        } catch (e) {
+            console.error('Change role error:', e);
+        }
+    }
+
+    u.role = formattedRole.toLowerCase();
+    showToast(`Đã đổi vai trò ${u.name} thành ${formattedRole}`, 'info');
+    renderUsersTable();
+}
+
+async function deleteUserConfirm(idOrUsername) {
+    const u = db.users.find(user => user.id === idOrUsername || user.username === idOrUsername);
+    if (!u) return;
+
+    if (!confirm(`Bạn có chắc chắn muốn xóa tài khoản ${u.name} (${u.email})?`)) return;
+
+    if (u.id && !u.id.toString().startsWith('local-')) {
+        try {
+            const token = localStorage.getItem('jwt_token') || localStorage.getItem('auth_token');
+            const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+            const res = await fetch(`/api/users/${u.id}`, { method: 'DELETE', headers });
+            if (res.ok) {
+                db.users = db.users.filter(x => x.id !== u.id);
+                showToast('Xóa người dùng thành công!', 'success');
+                renderUsersTable();
+                return;
+            }
+        } catch (e) {
+            console.error('Delete user API error:', e);
+        }
+    }
+
+    db.users = db.users.filter(x => x.username !== u.username && x.id !== u.id);
+    showToast(`Đã xóa tài khoản ${u.name}`, 'info');
+    renderUsersTable();
+}
+
+function openAddUserModal() {
+    document.getElementById('user-modal-title').innerHTML = '<i class="fas fa-user-plus"></i> Thêm người dùng mới';
+    document.getElementById('user-modal-id').value = '';
+    document.getElementById('user-modal-fullname').value = '';
+    document.getElementById('user-modal-email').value = '';
+    document.getElementById('user-modal-phone').value = '';
+    document.getElementById('user-modal-password').value = '';
+    document.getElementById('user-modal-role').value = 'CUSTOMER';
+    document.getElementById('user-modal').style.display = 'flex';
+}
+
+function closeUserModal() {
+    document.getElementById('user-modal').style.display = 'none';
+}
+
+async function saveUserForm(e) {
+    e.preventDefault();
+    const fullname = document.getElementById('user-modal-fullname').value.trim();
+    const email = document.getElementById('user-modal-email').value.trim();
+    const phone = document.getElementById('user-modal-phone').value.trim();
+    const password = document.getElementById('user-modal-password').value.trim();
+    const role = document.getElementById('user-modal-role').value;
+
+    try {
+        const token = localStorage.getItem('jwt_token') || localStorage.getItem('auth_token');
+        const headers = { 'Content-Type': 'application/json' };
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+
+        const res = await fetch('/api/users', {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({ fullname, email, phone, password, role })
+        });
+
+        if (res.ok) {
+            showToast('Tạo người dùng thành công!', 'success');
+            closeUserModal();
+            await fetchUsers();
+            renderUsersTable();
+            return;
+        } else {
+            const errData = await res.json().catch(() => ({}));
+            showToast(errData.message || 'Không thể tạo người dùng qua API', 'error');
+        }
+    } catch (err) {
+        console.error('Save user error:', err);
+    }
+
+    const newUser = {
+        id: 'local-' + Date.now(),
+        username: email,
+        name: fullname,
+        email: email,
+        phone: phone,
+        role: role.toLowerCase(),
+        status: 'active',
+        points: 0
+    };
+    db.users.unshift(newUser);
+    showToast('Tạo người dùng thành công (Lưu tạm cục bộ)!', 'info');
+    closeUserModal();
+    renderUsersTable();
 }
 
 function viewUserHistory(username) {
@@ -2118,6 +2252,11 @@ window.deleteCombo = deleteCombo;
 
 window.filterUsersTable = filterUsersTable;
 window.toggleUserStatus = toggleUserStatus;
+window.changeUserRolePrompt = changeUserRolePrompt;
+window.deleteUserConfirm = deleteUserConfirm;
+window.openAddUserModal = openAddUserModal;
+window.closeUserModal = closeUserModal;
+window.saveUserForm = saveUserForm;
 window.viewUserHistory = viewUserHistory;
 window.closeUserHistoryModal = closeUserHistoryModal;
 
