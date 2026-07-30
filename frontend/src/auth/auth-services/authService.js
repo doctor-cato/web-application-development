@@ -16,7 +16,10 @@ export async function login(email, password) {
         const responseText = await response.text();
         let data;
         try {
-            data = JSON.parse(responseText);
+            data = responseText ? JSON.parse(responseText) : {};
+            if (!response.ok && response.status === 429 && !data.message) {
+                data.message = 'Quá nhiều yêu cầu. Vui lòng thử lại sau 1 phút.';
+            }
         } catch (parseError) {
             console.error('Login: Server trả về response không phải JSON:', responseText.substring(0, 200));
             return { ok: false, error: 'Máy chủ gặp lỗi xử lý. Vui lòng thử lại sau.' };
@@ -65,7 +68,10 @@ export async function register(userData) {
         const responseText = await response.text();
         let data;
         try {
-            data = JSON.parse(responseText);
+            data = responseText ? JSON.parse(responseText) : {};
+            if (!response.ok && response.status === 429 && !data.message) {
+                data.message = 'Quá nhiều yêu cầu. Vui lòng thử lại sau 1 phút.';
+            }
         } catch (parseError) {
 
             console.error('Server trả về response không phải JSON:', responseText.substring(0, 200));
