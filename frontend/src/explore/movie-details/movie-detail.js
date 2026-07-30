@@ -68,10 +68,17 @@ function renderHero(movie) {
         backdrop.style.backgroundImage = `url('${movie.backdrop || movie.poster}')`;
     }
 
+    const heroPosterWrap = document.getElementById('hero-poster-wrap');
     const heroPosterImg = document.getElementById('hero-poster-img');
     if (heroPosterImg) {
         heroPosterImg.src = movie.poster;
         heroPosterImg.alt = movie.title;
+        heroPosterImg.onerror = function() {
+            this.src = '/shared/images/avatar.jpg';
+        };
+    }
+    if (heroPosterWrap) {
+        heroPosterWrap.onclick = () => openPosterLightbox();
     }
 
     document.getElementById('hero-title').textContent = movie.title;
@@ -532,15 +539,29 @@ function renderGallery(movie) {
         }
     }
 
-    galleryImages = movie.gallery || [];
+    galleryImages = movie.gallery ? [...movie.gallery] : [];
+    if (movie.poster && !galleryImages.includes(movie.poster)) {
+        galleryImages.unshift(movie.poster);
+    }
     const galleryGrid = document.getElementById('gallery-grid');
     if (galleryGrid) {
         galleryGrid.innerHTML = galleryImages.map((url, i) => `
-            <div class="gallery-item" onclick="openLightbox(${i})" role="button" aria-label="Xem ảnh ${i+1}">
-                <img src="${url}" alt="Gallery ${i+1}" loading="lazy">
+            <div class="gallery-item ${url === movie.poster ? 'gallery-poster-item' : ''}" onclick="openLightbox(${i})" role="button" aria-label="Xem ảnh ${i+1}">
+                <img src="${url}" alt="${url === movie.poster ? 'Poster - ' + movie.title : 'Gallery ' + i}" loading="lazy" onerror="this.src='/shared/images/avatar.jpg'">
+                ${url === movie.poster ? '<span class="gallery-poster-badge"><i class="fas fa-image"></i> Poster</span>' : ''}
             </div>
         `).join('');
     }
+}
+
+function openPosterLightbox() {
+    if (!currentMovie || !currentMovie.poster) return;
+    let idx = galleryImages.indexOf(currentMovie.poster);
+    if (idx === -1) {
+        galleryImages.unshift(currentMovie.poster);
+        idx = 0;
+    }
+    openLightbox(idx);
 }
 
 function switchMediaTab(tab) {

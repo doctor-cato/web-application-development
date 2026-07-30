@@ -66,6 +66,7 @@
 }
 
 .detail-combined-poster {
+    position: relative;
     flex-shrink: 0;
     width: 220px;
     aspect-ratio: 2/3;
@@ -73,16 +74,65 @@
     overflow: hidden;
     box-shadow: 0 20px 60px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.08);
     transition: transform 0.4s ease, box-shadow 0.4s ease;
+    cursor: pointer;
 }
 .detail-combined-poster:hover {
     transform: translateY(-5px) scale(1.02);
-    box-shadow: 0 28px 70px rgba(0,0,0,0.9), 0 0 0 1px rgba(255,255,255,0.15);
+    box-shadow: 0 28px 70px rgba(0,0,0,0.9), 0 0 0 1px rgba(229,9,20,0.4);
 }
 .detail-combined-poster img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
+    transition: transform 0.4s ease;
+}
+.detail-combined-poster:hover img {
+    transform: scale(1.05);
+}
+
+.poster-zoom-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(3px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 600;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 12px;
+}
+.poster-zoom-overlay i {
+    font-size: 1.6rem;
+    color: var(--primary-red, #e50914);
+}
+.detail-combined-poster:hover .poster-zoom-overlay {
+    opacity: 1;
+}
+
+.gallery-item {
+    position: relative;
+}
+.gallery-poster-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: rgba(229, 9, 20, 0.9);
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    pointer-events: none;
 }
 
 .detail-combined-info {
