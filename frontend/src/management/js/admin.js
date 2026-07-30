@@ -415,12 +415,116 @@ async function fetchCombos() {
     }
 }
 
+function loadLocalDatabaseCache() {
+    let deletedList = [];
+    try {
+        deletedList = JSON.parse(localStorage.getItem('3hd2k_deleted_movies') || '[]').map(x => String(x).toLowerCase().trim());
+    } catch (_) {}
+
+    const localMovies = JSON.parse(localStorage.getItem('3hd2k_movies') || '[]');
+    if (Array.isArray(localMovies) && localMovies.length > 0) {
+        db.movies = localMovies.filter(m => {
+            const mId = String(m.id || '').toLowerCase().trim();
+            const mTitle = String(m.title || '').toLowerCase().trim();
+            return !deletedList.includes(mId) && !deletedList.includes(mTitle);
+        });
+    }
+
+    const localShowtimes = JSON.parse(localStorage.getItem('3hd2k_showtimes') || '[]');
+    if (Array.isArray(localShowtimes) && localShowtimes.length > 0) {
+        db.showtimes = localShowtimes;
+    }
+
+    const allB = [];
+    const local1 = JSON.parse(localStorage.getItem('3hd2k_bookings') || '[]');
+    const local2 = JSON.parse(localStorage.getItem('cinema_bookings') || '[]');
+    if (Array.isArray(local1)) allB.push(...local1);
+    if (Array.isArray(local2)) allB.push(...local2);
+
+    const last1 = JSON.parse(localStorage.getItem('3hd2k_last_booking') || 'null');
+    const last2 = JSON.parse(localStorage.getItem('cinema_last_booking') || 'null');
+
+    [last1, last2].forEach(lb => {
+        if (lb && lb.id) {
+            allB.push({
+                id: lb.id,
+                username: lb.userEmail || lb.username || 'Khách hàng',
+                customerName: lb.customerName || lb.userEmail || 'Khách hàng',
+                movieTitle: lb.movieTitle || 'Vé xem phim',
+                showtime: lb.showtimeText || lb.showtime || '19:00',
+                seats: Array.isArray(lb.seats) ? lb.seats : (lb.seats ? lb.seats.split(',') : ['A01']),
+                totalAmount: lb.total || lb.totalPrice || 80000,
+                status: 'paid',
+                dateCreated: lb.createdAt || new Date().toISOString(),
+                cinemaId: lb.cinemaId || 'ha-dong',
+                roomName: lb.room || 'Phòng chiếu 1',
+                showtimeId: lb.showtimeId || ''
+            });
+        }
+    });
+
+    const uniqueB = [];
+    const seenIds = new Set();
+    allB.forEach(b => {
+        if (b.id && !seenIds.has(b.id)) {
+            seenIds.add(b.id);
+            uniqueB.push(b);
+        }
+    });
+    if (uniqueB.length > 0) {
+        db.bookings = uniqueB;
+    }
+
+    const r1 = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+    const r2 = JSON.parse(localStorage.getItem('3hd2k_users') || '[]');
+    const r3 = JSON.parse(localStorage.getItem('cinema_users') || '[]');
+
+    let allRegistered = [];
+    if (Array.isArray(r1)) allRegistered = allRegistered.concat(r1);
+    if (Array.isArray(r2)) allRegistered = allRegistered.concat(r2);
+    if (Array.isArray(r3)) allRegistered = allRegistered.concat(r3);
+
+    const registeredUsersList = [];
+    const seenEmails = new Set();
+    allRegistered.forEach(u => {
+        const e = u.email || u.username;
+        if (e && !seenEmails.has(e)) {
+            seenEmails.add(e);
+            registeredUsersList.push({
+                username: u.username || e,
+                name: u.name || u.fullname || e.split('@')[0],
+                email: e,
+                role: (u.role || 'customer').toLowerCase() === 'admin' ? 'admin' : 'customer',
+                status: u.status || 'active'
+            });
+        }
+    });
+    if (registeredUsersList.length > 0) {
+        db.users = registeredUsersList;
+    }
+
+    const localCombos = JSON.parse(localStorage.getItem('cinema_combos') || '[]');
+    if (Array.isArray(localCombos) && localCombos.length > 0) {
+        db.combos = localCombos;
+    } else if (!db.combos || db.combos.length === 0) {
+        db.combos = [
+            { id: "cb_solo", name: "Combo Solo", desc: "1 Bắp Ngọt (L) + 1 Nước Ngọt (L)", price: 89000, stock: 150, image: "../assets/combos/combo_solo.jpg" },
+            { id: "cb_couple", name: "Combo Couple", desc: "1 Bắp Ngọt (XL) + 2 Nước Ngọt (L)", price: 129000, stock: 120, image: "../assets/combos/combo_couple.jpg" },
+            { id: "cb_family", name: "Combo Family", desc: "2 Bắp Ngọt (XL) + 4 Nước Ngọt (L) + 1 Snack", price: 219000, stock: 80, image: "../assets/combos/combo_family.jpg" }
+        ];
+    }
+}
+
 async function reloadDatabase() {
+    loadLocalDatabaseCache();
+
     db.roomLayouts = JSON.parse(localStorage.getItem('3hd2k_rooms_layouts')) || {
         "ha-dong_Phòng chiếu 1": { rows: 8, cols: 12, vipRows: [4,5], doubleRows: [7], brokenSeats: ["A01", "H12"] },
         "my-dinh_Phòng chiếu IMAX": { rows: 10, cols: 14, vipRows: [5,6,7], doubleRows: [9], brokenSeats: [] }
     };
     db.inventory = JSON.parse(localStorage.getItem('cinema_inventory')) || [];
+
+    triggerTabRenders(activeTab);
 
     await Promise.all([
         fetchMovies(),
