@@ -187,7 +187,10 @@ async function fetchMovies() {
     return allMoviesData;
 }
 
-window.fetchMoviesPromise = fetchMovies().catch(() => getFallbackMovies());
+window.fetchMoviesPromise = fetchMovies().catch(err => {
+    console.warn("Error fetching movies:", err);
+    return [];
+});
 
 function getFallbackCinemas() {
     return [
