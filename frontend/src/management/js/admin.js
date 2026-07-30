@@ -645,15 +645,16 @@ function renderDashboard() {
                 let statusBadge = bk.status === 'paid'
                     ? `<span class="badge badge-green">Đã thanh toán</span>`
                     : bk.status === 'pending' ? `<span class="badge badge-yellow">Chờ duyệt</span>` : `<span class="badge badge-red">Đã hủy</span>`;
+                const seatStr = bk.seats ? (Array.isArray(bk.seats) ? bk.seats.join(', ') : bk.seats) : '-';
                 recentTbody.innerHTML += `
                     <tr>
-                        <td><strong>#${bk.id}</strong></td>
-                        <td>${bk.customerName}</td>
-                        <td>${bk.movieTitle}</td>
-                        <td>${bk.showtime}</td>
-                        <td>${bk.seats ? (Array.isArray(bk.seats) ? bk.seats.join(', ') : bk.seats) : '-'}</td>
-                        <td>${formatMoney(bk.totalAmount)}</td>
-                        <td>${statusBadge}</td>
+                        <td style="white-space: nowrap;"><strong>#${bk.id}</strong></td>
+                        <td style="max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${bk.customerName}">${bk.customerName}</td>
+                        <td style="max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${bk.movieTitle}">${bk.movieTitle}</td>
+                        <td style="white-space: nowrap;">${bk.showtime}</td>
+                        <td style="max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${seatStr}">${seatStr}</td>
+                        <td style="white-space: nowrap;">${formatMoney(bk.totalAmount)}</td>
+                        <td style="white-space: nowrap; text-align: right;">${statusBadge}</td>
                     </tr>
                 `;
             });
