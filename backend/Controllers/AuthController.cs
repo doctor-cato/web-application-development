@@ -175,7 +175,7 @@ namespace appweb.Controllers
             if (user.LockoutEnd.HasValue && user.LockoutEnd > DateTime.UtcNow)
                 return StatusCode(StatusCodes.Status429TooManyRequests, new { message = "Tài khoản của bạn đang bị khóa tạm thời. Vui lòng thử lại sau." });
 
-            if (!user.IsVerifiedOtp)
+            if (!user.IsVerifiedOtp && user.Role != "ADMIN")
                 return BadRequest(new { message = "Tài khoản chưa xác nhận email. Vui lòng xác nhận email trước khi đăng nhập." });
 
             bool isPasswordValid = false;
