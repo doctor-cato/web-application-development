@@ -47,7 +47,7 @@ export function renderFooter() {
             <a href="tel:19001234" class="float-support-item">
                 <i class="fas fa-phone"></i> Hotline: 1900 1234
             </a>
-            <a href="#" class="float-support-item" onclick="event.preventDefault(); window.showToast('Chat trực tuyến sẽ sớm ra mắt!')">
+            <a href="#" class="float-support-item" onclick="event.preventDefault(); window.openChatWidget()">
                 <i class="fas fa-comment-dots"></i> Chat trực tuyến
             </a>
         </div>
@@ -110,3 +110,7 @@ document.addEventListener('DOMContentLoaded', safeRenderFooter);
 if (document.readyState === 'interactive' || document.readyState === 'complete') {
     safeRenderFooter();
 }
+
+// Load chat widget
+import('./chat-widget.js');
+
