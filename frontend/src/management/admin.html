@@ -616,6 +616,7 @@
             font-size: 0.75rem;
             letter-spacing: 1px;
             background: rgba(0, 0, 0, 0.2);
+            white-space: nowrap;
         }
 
         .admin-table td {
@@ -623,6 +624,12 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.02);
             color: #eee;
             vertical-align: middle;
+            white-space: nowrap;
+        }
+
+        .admin-table th:last-child,
+        .admin-table td:last-child {
+            text-align: right;
         }
 
         .admin-table tbody tr:hover {
