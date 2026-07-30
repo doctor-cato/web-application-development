@@ -31,8 +31,6 @@ export function renderFooter() {
                     <h4 style="font-family: 'Inter', sans-serif; font-size: 0.75rem; font-weight: bold; letter-spacing: 1px; margin-bottom: 20px;">VỀ CHÚNG TÔI</h4>
                     <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px;">
                         <li><a href="../../about/index.html" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s; font-family: 'Inter', sans-serif;">Về Chúng Tôi</a></li>
-                        <li><a href="../../company-info/index.html" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s; font-family: 'Inter', sans-serif;">Thông tin Doanh nghiệp</a></li>
-                        <li><a href="../../careers/index.html" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s; font-family: 'Inter', sans-serif;">Tuyển Dụng</a></li>
                     </ul>
                 </div>
             </div>
