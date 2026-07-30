@@ -183,18 +183,18 @@ async function fetchMovies() {
             if (Array.isArray(data) && data.length > 0) {
                 allMoviesData = data.map(m => mapMovieObj(m));
             } else {
-                allMoviesData = getFallbackMovies();
+                allMoviesData = getFallbackMovies().map(mapMovieObj);
             }
         } else {
-            allMoviesData = getFallbackMovies();
+            allMoviesData = getFallbackMovies().map(mapMovieObj);
         }
     } catch (e) {
         console.warn("Failed to fetch movies from API, using default/localStorage fallbacks:", e);
-        allMoviesData = getFallbackMovies();
+        allMoviesData = getFallbackMovies().map(mapMovieObj);
     }
 
     if (!Array.isArray(allMoviesData) || allMoviesData.length === 0) {
-        allMoviesData = getFallbackMovies();
+        allMoviesData = getFallbackMovies().map(mapMovieObj);
     }
 
     allMoviesData = allMoviesData.filter(m => {
