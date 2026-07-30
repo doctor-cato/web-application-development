@@ -18,8 +18,7 @@ function redirectAfterLogin(userRole) {
     }
 }
 
-const urlParams = new URLSearchParams(window.location.search);
-if (isLoggedIn() && (urlParams.get('returnUrl') || urlParams.get('redirect'))) {
+if (isLoggedIn()) {
     const session = getSession();
     redirectAfterLogin(session?.role);
 }

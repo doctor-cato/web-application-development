@@ -2,15 +2,14 @@ import { API_BASE_URL, getHeaders } from '../../shared/utils/apiConfig.js?v=5';
 import { getCurrentUser, setCurrentUser, clearCurrentUser } from './storage.js';
 
 export async function login(email, password) {
-    const cleanEmail = (email || '').trim().toLowerCase();
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 6000);
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
 
     try {
         const response = await fetch(`${API_BASE_URL}/auth/login`, {
             method: 'POST',
             headers: getHeaders(),
-            body: JSON.stringify({ email: cleanEmail, password }),
+            body: JSON.stringify({ email, password }),
             signal: controller.signal
         });
         clearTimeout(timeoutId);
@@ -22,84 +21,31 @@ export async function login(email, password) {
                 data.message = 'Quá nhiều yêu cầu. Vui lòng thử lại sau 1 phút.';
             }
         } catch (parseError) {
-            console.error('Login: Server response not JSON:', responseText.substring(0, 200));
+            console.error('Login: Server trả về response không phải JSON:', responseText.substring(0, 200));
+            return { ok: false, error: 'Máy chủ gặp lỗi xử lý. Vui lòng thử lại sau.' };
         }
 
-        if (response.ok && data && data.user) {
-            if (data.token) localStorage.setItem('jwt_token', data.token);
-            if (data.refreshToken) localStorage.setItem('refresh_token', data.refreshToken);
+        if (response.ok) {
+            if (data.token) {
+                localStorage.setItem('jwt_token', data.token);
+            }
+            if (data.refreshToken) {
+                localStorage.setItem('refresh_token', data.refreshToken);
+            }
             setCurrentUser(data.user);
             return { ok: true, user: data.user };
+        } else {
+            return { ok: false, error: data.message || 'Đăng nhập thất bại' };
         }
     } catch (error) {
         clearTimeout(timeoutId);
-        console.warn('Login network/API error, attempting local fallback auth:', error);
-    }
+        console.error('Login network error:', error);
 
-    // --- FALLBACK LOCAL AUTHENTICATION ---
-    // 1. Admin Accounts
-    if (cleanEmail === 'admin@3hd2k.com' || cleanEmail === 'admin' || cleanEmail === 'admin@gmail.com') {
-        const adminUser = {
-            id: 'admin_1',
-            name: 'Admin 3HD2K',
-            email: 'admin@3hd2k.com',
-            role: 'ADMIN'
-        };
-        setCurrentUser(adminUser);
-        return { ok: true, user: adminUser };
-    }
-
-    // 2. Staff Accounts
-    if (cleanEmail === 'staff@3hd2k.com' || cleanEmail === 'staff') {
-        const staffUser = {
-            id: 'staff_1',
-            name: 'Nhân viên 3HD2K',
-            email: 'staff@3hd2k.com',
-            role: 'STAFF'
-        };
-        setCurrentUser(staffUser);
-        return { ok: true, user: staffUser };
-    }
-
-    // 3. Registered Local Users
-    const r1 = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
-    const r2 = JSON.parse(localStorage.getItem('3hd2k_users') || '[]');
-    const r3 = JSON.parse(localStorage.getItem('cinema_users') || '[]');
-    const allLocal = [...r1, ...r2, ...r3];
-
-    const matchedUser = allLocal.find(u => {
-        const uEmail = (u.email || u.username || '').toLowerCase();
-        return uEmail === cleanEmail;
-    });
-
-    if (matchedUser) {
-        if (!matchedUser.password || matchedUser.password === password) {
-            const userObj = {
-                id: matchedUser.id || 'user_' + Date.now(),
-                name: matchedUser.fullname || matchedUser.name || cleanEmail.split('@')[0],
-                email: matchedUser.email || cleanEmail,
-                role: ((matchedUser.role || 'CUSTOMER').toUpperCase() === 'ADMIN' ? 'ADMIN' : 'CUSTOMER')
-            };
-            setCurrentUser(userObj);
-            return { ok: true, user: userObj };
-        } else {
-            return { ok: false, error: 'Mật khẩu không chính xác.' };
+        if (error.name === 'AbortError') {
+            return { ok: false, error: 'Hết thời gian chờ phản hồi từ máy chủ (Timeout). Vui lòng kiểm tra lại server Backend.' };
         }
+        return { ok: false, error: 'Không thể kết nối tới máy chủ. Vui lòng kiểm tra kết nối mạng hoặc server Backend.' };
     }
-
-    // 4. Default Customer Fallback if valid email format and non-empty password
-    if (cleanEmail.includes('@') && password && password.length >= 4) {
-        const defaultUser = {
-            id: 'user_' + Date.now(),
-            name: cleanEmail.split('@')[0],
-            email: cleanEmail,
-            role: 'CUSTOMER'
-        };
-        setCurrentUser(defaultUser);
-        return { ok: true, user: defaultUser };
-    }
-
-    return { ok: false, error: 'Tài khoản hoặc mật khẩu không chính xác.' };
 }
 
 export async function register(userData) {
