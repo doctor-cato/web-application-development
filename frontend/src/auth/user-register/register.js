@@ -6,6 +6,7 @@ if (isLoggedIn()) {
     window.location.href = '/explore/home-page/index.html';
 }
 
+// ========== DOM Elements ==========
 const registerForm      = document.getElementById('registerForm');
 const errorBanner       = document.getElementById('form-error-banner');
 const emailInput        = document.getElementById('email');
@@ -17,6 +18,21 @@ const pwdError          = document.getElementById('pwd-error');
 const confirmPwdError   = document.getElementById('confirm-pwd-error');
 const phoneError        = document.getElementById('phone-error');
 
+// OTP elements
+const otpSection        = document.getElementById('otpSection');
+const otpEmailDisplay   = document.getElementById('otpEmailDisplay');
+const otpInputs         = document.querySelectorAll('.otp-digit');
+const verifyOtpBtn      = document.getElementById('verifyOtpBtn');
+const otpErrorEl        = document.getElementById('otpError');
+const otpSuccessEl      = document.getElementById('otpSuccess');
+const resendOtpBtn      = document.getElementById('resendOtpBtn');
+const resendCountdown   = document.getElementById('resendCountdown');
+const authTabs          = document.querySelector('.auth-tabs');
+
+let registeredEmail = '';
+let countdownInterval = null;
+
+// ========== Password Toggle ==========
 document.querySelectorAll('.togglePasswordBtn').forEach(btn => {
     btn.addEventListener('click', function () {
         const targetId    = this.getAttribute('data-target');
@@ -27,6 +43,7 @@ document.querySelectorAll('.togglePasswordBtn').forEach(btn => {
     });
 });
 
+// ========== Clear Error on Input ==========
 [emailInput, pwdInput, confirmPwdInput, phoneInput].forEach(input => {
     if (!input) return;
     input.addEventListener('input', function () {
@@ -39,6 +56,208 @@ document.querySelectorAll('.togglePasswordBtn').forEach(btn => {
     });
 });
 
+// ========== OTP Input Handling ==========
+otpInputs.forEach((input, index) => {
+    // Only allow numeric input
+    input.addEventListener('input', function (e) {
+        const val = this.value.replace(/\D/g, '');
+        this.value = val;
+
+        if (val) {
+            this.classList.add('filled');
+            this.classList.remove('error');
+            // Auto-focus next
+            if (index < otpInputs.length - 1) {
+                otpInputs[index + 1].focus();
+            }
+        } else {
+            this.classList.remove('filled');
+        }
+
+        // Clear error/success messages
+        otpErrorEl.textContent = '';
+        otpSuccessEl.textContent = '';
+
+        // Auto-submit when all 6 digits filled
+        const otp = getOtpValue();
+        if (otp.length === 6) {
+            verifyOtp();
+        }
+    });
+
+    // Backspace handling
+    input.addEventListener('keydown', function (e) {
+        if (e.key === 'Backspace' && !this.value && index > 0) {
+            otpInputs[index - 1].focus();
+            otpInputs[index - 1].value = '';
+            otpInputs[index - 1].classList.remove('filled');
+        }
+    });
+
+    // Paste handling (paste full 6-digit code)
+    input.addEventListener('paste', function (e) {
+        e.preventDefault();
+        const pasteData = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '');
+        if (pasteData.length >= 6) {
+            otpInputs.forEach((inp, i) => {
+                inp.value = pasteData[i] || '';
+                if (inp.value) inp.classList.add('filled');
+            });
+            otpInputs[5].focus();
+            // Auto-submit
+            setTimeout(() => verifyOtp(), 200);
+        }
+    });
+});
+
+function getOtpValue() {
+    return Array.from(otpInputs).map(inp => inp.value).join('');
+}
+
+// ========== Show OTP Section ==========
+function showOtpSection(email) {
+    registeredEmail = email;
+    registerForm.style.display = 'none';
+    if (authTabs) authTabs.style.display = 'none';
+    otpSection.style.display = 'block';
+    otpEmailDisplay.textContent = email;
+    otpInputs[0].focus();
+    startResendCountdown();
+}
+
+// ========== Resend Countdown ==========
+function startResendCountdown() {
+    let seconds = 60;
+    resendOtpBtn.disabled = true;
+    resendCountdown.textContent = seconds;
+    resendOtpBtn.innerHTML = `Gửi lại (<span id="resendCountdown">${seconds}</span>s)`;
+
+    if (countdownInterval) clearInterval(countdownInterval);
+
+    countdownInterval = setInterval(() => {
+        seconds--;
+        const countdownEl = document.getElementById('resendCountdown') || resendCountdown;
+        if (countdownEl) countdownEl.textContent = seconds;
+
+        if (seconds <= 0) {
+            clearInterval(countdownInterval);
+            resendOtpBtn.disabled = false;
+            resendOtpBtn.innerHTML = 'Gửi lại';
+        }
+    }, 1000);
+}
+
+// ========== Resend OTP ==========
+resendOtpBtn.addEventListener('click', async function () {
+    if (this.disabled || !registeredEmail) return;
+
+    this.disabled = true;
+    otpErrorEl.textContent = '';
+    otpSuccessEl.textContent = '';
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/auth/resend-otp`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: registeredEmail })
+        });
+        const data = await response.json();
+
+        if (response.ok) {
+            otpSuccessEl.textContent = 'Đã gửi lại mã OTP thành công!';
+            // Clear old inputs
+            otpInputs.forEach(inp => {
+                inp.value = '';
+                inp.classList.remove('filled', 'error', 'success');
+            });
+            otpInputs[0].focus();
+            startResendCountdown();
+        } else {
+            otpErrorEl.textContent = data.message || 'Không thể gửi lại mã OTP.';
+            startResendCountdown();
+        }
+    } catch (e) {
+        otpErrorEl.textContent = 'Lỗi kết nối. Vui lòng thử lại.';
+        startResendCountdown();
+    }
+});
+
+// ========== Verify OTP ==========
+verifyOtpBtn.addEventListener('click', verifyOtp);
+
+async function verifyOtp() {
+    const otpCode = getOtpValue();
+
+    if (otpCode.length !== 6) {
+        otpErrorEl.textContent = 'Vui lòng nhập đủ 6 số.';
+        otpInputs.forEach(inp => { if (!inp.value) inp.classList.add('error'); });
+        return;
+    }
+
+    verifyOtpBtn.disabled = true;
+    verifyOtpBtn.textContent = 'Đang xác nhận...';
+    otpErrorEl.textContent = '';
+    otpSuccessEl.textContent = '';
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/auth/verify-email`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: registeredEmail, otpCode })
+        });
+        const data = await response.json();
+
+        if (response.ok) {
+            // Success - show green state
+            otpInputs.forEach(inp => {
+                inp.classList.remove('error');
+                inp.classList.add('success');
+                inp.disabled = true;
+            });
+            otpSuccessEl.textContent = '✓ Xác nhận email thành công!';
+            verifyOtpBtn.style.display = 'none';
+            if (resendOtpBtn) resendOtpBtn.closest('.otp-footer').style.display = 'none';
+
+            // Countdown redirect
+            let redirectSeconds = 3;
+            const redirectMsg = document.createElement('div');
+            redirectMsg.className = 'otp-redirect-msg';
+            redirectMsg.innerHTML = `<strong>Chuyển hướng đến trang Đăng nhập sau ${redirectSeconds} giây...</strong>`;
+            otpSection.appendChild(redirectMsg);
+
+            const redirectInterval = setInterval(() => {
+                redirectSeconds--;
+                if (redirectSeconds > 0) {
+                    redirectMsg.innerHTML = `<strong>Chuyển hướng đến trang Đăng nhập sau ${redirectSeconds} giây...</strong>`;
+                } else {
+                    clearInterval(redirectInterval);
+                    window.location.href = '/auth/user-login/login.html';
+                }
+            }, 1000);
+        } else {
+            otpErrorEl.textContent = data.message || 'Mã OTP không chính xác.';
+            otpInputs.forEach(inp => inp.classList.add('error'));
+
+            // Clear and refocus
+            setTimeout(() => {
+                otpInputs.forEach(inp => {
+                    inp.value = '';
+                    inp.classList.remove('filled', 'error');
+                });
+                otpInputs[0].focus();
+            }, 1500);
+
+            verifyOtpBtn.disabled = false;
+            verifyOtpBtn.textContent = 'Xác Nhận';
+        }
+    } catch (e) {
+        otpErrorEl.textContent = 'Lỗi kết nối khi xác nhận. Vui lòng thử lại.';
+        verifyOtpBtn.disabled = false;
+        verifyOtpBtn.textContent = 'Xác Nhận';
+    }
+}
+
+// ========== Register Form Submit ==========
 registerForm.addEventListener('submit', async function (e) {
     e.preventDefault();
 
@@ -80,31 +299,22 @@ registerForm.addEventListener('submit', async function (e) {
 
     if (!isValid) return;
 
+    // Disable button while processing
+    const submitBtn = document.getElementById('registerSubmitBtn');
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Đang xử lý...';
+    }
+
     const result = await register({ fullname, email, password, dob, phone, gender });
 
     if (result.ok) {
-        // Show OTP prompt
-        const otpCode = window.prompt(result.message + "\n\nVui lòng nhập mã OTP (6 số):");
-        if (otpCode && otpCode.trim() !== '') {
-            try {
-                const verifyRes = await fetch(`${API_BASE_URL}/auth/verify-email`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, otpCode: otpCode.trim() })
-                });
-                const verifyData = await verifyRes.json();
-                if (verifyRes.ok) {
-                    alert('Xác nhận thành công! Bấm OK để tới trang Đăng nhập.');
-                    window.location.href = '/auth/user-login/login.html';
-                } else {
-                    alert('Lỗi xác nhận: ' + (verifyData.message || 'Sai OTP.'));
-                    window.location.href = '/auth/user-login/login.html';
-                }
-            } catch(e) {
-                alert('Lỗi kết nối khi xác nhận OTP.');
-            }
+        if (result.requireOtp) {
+            // SMTP configured: Show OTP verification section
+            showOtpSection(email);
         } else {
-            alert('Bạn có thể đăng nhập sau và xác nhận email sau (nếu hỗ trợ).');
+            // SMTP not configured: Auto-verified, redirect to login
+            alert(result.message);
             window.location.href = '/auth/user-login/login.html';
         }
     } else {
@@ -117,5 +327,11 @@ registerForm.addEventListener('submit', async function (e) {
             emailError.textContent = result.error;
             emailError.classList.add('show');
         }
+    }
+
+    // Re-enable button
+    if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Tạo Tài Khoản';
     }
 });

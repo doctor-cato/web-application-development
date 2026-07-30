@@ -121,10 +121,46 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn-submit">
+                    <button type="submit" class="btn-submit" id="registerSubmitBtn">
                         Tạo Tài Khoản
                     </button>
                 </form>
+
+                <!-- OTP Verification Section (hidden by default) -->
+                <div id="otpSection" class="otp-section" style="display: none;">
+                    <div class="otp-header">
+                        <span class="material-symbols-outlined otp-icon">mark_email_read</span>
+                        <h2 class="otp-title">Xác Nhận Email</h2>
+                        <p class="otp-subtitle">Mã OTP 6 số đã được gửi đến</p>
+                        <p class="otp-email" id="otpEmailDisplay"></p>
+                    </div>
+
+                    <div class="otp-inputs" id="otpInputs">
+                        <input type="text" maxlength="1" class="otp-digit" data-index="0" inputmode="numeric" autocomplete="one-time-code">
+                        <input type="text" maxlength="1" class="otp-digit" data-index="1" inputmode="numeric">
+                        <input type="text" maxlength="1" class="otp-digit" data-index="2" inputmode="numeric">
+                        <input type="text" maxlength="1" class="otp-digit" data-index="3" inputmode="numeric">
+                        <input type="text" maxlength="1" class="otp-digit" data-index="4" inputmode="numeric">
+                        <input type="text" maxlength="1" class="otp-digit" data-index="5" inputmode="numeric">
+                    </div>
+
+                    <div id="otpError" class="otp-error"></div>
+                    <div id="otpSuccess" class="otp-success"></div>
+
+                    <button type="button" class="btn-submit" id="verifyOtpBtn">
+                        Xác Nhận
+                    </button>
+
+                    <div class="otp-footer">
+                        <p class="otp-resend-text">
+                            Không nhận được mã?
+                            <button type="button" id="resendOtpBtn" class="otp-resend-btn" disabled>
+                                Gửi lại (<span id="resendCountdown">60</span>s)
+                            </button>
+                        </p>
+                    </div>
+                </div>
+
             </div>
         </div>
     </main>

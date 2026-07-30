@@ -57,6 +57,11 @@ namespace appweb.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            // Check if SMTP is configured
+            var smtpSettings = _configuration.GetSection("SmtpSettings");
+            var senderEmail = smtpSettings["SenderEmail"];
+            bool isSmtpConfigured = !string.IsNullOrEmpty(senderEmail) && senderEmail != "YOUR_GMAIL_HERE@gmail.com";
+
             var user = new User
             {
                 Fullname = model.Name,
@@ -66,17 +71,23 @@ namespace appweb.Controllers
                 Gender = model.Gender,
                 Password = BCrypt.Net.BCrypt.HashPassword(model.Password),
                 Role = "CUSTOMER",
-                IsVerifiedOtp = false
+                IsVerifiedOtp = !isSmtpConfigured // Auto-verify when SMTP is not configured
             };
 
-            string otp = RandomNumberGenerator.GetInt32(100000, 999999).ToString();
-            user.OtpCode = otp;
-            user.OtpExpiryTime = DateTime.UtcNow.AddMinutes(5);
+            if (isSmtpConfigured)
+            {
+                string otp = RandomNumberGenerator.GetInt32(100000, 999999).ToString();
+                user.OtpCode = otp;
+                user.OtpExpiryTime = DateTime.UtcNow.AddMinutes(5);
+            }
 
             try
             {
                 await _userRepository.AddAsync(user);
-                await SendEmailAsync(model.Email, "Xác nhận tài khoản - 3HD2K Cinema", $"Xin chào,\n\nMã OTP kích hoạt tài khoản của bạn là: {otp}\n\nMã này sẽ hết hạn sau 5 phút.\n\nTrân trọng,\nĐội ngũ 3HD2K Cinema.");
+                if (isSmtpConfigured)
+                {
+                    await SendEmailAsync(model.Email, "Xác nhận tài khoản - 3HD2K Cinema", $"Xin chào,\n\nMã OTP kích hoạt tài khoản của bạn là: {user.OtpCode}\n\nMã này sẽ hết hạn sau 5 phút.\n\nTrân trọng,\nĐội ngũ 3HD2K Cinema.");
+                }
             }
             catch (DbUpdateException ex)
             {
@@ -96,7 +107,11 @@ namespace appweb.Controllers
                 return BadRequest(new { message = "Lỗi kết nối hoặc xử lý dữ liệu: " + ex.Message });
             }
 
-            return Ok(new { message = "Đăng ký thành công. Vui lòng kiểm tra email để lấy mã xác nhận.", user = new { user.Email, user.Fullname } });
+            if (isSmtpConfigured)
+            {
+                return Ok(new { message = "Đăng ký thành công. Vui lòng kiểm tra email để lấy mã xác nhận.", requireOtp = true, user = new { user.Email, user.Fullname } });
+            }
+            return Ok(new { message = "Đăng ký thành công! Bạn có thể đăng nhập ngay.", requireOtp = false, user = new { user.Email, user.Fullname } });
         }
 
         [HttpPost("verify-email")]
@@ -115,6 +130,30 @@ namespace appweb.Controllers
             await _userRepository.UpdateAsync(user);
 
             return Ok(new { message = "Xác nhận email thành công. Bạn có thể đăng nhập ngay bây giờ." });
+        }
+
+        [HttpPost("resend-otp")]
+        public async Task<IActionResult> ResendOtp([FromBody] ForgotPasswordDto model)
+        {
+            var user = await _userRepository.GetByEmailAsync(model.Email);
+            if (user == null) return NotFound(new { message = "Không tìm thấy tài khoản." });
+
+            if (user.IsVerifiedOtp) return BadRequest(new { message = "Tài khoản đã được xác nhận." });
+
+            if (user.LastOtpRequestTime.HasValue && (DateTime.UtcNow - user.LastOtpRequestTime.Value).TotalSeconds < 60)
+            {
+                return StatusCode(StatusCodes.Status429TooManyRequests, new { message = "Vui lòng chờ 60 giây trước khi yêu cầu mã mới." });
+            }
+
+            string otp = RandomNumberGenerator.GetInt32(100000, 999999).ToString();
+            user.OtpCode = otp;
+            user.OtpExpiryTime = DateTime.UtcNow.AddMinutes(5);
+            user.LastOtpRequestTime = DateTime.UtcNow;
+            await _userRepository.UpdateAsync(user);
+
+            await SendEmailAsync(model.Email, "Mã xác nhận tài khoản - 3HD2K Cinema", $"Xin chào,\n\nMã OTP mới của bạn là: {otp}\n\nMã này sẽ hết hạn sau 5 phút.\n\nTrân trọng,\nĐội ngũ 3HD2K Cinema.");
+
+            return Ok(new { message = "Đã gửi lại mã OTP thành công." });
         }
 
         [EnableRateLimiting("loginPolicy")]

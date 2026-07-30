@@ -93,7 +93,7 @@ export async function register(userData) {
         }
 
         if (response.ok) {
-            return { ok: true, message: data.message, email: userData.email };
+            return { ok: true, message: data.message, requireOtp: data.requireOtp, email: userData.email };
         } else {
             return { ok: false, error: data.message || 'Đăng ký thất bại' };
         }
