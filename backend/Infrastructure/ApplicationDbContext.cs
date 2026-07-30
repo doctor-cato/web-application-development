@@ -18,10 +18,20 @@ namespace appweb.Infrastructure
         public DbSet<Seat> Seats { get; set; }
 
         public DbSet<CineMatch> CineMatches { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.HasIndex(e => e.Email).IsUnique();
+                // Phone number might be empty string by default in this app, so we need a partial index or just let it be unique if enforced, but the prompt says: "Thêm Unique Index Constraint cho Email & Phone ở Database Level". Let's add it. 
+                // However, empty string might cause unique constraint violation. The app initializes phone to `string.Empty` in Register if not provided. This would break unique constraint.
+                // Let's add partial index using EF Core feature.
+                entity.HasIndex(e => e.Phone).IsUnique().HasFilter("[phone_number] IS NOT NULL AND [phone_number] <> ''");
+            });
 
             modelBuilder.Entity<Booking>(entity =>
             {

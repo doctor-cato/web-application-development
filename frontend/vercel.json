@@ -11,6 +11,10 @@
     {
       "source": "/cinematchHub",
       "destination": "http://3hd2k-api.somee.com/cinematchHub"
+    },
+    {
+      "source": "/uploads/:path*",
+      "destination": "http://3hd2k-api.somee.com/uploads/:path*"
     }
   ]
 }

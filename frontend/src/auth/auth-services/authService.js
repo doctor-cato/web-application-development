@@ -26,6 +26,9 @@ export async function login(email, password) {
             if (data.token) {
                 localStorage.setItem('jwt_token', data.token);
             }
+            if (data.refreshToken) {
+                localStorage.setItem('refresh_token', data.refreshToken);
+            }
             setCurrentUser(data.user);
             return { ok: true, user: data.user };
         } else {
@@ -76,7 +79,7 @@ export async function register(userData) {
         }
 
         if (response.ok) {
-            return await login(userData.email, userData.password);
+            return { ok: true, message: data.message, email: userData.email };
         } else {
             return { ok: false, error: data.message || 'Đăng ký thất bại' };
         }
@@ -88,16 +91,43 @@ export async function register(userData) {
 
 export async function logout() {
     try {
+        const rt = localStorage.getItem('refresh_token');
         await fetch(`${API_BASE_URL}/auth/logout`, {
             method: 'POST',
-            headers: getHeaders()
+            headers: getHeaders(),
+            body: JSON.stringify({ refreshToken: rt || '' })
         });
     } catch (error) {
         console.error('Logout error:', error);
     }
     localStorage.removeItem('jwt_token');
+    localStorage.removeItem('refresh_token');
     clearCurrentUser();
     window.location.href = '/auth/user-login/login.html';
+}
+
+export async function refreshJwtToken() {
+    try {
+        const token = localStorage.getItem('jwt_token');
+        const rt = localStorage.getItem('refresh_token');
+        if (!token || !rt) return false;
+
+        const response = await fetch(`${API_BASE_URL}/auth/refresh-token`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token: token, refreshToken: rt })
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            localStorage.setItem('jwt_token', data.token);
+            localStorage.setItem('refresh_token', data.refreshToken);
+            return true;
+        }
+        return false;
+    } catch(err) {
+        return false;
+    }
 }
 
 export function getSession() {

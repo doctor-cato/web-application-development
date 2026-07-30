@@ -1,5 +1,6 @@
 
 import { register, isLoggedIn } from '../../auth/auth-services/authService.js?v=5';
+import { API_BASE_URL } from '../../shared/utils/apiConfig.js?v=5';
 
 if (isLoggedIn()) {
     window.location.href = '/explore/home-page/index.html';
@@ -82,7 +83,30 @@ registerForm.addEventListener('submit', async function (e) {
     const result = await register({ fullname, email, password, dob, phone, gender });
 
     if (result.ok) {
-        window.location.href = '/explore/home-page/index.html';
+        // Show OTP prompt
+        const otpCode = window.prompt(result.message + "\n\nVui lòng nhập mã OTP (6 số):");
+        if (otpCode && otpCode.trim() !== '') {
+            try {
+                const verifyRes = await fetch(`${API_BASE_URL}/auth/verify-email`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, otpCode: otpCode.trim() })
+                });
+                const verifyData = await verifyRes.json();
+                if (verifyRes.ok) {
+                    alert('Xác nhận thành công! Bấm OK để tới trang Đăng nhập.');
+                    window.location.href = '/auth/user-login/login.html';
+                } else {
+                    alert('Lỗi xác nhận: ' + (verifyData.message || 'Sai OTP.'));
+                    window.location.href = '/auth/user-login/login.html';
+                }
+            } catch(e) {
+                alert('Lỗi kết nối khi xác nhận OTP.');
+            }
+        } else {
+            alert('Bạn có thể đăng nhập sau và xác nhận email sau (nếu hỗ trợ).');
+            window.location.href = '/auth/user-login/login.html';
+        }
     } else {
         if (result.error && (result.error.toLowerCase().includes('điện thoại') || result.error.toLowerCase().includes('phone'))) {
             phoneInput.classList.add('error');

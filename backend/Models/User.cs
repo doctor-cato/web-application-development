@@ -65,6 +65,15 @@ namespace appweb.Models
         [Column("points")]
         public int Points { get; set; } = 0;
 
+        [Column("access_failed_count")]
+        public int AccessFailedCount { get; set; } = 0;
+
+        [Column("lockout_end")]
+        public DateTime? LockoutEnd { get; set; }
+
+        [Column("last_otp_request_time")]
+        public DateTime? LastOtpRequestTime { get; set; }
+
         [System.Text.Json.Serialization.JsonIgnore]
         public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
     }

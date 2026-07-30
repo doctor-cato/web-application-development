@@ -1,5 +1,6 @@
 
 import { login, isLoggedIn, getSession } from '../../auth/auth-services/authService.js?v=5';
+import { API_BASE_URL } from '../../shared/utils/apiConfig.js?v=5';
 
 function redirectAfterLogin(userRole) {
     const urlParams = new URLSearchParams(window.location.search);
@@ -64,6 +65,27 @@ if (loginForm) {
             if (result.ok) {
                 redirectAfterLogin(result.user?.role);
             } else {
+                if (result.error && result.error.toLowerCase().includes('chưa xác nhận email')) {
+                    const otpCode = window.prompt("Tài khoản chưa xác nhận email. Vui lòng nhập mã OTP (6 số) được gửi qua Email:");
+                    if (otpCode && otpCode.trim() !== '') {
+                        try {
+                            const verifyRes = await fetch(`${API_BASE_URL}/auth/verify-email`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ email, otpCode: otpCode.trim() })
+                            });
+                            const verifyData = await verifyRes.json();
+                            if (verifyRes.ok) {
+                                alert('Xác nhận thành công! Vui lòng bấm Đăng nhập lại.');
+                            } else {
+                                alert('Lỗi xác nhận: ' + (verifyData.message || 'Sai OTP.'));
+                            }
+                        } catch(e) {
+                            alert('Lỗi kết nối khi xác nhận OTP.');
+                        }
+                    }
+                }
+                
                 if (errorBanner) {
                     errorBanner.textContent = result.error || 'Đăng nhập thất bại.';
                     errorBanner.classList.add('show');

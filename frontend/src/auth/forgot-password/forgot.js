@@ -60,7 +60,12 @@ forgotForm.addEventListener('submit', async function (e) {
             body: JSON.stringify({ email })
         });
 
-        const data = await response.json();
+        let data = {};
+        if (response.status === 429) {
+            data.message = 'Bạn thao tác quá nhanh. Vui lòng đợi 1 phút và thử lại.';
+        } else {
+            try { data = await response.json(); } catch(e) {}
+        }
 
         if (!response.ok) {
             showError(data.message || data.title || 'Có lỗi xảy ra.');
@@ -135,12 +140,24 @@ if (btnResendOtp) {
         btnResendOtp.style.pointerEvents = 'none';
 
         try {
-            await fetch(`${API_BASE_URL}/auth/forgot-password`, {
+            const res = await fetch(`${API_BASE_URL}/auth/forgot-password`, {
                 method: 'POST',
                 headers: getHeaders(),
                 body: JSON.stringify({ email: lastEmail })
             });
-            alert('Mã OTP mới đã được gửi. Vui lòng kiểm tra màn hình console backend!');
+            if (res.status === 429) {
+                alert('Vui lòng đợi 1 phút và thử lại.');
+            } else if (!res.ok) {
+                const txt = await res.text();
+                try {
+                    const js = JSON.parse(txt);
+                    alert(js.message || 'Lỗi gửi lại.');
+                } catch(e) {
+                    alert('Lỗi gửi lại OTP.');
+                }
+            } else {
+                alert('Mã OTP mới đã được gửi. Vui lòng kiểm tra email của bạn!');
+            }
         } catch (err) {
             alert('Lỗi khi gửi lại OTP.');
         } finally {

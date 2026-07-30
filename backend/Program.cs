@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using appweb.Models;
 using System;
 using System.Text;
+using Microsoft.AspNetCore.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,18 @@ builder.Services.AddControllersWithViews()
         options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
     });
 builder.Services.AddControllers();
+
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddFixedWindowLimiter("loginPolicy", opt =>
+    {
+        opt.Window = TimeSpan.FromMinutes(1);
+        opt.PermitLimit = 5;
+        opt.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+        opt.QueueLimit = 0;
+    });
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+});
 
 builder.Services.AddCors(options =>
 {
@@ -120,6 +133,7 @@ if (Directory.Exists(frontendPath))
 }
 
 app.UseRouting();
+app.UseRateLimiter();
 
 app.UseCors("AllowAll");
 
