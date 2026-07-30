@@ -15,6 +15,7 @@ public partial class Showtime
 
     public DateTime EndTime { get; set; }
 
+    [System.ComponentModel.DataAnnotations.Schema.Column(TypeName = "decimal(18,2)")]
     public decimal TicketPrice { get; set; }
     [System.Text.Json.Serialization.JsonIgnore]
     public virtual ICollection<BookingDetail> BookingDetails { get; set; } = new List<BookingDetail>();
