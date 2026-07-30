@@ -1031,6 +1031,16 @@ function renderAvailabilityMatrix() {
     container.innerHTML = html;
 }
 
+function changeMatrixDate(offset) {
+    const datePicker = document.getElementById('matrix-date-picker');
+    if (datePicker) {
+        let currentDate = new Date(datePicker.value || new Date());
+        currentDate.setDate(currentDate.getDate() + offset);
+        datePicker.value = currentDate.toISOString().split('T')[0];
+        renderAvailabilityMatrix();
+    }
+}
+
 function openQuickShowtimeModal(cinemaId, roomName, timeSlot, dateStr) {
     openAddShowtimeModal();
     setTimeout(() => {
@@ -1967,6 +1977,7 @@ window.closeUserHistoryModal = closeUserHistoryModal;
 
 window.purgeAllMovieData = purgeAllMovieData;
 window.openQuickShowtimeModal = openQuickShowtimeModal;
+window.changeMatrixDate = changeMatrixDate;
 window.filterAdminInventoryTable = filterAdminInventoryTable;
 window.openAdminRestockModal = openAdminRestockModal;
 window.closeAdminRestockModal = closeAdminRestockModal;

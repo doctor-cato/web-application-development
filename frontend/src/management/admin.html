@@ -1593,7 +1593,9 @@
                         </h3>
                         <div style="display: flex; align-items: center; gap: 10px;">
                             <label for="matrix-date-picker" style="font-size: 0.85rem; color: var(--text-muted);">Ngày:</label>
+                            <button class="btn-mini" onclick="changeMatrixDate(-1)" style="background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: #fff; cursor: pointer; padding: 6px 10px; border-radius: 6px;" title="Ngày hôm trước"><i class="fas fa-chevron-left"></i></button>
                             <input type="date" id="matrix-date-picker" onchange="renderAvailabilityMatrix()" style="background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border); color: #fff; padding: 8px 12px; border-radius: 6px; font-family: inherit; outline: none;">
+                            <button class="btn-mini" onclick="changeMatrixDate(1)" style="background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: #fff; cursor: pointer; padding: 6px 10px; border-radius: 6px;" title="Ngày hôm sau"><i class="fas fa-chevron-right"></i></button>
                         </div>
                     </div>
                     <div style="display: flex; gap: 15px; margin-bottom: 15px; flex-wrap: wrap;">
