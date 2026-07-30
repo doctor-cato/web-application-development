@@ -48,7 +48,11 @@ function renderHeroMovie(movie) {
         if (ageEl) ageEl.style.display = 'none';
         if (btnBookNow) btnBookNow.style.display = 'none';
         if (btnWatch) btnWatch.style.display = 'none';
-        if (heroSection) heroSection.style.setProperty('--hero-bg-url', 'linear-gradient(135deg, #141414, #1f1f2e)');
+        if (heroSection) {
+            heroSection.style.setProperty('--hero-bg-desktop', 'linear-gradient(135deg, #141414, #1f1f2e)');
+            heroSection.style.setProperty('--hero-bg-mobile', 'linear-gradient(135deg, #141414, #1f1f2e)');
+            heroSection.style.setProperty('--hero-bg-url', 'linear-gradient(135deg, #141414, #1f1f2e)');
+        }
         if (btnPrev) btnPrev.style.display = 'none';
         if (btnNext) btnNext.style.display = 'none';
         return;
@@ -73,10 +77,14 @@ function renderHeroMovie(movie) {
     }
 
     if (heroSection && (movie.bg || movie.poster)) {
-        const bgUrl = movie.bg || movie.poster;
-        heroSection.style.setProperty('--hero-bg-url', `url('${bgUrl}')`);
+        // Desktop uses horizontal banner (bg), mobile uses vertical poster (poster)
+        const desktopBg = movie.bg || movie.poster;
+        const mobileBg = movie.poster || movie.bg;
+        heroSection.style.setProperty('--hero-bg-desktop', `url('${desktopBg}')`);
+        heroSection.style.setProperty('--hero-bg-mobile', `url('${mobileBg}')`);
+        heroSection.style.setProperty('--hero-bg-url', `url('${desktopBg}')`);
         const bgOverlay = document.getElementById('hero-bg-overlay');
-        if (bgOverlay) bgOverlay.style.backgroundImage = `url('${bgUrl}')`;
+        if (bgOverlay) bgOverlay.style.backgroundImage = '';
     }
 
     if (movie.trailer && iframe) {

@@ -13,7 +13,7 @@
     position: absolute;
     inset: 0;
     z-index: 1;
-    background-image: var(--hero-bg-url, none);
+    background-image: var(--hero-bg-desktop, var(--hero-bg-url, none));
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -493,6 +493,7 @@
 }
 
 @media (max-width: 768px) {
+    .hero-bg-overlay { background-image: var(--hero-bg-mobile, var(--hero-bg-desktop, var(--hero-bg-url, none))); }
     .movie-title { font-size: 2.5rem; }
     .hero-content { max-width: 100%; }
     .rewards-section { flex-direction: column; gap: 20px; align-items: flex-start; text-align: left; }
