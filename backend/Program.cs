@@ -87,14 +87,6 @@ var app = builder.Build();
 
 using var scope = app.Services.CreateScope();
 var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-Action<string> trySql = sql => {
-    try { context.Database.ExecuteSqlRaw(sql); }
-    catch (Exception ex) { Console.WriteLine($"SQL Error: {ex.Message} for {sql}"); }
-};
-trySql("ALTER TABLE Seats ADD Status NVARCHAR(50) DEFAULT 'Available' NOT NULL;");
-trySql("ALTER TABLE Seats ADD HeldByUserId NVARCHAR(MAX) NULL;");
-trySql("ALTER TABLE Seats ADD HeldUntil DATETIME2 NULL;");
-trySql("ALTER TABLE Seats ADD RowVersion rowversion NOT NULL;");
 
 if (builder.Configuration.GetValue<bool>("Database:InitializeOnStartup"))
 {

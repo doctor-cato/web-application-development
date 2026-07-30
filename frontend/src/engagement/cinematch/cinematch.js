@@ -1,28 +1,29 @@
 import { renderNavbar } from '../../shared/components/navbar.js';
 import { renderFooter } from '../../shared/components/footer.js';
 import { getSession } from '../../auth/auth-services/authService.js';
+import { API_BASE_URL } from '../../shared/utils/apiConfig.js?v=4';
+
+
 
 // ============================================================
-// CineMatch Premium - Firebase Real-time Matching
+// CineMatch Premium - SignalR Real-time Matching
 // ============================================================
 
-const FIREBASE_CONFIG = {
-    apiKey: "AIzaSyDG5N9AUg5pksjgZpRL5PSEmY_xWMUs8YQ",
-    authDomain: "cinematch-3hd2k.firebaseapp.com",
-    databaseURL: "https://cinematch-3hd2k-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "cinematch-3hd2k",
-    storageBucket: "cinematch-3hd2k.firebasestorage.app",
-    messagingSenderId: "234989869102",
-    appId: "1:234989869102:web:4fdec7b23e11a24b5c27bf",
-    measurementId: "G-E6G51ERGQF"
+const getSignalRUrl = () => {
+    try {
+        const url = new URL(API_BASE_URL);
+        return `${url.protocol}//${url.host}/cinematchHub`;
+    } catch (e) {
+        return 'https://localhost:7198/cinematchHub'; // Fallback
+    }
 };
 
-// Set to true for local testing (simulates matching without Firebase)
-// Set to false when Firebase is configured for real cross-device matching
+// Set to true for local testing (simulates matching without SignalR)
+// Set to false when SignalR is configured for real cross-device matching
 const DEMO_MODE = false;
 
-// Firebase refs
-let database, queueRef, roomRef;
+// SignalR connection
+let connection = null;
 
 // ============================================================
 // STATE
@@ -110,8 +111,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     state.userId = session?.email || 'demo_' + Math.random().toString(36).substr(2, 6);
     state.userName = session?.fullname || session?.name || session?.username || "Người dùng";
 
-    // Init Firebase if not demo
-    if (!DEMO_MODE) initFirebase();
+    // Init SignalR if not demo
+    if (!DEMO_MODE) initSignalR();
 
     // Setup interactions
     setupFormSelection();
@@ -126,22 +127,69 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 // ============================================================
-// FIREBASE
+// SIGNALR
 // ============================================================
-function initFirebase() {
+async function initSignalR() {
+    if (!window.signalR) {
+        console.warn("SignalR SDK not loaded");
+        return;
+    }
+
+    connection = new signalR.HubConnectionBuilder()
+        .withUrl(getSignalRUrl(), {
+            accessTokenFactory: () => localStorage.getItem('jwt_token') || ''
+        })
+        .withAutomaticReconnect()
+        .build();
+
+    connection.on("OnMatchFound", (data) => {
+        state.roomId = data.roomId;
+        state.currentMatch = { name: data.partnerName };
+        state.isUser1 = true; // Simplification, not strictly needed for UI
+
+        switchStep('sync');
+        if (DOM.sync.partnerName) DOM.sync.partnerName.innerText = data.partnerName;
+
+        setTimeout(() => {
+            if (connection && connection.state === signalR.HubConnectionState.Connected) {
+                connection.invoke("AcceptMatch", state.roomId).catch(err => console.error(err));
+            }
+        }, 1500);
+    });
+
+    connection.on("OnBothAccepted", () => {
+        state.bothAccepted = true;
+        onBothAccepted();
+    });
+
+    connection.on("OnMessageReceived", (senderId, senderName, message) => {
+        if (senderId === state.userId) {
+            appendChat('Bạn', message, 'me');
+        } else {
+            appendChat(senderName, message, 'partner');
+        }
+    });
+
+    connection.on("OnMovieSuggested", (senderId, movieId, movieTitle) => {
+        highlightSuggestedMovie(movieId);
+        if (senderId !== state.userId) {
+            appendChat(state.currentMatch.name, `Đã đề xuất phim: <b>${movieTitle}</b>`, 'partner');
+        }
+    });
+
+    connection.on("OnMovieAgreed", (movieId) => {
+        executeAgreeMovie(movieId);
+    });
+
+    connection.on("OnPartnerDisconnected", () => {
+        appendChat('Hệ thống', 'Đối tác đã ngắt kết nối. Vui lòng tải lại trang để tìm người mới.', 'system');
+    });
+
     try {
-        if (!window.firebase) {
-            console.warn("Firebase SDK not loaded");
-            return;
-        }
-        if (!firebase.apps.length) {
-            firebase.initializeApp(FIREBASE_CONFIG);
-        }
-        database = firebase.database();
-        queueRef = database.ref('cinematch-queue');
-        console.log("Firebase initialized for CineMatch");
+        await connection.start();
+        console.log("SignalR initialized for CineMatch");
     } catch (e) {
-        console.error("Firebase init error:", e);
+        console.error("SignalR init error:", e);
     }
 }
 
@@ -181,119 +229,17 @@ async function loadCinemas() {
     }
 }
 
-let myQueueRef = null;
-
-function joinFirebaseQueue() {
-    if (!database) return;
-    myQueueRef = queueRef.child(state.userId.replace(/[.#$\[\]]/g, '_'));
-    
-    const myData = {
-        userId: state.userId,
-        userName: state.userName,
-        genre: state.preferences.genre,
-        mood: state.preferences.mood,
-        time: state.preferences.time,
-        gender: state.preferences.gender,
-        timestamp: firebase.database.ServerValue.TIMESTAMP
-    };
-    
-    myQueueRef.set(myData);
-
-    // Lắng nghe xem có ai ghép đôi với mình không
-    myQueueRef.on('value', (snap) => {
-        const data = snap.val();
-        if (data && data.matchRoomId) {
-            state.roomId = data.matchRoomId;
-            state.isUser1 = data.isUser1 || false;
-            roomRef = database.ref('cinematch-rooms/' + state.roomId);
-            setupRoomListeners();
-            myQueueRef.off('value'); // Dừng lắng nghe
-            queueRef.off('value');
-            myQueueRef.remove();
-            state.currentMatch = { name: data.partnerData.userName };
-            // Note: setupRoomListeners will trigger onBothAccepted because user1Accepted and user2Accepted are both true
-        }
-    });
-
-    // Lắng nghe lời mời từ người khác
-    myQueueRef.child('invites').on('child_added', (snapshot) => {
-        const inviteData = snapshot.val();
-        const inviteKey = snapshot.key;
-        if (inviteData && typeof window.showInvitePopup === 'function') {
-            window.showInvitePopup(inviteData, inviteKey);
-        }
-    });
-
-    // Cập nhật danh sách sảnh chờ
-    queueRef.on('value', (snapshot) => {
-        const queueObj = snapshot.val() || {};
-        const candidates = [];
-        
-        Object.keys(queueObj).forEach(key => {
-            const partner = queueObj[key];
-            if (!partner || partner.userId === state.userId || partner.matchRoomId) return;
-
-            const genreMatch = partner.genre === state.preferences.genre || partner.genre === 'all' || state.preferences.genre === 'all';
-            const moodMatch = partner.mood === state.preferences.mood || partner.mood === 'any' || state.preferences.mood === 'any';
-
-            if (genreMatch && moodMatch) {
-                partner._key = key;
-                candidates.push(partner);
-            }
-        });
-        
-        if (state.roomId) return;
-        if (typeof window.renderLobby === 'function') {
-            window.renderLobby(candidates);
-        }
-    });
-}
-
-function leaveFirebaseQueue() {
-    if (!database) return;
-    if (myQueueRef) {
-        myQueueRef.remove();
-        myQueueRef.off();
+function joinSignalRQueue() {
+    if (connection && connection.state === signalR.HubConnectionState.Connected) {
+        connection.invoke("FindMatch", state.userId, state.userName, state.preferences.genre)
+            .catch(err => console.error(err));
     }
-    queueRef?.off('value');
 }
 
-function setupRoomListeners() {
-    if (!roomRef) return;
-    
-    roomRef.on('value', (snap) => {
-        const room = snap.val();
-        if (room && room.user1Accepted && room.user2Accepted && !state.bothAccepted) {
-            state.bothAccepted = true;
-            onBothAccepted();
-        }
-    });
-
-    roomRef.child('messages').on('child_added', (snap) => {
-        const msg = snap.val();
-        if (msg.sender === state.userId) {
-            appendChat('Bạn', msg.message, 'me');
-        } else {
-            appendChat(msg.senderName, msg.message, 'partner');
-        }
-    });
-
-    roomRef.child('suggestedMovie').on('value', (snap) => {
-        const suggested = snap.val();
-        if (suggested) {
-            highlightSuggestedMovie(suggested.id);
-            if (suggested.sender !== state.userId) {
-                appendChat(suggested.senderName, `Đã đề xuất phim: <b>${suggested.title}</b>`, 'partner');
-            }
-        }
-    });
-
-    roomRef.child('agreedMovie').on('value', (snap) => {
-        const agreed = snap.val();
-        if (agreed) {
-            executeAgreeMovie(agreed.id);
-        }
-    });
+function leaveSignalRQueue() {
+    if (connection && connection.state === signalR.HubConnectionState.Connected) {
+        connection.stop().then(() => connection.start()).catch(err => console.error(err)); // Hacky way to leave queue by resetting connection
+    }
 }
 
 // ============================================================
@@ -364,13 +310,8 @@ function startMatching() {
     window.currentInviteData = null;
     window.currentInviteKey = null;
     
-    if (roomRef) {
-        roomRef.off();
-        roomRef = null;
-    }
-    if (myQueueRef) {
-        myQueueRef.off();
-        myQueueRef = null;
+    if (state.roomId && connection) {
+        connection.stop().then(() => connection.start()).catch(err => console.error(err));
     }
 
     switchStep('radar');
@@ -392,13 +333,13 @@ function startMatching() {
         setTimeout(() => {
             if (!state.roomId) switchStep('candidates');
         }, 1500);
-        joinFirebaseQueue();
+        joinSignalRQueue();
     }
 }
 
 function cancelSearch() {
     clearTimers();
-    if (!DEMO_MODE) leaveFirebaseQueue();
+    if (!DEMO_MODE) leaveSignalRQueue();
     switchStep('form');
 }
 
@@ -440,138 +381,24 @@ function spawnRadarNode() {
 // ============================================================
 // LOBBY RENDERING & INVITATIONS
 // ============================================================
+// The SignalR backend automatically matches, so lobby logic is mostly bypassed.
 window.renderLobby = function(candidates) {
-    if (!DOM.candidates.container) return;
-    
-    if (candidates.length === 0) {
-        DOM.candidates.container.innerHTML = `
-            <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-muted);">
-                <i class="fa-solid fa-ghost" style="font-size: 3rem; margin-bottom: 20px; color: rgba(255,255,255,0.2);"></i>
-                <p>Hiện chưa có ai trong sảnh chờ phù hợp với tiêu chí của bạn.</p>
-                <p>Vui lòng đợi thêm hoặc thử mở rộng sở thích!</p>
-            </div>
-        `;
-        return;
-    }
-
-    DOM.candidates.container.innerHTML = candidates.map(data => {
-        const matchPercent = Math.floor(Math.random() * 15) + 85;
-        const anonName = data.userName;
-        
-        return `
-            <div class="candidate-card" style="background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border); border-radius: 16px; padding: 20px; text-align: center; animation: fadeSlideUp 0.5s ease-out;">
-                <div style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple)); display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;">
-                    <i class="fas fa-user" style="font-size: 2rem; color: rgba(255,255,255,0.8);"></i>
-                </div>
-                <div style="display: inline-block; background: rgba(0,240,255,0.1); color: var(--neon-cyan); padding: 4px 12px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; margin-bottom: 10px; border: 1px solid var(--neon-cyan);">
-                    ${matchPercent}% Phù Hợp
-                </div>
-                <h3 style="color: white; font-size: 1.2rem; margin-bottom: 5px;">${anonName}</h3>
-                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 20px;">
-                    <i class="fa-solid fa-film"></i> ${data.genre !== 'all' ? data.genre : 'Bất kỳ thể loại'}
-                </p>
-                <button onclick="window.sendInvite('${data._key || data.userId}', '${anonName}')" style="width: 100%; padding: 12px; border-radius: 25px; border: none; background: var(--neon-red); color: white; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.3s; box-shadow: 0 0 15px rgba(255,42,95,0.4);">
-                    <i class="fa-solid fa-paper-plane" style="margin-right: 8px;"></i> Mời Xem Phim
-                </button>
-            </div>
-        `;
-    }).join('');
+    // Left for Demo Mode compatibility
 };
 
 window.sendInvite = function(partnerKey, partnerName) {
+    // Only used in Demo Mode now
     if (DEMO_MODE) {
         switchStep('sync');
         if (DOM.sync.partnerName) DOM.sync.partnerName.innerText = partnerName;
         state.currentMatch = { name: partnerName };
         setTimeout(onBothAccepted, 2000);
-        return;
-    }
-
-    if (!database || !queueRef) return;
-
-    state.currentMatch = { name: partnerName };
-    switchStep('sync');
-    if (DOM.sync.partnerName) DOM.sync.partnerName.innerText = partnerName;
-
-    const myData = {
-        userId: state.userId,
-        userName: state.userName,
-        genre: state.preferences.genre,
-        mood: state.preferences.mood,
-        time: state.preferences.time,
-        gender: state.preferences.gender,
-        cinema: state.preferences.cinema
-    };
-
-    queueRef.child(partnerKey.replace(/[.#$\[\]]/g, '_')).child('invites').push({
-        from: myData,
-        timestamp: firebase.database.ServerValue.TIMESTAMP
-    });
-};
-
-window.showInvitePopup = function(inviteData, inviteKey) {
-    window.currentInviteData = inviteData;
-    window.currentInviteKey = inviteKey;
-    const modal = document.getElementById('invite-modal');
-    const senderName = document.getElementById('invite-sender-name');
-    if (modal && senderName) {
-        senderName.innerText = inviteData.from.userName;
-        modal.style.display = 'flex';
-        modal.style.animation = 'popIn 0.3s ease-out';
     }
 };
 
-window.declineInvite = function() {
-    const modal = document.getElementById('invite-modal');
-    if (modal) modal.style.display = 'none';
-
-    if (window.currentInviteKey && myQueueRef) {
-        myQueueRef.child('invites').child(window.currentInviteKey).remove();
-    }
-    window.currentInviteData = null;
-    window.currentInviteKey = null;
-};
-
-window.acceptInvite = function() {
-    const modal = document.getElementById('invite-modal');
-    if (modal) modal.style.display = 'none';
-
-    if (!window.currentInviteData) return;
-    
-    const partner = window.currentInviteData.from;
-    const partnerKey = partner.userId.replace(/[.#$\[\]]/g, '_');
-    
-    const roomId = 'room_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
-    
-    database.ref('cinematch-rooms/' + roomId).set({
-        user1: { userId: state.userId, userName: state.userName },
-        user2: { userId: partner.userId, userName: partner.userName },
-        user1Accepted: true,
-        user2Accepted: true,
-        createdAt: firebase.database.ServerValue.TIMESTAMP
-    }).then(() => {
-        if (window.currentInviteKey && myQueueRef) {
-            myQueueRef.child('invites').child(window.currentInviteKey).remove();
-        }
-
-        queueRef.child(partnerKey).update({
-            matchRoomId: roomId,
-            isUser1: false,
-            partnerData: {
-                userId: state.userId,
-                userName: state.userName
-            }
-        });
-
-        myQueueRef.update({
-            matchRoomId: roomId,
-            isUser1: true,
-            partnerData: partner
-        });
-        
-        state.currentMatch = { name: partner.userName };
-    });
-};
+window.showInvitePopup = function(inviteData, inviteKey) {};
+window.declineInvite = function() {};
+window.acceptInvite = function() {};
 
 function onBothAccepted() {
     switchStep('room');
@@ -675,14 +502,9 @@ window.suggestMovie = function(movieId, title) {
         setTimeout(() => {
             appendChat(state.currentMatch.name, `Phim "${title}" hay đấy! Mình đồng ý luôn nhé! 🎬`, 'partner');
         }, 2000 + Math.random() * 1000);
-    } else if (roomRef) {
+    } else if (connection && connection.state === signalR.HubConnectionState.Connected) {
         appendChat('Bạn', `Đã đề xuất phim: <b>${title}</b>`, 'me');
-        roomRef.child('suggestedMovie').set({
-            id: movieId,
-            title: title,
-            sender: state.userId,
-            senderName: state.userName
-        });
+        connection.invoke("SuggestMovie", state.roomId, movieId, title).catch(err => console.error(err));
     }
 };
 
@@ -706,8 +528,8 @@ function highlightSuggestedMovie(movieId) {
 window.agreeMovie = function(movieId) {
     if (DEMO_MODE) {
         executeAgreeMovie(movieId);
-    } else if (roomRef) {
-        roomRef.child('agreedMovie').set({ id: movieId });
+    } else if (connection && connection.state === signalR.HubConnectionState.Connected) {
+        connection.invoke("AgreeMovie", state.roomId, movieId).catch(err => console.error(err));
     }
 };
 
@@ -735,13 +557,8 @@ function sendChatMessage(textOverride) {
             const reply = textOverride ? "👍" : replies[Math.floor(Math.random() * replies.length)];
             appendChat(state.currentMatch.name, reply, 'partner');
         }, 1000 + Math.random() * 1500);
-    } else if (roomRef) {
-        roomRef.child('messages').push({
-            sender: state.userId,
-            senderName: state.userName,
-            message: text,
-            timestamp: firebase.database.ServerValue.TIMESTAMP
-        });
+    } else if (connection && connection.state === signalR.HubConnectionState.Connected) {
+        connection.invoke("SendMessage", state.roomId, text).catch(err => console.error(err));
     }
 }
 
@@ -819,5 +636,5 @@ function clearTimers() {
 
 function cleanup() {
     clearTimers();
-    if (!DEMO_MODE) leaveFirebaseQueue();
+    if (!DEMO_MODE) leaveSignalRQueue();
 }
