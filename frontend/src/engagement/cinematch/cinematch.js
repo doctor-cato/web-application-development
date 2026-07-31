@@ -307,7 +307,6 @@ function startMatching() {
     state.bothAccepted = false;
     state.currentMatch = null;
     state.isUser1 = false;
-    state.isDemoSession = false;
     window.currentInviteData = null;
     window.currentInviteKey = null;
     
@@ -317,10 +316,21 @@ function startMatching() {
 
     switchStep('radar');
 
-    // Radar animation
+    // Radar animation & 15s countdown
     clearInterval(state.timers.radar);
     state.timers.radar = setInterval(spawnRadarNode, 800);
-    if (DOM.radar.statusText) DOM.radar.statusText.innerText = "Đang tìm kiếm sảnh chờ phù hợp...";
+
+    let searchTimeLeft = 15;
+    if (DOM.radar.timer) DOM.radar.timer.innerText = `00:${searchTimeLeft < 10 ? '0' : ''}${searchTimeLeft}`;
+    if (DOM.radar.statusText) DOM.radar.statusText.innerText = "Đang tìm kiếm sảnh chờ phù hợp (15s)...";
+
+    clearInterval(state.timers.status);
+    state.timers.status = setInterval(() => {
+        searchTimeLeft--;
+        if (searchTimeLeft >= 0 && DOM.radar.timer) {
+            DOM.radar.timer.innerText = `00:${searchTimeLeft < 10 ? '0' : ''}${searchTimeLeft}`;
+        }
+    }, 1000);
 
     if (DEMO_MODE) {
         setTimeout(() => {
@@ -329,14 +339,14 @@ function startMatching() {
                 { userId: 'demo_1', userName: 'Trần B (Demo)', genre: 'Hành Động', mood: 'chill' },
                 { userId: 'demo_2', userName: 'Hoàng C (Demo)', genre: 'Tình Cảm', mood: 'romantic' }
             ]);
-        }, 1500);
+        }, 15000);
     } else {
         setTimeout(() => {
             if (!state.roomId) {
                 switchStep('candidates');
                 window.renderLobby([]);
             }
-        }, 3000);
+        }, 15000);
         joinSignalRQueue();
     }
 }
@@ -382,7 +392,6 @@ function spawnRadarNode() {
 // ============================================================
 // LOBBY & MATCHING LOGIC
 // ============================================================
-// ponytail: Fallback Empty State with AI Demo & Filter reset when no online users exist.
 window.renderLobby = function(candidates) {
     if (!DOM.candidates.container) return;
 
@@ -403,29 +412,21 @@ window.renderLobby = function(candidates) {
                 <div style="font-size: 3rem; color: var(--neon-cyan); margin-bottom: 15px; opacity: 0.8;">
                     <i class="fa-solid fa-user-slash"></i>
                 </div>
-                <h3 style="color: white; font-size: 1.3rem; margin-bottom: 10px;">Chưa tìm thấy người cùng trực tuyến</h3>
+                <h3 style="color: white; font-size: 1.3rem; margin-bottom: 10px;">Không tìm thấy người cùng trực tuyến</h3>
                 <p style="color: var(--text-muted); font-size: 0.95rem; max-width: 450px; margin: 0 auto 25px auto; line-height: 1.5;">
-                    Hiện chưa có người dùng nào khớp với tiêu chí của bạn trong sảnh chờ. Bạn có thể mở rộng tiêu chí hoặc chọn Ghép Đôi AI mô phỏng để trải nghiệm ngay!
+                    Hệ thống đã quét 15 giây nhưng hiện chưa có người dùng nào phù hợp với tiêu chí của bạn trong sảnh chờ.
                 </p>
                 <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
-                    <button onclick="window.startDemoMatch()" class="neon-btn" style="padding: 12px 25px; font-size: 0.95rem; justify-content: center;">
-                        <i class="fa-solid fa-robot"></i> Trải nghiệm Ghép Đôi AI (Demo)
+                    <button onclick="startMatching()" class="neon-btn" style="padding: 12px 25px; font-size: 0.95rem; justify-content: center;">
+                        <i class="fa-solid fa-rotate-right"></i> Quét Tìm Lại (15s)
                     </button>
                     <button onclick="cancelSearch()" class="cancel-btn" style="padding: 12px 25px; font-size: 0.95rem;">
-                        <i class="fa-solid fa-sliders"></i> Đổi Tiêu Chí Tìm Kiếm
+                        <i class="fa-solid fa-sliders"></i> Thay Đổi Tiêu Chí
                     </button>
                 </div>
             </div>
         `;
     }
-};
-
-window.startDemoMatch = function() {
-    state.isDemoSession = true;
-    state.currentMatch = { name: "Minh Anh (Cine-Bot 🤖)" };
-    switchStep('sync');
-    if (DOM.sync.partnerName) DOM.sync.partnerName.innerText = state.currentMatch.name;
-    setTimeout(onBothAccepted, 1500);
 };
 
 window.sendInvite = function(partnerKey, partnerName) {
