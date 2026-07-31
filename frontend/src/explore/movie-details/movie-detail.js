@@ -524,7 +524,7 @@ function getYouTubeEmbedUrl(url) {
     }
 
     if (videoId) {
-        return `https://www.youtube.com/embed/${videoId}?rel=0`;
+        return `https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1`;
     }
     return cleanUrl;
 }
