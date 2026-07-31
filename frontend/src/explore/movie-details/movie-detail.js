@@ -524,30 +524,29 @@ function getYouTubeEmbedUrl(url) {
     }
 
     if (videoId) {
-        const origin = (typeof window !== 'undefined' && window.location && window.location.origin && window.location.origin !== 'null')
-            ? encodeURIComponent(window.location.origin)
-            : '';
-        const originParam = origin ? `&origin=${origin}` : '';
-        return `https://www.youtube-nocookie.com/embed/${videoId}?enablejsapi=1&rel=0${originParam}`;
+        return `https://www.youtube.com/embed/${videoId}?rel=0`;
     }
     return cleanUrl;
 }
 
 function renderGallery(movie) {
-
     const iframe = document.getElementById('detail-trailer-iframe');
     const fallback = document.getElementById('detail-trailer-fallback');
     const ytLink = document.getElementById('detail-trailer-yt-link');
     const trailerUrl = movie.trailer || movie.trailerUrl || '';
+
     if (iframe && trailerUrl) {
         const embedUrl = getYouTubeEmbedUrl(trailerUrl);
-        const sep = embedUrl.includes('?') ? '&' : '?';
-        iframe.src = embedUrl + `${sep}rel=0&modestbranding=1&enablejsapi=1`;
+        iframe.src = embedUrl;
         if (fallback) fallback.style.display = 'none';
         iframe.style.display = 'block';
         if (ytLink) {
             ytLink.href = movie.trailerWatch || trailerUrl;
         }
+    } else if (fallback) {
+        if (iframe) iframe.style.display = 'none';
+        fallback.style.display = 'flex';
+        if (ytLink) ytLink.href = movie.trailerWatch || trailerUrl || '#';
     }
 
     if (Array.isArray(movie.gallery)) {
@@ -570,14 +569,25 @@ function renderGallery(movie) {
     if (movie.poster && !galleryImages.includes(movie.poster)) {
         galleryImages.unshift(movie.poster);
     }
+    if (movie.bg && !galleryImages.includes(movie.bg) && movie.bg !== movie.poster) {
+        galleryImages.push(movie.bg);
+    }
+    if (movie.backdrop && !galleryImages.includes(movie.backdrop) && movie.backdrop !== movie.poster) {
+        galleryImages.push(movie.backdrop);
+    }
+
     const galleryGrid = document.getElementById('gallery-grid');
     if (galleryGrid) {
-        galleryGrid.innerHTML = galleryImages.map((url, i) => `
-            <div class="gallery-item ${url === movie.poster ? 'gallery-poster-item' : ''}" onclick="openLightbox(${i})" role="button" aria-label="Xem ảnh ${i+1}">
-                <img src="${url}" alt="${url === movie.poster ? 'Poster - ' + movie.title : 'Gallery ' + i}" loading="lazy" onerror="this.src='/shared/images/avatar.jpg'">
-                ${url === movie.poster ? '<span class="gallery-poster-badge"><i class="fas fa-image"></i> Poster</span>' : ''}
-            </div>
-        `).join('');
+        if (galleryImages.length === 0) {
+            galleryGrid.innerHTML = `<div style="grid-column: 1/-1; padding: 40px; text-align: center; color: var(--text-muted);">Chưa có hình ảnh bổ sung cho phim này.</div>`;
+        } else {
+            galleryGrid.innerHTML = galleryImages.map((url, i) => `
+                <div class="gallery-item ${url === movie.poster ? 'gallery-poster-item' : ''}" onclick="openLightbox(${i})" role="button" aria-label="Xem ảnh ${i+1}">
+                    <img src="${url}" alt="${url === movie.poster ? 'Poster - ' + movie.title : 'Gallery ' + (i+1)}" loading="lazy" onerror="this.onerror=null; this.src='${movie.poster || '/shared/images/avatar.jpg'}';">
+                    ${url === movie.poster ? '<span class="gallery-poster-badge"><i class="fas fa-image"></i> Poster</span>' : ''}
+                </div>
+            `).join('');
+        }
     }
 }
 

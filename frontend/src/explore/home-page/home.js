@@ -30,11 +30,7 @@ function getYouTubeEmbedUrl(url) {
     }
 
     if (videoId) {
-        const origin = (typeof window !== 'undefined' && window.location && window.location.origin && window.location.origin !== 'null')
-            ? encodeURIComponent(window.location.origin)
-            : '';
-        const originParam = origin ? `&origin=${origin}` : '';
-        return `https://www.youtube-nocookie.com/embed/${videoId}?enablejsapi=1&rel=0${originParam}`;
+        return `https://www.youtube.com/embed/${videoId}?rel=0`;
     }
     return cleanUrl;
 }
