@@ -4,23 +4,42 @@ import { API_BASE_URL } from '../../shared/utils/apiConfig.js?v=5';
 
 function redirectAfterLogin(userRole) {
     const urlParams = new URLSearchParams(window.location.search);
-    const returnUrl = urlParams.get('returnUrl') || urlParams.get('redirect');
-    const role = (userRole || '').toUpperCase();
+    let returnUrl = urlParams.get('returnUrl') || urlParams.get('redirect');
+    const session = getSession();
+    const role = (userRole || session?.role || session?.Role || session?.['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] || '').toUpperCase();
 
+    // Sanitize returnUrl to prevent infinite redirect loops to login/auth pages
+    if (returnUrl) {
+        const lowerUrl = returnUrl.toLowerCase();
+        if (lowerUrl.includes('login') || lowerUrl.includes('register') || lowerUrl.includes('auth')) {
+            returnUrl = null;
+        }
+    }
+
+    let targetUrl = '/explore/home-page/index.html';
     if (role === 'ADMIN') {
-        window.location.href = '/management/admin.html';
+        targetUrl = '/management/admin.html';
     } else if (role === 'STAFF') {
-        window.location.href = '/management/staff-sales.html';
+        targetUrl = '/management/staff-sales.html';
     } else if (returnUrl) {
-        window.location.href = returnUrl;
-    } else {
-        window.location.href = '/explore/home-page/index.html';
+        targetUrl = returnUrl;
+    }
+
+    // Do not redirect if already at targetUrl
+    if (window.location.pathname !== targetUrl && !window.location.href.endsWith(targetUrl)) {
+        window.location.href = targetUrl;
     }
 }
 
 if (isLoggedIn()) {
-    const session = getSession();
-    redirectAfterLogin(session?.role);
+    const referrer = document.referrer || '';
+    const isFromProtectedPage = referrer.includes('admin.html') || referrer.includes('staff-sales.html');
+    
+    // Only auto-redirect if not coming back from a protected page rejection
+    if (!isFromProtectedPage) {
+        const session = getSession();
+        redirectAfterLogin(session?.role);
+    }
 }
 
 const loginForm      = document.getElementById('loginForm');

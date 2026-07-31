@@ -1061,9 +1061,18 @@
     <script>
         // Auth check for Staff Sales
         (function() {
-            const token = localStorage.getItem('auth_token') || localStorage.getItem('3hd2k_user');
-            if (!token) {
+            function clearAuthAndRedirect() {
+                localStorage.removeItem('jwt_token');
+                localStorage.removeItem('auth_token');
+                localStorage.removeItem('3hd2k_user');
+                localStorage.removeItem('isLoggedIn');
+                sessionStorage.removeItem('cinema_current_user');
                 window.location.href = '/auth/user-login/login.html';
+            }
+
+            const token = localStorage.getItem('jwt_token') || localStorage.getItem('auth_token') || localStorage.getItem('cinema_current_user') || localStorage.getItem('3hd2k_user');
+            if (!token) {
+                clearAuthAndRedirect();
                 return;
             }
             let user = null;
@@ -1084,14 +1093,14 @@
                     }
                 }
                 
-                const role = (user.role || user.Role || '').toUpperCase();
+                const role = (user.role || user.Role || user.userRole || user['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] || '').toUpperCase();
                 if (role !== 'ADMIN' && role !== 'STAFF') {
                     window.location.href = '../explore/home-page/index.html';
                     return;
                 }
             } catch (e) {
                 console.error("Auth Token Parse Error:", e);
-                window.location.href = '/auth/user-login/login.html';
+                clearAuthAndRedirect();
                 return;
             }
             
