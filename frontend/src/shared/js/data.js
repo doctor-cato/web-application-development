@@ -121,9 +121,6 @@ function mapMovieObj(m) {
             parsedGallery = trimmedG.split(/[\n,]+/).map(img => normalizeImagePath(img.trim())).filter(Boolean);
         }
     }
-    if (parsedGallery.length === 0) {
-        parsedGallery = [posterImg, bgImg].filter(Boolean);
-    }
 
     return {
         id: m.id || m.movieId || ('mv_' + Math.random().toString(36).slice(2, 11)),
@@ -141,8 +138,8 @@ function mapMovieObj(m) {
         bg: bgImg,
         backdrop: bgImg,
         language: m.language || "Tiếng Việt / Phụ đề tiếng Anh",
-        rating: typeof m.rating === 'number' ? m.rating : 4.8,
-        ratingCount: typeof m.ratingCount === 'number' ? m.ratingCount : 120,
+        rating: typeof m.rating === 'number' ? m.rating : 0,
+        ratingCount: typeof m.ratingCount === 'number' ? m.ratingCount : 0,
         director: m.director || "Đang cập nhật",
         cast: parsedCast,
         gallery: parsedGallery,

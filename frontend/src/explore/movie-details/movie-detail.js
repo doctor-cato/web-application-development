@@ -425,8 +425,16 @@ let currentRatingSelection = 5;
 
 function renderRatings(movie) {
     if (!movie) return;
-    const ratingVal = (typeof movie.rating === 'number' && !isNaN(movie.rating)) ? movie.rating : 4.8;
-    const ratingCnt = (typeof movie.ratingCount === 'number' && !isNaN(movie.ratingCount)) ? movie.ratingCount : 120;
+    const ratingVal = (typeof movie.rating === 'number' && !isNaN(movie.rating)) ? movie.rating : 0;
+    const ratingCnt = (typeof movie.ratingCount === 'number' && !isNaN(movie.ratingCount)) ? movie.ratingCount : 0;
+
+    const sectionRatings = document.getElementById('section-ratings');
+    if (currentReviews.length === 0 && ratingVal === 0) {
+        if (sectionRatings) sectionRatings.style.display = 'none';
+        return;
+    } else {
+        if (sectionRatings) sectionRatings.style.display = 'block';
+    }
 
     const ratingValEl = document.getElementById('rating-value');
     if (ratingValEl) ratingValEl.textContent = ratingVal.toFixed(1);
@@ -439,9 +447,6 @@ function renderRatings(movie) {
         starsLarge.innerHTML = renderStars(ratingVal);
     }
 
-    if (currentReviews.length === 0 && typeof mockReviews !== 'undefined') {
-        currentReviews = [...mockReviews];
-    }
     renderReviews();
 }
 
@@ -578,16 +583,33 @@ function renderGallery(movie) {
     const normFunc = (typeof normalizeImagePath === 'function') ? normalizeImagePath : (typeof window.normalizeImagePath === 'function' ? window.normalizeImagePath : (u => u));
     galleryImages = galleryImages.map(u => normFunc(u)).filter(u => typeof u === 'string' && u.trim() && u !== '/shared/images/avatar.jpg');
 
-    if (movie.poster && !galleryImages.includes(movie.poster)) {
-        galleryImages.unshift(normFunc(movie.poster));
-    }
-    if (movie.bg && !galleryImages.includes(movie.bg) && movie.bg !== movie.poster) {
-        galleryImages.push(normFunc(movie.bg));
-    }
-    if (movie.backdrop && !galleryImages.includes(movie.backdrop) && movie.backdrop !== movie.poster) {
-        galleryImages.push(normFunc(movie.backdrop));
-    }
     galleryImages = [...new Set(galleryImages)];
+
+    const sectionMedia = document.getElementById('section-media');
+    const tabTrailer = document.getElementById('tab-trailer');
+    const tabGallery = document.getElementById('tab-gallery');
+    const panelTrailer = document.getElementById('panel-trailer');
+    const panelGallery = document.getElementById('panel-gallery');
+    
+    if (!rawTrailer && galleryImages.length === 0) {
+        if (sectionMedia) sectionMedia.style.display = 'none';
+    } else {
+        if (sectionMedia) sectionMedia.style.display = 'block';
+        if (!rawTrailer) {
+            if (tabTrailer) tabTrailer.style.display = 'none';
+            if (panelTrailer) panelTrailer.classList.remove('active');
+            switchMediaTab('gallery');
+        } else {
+            if (tabTrailer) tabTrailer.style.display = 'inline-flex';
+        }
+        if (galleryImages.length === 0) {
+            if (tabGallery) tabGallery.style.display = 'none';
+            if (panelGallery) panelGallery.classList.remove('active');
+            switchMediaTab('trailer');
+        } else {
+            if (tabGallery) tabGallery.style.display = 'inline-flex';
+        }
+    }
 
     const galleryGrid = document.getElementById('gallery-grid');
     if (galleryGrid) {
@@ -784,15 +806,23 @@ document.addEventListener('DOMContentLoaded', async () => {
         currentMovie = allMoviesData[0];
     }
 
-    if (typeof mockReviews !== 'undefined') {
-        currentReviews = [...mockReviews];
+    if (currentMovie && currentMovie.id) {
+        try {
+            const rRes = await fetch(`/api/movies/${currentMovie.id}/ratings`);
+            if (rRes.ok) {
+                const rData = await rRes.json();
+                const imdb = parseFloat(rData.imdbRating);
+                if (!isNaN(imdb) && currentMovie.rating === 0) {
+                    currentMovie.rating = imdb / 2; 
+                    currentMovie.ratingCount = 120;
+                }
+            }
+        } catch (e) {
+            console.warn("Could not fetch ratings:", e);
+        }
     }
 
-    if (currentReviews.length > 0 && currentMovie) {
-        const sum = currentReviews.reduce((acc, rev) => acc + rev.rating, 0);
-        currentMovie.rating = sum / currentReviews.length;
-        currentMovie.ratingCount = currentReviews.length;
-    }
+
 
     if (!currentMovie) {
         document.title = '3HD2K - Không tìm thấy phim';
