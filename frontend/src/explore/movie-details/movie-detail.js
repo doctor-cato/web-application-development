@@ -537,20 +537,25 @@ function renderGallery(movie) {
     const iframe = document.getElementById('detail-trailer-iframe');
     const fallback = document.getElementById('detail-trailer-fallback');
     const ytLink = document.getElementById('detail-trailer-yt-link');
-    const trailerUrl = movie.trailer || movie.trailerUrl || '';
+    const directLink = document.getElementById('detail-trailer-direct-link');
+    const rawTrailer = movie.trailer || movie.trailerUrl || '';
 
-    if (iframe && trailerUrl) {
-        const embedUrl = getYouTubeEmbedUrl(trailerUrl);
+    let watchUrl = movie.trailerWatch || rawTrailer || '';
+    if (watchUrl && !watchUrl.startsWith('http') && watchUrl.length === 11) {
+        watchUrl = `https://www.youtube.com/watch?v=${watchUrl}`;
+    }
+
+    if (ytLink) ytLink.href = watchUrl || '#';
+    if (directLink) directLink.href = watchUrl || '#';
+
+    if (iframe && rawTrailer) {
+        const embedUrl = getYouTubeEmbedUrl(rawTrailer);
         iframe.src = embedUrl;
         if (fallback) fallback.style.display = 'none';
         iframe.style.display = 'block';
-        if (ytLink) {
-            ytLink.href = movie.trailerWatch || trailerUrl;
-        }
     } else if (fallback) {
         if (iframe) iframe.style.display = 'none';
         fallback.style.display = 'flex';
-        if (ytLink) ytLink.href = movie.trailerWatch || trailerUrl || '#';
     }
 
     if (Array.isArray(movie.gallery)) {
