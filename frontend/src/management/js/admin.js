@@ -977,6 +977,11 @@ async function handleMovieSubmit(e) {
     const trailer = document.getElementById('movie-trailer-input').value;
     const desc = document.getElementById('movie-desc-input').value;
 
+    if (!title || !title.trim()) {
+        showToast("Vui lòng nhập tên phim!", "warning");
+        return;
+    }
+
     const castString = JSON.stringify(currentCastList);
 
     const apiData = {
@@ -996,7 +1001,7 @@ async function handleMovieSubmit(e) {
         gallery: JSON.stringify(currentGalleryList)
     };
 
-    const token = localStorage.getItem('auth_token') || localStorage.getItem('jwt_token');
+    const token = localStorage.getItem('jwt_token') || localStorage.getItem('auth_token');
     const authHeaders = {
         'Content-Type': 'application/json',
         ...(token ? { 'Authorization': `Bearer ${token}` } : {})
@@ -1017,31 +1022,47 @@ async function handleMovieSubmit(e) {
                 body: JSON.stringify(apiData)
             });
         }
-        if (!res.ok) throw new Error("API request failed");
+        if (!res.ok) {
+            const errText = await res.text().catch(() => '');
+            console.error(`Movie API error (${res.status}):`, errText);
+            if (res.status === 401 || res.status === 403) {
+                showToast("Phiên đăng nhập hết hạn hoặc không có quyền Admin!", "error");
+            } else {
+                showToast(`Lỗi từ máy chủ (${res.status}): Không thể lưu thông tin phim`, "error");
+            }
+            return;
+        }
         
         await fetchMovies();
         renderMoviesTable();
         closeMovieModal();
-        showToast(id ? "Đã cập nhật thông tin phim thành công!" : "Đã thêm phim mới thành công!");
+        showToast(id ? "Đã cập nhật thông tin phim thành công!" : "Đã thêm phim mới thành công!", "success");
     } catch (err) {
         console.error("API movie update error:", err);
-        showToast("Lỗi cập nhật phim!", "error");
+        showToast("Lỗi kết nối khi cập nhật phim!", "error");
     }
 }
 
 async function deleteMovie(id) {
     if (confirm("Bạn có chắc chắn muốn xóa phim này khỏi hệ thống API?")) {
-        const token = localStorage.getItem('auth_token') || localStorage.getItem('jwt_token');
+        const token = localStorage.getItem('jwt_token') || localStorage.getItem('auth_token');
         const authHeaders = {
             ...(token ? { 'Authorization': `Bearer ${token}` } : {})
         };
         try {
             const res = await fetch(`/api/movies/${id}`, { method: 'DELETE', headers: authHeaders });
-            if (!res.ok) throw new Error("API request failed");
+            if (!res.ok) {
+                if (res.status === 401 || res.status === 403) {
+                    showToast("Phiên đăng nhập hết hạn hoặc không có quyền Admin!", "error");
+                } else {
+                    showToast(`Lỗi khi xóa phim (${res.status})`, "error");
+                }
+                return;
+            }
             showToast('Đã xóa phim thành công!', 'success');
         } catch (err) {
             console.error("API delete error", err);
-            showToast('Lỗi khi xóa phim', 'error');
+            showToast('Lỗi kết nối khi xóa phim', 'error');
         }
         await fetchMovies();
         renderMoviesTable();
