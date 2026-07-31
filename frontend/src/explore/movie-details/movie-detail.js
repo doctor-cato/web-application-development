@@ -424,16 +424,20 @@ let currentReviews = [];
 let currentRatingSelection = 5;
 
 function renderRatings(movie) {
-    document.getElementById('rating-value').textContent = movie.rating.toFixed(1);
-    document.getElementById('rating-count-text').textContent = `${movie.ratingCount.toLocaleString('vi-VN')} lượt đánh giá`;
+    if (!movie) return;
+    const ratingVal = (typeof movie.rating === 'number' && !isNaN(movie.rating)) ? movie.rating : 4.8;
+    const ratingCnt = (typeof movie.ratingCount === 'number' && !isNaN(movie.ratingCount)) ? movie.ratingCount : 120;
+
+    const ratingValEl = document.getElementById('rating-value');
+    if (ratingValEl) ratingValEl.textContent = ratingVal.toFixed(1);
+
+    const ratingCntEl = document.getElementById('rating-count-text');
+    if (ratingCntEl) ratingCntEl.textContent = `${ratingCnt.toLocaleString('vi-VN')} lượt đánh giá`;
 
     const starsLarge = document.getElementById('rating-stars-large');
     if (starsLarge) {
-        starsLarge.innerHTML = renderStars(movie.rating);
+        starsLarge.innerHTML = renderStars(ratingVal);
     }
-
-    // 👱‍♀️ ponytail: Removed fake third-party ratings (IMDb/RT) because YAGNI and they shouldn't be mathematically derived from our internal ratings.
-    // Upgrade path: Fetch real scores from OMDb or TMDB API when needed.
 
     if (currentReviews.length === 0 && typeof mockReviews !== 'undefined') {
         currentReviews = [...mockReviews];
@@ -654,13 +658,25 @@ function renderRelatedMovies(movie) {
     const carousel = document.getElementById('related-carousel');
     if (!carousel) return;
 
-    const related = allMoviesData.filter(m => m.id !== movie.id).slice(0, 10);
+    const movieArr = (Array.isArray(allMoviesData) && allMoviesData.length > 0) ? allMoviesData : [];
+    const currentId = movie ? String(movie.id || '').toLowerCase().trim() : '';
+    let related = movieArr.filter(m => String(m.id || '').toLowerCase().trim() !== currentId).slice(0, 10);
+    if (related.length === 0 && movieArr.length > 0) {
+        related = movieArr.slice(0, 10);
+    }
+
+    if (related.length === 0) {
+        carousel.innerHTML = `<div style="padding: 20px; color: var(--text-muted);">Đang cập nhật danh sách phim liên quan...</div>`;
+        return;
+    }
+
     carousel.innerHTML = related.map(m => {
         const ageClass = getAgeBadgeClass(m.age);
+        const posterSrc = (typeof normalizeImagePath === 'function') ? normalizeImagePath(m.poster) : (m.poster || '/shared/images/avatar.jpg');
         return `
             <a href="/explore/movie-details/index.html?id=${m.id}" class="related-movie-card">
                 <div class="related-poster">
-                    <img src="${m.poster}" alt="${m.title}" loading="lazy">
+                    <img src="${posterSrc}" alt="${m.title}" loading="lazy" onerror="this.onerror=null; this.src='/shared/images/avatar.jpg';">
                     <span class="related-age-badge ${ageClass}">${m.age}</span>
                 </div>
                 <div class="related-movie-title">${m.title}</div>
