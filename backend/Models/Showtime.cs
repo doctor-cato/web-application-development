@@ -15,6 +15,18 @@ public partial class Showtime
 
     public DateTime EndTime { get; set; }
 
+    [System.ComponentModel.DataAnnotations.Schema.Column("cinema_id")]
+    public string? CinemaId { get; set; }
+
+    [System.ComponentModel.DataAnnotations.Schema.Column("cinema_name")]
+    public string? CinemaName { get; set; }
+
+    [System.ComponentModel.DataAnnotations.Schema.Column("room_name")]
+    public string? RoomName { get; set; }
+
+    [System.ComponentModel.DataAnnotations.Schema.Column("movie_title")]
+    public string? MovieTitle { get; set; }
+
     [System.ComponentModel.DataAnnotations.Schema.Column(TypeName = "decimal(18,2)")]
     public decimal TicketPrice { get; set; }
     [System.Text.Json.Serialization.JsonIgnore]

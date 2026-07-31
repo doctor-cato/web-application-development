@@ -15,17 +15,17 @@ namespace appweb.Repositories
 
         public async Task<List<Showtime>> GetAllAsync()
         {
-            return await _context.Showtimes.Include(s => s.Room).ThenInclude(r => r.Cinema).ToListAsync();
+            return await _context.Showtimes.Include(s => s.Room).ThenInclude(r => r.Cinema).Include(s => s.Movie).ToListAsync();
         }
 
         public async Task<Showtime?> GetByIdAsync(Guid id)
         {
-            return await _context.Showtimes.Include(s => s.Room).ThenInclude(r => r.Cinema).FirstOrDefaultAsync(s => s.Id == id);
+            return await _context.Showtimes.Include(s => s.Room).ThenInclude(r => r.Cinema).Include(s => s.Movie).FirstOrDefaultAsync(s => s.Id == id);
         }
 
         public async Task<List<Showtime>> GetByMovieIdAsync(Guid movieId)
         {
-            return await _context.Showtimes.Include(s => s.Room).ThenInclude(r => r.Cinema).Where(s => s.MovieId == movieId).ToListAsync();
+            return await _context.Showtimes.Include(s => s.Room).ThenInclude(r => r.Cinema).Include(s => s.Movie).Where(s => s.MovieId == movieId).ToListAsync();
         }
 
         public async Task AddAsync(Showtime showtime)

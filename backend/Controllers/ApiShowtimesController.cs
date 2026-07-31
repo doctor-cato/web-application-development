@@ -46,6 +46,10 @@ namespace appweb.Controllers
             {
                 showtime.Id = Guid.NewGuid();
             }
+            if (showtime.StartTime != default && showtime.EndTime == default)
+            {
+                showtime.EndTime = showtime.StartTime.AddHours(2);
+            }
             await _showtimeRepository.AddAsync(showtime);
             return Ok(showtime);
         }
@@ -60,7 +64,12 @@ namespace appweb.Controllers
             existing.MovieId = showtime.MovieId;
             existing.RoomId = showtime.RoomId;
             existing.StartTime = showtime.StartTime;
+            existing.EndTime = showtime.EndTime != default ? showtime.EndTime : showtime.StartTime.AddHours(2);
             existing.TicketPrice = showtime.TicketPrice;
+            existing.CinemaId = showtime.CinemaId;
+            existing.CinemaName = showtime.CinemaName;
+            existing.RoomName = showtime.RoomName;
+            existing.MovieTitle = showtime.MovieTitle;
 
             await _showtimeRepository.UpdateAsync(id, existing);
             return Ok(existing);

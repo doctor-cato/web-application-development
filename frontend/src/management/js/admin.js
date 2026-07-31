@@ -1,4 +1,24 @@
 
+const API_BASE_URL = (typeof window !== 'undefined' && window.API_BASE_URL) || 'http://3hd2k-api.somee.com/api';
+
+function getApiUrl(path) {
+    const base = API_BASE_URL.replace(/\/+$/, '');
+    const p = path.startsWith('/') ? path : '/' + path;
+    return base + p;
+}
+
+function getApiHeaders() {
+    const headers = {
+        'Content-Type': 'application/json',
+        'Bypass-Tunnel-Reminder': 'true'
+    };
+    const token = localStorage.getItem('jwt_token') || localStorage.getItem('auth_token');
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
+    return headers;
+}
+
 let db = {
     movies: [],
     cinemas: [],
@@ -133,7 +153,7 @@ document.addEventListener('click', function(event) {
 
 async function fetchMovies() {
     try {
-        const res = await fetch('/api/movies');
+        const res = await fetch(getApiUrl('/movies'), { headers: getApiHeaders() });
         if (res.ok) {
             const data = await res.json();
             db.movies = (Array.isArray(data) ? data : []).map(m => {
@@ -146,7 +166,7 @@ async function fetchMovies() {
                 const backdropVal = m.backdropUrl || m.backdrop || m.bg || '';
 
                 return {
-                    id: m.id ? m.id.toString() : '',
+                    id: m.id ? m.id.toString() : (m.movieId ? m.movieId.toString() : ''),
                     title: m.title || '',
                     genre: m.genre || 'Phim',
                     duration: d,
@@ -175,24 +195,35 @@ async function fetchMovies() {
 
 async function fetchShowtimes() {
     try {
-        const res = await fetch('/api/showtimes');
+        const res = await fetch(getApiUrl('/showtimes'), { headers: getApiHeaders() });
         if (res.ok) {
             const data = await res.json();
             if (Array.isArray(data) && data.length > 0) {
                 db.showtimes = data.map(s => {
                     const movie = db.movies.find(m => m.id === (s.movieId ? s.movieId.toString() : '')) || {};
+                    const rawStart = s.startTime || s.date || '';
+                    let datePart = '';
+                    let timePart = '19:00';
+                    if (rawStart.includes('T')) {
+                        const parts = rawStart.split('T');
+                        datePart = parts[0];
+                        timePart = parts[1].substring(0, 5);
+                    } else if (rawStart) {
+                        datePart = rawStart;
+                    }
                     return {
                         id: s.id ? s.id.toString() : '',
                         movieId: s.movieId ? s.movieId.toString() : '',
-                        movieTitle: s.movieTitle || movie.title || 'Phim #' + s.movieId,
-                        cinemaId: s.cinemaId || 'ha-dong',
-                        cinemaName: s.cinemaName || '3HD2K HÀ ĐÔNG',
-                        roomName: s.roomName || 'Phòng chiếu 1',
-                        date: s.startTime ? s.startTime.split('T')[0] : (s.date || ''),
-                        time: s.startTime ? s.startTime.split('T')[1]?.substring(0,5) : (s.time || '19:00'),
-                        price: s.price || 80000
+                        movieTitle: s.movieTitle || (s.movie ? s.movie.title : null) || movie.title || 'Phim #' + (s.movieId || ''),
+                        cinemaId: s.cinemaId || (s.room && s.room.cinema ? s.room.cinema.id : 'ha-dong'),
+                        cinemaName: s.cinemaName || (s.room && s.room.cinema ? s.room.cinema.name : '3HD2K HÀ ĐÔNG'),
+                        roomName: s.roomName || (s.room ? s.room.name : 'Phòng chiếu 1'),
+                        date: datePart,
+                        time: s.time || timePart,
+                        price: s.ticketPrice || s.price || 80000
                     };
                 });
+                localStorage.setItem('3hd2k_showtimes', JSON.stringify(db.showtimes));
                 return;
             }
         }
@@ -207,7 +238,7 @@ async function fetchShowtimes() {
 
 async function fetchCinemas() {
     try {
-        const res = await fetch('/api/cinemas');
+        const res = await fetch(getApiUrl('/cinemas'), { headers: getApiHeaders() });
         if (res.ok) {
             const data = await res.json();
             if (Array.isArray(data) && data.length > 0) {
@@ -232,7 +263,7 @@ async function fetchCinemas() {
 
 async function fetchBookings() {
     try {
-        const res = await fetch('/api/bookings');
+        const res = await fetch(getApiUrl('/bookings'), { headers: getApiHeaders() });
         if (res.ok) {
             const data = await res.json();
             if (Array.isArray(data) && data.length > 0) {
@@ -298,9 +329,7 @@ async function fetchBookings() {
 async function fetchUsers() {
     let usersList = [];
     try {
-        const token = localStorage.getItem('jwt_token') || localStorage.getItem('auth_token');
-        const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
-        const res = await fetch('/api/users', { headers });
+        const res = await fetch(getApiUrl('/users'), { headers: getApiHeaders() });
         if (res.ok) {
             const data = await res.json();
             if (Array.isArray(data)) {
@@ -333,7 +362,7 @@ async function fetchUsers() {
 
 async function fetchCombos() {
     try {
-        const res = await fetch('/api/combos');
+        const res = await fetch(getApiUrl('/combos'), { headers: getApiHeaders() });
         if (res.ok) {
             const data = await res.json();
             if (Array.isArray(data) && data.length > 0) {
@@ -1018,15 +1047,15 @@ async function handleMovieSubmit(e) {
         let res;
         if (id) {
             apiData.id = id;
-            res = await fetch(`/api/movies/${id}`, {
+            res = await fetch(getApiUrl(`/movies/${id}`), {
                 method: 'PUT',
-                headers: authHeaders,
+                headers: getApiHeaders(),
                 body: JSON.stringify(apiData)
             });
         } else {
-            res = await fetch(`/api/movies`, {
+            res = await fetch(getApiUrl('/movies'), {
                 method: 'POST',
-                headers: authHeaders,
+                headers: getApiHeaders(),
                 body: JSON.stringify(apiData)
             });
         }
@@ -1053,12 +1082,8 @@ async function handleMovieSubmit(e) {
 
 async function deleteMovie(id) {
     if (confirm("Bạn có chắc chắn muốn xóa phim này khỏi hệ thống API?")) {
-        const token = localStorage.getItem('jwt_token') || localStorage.getItem('auth_token');
-        const authHeaders = {
-            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
-        };
         try {
-            const res = await fetch(`/api/movies/${id}`, { method: 'DELETE', headers: authHeaders });
+            const res = await fetch(getApiUrl(`/movies/${id}`), { method: 'DELETE', headers: getApiHeaders() });
             if (!res.ok) {
                 if (res.status === 401 || res.status === 403) {
                     showToast("Phiên đăng nhập hết hạn hoặc không có quyền Admin!", "error");
@@ -1362,24 +1387,45 @@ async function handleShowtimeSubmit(e) {
         price: price
     };
 
-    db.showtimes.push(newShowtime);
-    localStorage.setItem('3hd2k_showtimes', JSON.stringify(db.showtimes));
+    const isGuid = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(movieId);
 
     const payload = {
-        movieId: parseInt(movieId) || movieId,
-        startTime: `${date}T${time}:00Z`,
+        movieId: isGuid ? movieId : null,
+        movieTitle: movie ? movie.title : 'Phim #' + movieId,
+        cinemaId: cinemaId,
+        cinemaName: cinema ? cinema.name : cinemaId,
+        roomName: roomName,
+        startTime: `${date}T${time}:00`,
+        endTime: `${date}T${time}:00`,
+        ticketPrice: price,
         price: price
     };
 
     try {
-        await fetch('/api/showtimes', {
+        const res = await fetch(getApiUrl('/showtimes'), {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: getApiHeaders(),
             body: JSON.stringify(payload)
         });
-    } catch (_) {}
 
-    showToast('Tạo suất chiếu mới thành công!', 'success');
+        if (res.ok) {
+            const saved = await res.json();
+            if (saved && saved.id) {
+                newShowtime.id = saved.id.toString();
+            }
+            showToast('Tạo suất chiếu mới thành công và đã lưu vào Database!', 'success');
+        } else {
+            console.warn('API create showtime status:', res.status);
+            showToast('Tạo suất chiếu mới thành công!', 'success');
+        }
+    } catch (err) {
+        console.error('API create showtime error:', err);
+        showToast('Tạo suất chiếu thành công (lưu cục bộ)', 'info');
+    }
+
+    db.showtimes.push(newShowtime);
+    localStorage.setItem('3hd2k_showtimes', JSON.stringify(db.showtimes));
+
     closeShowtimeModal();
     renderShowtimesTable();
     renderAvailabilityMatrix();
@@ -1391,7 +1437,10 @@ async function deleteShowtime(id) {
         localStorage.setItem('3hd2k_showtimes', JSON.stringify(db.showtimes));
 
         try {
-            await fetch(`/api/showtimes/${id}`, { method: 'DELETE' });
+            await fetch(getApiUrl(`/showtimes/${id}`), {
+                method: 'DELETE',
+                headers: getApiHeaders()
+            });
         } catch (_) {}
 
         showToast('Đã xóa suất chiếu!', 'success');
@@ -1404,7 +1453,7 @@ async function deleteShowtime(id) {
 async function purgeAllMovieData() {
     if (confirm("⚠️ CẢNH BÁO: Bạn có chắc chắn muốn xóa TOÀN BỘ dữ liệu phim, suất chiếu và đơn vé cũ khỏi hệ thống?")) {
         try {
-            await fetch('/api/movies/purge-all', { method: 'DELETE' });
+            await fetch(getApiUrl('/movies/purge-all'), { method: 'DELETE', headers: getApiHeaders() });
         } catch (_) {}
 
         localStorage.removeItem('3hd2k_movies');
@@ -1687,15 +1736,15 @@ async function handleComboSubmit(e) {
     try {
         let res;
         if (id) {
-            res = await fetch(`/api/combos/${id}`, {
+            res = await fetch(getApiUrl(`/combos/${id}`), {
                 method: 'PUT',
-                headers: authHeaders,
+                headers: getApiHeaders(),
                 body: JSON.stringify(data)
             });
         } else {
-            res = await fetch('/api/combos', {
+            res = await fetch(getApiUrl('/combos'), {
                 method: 'POST',
-                headers: authHeaders,
+                headers: getApiHeaders(),
                 body: JSON.stringify(data)
             });
         }
@@ -1716,15 +1765,11 @@ async function handleComboSubmit(e) {
 }
 
 async function deleteCombo(id) {
-    const token = localStorage.getItem('jwt_token') || localStorage.getItem('3hd2k_token');
-    const authHeaders = {};
-    if (token) authHeaders['Authorization'] = `Bearer ${token}`;
-
     if (confirm("Xóa Combo này khỏi hệ thống API?")) {
         try {
-            const res = await fetch(`/api/combos/${id}`, { 
+            const res = await fetch(getApiUrl(`/combos/${id}`), { 
                 method: 'DELETE',
-                headers: authHeaders 
+                headers: getApiHeaders() 
             });
             if (res.ok) {
                 showToast('Đã xóa Combo thành công!', 'success');
@@ -1806,9 +1851,7 @@ async function toggleUserStatus(idOrUsername) {
     }
 
     try {
-        const token = localStorage.getItem('jwt_token') || localStorage.getItem('auth_token');
-        const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
-        const res = await fetch(`/api/users/${u.id}/toggle-lock`, { method: 'PUT', headers });
+        const res = await fetch(getApiUrl(`/users/${u.id}/toggle-lock`), { method: 'PUT', headers: getApiHeaders() });
         if (res.ok) {
             const resData = await res.json();
             u.status = resData.isLocked ? 'banned' : 'active';
@@ -1842,13 +1885,9 @@ async function changeUserRolePrompt(idOrUsername) {
     }
 
     try {
-        const token = localStorage.getItem('jwt_token') || localStorage.getItem('auth_token');
-        const headers = { 'Content-Type': 'application/json' };
-        if (token) headers['Authorization'] = `Bearer ${token}`;
-
-        const res = await fetch(`/api/users/${u.id}/role`, {
+        const res = await fetch(getApiUrl(`/users/${u.id}/role`), {
             method: 'PUT',
-            headers,
+            headers: getApiHeaders(),
             body: JSON.stringify({ role: formattedRole })
         });
 
@@ -1876,9 +1915,7 @@ async function deleteUserConfirm(idOrUsername) {
     if (!confirm(`Bạn có chắc chắn muốn xóa tài khoản ${u.name} (${u.email})?`)) return;
 
     try {
-        const token = localStorage.getItem('jwt_token') || localStorage.getItem('auth_token');
-        const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
-        const res = await fetch(`/api/users/${u.id}`, { method: 'DELETE', headers });
+        const res = await fetch(getApiUrl(`/users/${u.id}`), { method: 'DELETE', headers: getApiHeaders() });
         if (res.ok) {
             db.users = db.users.filter(x => x.id !== u.id);
             showToast('Xóa người dùng thành công!', 'success');
@@ -1917,13 +1954,9 @@ async function saveUserForm(e) {
     const role = document.getElementById('user-modal-role').value;
 
     try {
-        const token = localStorage.getItem('jwt_token') || localStorage.getItem('auth_token');
-        const headers = { 'Content-Type': 'application/json' };
-        if (token) headers['Authorization'] = `Bearer ${token}`;
-
-        const res = await fetch('/api/users', {
+        const res = await fetch(getApiUrl('/users'), {
             method: 'POST',
-            headers,
+            headers: getApiHeaders(),
             body: JSON.stringify({ fullname, email, phone, password, role })
         });
 
