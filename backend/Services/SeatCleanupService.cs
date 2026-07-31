@@ -26,7 +26,14 @@ public class SeatCleanupService : BackgroundService
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            await CleanupExpiredHolds(stoppingToken);
+            try
+            {
+                await CleanupExpiredHolds(stoppingToken);
+            }
+            catch (Exception ex)
+            {
+                // Prevent DB connection errors from crashing the entire ASP.NET Core host process
+            }
             await Task.Delay(TimeSpan.FromSeconds(30), stoppingToken);
         }
     }
