@@ -741,11 +741,26 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const movieId = getMovieIdFromURL();
 
-    if (!movieId) {
+    if (movieId) {
+        const targetId = String(movieId).toLowerCase().trim();
+        currentMovie = (allMoviesData || []).find(m => String(m.id || '').toLowerCase().trim() === targetId);
+        if (!currentMovie) {
+            try {
+                const res = await fetch(`/api/movies/${movieId}`);
+                if (res.ok) {
+                    const rawM = await res.json();
+                    if (rawM && typeof mapMovieObj === 'function') {
+                        currentMovie = mapMovieObj(rawM);
+                    }
+                }
+            } catch (e) {
+                console.warn("Could not fetch single movie from API:", e);
+            }
+        }
+    }
 
+    if (!currentMovie && Array.isArray(allMoviesData) && allMoviesData.length > 0) {
         currentMovie = allMoviesData[0];
-    } else {
-        currentMovie = allMoviesData.find(m => m.id === movieId) || allMoviesData[0];
     }
 
     if (typeof mockReviews !== 'undefined') {
