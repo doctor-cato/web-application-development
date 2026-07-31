@@ -296,6 +296,7 @@ function switchStep(stepName) {
         DOM.steps[stepName].style.display = 'block';
         DOM.steps[stepName].style.animation = 'popIn 0.5s ease-out';
     }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // ============================================================
