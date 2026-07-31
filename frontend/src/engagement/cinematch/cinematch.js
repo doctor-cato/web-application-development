@@ -307,6 +307,7 @@ function startMatching() {
     state.bothAccepted = false;
     state.currentMatch = null;
     state.isUser1 = false;
+    state.isDemoSession = false;
     window.currentInviteData = null;
     window.currentInviteKey = null;
     
@@ -331,8 +332,11 @@ function startMatching() {
         }, 1500);
     } else {
         setTimeout(() => {
-            if (!state.roomId) switchStep('candidates');
-        }, 1500);
+            if (!state.roomId) {
+                switchStep('candidates');
+                window.renderLobby([]);
+            }
+        }, 3000);
         joinSignalRQueue();
     }
 }
@@ -378,15 +382,58 @@ function spawnRadarNode() {
 // ============================================================
 // LOBBY & MATCHING LOGIC
 // ============================================================
-// ponytail: SignalR handles real-time queue matching automatically.
-// Ceiling: Manual peer lobby invitation is simplified for instant matching.
-window.sendInvite = function(partnerKey, partnerName) {
-    if (DEMO_MODE) {
-        switchStep('sync');
-        if (DOM.sync.partnerName) DOM.sync.partnerName.innerText = partnerName;
-        state.currentMatch = { name: partnerName };
-        setTimeout(onBothAccepted, 2000);
+// ponytail: Fallback Empty State with AI Demo & Filter reset when no online users exist.
+window.renderLobby = function(candidates) {
+    if (!DOM.candidates.container) return;
+
+    if (candidates && candidates.length > 0) {
+        DOM.candidates.container.innerHTML = candidates.map(c => `
+            <div class="candidate-card" style="background: rgba(255,255,255,0.04); border: 1px solid var(--glass-border); border-radius: 16px; padding: 20px; text-align: center; margin-bottom: 15px;">
+                <div style="font-size: 2rem; color: var(--neon-cyan); margin-bottom: 10px;"><i class="fas fa-user-circle"></i></div>
+                <h3 style="color: white; margin: 0 0 5px 0;">${c.userName}</h3>
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 15px;">Mood: ${c.mood || 'Chill'} • Thể loại: ${c.genre || 'Tất cả'}</p>
+                <button onclick="window.sendInvite('${c.userId}', '${c.userName.replace(/'/g, "\\'")}')" class="neon-btn" style="padding: 8px 25px; font-size: 0.9rem; margin: 0 auto;">
+                    <i class="fas fa-heart"></i> Ghép đôi ngay
+                </button>
+            </div>
+        `).join('');
+    } else {
+        DOM.candidates.container.innerHTML = `
+            <div class="empty-lobby-card" style="background: rgba(255,255,255,0.03); border: 1px dashed var(--glass-border); border-radius: 20px; padding: 40px 20px; text-align: center;">
+                <div style="font-size: 3rem; color: var(--neon-cyan); margin-bottom: 15px; opacity: 0.8;">
+                    <i class="fa-solid fa-user-slash"></i>
+                </div>
+                <h3 style="color: white; font-size: 1.3rem; margin-bottom: 10px;">Chưa tìm thấy người cùng trực tuyến</h3>
+                <p style="color: var(--text-muted); font-size: 0.95rem; max-width: 450px; margin: 0 auto 25px auto; line-height: 1.5;">
+                    Hiện chưa có người dùng nào khớp với tiêu chí của bạn trong sảnh chờ. Bạn có thể mở rộng tiêu chí hoặc chọn Ghép Đôi AI mô phỏng để trải nghiệm ngay!
+                </p>
+                <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                    <button onclick="window.startDemoMatch()" class="neon-btn" style="padding: 12px 25px; font-size: 0.95rem; justify-content: center;">
+                        <i class="fa-solid fa-robot"></i> Trải nghiệm Ghép Đôi AI (Demo)
+                    </button>
+                    <button onclick="cancelSearch()" class="cancel-btn" style="padding: 12px 25px; font-size: 0.95rem;">
+                        <i class="fa-solid fa-sliders"></i> Đổi Tiêu Chí Tìm Kiếm
+                    </button>
+                </div>
+            </div>
+        `;
     }
+};
+
+window.startDemoMatch = function() {
+    state.isDemoSession = true;
+    state.currentMatch = { name: "Minh Anh (Cine-Bot 🤖)" };
+    switchStep('sync');
+    if (DOM.sync.partnerName) DOM.sync.partnerName.innerText = state.currentMatch.name;
+    setTimeout(onBothAccepted, 1500);
+};
+
+window.sendInvite = function(partnerKey, partnerName) {
+    switchStep('sync');
+    if (DOM.sync.partnerName) DOM.sync.partnerName.innerText = partnerName;
+    state.currentMatch = { name: partnerName };
+    state.isDemoSession = true;
+    setTimeout(onBothAccepted, 2000);
 };
 
 function onBothAccepted() {
@@ -485,12 +532,12 @@ function renderMovieGrid(movies) {
 // MOVIE SUGGEST / AGREE
 // ============================================================
 window.suggestMovie = function(movieId, title) {
-    if (DEMO_MODE) {
+    if (DEMO_MODE || state.isDemoSession) {
         highlightSuggestedMovie(movieId);
         appendChat('Bạn', `Đã đề xuất phim: <b>${title}</b>`, 'me');
         setTimeout(() => {
-            appendChat(state.currentMatch.name, `Phim "${title}" hay đấy! Mình đồng ý luôn nhé! 🎬`, 'partner');
-        }, 2000 + Math.random() * 1000);
+            appendChat(state.currentMatch?.name || 'Đối tác', `Phim "${title}" hay đấy! Mình đồng ý luôn nhé! 🎬`, 'partner');
+        }, 1500);
     } else if (connection && connection.state === signalR.HubConnectionState.Connected) {
         appendChat('Bạn', `Đã đề xuất phim: <b>${title}</b>`, 'me');
         connection.invoke("SuggestMovie", state.roomId, movieId, title).catch(err => console.error(err));
@@ -515,7 +562,7 @@ function highlightSuggestedMovie(movieId) {
 }
 
 window.agreeMovie = function(movieId) {
-    if (DEMO_MODE) {
+    if (DEMO_MODE || state.isDemoSession) {
         executeAgreeMovie(movieId);
     } else if (connection && connection.state === signalR.HubConnectionState.Connected) {
         connection.invoke("AgreeMovie", state.roomId, movieId).catch(err => console.error(err));
@@ -539,13 +586,13 @@ function sendChatMessage(textOverride) {
     if (!text) return;
     if (DOM.room.chatInput && !textOverride) DOM.room.chatInput.value = '';
 
-    if (DEMO_MODE) {
+    if (DEMO_MODE || state.isDemoSession) {
         appendChat('Bạn', text, 'me');
         setTimeout(() => {
             const replies = ["Tuyệt vời!", "Mình cũng nghĩ vậy", "Hay đấy!", "Ok luôn!", "😊", "👍", "Nghe hay đó!", "Mình thích ý tưởng này!"];
             const reply = textOverride ? "👍" : replies[Math.floor(Math.random() * replies.length)];
-            appendChat(state.currentMatch.name, reply, 'partner');
-        }, 1000 + Math.random() * 1500);
+            appendChat(state.currentMatch?.name || 'Đối tác', reply, 'partner');
+        }, 1000 + Math.random() * 1000);
     } else if (connection && connection.state === signalR.HubConnectionState.Connected) {
         connection.invoke("SendMessage", state.roomId, text).catch(err => console.error(err));
     }
