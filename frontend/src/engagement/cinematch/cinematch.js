@@ -37,7 +37,7 @@ const state = {
     bothAccepted: false,
     isUser1: false,
     activeNodes: [],
-    timers: { radar: null, status: null, demoMatch: null, matchTimer: null }
+    timers: { radar: null, status: null, demoMatch: null, matchTimer: null, searchTimeout: null }
 };
 
 // ============================================================
@@ -143,9 +143,10 @@ async function initSignalR() {
         .build();
 
     connection.on("OnMatchFound", (data) => {
+        clearTimers();
         state.roomId = data.roomId;
         state.currentMatch = { name: data.partnerName };
-        state.isUser1 = true; // Simplification, not strictly needed for UI
+        state.isUser1 = true;
 
         switchStep('sync');
         if (DOM.sync.partnerName) DOM.sync.partnerName.innerText = data.partnerName;
@@ -303,6 +304,8 @@ function switchStep(stepName) {
 // MATCHING
 // ============================================================
 window.startMatching = function startMatching() {
+    clearTimers();
+
     // Reset previous states to prevent stuck match
     state.roomId = null;
     state.bothAccepted = false;
@@ -311,30 +314,42 @@ window.startMatching = function startMatching() {
     window.currentInviteData = null;
     window.currentInviteKey = null;
     
-    if (state.roomId && connection) {
+    if (connection && connection.state === signalR.HubConnectionState.Connected) {
         connection.stop().then(() => connection.start()).catch(err => console.error(err));
     }
 
     switchStep('radar');
 
     // Radar animation & 15s countdown
-    clearInterval(state.timers.radar);
     state.timers.radar = setInterval(spawnRadarNode, 800);
 
     let searchTimeLeft = 15;
     if (DOM.radar.timer) DOM.radar.timer.innerText = `00:${searchTimeLeft < 10 ? '0' : ''}${searchTimeLeft}`;
     if (DOM.radar.statusText) DOM.radar.statusText.innerText = "Đang tìm kiếm sảnh chờ phù hợp (15s)...";
 
-    clearInterval(state.timers.status);
     state.timers.status = setInterval(() => {
         searchTimeLeft--;
-        if (searchTimeLeft >= 0 && DOM.radar.timer) {
-            DOM.radar.timer.innerText = `00:${searchTimeLeft < 10 ? '0' : ''}${searchTimeLeft}`;
+        if (searchTimeLeft >= 0) {
+            if (DOM.radar.timer) DOM.radar.timer.innerText = `00:${searchTimeLeft < 10 ? '0' : ''}${searchTimeLeft}`;
+        } else {
+            if (state.timers.status) {
+                clearInterval(state.timers.status);
+                state.timers.status = null;
+            }
         }
     }, 1000);
 
+    const onTimeoutComplete = () => {
+        clearTimers();
+        if (!state.roomId) {
+            switchStep('candidates');
+            window.renderLobby([]);
+        }
+    };
+
     if (DEMO_MODE) {
-        setTimeout(() => {
+        state.timers.searchTimeout = setTimeout(() => {
+            clearTimers();
             switchStep('candidates');
             window.renderLobby([
                 { userId: 'demo_1', userName: 'Trần B (Demo)', genre: 'Hành Động', mood: 'chill' },
@@ -342,12 +357,7 @@ window.startMatching = function startMatching() {
             ]);
         }, 15000);
     } else {
-        setTimeout(() => {
-            if (!state.roomId) {
-                switchStep('candidates');
-                window.renderLobby([]);
-            }
-        }, 15000);
+        state.timers.searchTimeout = setTimeout(onTimeoutComplete, 15000);
         joinSignalRQueue();
     }
 };
