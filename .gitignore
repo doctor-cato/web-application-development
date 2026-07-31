@@ -19,6 +19,9 @@ backend/bin/
 backend/obj/
 backend/publish/
 backend/publish_output/
+backend/publish-latest/
+backend/*.zip
+*.zip
 migrate_users_app/bin/
 migrate_users_app/obj/
 **/bin/
