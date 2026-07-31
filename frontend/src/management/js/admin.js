@@ -141,6 +141,10 @@ async function fetchMovies() {
                 if (isNaN(d) || d <= 0) d = 120;
                 else if (d < 10) d = d * 60;
 
+                const posterVal = m.posterUrl || m.poster || 'https://images.unsplash.com/photo-1536440136628-849c177e76a1';
+                const trailerVal = m.trailerUrl || m.trailer || '';
+                const backdropVal = m.backdropUrl || m.backdrop || m.bg || '';
+
                 return {
                     id: m.id ? m.id.toString() : '',
                     title: m.title || '',
@@ -148,14 +152,18 @@ async function fetchMovies() {
                     duration: d,
                     age: m.ageRating || 'T13',
                     status: m.status || 'now-showing',
-                    poster: m.posterUrl || 'https://images.unsplash.com/photo-1536440136628-849c177e76a1',
-                    trailer: m.trailerUrl || '',
-                    desc: m.description || '',
+                    poster: posterVal,
+                    posterUrl: posterVal,
+                    trailer: trailerVal,
+                    trailerUrl: trailerVal,
+                    desc: m.description || m.desc || '',
                     releaseDate: m.releaseDate || '',
                     director: m.director || '',
                     language: m.language || '',
                     cast: m.cast || '',
-                    backdrop: m.backdropUrl || '',
+                    backdrop: backdropVal,
+                    backdropUrl: backdropVal,
+                    bg: backdropVal,
                     gallery: m.gallery || ''
                 };
             });
