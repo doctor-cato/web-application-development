@@ -197,6 +197,11 @@ async function fetchMovies() {
                     gallery: m.gallery || ''
                 };
             });
+        } else {
+            console.warn('Fetch movies API returned status:', res.status);
+            if (typeof showToast === 'function') {
+                showToast(`Lỗi máy chủ (${res.status}): Không thể kết nối cơ sở dữ liệu trên Somee`, 'error');
+            }
         }
     } catch (e) {
         console.error('Fetch movies API error:', e);
