@@ -474,6 +474,66 @@ namespace appweb.Controllers
             return Ok(new { message = "Cập nhật ảnh đại diện thành công", avatarUrl });
         }
 
+        [HttpPut("update-profile")]
+        public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileDto model)
+        {
+            if (model == null)
+                return BadRequest(new { message = "Dữ liệu cập nhật không hợp lệ." });
+
+            string? userEmail = null;
+
+            var emailClaim = User.FindFirst(ClaimTypes.Email)?.Value ?? User.FindFirst("email")?.Value;
+            if (!string.IsNullOrEmpty(emailClaim))
+            {
+                userEmail = emailClaim;
+            }
+            else if (!string.IsNullOrEmpty(model.Email))
+            {
+                userEmail = model.Email.Trim().ToLower();
+            }
+
+            if (string.IsNullOrEmpty(userEmail))
+            {
+                return BadRequest(new { message = "Không xác định được tài khoản người dùng." });
+            }
+
+            var user = await _userRepository.GetByEmailAsync(userEmail);
+            if (user == null)
+            {
+                return NotFound(new { message = "Không tìm thấy tài khoản người dùng." });
+            }
+
+            if (model.DateOfBirth.HasValue)
+            {
+                user.DateOfBirth = model.DateOfBirth.Value;
+            }
+            if (!string.IsNullOrWhiteSpace(model.Gender))
+            {
+                user.Gender = model.Gender;
+            }
+            if (!string.IsNullOrWhiteSpace(model.Fullname))
+            {
+                user.Fullname = model.Fullname;
+            }
+
+            await _userRepository.UpdateAsync(user);
+
+            return Ok(new
+            {
+                message = "Cập nhật thông tin thành công.",
+                user = new
+                {
+                    id = user.UserId,
+                    fullname = user.Fullname,
+                    email = user.Email,
+                    phone = user.Phone,
+                    dateOfBirth = user.DateOfBirth,
+                    gender = user.Gender,
+                    avatar = user.AvatarUrl
+                }
+            });
+        }
+
         private async Task SendEmailAsync(string toEmail, string subject, string body)
         {
             try

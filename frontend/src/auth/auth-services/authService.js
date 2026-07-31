@@ -153,5 +153,41 @@ export function isLoggedIn() {
 }
 
 export async function updateProfile(updates) {
-    return { ok: false, error: 'Chức năng chưa được hỗ trợ từ API.' };
+    try {
+        const currentUser = getCurrentUser();
+        const payload = {
+            email: currentUser ? currentUser.email : (localStorage.getItem('userEmail') || ''),
+            dateOfBirth: updates.dob || updates.dateOfBirth,
+            gender: updates.gender,
+            fullname: updates.fullname
+        };
+
+        const response = await fetch(`${API_BASE_URL}/auth/update-profile`, {
+            method: 'PUT',
+            headers: getHeaders(),
+            body: JSON.stringify(payload)
+        });
+
+        const responseText = await response.text();
+        let data;
+        try {
+            data = responseText ? JSON.parse(responseText) : {};
+        } catch (_) {
+            data = {};
+        }
+
+        if (response.ok) {
+            if (data.user) {
+                const session = getCurrentUser() || {};
+                const updatedSession = { ...session, ...data.user };
+                setCurrentUser(updatedSession);
+            }
+            return { ok: true, message: data.message || 'Cập nhật thành công' };
+        } else {
+            return { ok: false, error: data.message || 'Không thể cập nhật thông tin' };
+        }
+    } catch (error) {
+        console.error('[authService] updateProfile network error:', error);
+        return { ok: false, error: 'Không thể kết nối tới máy chủ.' };
+    }
 }

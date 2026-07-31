@@ -314,20 +314,20 @@
                             <div class="form-row">
                                 <div class="form-group" style="flex: 1;">
                                     <label for="customerCode">Mã khách hàng</label>
-                                    <input type="text" id="customerCode" readonly class="readonly-input" style="font-family: monospace; letter-spacing: 2px; font-weight: bold; color: var(--primary-color);">
+                                    <input type="text" id="customerCode" readonly class="readonly-input" style="font-family: monospace; letter-spacing: 2px; font-weight: bold; color: #e50914;">
                                     <span class="help-text">Sử dụng mã này khi liên hệ hỗ trợ hoặc nhận ưu đãi</span>
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group">
                                     <label for="fullname">Họ và Tên</label>
-                                    <input type="text" id="fullname" readonly class="readonly-input" placeholder="Nhập họ tên của bạn" autocomplete="name">
-                                    <span class="help-text">Họ tên không thể thay đổi</span>
+                                    <input type="text" id="fullname" placeholder="Nhập họ tên của bạn" autocomplete="name">
+                                    <span class="help-text">Nhập họ và tên của bạn</span>
                                 </div>
                                 <div class="form-group">
                                     <label for="membership">Hạng thành viên</label>
                                     <input type="text" id="membership" readonly class="readonly-input" style="color: #ffd700; font-weight: bold; background: rgba(255,215,0,0.1); border-color: rgba(255,215,0,0.3);">
-                                    <span class="help-text">Cập nhật tự động</span>
+                                    <span class="help-text">Cập nhật tự động theo điểm tích lũy</span>
                                 </div>
                             </div>
 
@@ -347,30 +347,34 @@
                             <div class="form-row">
                                 <div class="form-group">
                                     <label>Giới tính</label>
-                                    <div class="radio-group" style="opacity: 0.7; pointer-events: none;">
+                                    <div class="radio-group">
                                         <label class="radio-container">
                                             <input type="radio" name="gender" value="male" checked>
                                             <span class="checkmark"></span>
                                             Nam
                                         </label>
                                         <label class="radio-container">
-                                            <input type="radio" name="gender" value="female" >
+                                            <input type="radio" name="gender" value="female">
                                             <span class="checkmark"></span>
                                             Nữ
                                         </label>
                                         <label class="radio-container">
-                                            <input type="radio" name="gender" value="other" >
+                                            <input type="radio" name="gender" value="other">
                                             <span class="checkmark"></span>
                                             Khác
                                         </label>
                                     </div>
-                                    <span class="help-text">Giới tính không thể thay đổi</span>
+                                    <span class="help-text">Chọn giới tính</span>
                                 </div>
                                 <div class="form-group">
                                     <label for="dob">Ngày sinh</label>
-                                    <input type="date" id="dob" readonly class="readonly-input" autocomplete="bday">
-                                    <span class="help-text">Ngày sinh không thể thay đổi</span>
+                                    <input type="date" id="dob" autocomplete="bday">
+                                    <span class="help-text">Chọn ngày sinh</span>
                                 </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn-save"><i class="fas fa-save"></i> Lưu thay đổi</button>
                             </div>
                         </form>
                     </div>

@@ -215,14 +215,15 @@
 }
 
 .readonly-input {
-    background: rgba(255,255,255,0.02) !important;
-    color: #888 !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    color: #ccc !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
     cursor: not-allowed;
 }
 
 .help-text {
     font-size: 0.8rem;
-    color: #666;
+    color: #aaa;
 }
 
 .radio-group {

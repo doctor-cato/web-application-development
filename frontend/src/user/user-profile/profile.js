@@ -184,20 +184,12 @@ function initTabs() {
 }
 
 function loadUserInfo() {
-
     const isLogged = localStorage.getItem('isLoggedIn') === 'true';
     let session = null;
     try {
         session = getCurrentUser();
     } catch(e) {
         console.error("getCurrentUser error", e);
-    }
-
-    if (!session && !isLogged) {
-
-        const nameEl = document.getElementById('sidebar-name');
-        if (nameEl) nameEl.innerText = 'Khách';
-        return;
     }
 
     let name  = (session && (session.fullname || session.fullName || session.name) && (session.fullname || session.fullName || session.name) !== 'Khách') ? (session.fullname || session.fullName || session.name) : '';
@@ -227,9 +219,13 @@ function loadUserInfo() {
                 if (!dob) dob = found.dob || dob;
                 if (!gender) gender = found.gender || gender;
             }
+        } catch(e) {
+            console.error('[Profile] registeredUsers read error', e);
+        }
+    }
 
     const nameEl = document.getElementById('sidebar-name');
-    if (nameEl) nameEl.innerText = name || (email ? email.split('@')[0] : 'User');
+    if (nameEl) nameEl.innerText = name || (email ? email.split('@')[0] : 'Khách');
 
     const avatarEl = document.getElementById('sidebar-avatar');
     if (avatarEl && avatar) avatarEl.src = avatar;
@@ -264,11 +260,11 @@ function loadUserInfo() {
     const dobInput = document.getElementById('dob');
     if (dobInput) dobInput.value = dob || '';
 
-    const genderInput = document.querySelector(`input[name="gender"][value="${gender}"]`);
+    const genderInput = document.querySelector(`input[name="gender"][value="${gender || 'male'}"]`);
     if (genderInput) genderInput.checked = true;
 
     let customerCode = localStorage.getItem('userCustomerCode');
-    if (!customerCode && (email || name)) {
+    if (!customerCode) {
         customerCode = '3HD2K-' + Math.random().toString(36).slice(2, 8).toUpperCase();
         localStorage.setItem('userCustomerCode', customerCode);
     }
@@ -349,11 +345,11 @@ function setupProfileForm() {
 
         const btn = form.querySelector('.btn-save');
         if (btn) {
-            const origText = btn.innerText;
-            btn.innerText = 'Đã lưu thành công!';
+            const origHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check"></i> Đã lưu thành công!';
             btn.style.background = '#10b981';
             setTimeout(() => {
-                btn.innerText = origText;
+                btn.innerHTML = origHTML;
                 btn.style.background = '';
             }, 2000);
         }
