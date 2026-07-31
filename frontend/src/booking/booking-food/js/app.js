@@ -7,10 +7,14 @@
 
   function normalizeImagePath(path) {
     if (!path) return '/shared/images/food_popcorn.png';
+    if (typeof path === 'string') {
+        path = path.trim().replace(/^["'\[\s]+|["'\]\s]+$/g, '');
+    }
+    if (!path) return '/shared/images/food_popcorn.png';
     if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) return path;
     if (path.startsWith('/shared/') || path.startsWith('../')) return path;
-    if (path.startsWith('/')) return `http://3hd2k-api.somee.com${path}`;
-    return `http://3hd2k-api.somee.com/${path}`;
+    if (path.startsWith('/')) return `https://3hd2k-api.somee.com${path}`;
+    return `https://3hd2k-api.somee.com/${path}`;
   }
 
   try {
