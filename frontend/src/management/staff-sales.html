@@ -1573,19 +1573,7 @@
             { id: "QR-3HD2K-77182", customerName: "Đỗ Minh", phone: "0911223344", itemsText: "1 Combo Đôi (2 Bắp + 2 Pepsi)", items: [{ prodId: "PROD-007", name: "Combo Đôi (2 Bắp + 2 Pepsi)", qty: 1 }], totalAmount: 110000, dateCreated: "2026-06-18T14:35:00Z" }
         ];
 
-        let SALE_PRODUCTS = [
-            { id: "PROD-001", name: "Bắp Ngọt (Lớn)", price: 45000, category: "Bắp", image: "http://3hd2k-api.somee.com/images/F&B/food_popcorn.png", deduct: [{ id: "INV-001", qty: 1 }, { id: "INV-007", qty: 1 }] },
-            { id: "PROD-002", name: "Bắp Phô Mai (Lớn)", price: 55000, category: "Bắp", image: "http://3hd2k-api.somee.com/images/F&B/food_popcorn.png", deduct: [{ id: "INV-002", qty: 1 }, { id: "INV-007", qty: 1 }] },
-            { id: "PROD-008", name: "Bắp Caramel (Lớn)", price: 55000, category: "Bắp", image: "http://3hd2k-api.somee.com/images/F&B/food_popcorn.png", deduct: [{ id: "INV-008", qty: 1 }, { id: "INV-007", qty: 1 }] },
-            { id: "PROD-003", name: "Pepsi Lon 330ml", price: 25000, category: "Nước", image: "http://3hd2k-api.somee.com/images/F&B/food_pepsi.png", deduct: [{ id: "INV-003", qty: 1 }] },
-            { id: "PROD-004", name: "Coca-Cola Chai 390ml", price: 25000, category: "Nước", image: "http://3hd2k-api.somee.com/images/F&B/food_coca.png", deduct: [{ id: "INV-004", qty: 1 }] },
-            { id: "PROD-009", name: "7Up Lon 330ml", price: 25000, category: "Nước", image: "http://3hd2k-api.somee.com/images/F&B/food_pepsi.png", deduct: [{ id: "INV-009", qty: 1 }] },
-            { id: "PROD-010", name: "Fanta Cam Lon 330ml", price: 25000, category: "Nước", image: "http://3hd2k-api.somee.com/images/F&B/food_coca.png", deduct: [{ id: "INV-010", qty: 1 }] },
-            { id: "PROD-005", name: "Nước khoáng Aquafina", price: 15000, category: "Nước", image: "http://3hd2k-api.somee.com/images/F&B/food_coca.png", deduct: [{ id: "INV-005", qty: 1 }] },
-            { id: "PROD-006", name: "Combo Đơn (1 Bắp + 1 Nước)", price: 65000, category: "Combo", image: "http://3hd2k-api.somee.com/images/F&B/combo_single.png", deduct: [{ id: "INV-001", qty: 1 }, { id: "INV-003", qty: 1 }, { id: "INV-007", qty: 1 }] },
-            { id: "PROD-007", name: "Combo Đôi (2 Bắp + 2 Nước)", price: 110000, category: "Combo", image: "http://3hd2k-api.somee.com/images/F&B/combo_double.png", deduct: [{ id: "INV-001", qty: 2 }, { id: "INV-003", qty: 2 }, { id: "INV-007", qty: 2 }] },
-            { id: "PROD-011", name: "Combo Gia Đình (3 Bắp + 3 Nước)", price: 155000, category: "Combo", image: "http://3hd2k-api.somee.com/images/F&B/combo_double.png", deduct: [{ id: "INV-001", qty: 3 }, { id: "INV-003", qty: 3 }, { id: "INV-007", qty: 3 }, { id: "INV-006", qty: 3 }] }
-        ];
+        let SALE_PRODUCTS = [];
 
         // Global variables for POS state
         let cart = [];
@@ -1601,21 +1589,8 @@
         let lastTransactionPrintData = null;
 
         // Sample Movies & Showtimes Database for POS Counter
-        const DEFAULT_MOVIES = [
-            { id: "MV-001", title: "Lật Mặt 7: Một Điều Ước", genre: "Tình cảm, Gia đình", duration: 138, age: "T13", poster: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=300&q=80" },
-            { id: "MV-002", title: "Deadpool & Wolverine", genre: "Hành động, Hài", duration: 128, age: "T18", poster: "https://images.unsplash.com/photo-1578242173167-73d84cbcd29d?auto=format&fit=crop&w=300&q=80" },
-            { id: "MV-003", title: "Doraemon: Bản Tình Ca Địa Cầu", genre: "Hoạt hình, Phiêu lưu", duration: 115, age: "P", poster: "https://images.unsplash.com/photo-1585647347483-22b66260dffd?auto=format&fit=crop&w=300&q=80" },
-            { id: "MV-004", title: "Godzilla x Kong: Đế Chế Mới", genre: "Hành động, Viễn tưởng", duration: 115, age: "T13", poster: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=300&q=80" }
-        ];
-
-        const DEFAULT_SHOWTIMES = [
-            { id: "ST-101", movieId: "MV-001", movieTitle: "Lật Mặt 7: Một Điều Ước", cinemaName: "3HD2K HÀ ĐÔNG", roomName: "Phòng chiếu 1 (2D)", time: "14:30", date: "Hôm nay", price: 80000 },
-            { id: "ST-102", movieId: "MV-001", movieTitle: "Lật Mặt 7: Một Điều Ước", cinemaName: "3HD2K HÀ ĐÔNG", roomName: "Phòng chiếu IMAX", time: "19:00", date: "Hôm nay", price: 100000 },
-            { id: "ST-103", movieId: "MV-002", movieTitle: "Deadpool & Wolverine", cinemaName: "3HD2K HÀ ĐÔNG", roomName: "Phòng chiếu 2 (2D)", time: "16:00", date: "Hôm nay", price: 85000 },
-            { id: "ST-104", movieId: "MV-002", movieTitle: "Deadpool & Wolverine", cinemaName: "3HD2K HÀ ĐÔNG", roomName: "Phòng chiếu IMAX", time: "20:30", date: "Hôm nay", price: 110000 },
-            { id: "ST-105", movieId: "MV-003", movieTitle: "Doraemon: Bản Tình Ca Địa Cầu", cinemaName: "3HD2K HÀ ĐÔNG", roomName: "Phòng chiếu 1 (2D)", time: "10:15", date: "Hôm nay", price: 75000 },
-            { id: "ST-106", movieId: "MV-004", movieTitle: "Godzilla x Kong: Đế Chế Mới", cinemaName: "3HD2K HÀ ĐÔNG", roomName: "Phòng chiếu 3 (3D)", time: "18:15", date: "Hôm nay", price: 95000 }
-        ];
+        const DEFAULT_MOVIES = [];
+        const DEFAULT_SHOWTIMES = [];
 
         let API_MOVIES = [];
         let API_SHOWTIMES = [];

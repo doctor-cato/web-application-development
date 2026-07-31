@@ -1738,24 +1738,37 @@ async function handleComboSubmit(e) {
         desc: document.getElementById('combo-desc-input').value
     };
 
+    const token = localStorage.getItem('3hd2k_token');
+    const authHeaders = {
+        'Content-Type': 'application/json'
+    };
+    if (token) authHeaders['Authorization'] = `Bearer ${token}`;
+
     try {
+        let res;
         if (id) {
-            await fetch(`/api/combos/${id}`, {
+            res = await fetch(`/api/combos/${id}`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: authHeaders,
                 body: JSON.stringify(data)
             });
-            showToast('Đã cập nhật Combo!', 'success');
         } else {
-            await fetch('/api/combos', {
+            res = await fetch('/api/combos', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: authHeaders,
                 body: JSON.stringify(data)
             });
-            showToast('Thêm Combo thành công!', 'success');
+        }
+        
+        if (res && res.ok) {
+            showToast(id ? 'Đã cập nhật Combo!' : 'Thêm Combo thành công!', 'success');
+        } else {
+            showToast('Lỗi lưu F&B, bạn đã đăng nhập tài khoản ADMIN chưa?', 'error');
+            console.error('Lưu F&B thất bại:', await res.text());
         }
     } catch (err) {
         console.error('API combo error:', err);
+        showToast('Lỗi mạng khi lưu F&B', 'error');
     }
 
     closeComboModal();
@@ -1763,12 +1776,24 @@ async function handleComboSubmit(e) {
 }
 
 async function deleteCombo(id) {
+    const token = localStorage.getItem('3hd2k_token');
+    const authHeaders = {};
+    if (token) authHeaders['Authorization'] = `Bearer ${token}`;
+
     if (confirm("Xóa Combo này khỏi hệ thống API?")) {
         try {
-            await fetch(`/api/combos/${id}`, { method: 'DELETE' });
-            showToast('Đã xóa Combo thành công!', 'success');
+            const res = await fetch(`/api/combos/${id}`, { 
+                method: 'DELETE',
+                headers: authHeaders 
+            });
+            if (res.ok) {
+                showToast('Đã xóa Combo thành công!', 'success');
+            } else {
+                showToast('Không thể xóa, có thể do chưa đăng nhập ADMIN', 'error');
+            }
         } catch (err) {
             console.error('API delete combo error:', err);
+            showToast('Lỗi mạng khi xóa', 'error');
         }
         await reloadDatabase();
     }
