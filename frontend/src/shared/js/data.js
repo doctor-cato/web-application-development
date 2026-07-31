@@ -81,14 +81,40 @@ function mapMovieObj(m) {
             return { name: c.name || 'Diễn viên', avatar: normalizeImagePath(c.avatar || '/shared/images/avatar.jpg') };
         });
     } else if (typeof m.cast === 'string' && m.cast.trim() && m.cast !== 'Đang cập nhật') {
-        parsedCast = m.cast.split(',').map(name => ({ name: name.trim(), avatar: '/shared/images/avatar.jpg' }));
+        const trimmed = m.cast.trim();
+        if (trimmed.startsWith('[')) {
+            try {
+                const jsonCast = JSON.parse(trimmed);
+                if (Array.isArray(jsonCast)) {
+                    parsedCast = jsonCast.map(c => {
+                        if (typeof c === 'string') return { name: c, avatar: '/shared/images/avatar.jpg' };
+                        return { name: c.name || 'Diễn viên', avatar: normalizeImagePath(c.avatar || '/shared/images/avatar.jpg') };
+                    });
+                }
+            } catch (e) {}
+        }
+        if (parsedCast.length === 0) {
+            parsedCast = trimmed.split(',').map(name => ({ name: name.trim(), avatar: '/shared/images/avatar.jpg' }));
+        }
     }
 
-    let parsedGallery = [posterImg, bgImg];
+    let parsedGallery = [posterImg, bgImg].filter(Boolean);
     if (Array.isArray(m.gallery) && m.gallery.length > 0) {
-        parsedGallery = m.gallery.map(img => normalizeImagePath(img));
+        parsedGallery = m.gallery.map(img => normalizeImagePath(img)).filter(Boolean);
     } else if (typeof m.gallery === 'string' && m.gallery.trim()) {
-        parsedGallery = m.gallery.split(',').map(img => normalizeImagePath(img.trim()));
+        const trimmedG = m.gallery.trim();
+        if (trimmedG.startsWith('[')) {
+            try {
+                const jsonG = JSON.parse(trimmedG);
+                if (Array.isArray(jsonG) && jsonG.length > 0) {
+                    parsedGallery = jsonG.map(img => normalizeImagePath(img)).filter(Boolean);
+                }
+            } catch (e) {}
+        }
+        if (!Array.isArray(parsedGallery) || parsedGallery.length <= 2) {
+            const splitG = trimmedG.split(/[\n,]+/).map(img => normalizeImagePath(img.trim())).filter(Boolean);
+            if (splitG.length > 0) parsedGallery = splitG;
+        }
     }
 
     return {
@@ -390,7 +416,7 @@ async function fetchShowtimesByMovie(movieId) {
         console.error("Failed to fetch showtimes from API:", e);
     }
 
-    return [];
+    return generateMockShowtimesForMovie(movieId).map(normalizeShowtime);
 }
 window.fetchShowtimesByMovie = fetchShowtimesByMovie;
 

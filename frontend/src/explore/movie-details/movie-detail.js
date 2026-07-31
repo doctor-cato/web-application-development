@@ -550,7 +550,23 @@ function renderGallery(movie) {
         }
     }
 
-    galleryImages = movie.gallery ? [...movie.gallery] : [];
+    if (Array.isArray(movie.gallery)) {
+        galleryImages = movie.gallery.filter(url => typeof url === 'string' && url.trim() && url !== '/shared/images/avatar.jpg');
+    } else if (typeof movie.gallery === 'string' && movie.gallery.trim()) {
+        const trimmed = movie.gallery.trim();
+        if (trimmed.startsWith('[')) {
+            try {
+                const parsed = JSON.parse(trimmed);
+                if (Array.isArray(parsed)) galleryImages = parsed.filter(url => typeof url === 'string' && url.trim());
+            } catch (e) {}
+        }
+        if (galleryImages.length === 0) {
+            galleryImages = trimmed.split(/[\n,]+/).map(s => s.trim()).filter(Boolean);
+        }
+    } else {
+        galleryImages = [];
+    }
+
     if (movie.poster && !galleryImages.includes(movie.poster)) {
         galleryImages.unshift(movie.poster);
     }

@@ -26,8 +26,15 @@ namespace appweb.Controllers
         [HttpGet("movie/{movieId}")]
         public async Task<IActionResult> GetShowtimesByMovie(Guid movieId)
         {
-            var showtimes = await _showtimeRepository.GetByMovieIdAsync(movieId);
-            return Ok(showtimes);
+            try
+            {
+                var showtimes = await _showtimeRepository.GetByMovieIdAsync(movieId);
+                return Ok(showtimes ?? new List<Showtime>());
+            }
+            catch (Exception)
+            {
+                return Ok(new List<Showtime>());
+            }
         }
 
         [HttpGet("{id}")]
