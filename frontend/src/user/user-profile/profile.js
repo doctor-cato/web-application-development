@@ -2,6 +2,7 @@ import { getBookings, saveBookings } from '/shared/utils/storage.js';
 import { getCurrentUser, clearCurrentUser, setCurrentUser } from '/auth/auth-services/storage.js';
 import { updateProfile, logout } from '/auth/auth-services/authService.js';
 import { setupProfileUI } from './profile-ui.js';
+import { API_BASE_URL } from '/shared/utils/apiConfig.js';
 
 function formatPrice(amount) {
     if (!amount) return '0 đ';
@@ -482,6 +483,51 @@ function initProfile() {
     try { initLogout(); } catch(e) { console.error('initLogout error:', e); }
     try { initAvatarBorders(); } catch(e) { console.error('initAvatarBorders error:', e); }
     try { setupAvatarUpload(); } catch(e) { console.error('setupAvatarUpload error:', e); }
+    try { setup2FA(); } catch(e) { console.error('setup2FA error:', e); }
+}
+
+function setup2FA() {
+    const toggle2FA = document.getElementById('toggle-2fa');
+    if (!toggle2FA) return;
+
+    const session = getCurrentUser();
+    if (session && session.isTwoFactorEnabled) {
+        toggle2FA.checked = true;
+    }
+
+    toggle2FA.addEventListener('change', async (e) => {
+        const isEnabled = e.target.checked;
+        const token = sessionStorage.getItem('token') || localStorage.getItem('token');
+        
+        try {
+            const response = await fetch(`${API_BASE_URL}/auth/toggle-2fa`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ isEnabled })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                if (session) {
+                    session.isTwoFactorEnabled = data.isTwoFactorEnabled;
+                    setCurrentUser(session);
+                }
+                const toast = window.toast || { success: alert, error: alert };
+                if(window.toast) toast.success('Đã cập nhật trạng thái Xác minh hai bước.');
+                else alert('Đã cập nhật trạng thái Xác minh hai bước.');
+            } else {
+                e.target.checked = !isEnabled;
+                alert('Không thể cập nhật cấu hình 2FA.');
+            }
+        } catch (error) {
+            e.target.checked = !isEnabled;
+            console.error('Lỗi khi bật/tắt 2FA', error);
+            alert('Lỗi kết nối khi cập nhật 2FA.');
+        }
+    });
 }
 
 if (document.readyState === 'loading') {

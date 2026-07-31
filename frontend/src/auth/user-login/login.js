@@ -1,5 +1,5 @@
 
-import { login, isLoggedIn, getSession } from '../../auth/auth-services/authService.js?v=5';
+import { login, verify2faLogin, isLoggedIn, getSession } from '../../auth/auth-services/authService.js?v=5';
 import { API_BASE_URL } from '../../shared/utils/apiConfig.js?v=5';
 
 function redirectAfterLogin(userRole) {
@@ -63,7 +63,19 @@ if (loginForm) {
             const result = await login(email, password);
 
             if (result.ok) {
-                redirectAfterLogin(result.user?.role);
+                if (result.require2fa) {
+                    loginForm.style.display = 'none';
+                    const otpSection = document.getElementById('otpSection');
+                    const otpEmailDisplay = document.getElementById('otpEmailDisplay');
+                    if (otpSection && otpEmailDisplay) {
+                        otpSection.style.display = 'block';
+                        otpEmailDisplay.textContent = result.email;
+                        
+                        setupOtpLogic(result.email);
+                    }
+                } else {
+                    redirectAfterLogin(result.user?.role);
+                }
             } else {
 
                 if (errorBanner) {
@@ -97,4 +109,59 @@ if (loginForm) {
             }
         }
     });
+}
+
+function setupOtpLogic(email) {
+    const otpInputs = document.querySelectorAll('.otp-digit');
+    const verifyOtpBtn = document.getElementById('verifyOtpBtn');
+    const otpErrorEl = document.getElementById('otpError');
+    const otpSuccessEl = document.getElementById('otpSuccess');
+
+    otpInputs.forEach((input, index) => {
+        input.addEventListener('input', function () {
+            this.value = this.value.replace(/[^0-9]/g, '');
+            if (this.value) {
+                this.classList.add('filled');
+                if (index < otpInputs.length - 1) {
+                    otpInputs[index + 1].focus();
+                }
+            } else {
+                this.classList.remove('filled');
+            }
+            if (otpErrorEl) otpErrorEl.textContent = '';
+        });
+
+        input.addEventListener('keydown', function (e) {
+            if (e.key === 'Backspace' && !this.value && index > 0) {
+                otpInputs[index - 1].focus();
+            }
+        });
+    });
+
+    if (verifyOtpBtn) {
+        verifyOtpBtn.addEventListener('click', async function () {
+            let otp = '';
+            otpInputs.forEach(inp => otp += inp.value);
+
+            if (otp.length < 6) {
+                if (otpErrorEl) otpErrorEl.textContent = 'Vui lòng nhập đủ 6 số OTP.';
+                return;
+            }
+
+            verifyOtpBtn.disabled = true;
+            verifyOtpBtn.textContent = 'Đang xử lý...';
+
+            const result = await verify2faLogin(email, otp);
+            if (result.ok) {
+                if (otpSuccessEl) otpSuccessEl.textContent = 'Xác minh thành công!';
+                setTimeout(() => {
+                    redirectAfterLogin(result.user?.role);
+                }, 500);
+            } else {
+                if (otpErrorEl) otpErrorEl.textContent = result.error || 'Mã OTP không chính xác.';
+                verifyOtpBtn.disabled = false;
+                verifyOtpBtn.textContent = 'Xác Nhận';
+            }
+        });
+    }
 }

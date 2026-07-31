@@ -104,6 +104,11 @@ var app = builder.Build();
 using var scope = app.Services.CreateScope();
 var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 try {
+    // 👱‍♀️ PONYTAIL: Bypassing EF Migrations for the 2FA column because the migration history 
+    // is currently out of sync (Table 'Cinemas' already exists). 
+    // CEILING: This raw SQL won't be tracked in EF migrations history.
+    // UPGRADE PATH: Once the DB schema is properly reverse-engineered or migration history is fixed, 
+    // move this into a proper EF migration and remove this raw SQL.
     context.Database.ExecuteSqlRaw("IF COL_LENGTH('users', 'is_two_factor_enabled') IS NULL ALTER TABLE users ADD is_two_factor_enabled BIT NOT NULL DEFAULT 0;");
 } catch (Exception ex) {
     app.Logger.LogWarning(ex, "Failed to run alter table for 2FA column.");
@@ -129,8 +134,11 @@ app.UseSwaggerUI(c =>
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
-var frontendPath = Path.GetFullPath(Path.Combine(builder.Environment.ContentRootPath, "../frontend"));
-if (Directory.Exists(frontendPath))
+var frontendDevPath = Path.GetFullPath(Path.Combine(builder.Environment.ContentRootPath, "../frontend"));
+var frontendProdPath = Path.GetFullPath(Path.Combine(builder.Environment.ContentRootPath, "frontend"));
+var frontendPath = Directory.Exists(frontendProdPath) ? frontendProdPath : (Directory.Exists(frontendDevPath) ? frontendDevPath : null);
+
+if (frontendPath != null)
 {
     app.UseStaticFiles(new StaticFileOptions
     {

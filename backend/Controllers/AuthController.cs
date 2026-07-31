@@ -249,7 +249,8 @@ namespace appweb.Controllers
                     gender = user.Gender,
                     role = user.Role,
                     vipPlan = user.VipPlan,
-                    avatar = user.AvatarUrl
+                    avatar = user.AvatarUrl,
+                    isTwoFactorEnabled = user.IsTwoFactorEnabled
                 }
             });
         }
@@ -297,7 +298,8 @@ namespace appweb.Controllers
                     gender = user.Gender,
                     role = user.Role,
                     vipPlan = user.VipPlan,
-                    avatar = user.AvatarUrl
+                    avatar = user.AvatarUrl,
+                    isTwoFactorEnabled = user.IsTwoFactorEnabled
                 }
             });
         }
@@ -306,11 +308,11 @@ namespace appweb.Controllers
         [HttpPut("toggle-2fa")]
         public async Task<IActionResult> Toggle2fa([FromBody] Toggle2faDto model)
         {
-            var userIdStr = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userIdStr) || !Guid.TryParse(userIdStr, out var userId))
+            var email = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+            if (string.IsNullOrEmpty(email))
                 return Unauthorized();
 
-            var user = await _userRepository.GetByIdAsync(userId);
+            var user = await _userRepository.GetByEmailAsync(email);
             if (user == null) return NotFound("User not found");
 
             user.IsTwoFactorEnabled = model.IsEnabled;

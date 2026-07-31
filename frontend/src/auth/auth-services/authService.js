@@ -30,6 +30,9 @@ export async function login(email, password) {
         }
 
         if (response.ok) {
+            if (data.require2fa) {
+                return { ok: true, require2fa: true, email: data.email, message: data.message };
+            }
             if (data.token) {
                 localStorage.setItem('jwt_token', data.token);
             }
@@ -49,6 +52,39 @@ export async function login(email, password) {
             return { ok: false, error: 'Hết thời gian chờ phản hồi từ máy chủ (Timeout). Vui lòng kiểm tra lại server Backend.' };
         }
         return { ok: false, error: 'Không thể kết nối tới máy chủ. Vui lòng kiểm tra kết nối mạng hoặc server Backend.' };
+    }
+}
+
+export async function verify2faLogin(email, otpCode) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/auth/verify-2fa-login`, {
+            method: 'POST',
+            headers: getHeaders(),
+            body: JSON.stringify({ email, otpCode })
+        });
+        const responseText = await response.text();
+        let data = {};
+        try {
+            if (responseText) data = JSON.parse(responseText);
+        } catch(e) {}
+
+        if (response.ok) {
+            if (data.token) {
+                localStorage.setItem('jwt_token', data.token);
+            }
+            if (data.refreshToken) {
+                localStorage.setItem('refresh_token', data.refreshToken);
+            }
+            if (data.user) {
+                setCurrentUser(data.user);
+            }
+            return { ok: true, user: data.user };
+        } else {
+            return { ok: false, error: data.message || 'Mã OTP không chính xác' };
+        }
+    } catch (error) {
+        console.error('verify2faLogin error:', error);
+        return { ok: false, error: 'Lỗi kết nối khi xác minh OTP.' };
     }
 }
 
