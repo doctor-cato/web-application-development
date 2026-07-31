@@ -196,7 +196,7 @@ function loadUserInfo() {
     let email = (session && session.email) ? session.email : '';
     let phone = (session && session.phone) ? session.phone : '';
     let avatar = (session && session.avatar) ? session.avatar : '';
-    let dob = (session && session.dob) ? session.dob : '';
+    let dob = (session && (session.dob || session.dateOfBirth || session.date_of_birth)) ? (session.dob || session.dateOfBirth || session.date_of_birth) : '';
     let gender = (session && session.gender) ? session.gender : '';
 
     if (!session) {
@@ -216,7 +216,7 @@ function loadUserInfo() {
                 if (!name || name === 'Khách') name = found.fullname || found.name || name;
                 if (!phone) phone = found.phone || phone;
                 if (!avatar) avatar = found.avatar || avatar;
-                if (!dob) dob = found.dob || dob;
+                if (!dob) dob = found.dob || found.dateOfBirth || found.date_of_birth || dob;
                 if (!gender) gender = found.gender || gender;
             }
         } catch(e) {
@@ -258,7 +258,12 @@ function loadUserInfo() {
     if (phoneInput) phoneInput.value = phone || '';
 
     const dobInput = document.getElementById('dob');
-    if (dobInput) dobInput.value = dob || '';
+    if (dobInput) {
+        if (dob && typeof dob === 'string' && dob.includes('T')) {
+            dob = dob.split('T')[0];
+        }
+        dobInput.value = dob || '';
+    }
 
     const genderInput = document.querySelector(`input[name="gender"][value="${gender || 'male'}"]`);
     if (genderInput) genderInput.checked = true;
