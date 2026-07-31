@@ -276,6 +276,7 @@
 .detail-format-badge.three-d { background: rgba(156,39,176,0.15); border-color: #9c27b0; color: #ce93d8; }
 
 .detail-hero-title {
+    font-family: var(--font-display);
     font-size: clamp(2rem, 4.5vw, 3.6rem);
     font-weight: 900;
     line-height: 1.1;
@@ -354,7 +355,7 @@
     color: white;
     border: none;
     border-radius: 6px;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-primary);
     font-size: 0.9375rem;
     font-weight: 700;
     letter-spacing: 0.5px;
@@ -389,7 +390,7 @@
     color: white;
     border: 1px solid rgba(255,255,255,0.25);
     border-radius: 6px;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-primary);
     font-size: 0.9375rem;
     font-weight: 600;
     cursor: pointer;
@@ -503,7 +504,7 @@
     border: none;
     color: var(--primary-red);
     font-size: 0.875rem;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-primary);
     cursor: pointer;
     padding: 0;
     margin-bottom: 32px;

@@ -1,6 +1,4 @@
 
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap');
-
 :root {
     --primary-red: #e50914;
     --primary-red-hover: #b20710;
@@ -18,7 +16,7 @@
 }
 
 body {
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-primary);
     background-color: var(--background);
     color: var(--text-primary);
     min-height: 100vh;
@@ -39,7 +37,7 @@ body {
 }
 
 .auth-logo {
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-display);
     font-size: 48px;
     color: var(--primary-red);
     text-decoration: none;
@@ -110,7 +108,7 @@ body {
 .auth-banner-title {
     position: relative;
     z-index: 10;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-display);
     font-size: 64px;
     line-height: 1;
     color: var(--text-primary);
@@ -190,7 +188,7 @@ body {
     flex: 1;
     padding-bottom: 0.75rem;
     text-align: center;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-primary);
     font-size: 24px;
     letter-spacing: 1px;
     text-decoration: none;
@@ -367,8 +365,8 @@ body {
     }
 }
 
-.footer-logo {
-    font-family: 'Inter', sans-serif;
+.auth-title {
+    font-family: var(--font-primary);
     font-size: 20px;
     color: var(--primary-red);
     letter-spacing: 1px;
@@ -554,7 +552,7 @@ body {
     text-align: center;
     font-size: 24px;
     font-weight: 700;
-    font-family: 'Inter', monospace;
+    font-family: var(--font-mono);
     color: var(--text-primary);
     background-color: var(--background);
     border: 2px solid var(--surface-border);

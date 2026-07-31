@@ -7,7 +7,7 @@
 .breadcrumb {
     padding: 0 var(--page-padding);
     margin-bottom: 10px;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-primary);
     font-size: 0.8125rem;
     color: var(--text-muted);
     display: flex;
@@ -44,7 +44,7 @@
 }
 
 .page-tabs .tab {
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-primary);
     font-size: 1.25rem;
     font-weight: 700;
     color: var(--text-muted);
@@ -110,7 +110,7 @@
     border: 1px solid var(--glass-border);
     cursor: pointer;
     transition: all 0.3s ease;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-primary);
     font-size: 0.875rem;
     color: var(--text-main);
 }
@@ -144,7 +144,7 @@
     border: 1px solid var(--glass-border);
     cursor: pointer;
     transition: all 0.3s ease;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-primary);
     font-size: 0.875rem;
     color: var(--text-main);
 }
@@ -224,7 +224,7 @@
 }
 
 .movies-grid .overlay-text {
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-primary);
     font-size: 0.875rem;
     font-weight: 700;
     letter-spacing: 1.5px;
@@ -255,7 +255,7 @@
     padding: 8px 22px;
     background-color: var(--primary-red);
     color: #fff;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-primary);
     font-size: 0.8125rem;
     font-weight: 600;
     letter-spacing: 0.5px;
@@ -279,7 +279,7 @@
     position: absolute;
     top: 10px;
     left: 10px;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-primary);
     font-size: 0.7rem;
     font-weight: 700;
     color: #fff;
@@ -311,7 +311,7 @@
 }
 
 .movies-grid .info h3 {
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-primary);
     font-size: 0.9rem;
     font-weight: 600;
     margin-bottom: 8px;
@@ -352,7 +352,7 @@
 }
 
 .movies-grid .duration {
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-primary);
     font-size: 0.8rem;
     color: var(--text-muted);
     display: flex;
@@ -365,7 +365,7 @@
 }
 
 .movies-grid .age-badge {
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-primary);
     font-size: 0.7rem;
     font-weight: 700;
     color: #fff;
@@ -390,7 +390,7 @@
     background: transparent;
     border: 1.5px solid rgba(255, 255, 255, 0.25);
     color: var(--text-main);
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-primary);
     font-size: 0.9375rem;
     font-weight: 600;
     cursor: pointer;
