@@ -310,6 +310,11 @@ async function fetchUsers() {
             }
         } else {
             console.warn('Fetch users API returned status:', res.status);
+            if (typeof showToast === 'function') {
+                if (res.status === 401 || res.status === 403) {
+                    showToast('Không thể tải danh sách người dùng: Phiên đăng nhập đã hết hạn hoặc không có quyền Admin.', 'error');
+                }
+            }
         }
     } catch (e) {
         console.error('Fetch users API error:', e);
