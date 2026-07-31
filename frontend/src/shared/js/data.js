@@ -128,8 +128,7 @@ async function fetchMovies() {
 
     try {
         const response = await fetch(`/api/movies`);
-        const contentType = response.headers.get('content-type') || '';
-        if (response.ok && contentType.includes('application/json')) {
+        if (response.ok) {
             const data = await response.json();
             if (Array.isArray(data) && data.length > 0) {
                 allMoviesData = data.map(m => mapMovieObj(m));
@@ -154,12 +153,10 @@ async function fetchMovies() {
         return !deletedList.includes(mId) && !deletedList.includes(mTitle);
     });
 
+    nowShowingMovies = allMoviesData.filter(m => m.status === 'now-showing' || m.status === 'now_showing');
+    comingSoonMovies = allMoviesData.filter(m => m.status === 'coming-soon' || m.status === 'upcoming');
 
-
-    nowShowingMovies = allMoviesData.filter(m => m.status === 'now-showing');
-    comingSoonMovies = allMoviesData.filter(m => m.status === 'coming-soon');
-
-    heroMovies = nowShowingMovies.slice(0, 5);
+    heroMovies = nowShowingMovies.length > 0 ? nowShowingMovies.slice(0, 5) : allMoviesData.slice(0, 5);
 
     window.allMoviesData = allMoviesData;
     window.heroMovies = heroMovies;

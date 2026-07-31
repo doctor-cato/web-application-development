@@ -102,9 +102,11 @@ function renderHeroMovie(movie) {
 }
 
 const handleHeroRender = () => {
-    const validHeroMovies = (window.heroMovies || []).filter(m => m.status === 'now-showing');
-    if (validHeroMovies.length > 0 && (validHeroMovies[0].title || validHeroMovies[0].bg)) {
+    const validHeroMovies = (window.heroMovies || []).filter(m => m && (m.title || m.bg || m.poster));
+    if (validHeroMovies.length > 0) {
         renderHeroMovie(validHeroMovies[0]);
+    } else if (window.allMoviesData && window.allMoviesData.length > 0) {
+        renderHeroMovie(window.allMoviesData[0]);
     } else {
         renderHeroMovie(null);
     }
