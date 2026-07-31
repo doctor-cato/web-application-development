@@ -352,6 +352,7 @@ async function fetchCombos() {
                     desc: c.desc || c.description || '',
                     price: c.price || 0,
                     stock: c.stock || 100,
+                    category: c.category || 'Combo',
                     image: c.image || c.imageUrl || '../assets/combos/combo_solo.jpg'
                 }));
                 return;
@@ -365,9 +366,9 @@ async function fetchCombos() {
         db.combos = local;
     } else {
         db.combos = [
-            { id: "cb_solo", name: "Combo Solo", desc: "1 Bắp Ngọt (L) + 1 Nước Ngọt (L)", price: 89000, stock: 150, image: "../assets/combos/combo_solo.jpg" },
-            { id: "cb_couple", name: "Combo Couple", desc: "1 Bắp Ngọt (XL) + 2 Nước Ngọt (L)", price: 129000, stock: 120, image: "../assets/combos/combo_couple.jpg" },
-            { id: "cb_family", name: "Combo Family", desc: "2 Bắp Ngọt (XL) + 4 Nước Ngọt (L) + 1 Snack", price: 219000, stock: 80, image: "../assets/combos/combo_family.jpg" }
+            { id: "cb_solo", name: "Combo Solo", desc: "1 Bắp Ngọt (L) + 1 Nước Ngọt (L)", price: 89000, stock: 150, image: "../assets/combos/combo_solo.jpg", category: "Combo" },
+            { id: "cb_couple", name: "Combo Couple", desc: "1 Bắp Ngọt (XL) + 2 Nước Ngọt (L)", price: 129000, stock: 120, image: "../assets/combos/combo_couple.jpg", category: "Combo" },
+            { id: "cb_family", name: "Combo Family", desc: "2 Bắp Ngọt (XL) + 4 Nước Ngọt (L) + 1 Snack", price: 219000, stock: 80, image: "../assets/combos/combo_family.jpg", category: "Combo" }
         ];
     }
 }
@@ -1654,23 +1655,34 @@ function cancelBooking(id) {
 function renderCombosTable() {
     const searchEl = document.getElementById('combo-search');
     const search = searchEl ? searchEl.value.toLowerCase() : '';
+    const categoryFilterEl = document.getElementById('fnb-filter-category');
+    const categoryFilter = categoryFilterEl ? categoryFilterEl.value : 'all';
+    
     const tbody = document.getElementById('combos-tbody');
     if (!tbody) return;
 
     tbody.innerHTML = '';
 
-    const filtered = db.combos.filter(c => c.name.toLowerCase().includes(search));
+    const filtered = db.combos.filter(c => {
+        const matchSearch = c.name.toLowerCase().includes(search);
+        const matchCategory = categoryFilter === 'all' || (c.category || 'Combo') === categoryFilter;
+        return matchSearch && matchCategory;
+    });
 
     if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 30px;" class="text-muted">Chưa có combo nào từ API</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 30px;" class="text-muted">Chưa có mặt hàng nào</td></tr>`;
         return;
     }
 
     filtered.forEach(c => {
+        const cat = c.category || 'Combo';
+        const badgeClass = cat === 'Combo' ? 'badge-yellow' : 'badge-green';
+        
         tbody.innerHTML += `
             <tr>
                 <td class="poster-td"><img src="${c.image || 'https://via.placeholder.com/150'}" alt="img" style="width: 45px; height: 45px; object-fit: cover; border-radius: 6px;"></td>
                 <td><strong>${c.name}</strong></td>
+                <td><span class="badge ${badgeClass}">${cat}</span></td>
                 <td>${c.desc}</td>
                 <td>${formatMoney(c.price)}</td>
                 <td>${c.stock} cái</td>
@@ -1690,7 +1702,8 @@ function filterCombosTable() {
 function openAddComboModal() {
     document.getElementById('combo-id').value = '';
     document.getElementById('combo-form').reset();
-    document.getElementById('combo-modal-title').textContent = "Thêm Combo mới";
+    document.getElementById('combo-category-input').value = 'Combo';
+    document.getElementById('combo-modal-title').textContent = "Thêm Mặt Hàng F&B";
     document.getElementById('combo-modal').style.display = 'flex';
 }
 
@@ -1699,11 +1712,12 @@ function openEditComboModal(id) {
     if (c) {
         document.getElementById('combo-id').value = c.id;
         document.getElementById('combo-name-input').value = c.name;
+        document.getElementById('combo-category-input').value = c.category || 'Combo';
         document.getElementById('combo-price-input').value = c.price;
         document.getElementById('combo-stock-input').value = c.stock;
         document.getElementById('combo-image-input').value = c.image || '';
         document.getElementById('combo-desc-input').value = c.desc || '';
-        document.getElementById('combo-modal-title').textContent = "Sửa thông tin Combo";
+        document.getElementById('combo-modal-title').textContent = "Sửa thông tin F&B";
         document.getElementById('combo-modal').style.display = 'flex';
     }
 }
@@ -1717,6 +1731,7 @@ async function handleComboSubmit(e) {
     const id = document.getElementById('combo-id').value;
     const data = {
         name: document.getElementById('combo-name-input').value,
+        category: document.getElementById('combo-category-input').value,
         price: parseFloat(document.getElementById('combo-price-input').value),
         stock: parseInt(document.getElementById('combo-stock-input').value || 100),
         image: document.getElementById('combo-image-input').value,

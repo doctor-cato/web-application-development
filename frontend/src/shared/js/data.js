@@ -154,51 +154,7 @@ async function fetchMovies() {
         return !deletedList.includes(mId) && !deletedList.includes(mTitle);
     });
 
-    try {
-        let local1 = JSON.parse(localStorage.getItem('3hd2k_movies') || '[]');
-        let local2 = JSON.parse(localStorage.getItem('cinema_movies') || '[]');
-        let modified1 = false;
-        let modified2 = false;
 
-        if (Array.isArray(local1)) {
-            local1.forEach(lm => {
-                if (lm && lm.title && !lm.id && !lm.movieId) {
-                    lm.id = 'mv_' + Math.random().toString(36).slice(2, 11);
-                    modified1 = true;
-                }
-            });
-            if (modified1) localStorage.setItem('3hd2k_movies', JSON.stringify(local1));
-        }
-
-        if (Array.isArray(local2)) {
-            local2.forEach(lm => {
-                if (lm && lm.title && !lm.id && !lm.movieId) {
-                    lm.id = 'mv_' + Math.random().toString(36).slice(2, 11);
-                    modified2 = true;
-                }
-            });
-            if (modified2) localStorage.setItem('cinema_movies', JSON.stringify(local2));
-        }
-
-        const combined = [...(Array.isArray(local1) ? local1 : []), ...(Array.isArray(local2) ? local2 : [])];
-
-        combined.forEach(lm => {
-            if (lm && lm.title) {
-                const mapped = mapMovieObj(lm);
-                const mId = String(mapped.id || '').toLowerCase().trim();
-                const mTitle = String(mapped.title || '').toLowerCase().trim();
-
-                if (!deletedList.includes(mId) && !deletedList.includes(mTitle)) {
-                    const existingIdx = allMoviesData.findIndex(m => m.id === mapped.id || m.title.toLowerCase().trim() === mapped.title.toLowerCase().trim());
-                    if (existingIdx >= 0) {
-                        allMoviesData[existingIdx] = mapped;
-                    } else {
-                        allMoviesData.unshift(mapped);
-                    }
-                }
-            }
-        });
-    } catch (_) {}
 
     nowShowingMovies = allMoviesData.filter(m => m.status === 'now-showing');
     comingSoonMovies = allMoviesData.filter(m => m.status === 'coming-soon');
@@ -437,34 +393,7 @@ async function fetchShowtimesByMovie(movieId) {
         console.error("Failed to fetch showtimes from API:", e);
     }
 
-    try {
-        let localStr = localStorage.getItem('3hd2k_showtimes');
-        if (!localStr) {
-            const seeds = getInitialSeedShowtimes();
-            localStorage.setItem('3hd2k_showtimes', JSON.stringify(seeds));
-            localStr = JSON.stringify(seeds);
-        }
-
-        const localList = JSON.parse(localStr || '[]');
-        if (Array.isArray(localList) && localList.length > 0) {
-            const matching = localList.filter(s => {
-                const stIdStr = String(s.movieId || '').toLowerCase().trim();
-                if (stIdStr && stIdStr === targetIdStr) return true;
-                if (window.allMoviesData) {
-                    const targetMovie = window.allMoviesData.find(m => String(m.id).toLowerCase().trim() === targetIdStr);
-                    if (targetMovie && s.movieTitle && s.movieTitle.toLowerCase().trim() === targetMovie.title.toLowerCase().trim()) {
-                        return true;
-                    }
-                }
-                return false;
-            });
-            return matching.map(normalizeShowtime);
-        }
-    } catch (e) {
-        console.error("Failed to load local showtimes:", e);
-    }
-
-    return getFallbackShowtimes(movieId).map(normalizeShowtime);
+    return [];
 }
 window.fetchShowtimesByMovie = fetchShowtimesByMovie;
 

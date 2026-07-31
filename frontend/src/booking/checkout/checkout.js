@@ -10,7 +10,7 @@ if (!requireAuth('Bạn cần đăng nhập để thanh toán vé. Hãy đăng n
     });
 }
 
-const COMBOS = { none: 0, single: 65000, double: 95000 };
+let COMBOS = { none: 0 };
 
 function parseDataAmount(el) {
   if (!el) return 0;
@@ -124,7 +124,8 @@ function updateTotal() {
           if (customFoodArr.length > 0) {
               foodListContainer.innerHTML = customFoodArr.map(item => `<div style="font-size: 0.8rem; color: var(--text-muted); display: flex; justify-content: space-between;"><span>${item.qty}x ${item.name}</span><span>${formatPrice(item.price * item.qty)}</span></div>`).join('');
           } else {
-              const comboName = combo.id === 'single' ? 'Combo 1 Người' : (combo.id === 'double' ? 'Combo 2 Người' : '');
+              const comboLabel = document.querySelector(`input[name="combo"][value="${combo.id}"]`)?.closest('.combo-card');
+              const comboName = comboLabel ? comboLabel.getAttribute('data-name') : 'Combo F&B';
               foodListContainer.innerHTML = `<div style="font-size: 0.8rem; color: var(--text-muted); display: flex; justify-content: space-between;"><span>1x ${comboName}</span><span>${formatPrice(combo.price)}</span></div>`;
           }
       }
@@ -269,11 +270,72 @@ function getSelectedPayment() {
   return document.querySelector('input[name="payment"]:checked')?.value || 'bank';
 }
 
-function init() {
+async function init() {
   startCountdown(5 * 60);
 
   const payBtn = document.getElementById('btn-pay');
   if (payBtn) payBtn.addEventListener('click', handlePayClick);
+
+  try {
+      const res = await fetch('/api/combos');
+      if (res.ok) {
+          const data = await res.json();
+          const upsellPanel = document.getElementById('food-upsell-panel');
+          
+          if (upsellPanel && !localStorage.getItem('checkoutFood')) {
+              upsellPanel.innerHTML = `
+                  <label class="combo-card selected">
+                      <input type="radio" name="combo" value="none" checked style="position: absolute; opacity: 0; width: 0; height: 0;">
+                      <div class="combo-check"><i class="fas fa-check-circle"></i></div>
+                      <div class="combo-img-wrap">
+                          <i class="fas fa-ban" style="color: var(--text-muted); font-size: 2.5rem;"></i>
+                      </div>
+                      <div class="combo-info">
+                          <div class="combo-title">Không lấy bắp nước</div>
+                          <div class="combo-desc">Chỉ mua vé</div>
+                      </div>
+                      <div class="combo-price">0 đ</div>
+                  </label>
+              `;
+              let comboCount = 0;
+              data.forEach(item => {
+                  if ((item.category === 'Combo' || !item.category) && comboCount < 2) {
+                      COMBOS[item.id] = item.price;
+                      let imgUrl = item.image;
+                      if (!imgUrl) imgUrl = '/shared/images/combo_single.png';
+                      else if (imgUrl.startsWith('/')) imgUrl = `http://3hd2k-api.somee.com${imgUrl}`;
+                      else if (!imgUrl.startsWith('http')) imgUrl = `http://3hd2k-api.somee.com/${imgUrl}`;
+                      
+                      upsellPanel.innerHTML += `
+                          <label class="combo-card" data-name="${item.name}">
+                              <input type="radio" name="combo" value="${item.id}" style="position: absolute; opacity: 0; width: 0; height: 0;">
+                              <div class="combo-check"><i class="fas fa-check-circle"></i></div>
+                              <div class="combo-img-wrap">
+                                  <img loading="lazy" src="${imgUrl}" alt="${item.name}" class="combo-img">
+                              </div>
+                              <div class="combo-info">
+                                  <div class="combo-title">${item.name}</div>
+                                  <div class="combo-desc" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">${item.desc || 'Combo ưu đãi'}</div>
+                              </div>
+                              <div class="combo-price">${formatPrice(item.price)}</div>
+                          </label>
+                      `;
+                      comboCount++;
+                  }
+              });
+
+              document.querySelectorAll('input[name="combo"]').forEach(radio => {
+                radio.addEventListener('change', (e) => {
+                  document.querySelectorAll('label.combo-card').forEach(x => x.classList.remove('selected'));
+                  const card = e.target.closest('.combo-card');
+                  if (card) card.classList.add('selected');
+                  localStorage.removeItem('checkoutFood');
+                  updateTotal();
+                });
+              });
+          }
+      }
+  } catch(e) { console.error('Fetch combos failed in checkout', e); }
 
   document.querySelectorAll('input[name="combo"]').forEach(radio => {
     radio.addEventListener('change', (e) => {

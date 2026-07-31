@@ -1,51 +1,72 @@
-(() => {
-  const products = {
-    combo: {
-      name: 'Combo Người Yêu Phim',
-      price: 150000,
-      desc:
-        'Bữa tiệc tối thượng cho các tín đồ điện ảnh. Bao gồm một bắp XL, hai nước ngọt lớn và món nachos đẫm sốt đặc trưng.',
-    },
-    popcorn: {
-      name: 'Bắp Đơn',
-      price: 65000,
-      desc: 'Bắp rang bơ cỡ lớn đặc trưng. Tùy chọn vị Bơ, Caramel hoặc Phô mai cay.',
-    },
-    popcornDuo: {
-      name: 'Bắp Rang Đôi',
-      price: 95000,
-      desc:
-        'Phần bắp đôi dành cho 2 người, nhiều hơn, giòn hơn và cực hợp khi xem phim cùng nhau.',
-    },
-    comboBimBim: {
-      name: 'Combo 2 Bỏng',
-      price: 125000,
-      desc:
-        'Một bắp rang lớn đi kèm một bim bim khoai tây, hợp để đổi vị khi xem phim cùng nhau.',
-    },
-    coupleDrink: {
-      name: 'Combo Cặp Đôi',
-      price: 55000,
-      desc:
-        'Một cốc nước to kèm 2 ống hút chia đôi, phù hợp cho cặp đôi thích chia sẻ cùng nhau.',
-    },
-    drinksCombo2: {
-      name: 'Combo 2 Nước',
-      price: 65000,
-      desc:
-        'Combo gồm 2 ly nước riêng cho 2 người, tiện hơn khi đi xem phim cùng bạn bè hoặc người yêu.',
-    },
-    coca: {
-      name: 'Coca',
-      price: 35000,
-      desc: 'Nước ngọt Coca mát lạnh, vị quen thuộc, dễ uống và hợp với bắp rang.',
-    },
-    pepsi: {
-      name: 'Pepsi',
-      price: 35000,
-      desc: 'Nước ngọt Pepsi mát lạnh, vị ngọt đậm và rất hợp để uống kèm đồ ăn xem phim.',
-    },
-  };
+(async () => {
+  let products = {};
+  let state = {};
+  let productIds = [];
+
+  const money = (value) => `${new Intl.NumberFormat('vi-VN').format(value)}đ`;
+
+  function normalizeImagePath(path) {
+    if (!path) return '/shared/images/food_popcorn.png';
+    if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) return path;
+    if (path.startsWith('/shared/') || path.startsWith('../')) return path;
+    if (path.startsWith('/')) return `http://3hd2k-api.somee.com${path}`;
+    return `http://3hd2k-api.somee.com/${path}`;
+  }
+
+  try {
+    const res = await fetch('/api/combos');
+    if (res.ok) {
+        const data = await res.json();
+        data.forEach(item => {
+            products[item.id] = {
+                name: item.name,
+                price: item.price,
+                desc: item.desc || item.description || '',
+                image: normalizeImagePath(item.image),
+                category: item.category || 'Combo'
+            };
+        });
+    }
+  } catch (e) {
+      console.error('API Error:', e);
+  }
+
+  productIds = Object.keys(products);
+  state = Object.fromEntries(
+    productIds.map((id) => [id, { added: false, qty: 1 }]),
+  );
+
+  const gridCombo = document.getElementById('grid-combo');
+  const gridFood = document.getElementById('grid-food');
+
+  productIds.forEach(id => {
+      const p = products[id];
+      const html = `
+          <article class="card" data-product="${id}">
+            <div class="media">
+              <img loading="lazy" src="${p.image}" alt="${p.name}">
+            </div>
+            <div class="body">
+              <h3>${p.name}</h3>
+              <div class="price">${money(p.price)}</div>
+              <p class="desc">${p.desc}</p>
+              <div class="controls">
+                <div class="qty-row">
+                  <div class="qty-label btn-minus">-</div>
+                  <span class="qty-display">1</span>
+                  <div class="qty-label btn-plus">+</div>
+                </div>
+                <div class="add-row"><label class="add-label ${id}-btn-label"></label></div>
+              </div>
+            </div>
+          </article>
+      `;
+      if (p.category === 'Combo') {
+          if (gridCombo) gridCombo.insertAdjacentHTML('beforeend', html);
+      } else {
+          if (gridFood) gridFood.insertAdjacentHTML('beforeend', html);
+      }
+  });
 
   const order = {
     movie: 'Dune: Part Two',
@@ -55,16 +76,9 @@
     ticketPrice: 450000,
   };
 
-  const productIds = Object.keys(products);
-  const state = Object.fromEntries(
-    productIds.map((id) => [id, { added: false, qty: 1 }]),
-  );
-
-  const money = (value) => `${new Intl.NumberFormat('vi-VN').format(value)}đ`;
-
   const refs = {
     search: document.querySelector('.search'),
-    navLinks: [...document.querySelectorAll('.nav a')],
+    navLinks: [...document.querySelectorAll('.food-tab')],
     summary: {
       movie: document.querySelector('.summary .movie'),
       ticketLabel: document.querySelector('.summary .line-ticket .muted'),
@@ -74,10 +88,7 @@
     },
     cards: Object.fromEntries(
       productIds.map((id) => [id, document.querySelector(`.card[data-product="${id}"]`)]),
-    ),
-    addToggles: Object.fromEntries(
-      productIds.map((id) => [id, document.getElementById(`add-${id}`)]),
-    ),
+    )
   };
 
   function renderCard(id) {
@@ -86,7 +97,6 @@
 
     const product = products[id];
     const current = state[id];
-    const addToggle = refs.addToggles[id];
 
     const titleEl = card.querySelector('h3');
     const priceEl = card.querySelector('.price');
@@ -98,7 +108,6 @@
     if (priceEl) priceEl.textContent = money(product.price);
     if (descEl) descEl.textContent = product.desc;
 
-    if (addToggle) addToggle.checked = current.added;
     if (addLabel) {
       addLabel.setAttribute('aria-pressed', String(current.added));
       addLabel.textContent = current.added ? 'ĐÃ THÊM VÀO ĐƠN' : 'THÊM VÀO ĐƠN';
@@ -119,9 +128,9 @@
     const minusIndex = current.qty === 1 ? 1 : current.qty;
     const plusIndex = current.qty === 10 ? 11 : current.qty + 1;
 
-    const minusEl = qtyRow.querySelector(`.btn-minus-${minusIndex}`);
-    const valueEl = qtyRow.querySelector(`.val-${current.qty}`);
-    const plusEl = qtyRow.querySelector(`.btn-plus-${plusIndex}`);
+    const minusEl = qtyRow.querySelector(`.btn-minus-${minusIndex}`) || qtyRow.querySelector('.btn-minus');
+    const valueEl = qtyRow.querySelector(`.val-${current.qty}`) || qtyRow.querySelector('.qty-display');
+    const plusEl = qtyRow.querySelector(`.btn-plus-${plusIndex}`) || qtyRow.querySelector('.btn-plus');
 
     if (minusEl) {
       minusEl.style.display = 'inline-flex';
@@ -131,7 +140,10 @@
       }
     }
 
-    if (valueEl) valueEl.style.display = 'inline-flex';
+    if (valueEl) {
+        valueEl.style.display = 'inline-flex';
+        valueEl.textContent = current.qty;
+    }
 
     if (plusEl) {
       plusEl.style.display = 'inline-flex';
@@ -143,11 +155,10 @@
   }
 
   function renderSummary() {
-    refs.summary.movie.textContent = `${order.movie} • ${order.format} • ${order.seats}`;
-    refs.summary.ticketLabel.textContent = order.ticketLabel;
-    refs.summary.ticketPrice.textContent = money(order.ticketPrice);
-
-    refs.summary.items.innerHTML = '';
+    if (refs.summary.movie) refs.summary.movie.textContent = `${order.movie} • ${order.format} • ${order.seats}`;
+    if (refs.summary.ticketLabel) refs.summary.ticketLabel.textContent = order.ticketLabel;
+    if (refs.summary.ticketPrice) refs.summary.ticketPrice.textContent = money(order.ticketPrice);
+    if (refs.summary.items) refs.summary.items.innerHTML = '';
 
     const productTotal = productIds.reduce((sum, id) => {
       const item = state[id];
@@ -159,12 +170,12 @@
         <span class="muted">${products[id].name}</span>
         <span class="count">${item.qty}x · ${money(products[id].price * item.qty)}</span>
       `;
-      refs.summary.items.appendChild(line);
+      if (refs.summary.items) refs.summary.items.appendChild(line);
 
       return sum + products[id].price * item.qty;
     }, 0);
 
-    refs.summary.amount.textContent = money(order.ticketPrice + productTotal);
+    if (refs.summary.amount) refs.summary.amount.textContent = money(order.ticketPrice + productTotal);
   }
 
   function renderAll() {
@@ -221,6 +232,11 @@
       event.preventDefault();
       refs.navLinks.forEach((item) => item.classList.remove('active'));
       link.classList.add('active');
+      const targetId = link.getAttribute('data-target');
+      if (targetId) {
+          const el = document.getElementById(targetId);
+          if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }
     });
   });
 

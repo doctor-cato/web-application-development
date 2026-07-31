@@ -1686,12 +1686,12 @@
                                 id: (c.id || c.Id || '').toString(),
                                 name: c.name || c.Name || 'Combo Ưu Đãi',
                                 price: c.price || c.Price || 0,
-                                category: "Combo",
+                                category: c.category || c.Category || "Combo",
                                 image: imgUrl,
-                                deduct: [{ id: "INV-001", qty: 1 }, { id: "INV-003", qty: 1 }, { id: "INV-007", qty: 1 }]
+                                deduct: []
                             };
                         });
-                        SALE_PRODUCTS = [...apiProducts, ...SALE_PRODUCTS.filter(p => p.category !== "Combo")];
+                        SALE_PRODUCTS = apiProducts;
                         renderPOSProducts();
                     }
                 })

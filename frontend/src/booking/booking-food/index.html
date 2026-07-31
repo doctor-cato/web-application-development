@@ -20,249 +20,28 @@
 
       <div class="food-tabs" id="food-tabs">
         <a href="#section-combo" class="food-tab active" data-target="section-combo"><i class="fas fa-fire"></i> Combo Ưu Đãi</a>
-        <a href="#section-popcorn" class="food-tab" data-target="section-popcorn"><i class="fas fa-hamburger"></i> Đồ Ăn Vặt</a>
-        <a href="#section-drinks" class="food-tab" data-target="section-drinks"><i class="fas fa-glass-cheers"></i> Nước Uống</a>
+        <a href="#section-food" class="food-tab" data-target="section-food"><i class="fas fa-hamburger"></i> Bắp & Nước</a>
       </div>
 
       <div id="section-combo" class="menu-section">
         <h2 class="section-title"><i class="fas fa-fire"></i> Combo Ưu Đãi <span>Khuyên dùng</span></h2>
         <section class="category">
-
         <button type="button" class="slider-btn prev"><i class="fas fa-chevron-left"></i></button>
-        <div class="grid">
-          <article class="card" data-product="combo">
-            <div class="media">
-              <img loading="lazy" src="/shared/images/combo_double.png" alt="combo">
-            </div>
-            <div class="body">
-              <h3>Combo Người Yêu Phim</h3>
-              <div class="price">150.000đ</div>
-              <p class="desc">Bữa combo lớn cho 2 người, gồm bắp và nước.</p>
-              <div class="controls">
-                <div class="qty-row">
-                  <div class="qty-label btn-minus">-</div>
-                  <span class="qty-display">1</span>
-                  <div class="qty-label btn-plus">+</div>
-                </div>
-                <div class="add-row"><label class="add-label combo-btn-label"></label></div>
-              </div>
-            </div>
-          </article>
-
-          <article class="card" data-product="comboBimBim">
-            <div class="media">
-              <img loading="lazy" src="/shared/images/combo_single.png" alt="comboBimBim">
-            </div>
-            <div class="body">
-              <h3>Combo 2 Bỏng</h3>
-              <div class="price">125.000đ</div>
-              <p class="desc">1 bắp rang + 1 bim bim khoai tây.</p>
-              <div class="controls">
-                <div class="qty-row">
-                  <div class="qty-label btn-minus">-</div>
-                  <span class="qty-display">1</span>
-                  <div class="qty-label btn-plus">+</div>
-                </div>
-                <div class="add-row"><label class="add-label comboBimBim-btn-label"></label></div>
-              </div>
-            </div>
-          </article>
-
-          <article class="card" data-product="comboCinema">
-            <div class="media">
-              <img loading="lazy" src="/shared/images/food_popcorn.png" alt="comboCinema">
-            </div>
-            <div class="body">
-              <h3>Combo Siêu Khổng Lồ</h3>
-              <div class="price">115.000đ</div>
-              <p class="desc">1 Bắp siêu lớn + 1 Nước khổng lồ. Ăn mãi không hết.</p>
-              <div class="controls">
-                <div class="qty-row">
-                  <div class="qty-label btn-minus">-</div>
-                  <span class="qty-display">1</span>
-                  <div class="qty-label btn-plus">+</div>
-                </div>
-                <div class="add-row"><label class="add-label comboCinema-btn-label"></label></div>
-              </div>
-            </div>
-          </article>
-
-          <article class="card" data-product="comboDate">
-            <div class="media">
-              <img loading="lazy" src="/shared/images/combo_single.png" alt="comboDate">
-            </div>
-            <div class="body">
-              <h3>Combo Hẹn Hò VIP</h3>
-              <div class="price">135.000đ</div>
-              <p class="desc">2 Bắp nhỏ + 2 Nước ngọt + 2 Xúc xích nướng.</p>
-              <div class="controls">
-                <div class="qty-row">
-                  <div class="qty-label btn-minus">-</div>
-                  <span class="qty-display">1</span>
-                  <div class="qty-label btn-plus">+</div>
-                </div>
-                <div class="add-row"><label class="add-label comboDate-btn-label"></label></div>
-              </div>
-            </div>
-          </article>
-
-          <article class="card" data-product="comboParty">
-            <div class="media">
-              <img loading="lazy" src="/shared/images/combo_double.png" alt="comboParty">
-            </div>
-            <div class="body">
-              <h3>Combo Tiệc Tùng</h3>
-              <div class="price">250.000đ</div>
-              <p class="desc">4 Bắp lớn + 4 Nước ngọt + 4 Snack. Quẩy hết mình.</p>
-              <div class="controls">
-                <div class="qty-row">
-                  <div class="qty-label btn-minus">-</div>
-                  <span class="qty-display">1</span>
-                  <div class="qty-label btn-plus">+</div>
-                </div>
-                <div class="add-row"><label class="add-label comboParty-btn-label"></label></div>
-              </div>
-            </div>
-          </article>
+        <div class="grid" id="grid-combo">
         </div>
-      <button type="button" class="slider-btn next"><i class="fas fa-chevron-right"></i></button>
-      </section>
+        <button type="button" class="slider-btn next"><i class="fas fa-chevron-right"></i></button>
+        </section>
       </div>
 
-      <div id="section-popcorn" class="menu-section">
-        <h2 class="section-title"><i class="fas fa-hamburger"></i> Bắp & Đồ Ăn Vặt <span>Giòn rụm</span></h2>
+      <div id="section-food" class="menu-section">
+        <h2 class="section-title"><i class="fas fa-hamburger"></i> Bắp & Nước <span>Giòn rụm, mát lạnh</span></h2>
         <section class="category">
-
         <button type="button" class="slider-btn prev"><i class="fas fa-chevron-left"></i></button>
-        <div class="grid">
-          <article class="card" data-product="popcorn">
-            <div class="media">
-              <img loading="lazy" src="/shared/images/food_popcorn.png" alt="popcorn">
-            </div>
-            <div class="body">
-              <h3>Bắp Đơn</h3>
-              <div class="price">65.000đ</div>
-              <p class="desc">Bắp rang bơ cỡ lớn.</p>
-              <div class="controls">
-                <div class="qty-row">
-                  <div class="qty-label btn-minus">-</div>
-                  <span class="qty-display">1</span>
-                  <div class="qty-label btn-plus">+</div>
-                </div>
-                <div class="add-row"><label class="add-label popcorn-btn-label"></label></div>
-              </div>
-            </div>
-          </article>
-
-          <article class="card" data-product="popcornDuo">
-            <div class="media">
-              <img loading="lazy" src="/shared/images/food_popcorn.png" alt="popcornDuo">
-            </div>
-            <div class="body">
-              <h3>Bắp Rang Đôi</h3>
-              <div class="price">95.000đ</div>
-              <p class="desc">Bắp cho 2 người.</p>
-              <div class="controls">
-                <div class="qty-row">
-                  <div class="qty-label btn-minus">-</div>
-                  <span class="qty-display">1</span>
-                  <div class="qty-label btn-plus">+</div>
-                </div>
-                <div class="add-row"><label class="add-label popcornDuo-btn-label"></label></div>
-              </div>
-            </div>
-          </article>
+        <div class="grid" id="grid-food">
         </div>
-      <button type="button" class="slider-btn next"><i class="fas fa-chevron-right"></i></button>
-      </section>
+        <button type="button" class="slider-btn next"><i class="fas fa-chevron-right"></i></button>
+        </section>
       </div>
-
-      <div id="section-drinks" class="menu-section">
-        <h2 class="section-title"><i class="fas fa-glass-cheers"></i> Nước Uống <span>Giải khát cực đã</span></h2>
-        <section class="category">
-
-        <button type="button" class="slider-btn prev"><i class="fas fa-chevron-left"></i></button>
-        <div class="grid">
-          <article class="card" data-product="coupleDrink">
-            <div class="media">
-              <img loading="lazy" src="/shared/images/food_coca.png" alt="coupleDrink">
-            </div>
-            <div class="body">
-              <h3>Combo Cặp Đôi</h3>
-              <div class="price">55.000đ</div>
-              <p class="desc">Một cốc nước to kèm 2 ống hút chia đôi.</p>
-              <div class="controls">
-                <div class="qty-row">
-                  <div class="qty-label btn-minus">-</div>
-                  <span class="qty-display">1</span>
-                  <div class="qty-label btn-plus">+</div>
-                </div>
-                <div class="add-row"><label class="add-label drinks-btn-label"></label></div>
-              </div>
-            </div>
-          </article>
-
-          <article class="card" data-product="drinksCombo2">
-            <div class="media">
-              <img loading="lazy" src="/shared/images/combo_double.png" alt="drinksCombo2">
-            </div>
-            <div class="body">
-              <h3>Combo 2 Nước</h3>
-              <div class="price">65.000đ</div>
-              <p class="desc">Combo gồm 2 ly nước riêng cho 2 người.</p>
-              <div class="controls">
-                <div class="qty-row">
-                  <div class="qty-label btn-minus">-</div>
-                  <span class="qty-display">1</span>
-                  <div class="qty-label btn-plus">+</div>
-                </div>
-                <div class="add-row"><label class="add-label drinksCombo2-btn-label"></label></div>
-              </div>
-            </div>
-          </article>
-
-<article class="card" data-product="coca">
-            <div class="media">
-              <img loading="lazy" src="/shared/images/food_coca.png" alt="coca">
-            </div>
-            <div class="body">
-              <h3>Coca</h3>
-              <div class="price">35.000đ</div>
-              <p class="desc">Nước ngọt Coca mát lạnh.</p>
-              <div class="controls">
-                <div class="qty-row">
-                  <div class="qty-label btn-minus">-</div>
-                  <span class="qty-display">1</span>
-                  <div class="qty-label btn-plus">+</div>
-                </div>
-                <div class="add-row"><label class="add-label coca-btn-label"></label></div>
-              </div>
-            </div>
-          </article>
-
-          <article class="card" data-product="pepsi">
-            <div class="media">
-              <img loading="lazy" src="/shared/images/food_pepsi.png" alt="pepsi">
-            </div>
-            <div class="body">
-              <h3>Pepsi</h3>
-              <div class="price">35.000đ</div>
-              <p class="desc">Nước ngọt Pepsi mát lạnh.</p>
-              <div class="controls">
-                <div class="qty-row">
-                  <div class="qty-label btn-minus">-</div>
-                  <span class="qty-display">1</span>
-                  <div class="qty-label btn-plus">+</div>
-                </div>
-                <div class="add-row"><label class="add-label pepsi-btn-label"></label></div>
-              </div>
-            </div>
-          </article>
-        </div>
-      <button type="button" class="slider-btn next"><i class="fas fa-chevron-right"></i></button>
-      </section>
-
-    </div>
     </section>
 
     <aside class="summary">
