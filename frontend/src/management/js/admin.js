@@ -1063,28 +1063,6 @@ async function handleMovieSubmit(e) {
     renderMoviesTable();
     showToast(id ? "Đã cập nhật thông tin phim thành công!" : "Đã thêm phim mới thành công!");
 }
-            await fetch(`/api/movies/${id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(apiData)
-            });
-            showToast('Cập nhật phim thành công!', 'success');
-        } else {
-            await fetch('/api/movies', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(apiData)
-            });
-            showToast('Thêm phim mới thành công!', 'success');
-        }
-    } catch (err) {
-        console.error("API error", err);
-    }
-
-    closeMovieModal();
-    renderMoviesTable();
-    await reloadDatabase();
-}
 
 async function deleteMovie(id) {
     if (confirm("Bạn có chắc chắn muốn xóa phim này khỏi hệ thống API?")) {
