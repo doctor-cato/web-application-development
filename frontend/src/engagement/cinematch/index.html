@@ -657,15 +657,27 @@
 
         /* Responsive */
         @media (max-width: 768px) {
-            .pref-grid { grid-template-columns: repeat(2, 1fr); }
+            .pref-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; }
+            .room-header { flex-direction: column; gap: 12px; text-align: center; }
+            .room-users { flex-wrap: wrap; justify-content: center; }
             .room-content { flex-direction: column; }
+            .movies-section { max-height: 400px; }
             .chat-section { width: 100%; height: 350px; }
             .room-container { height: auto; }
+            #shared-movies-container { grid-template-columns: repeat(2, 1fr); gap: 10px; }
         }
         @media (max-width: 480px) {
-            .pref-grid { grid-template-columns: 1fr; }
-            .glass-panel { padding: 20px; }
-            .gradient-title { font-size: 2.2rem; }
+            .pref-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+            .pref-card { padding: 12px 8px; }
+            .pref-card i { font-size: 1.4rem; }
+            .pref-card .label { font-size: 0.85rem; }
+            .glass-panel { padding: 20px 14px; border-radius: 18px; }
+            .gradient-title { font-size: 2rem; }
+            .subtitle { font-size: 0.95rem; }
+            .premium-container { padding: 15px 10px; }
+            .radar-wrapper { width: min(250px, 75vw); height: min(250px, 75vw); }
+            .neon-btn { width: 100%; justify-content: center; padding: 14px 20px; font-size: 1rem; }
+            #shared-movies-container { grid-template-columns: repeat(2, 1fr); gap: 8px; }
         }
 
     </style>
