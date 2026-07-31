@@ -566,15 +566,19 @@ function renderGallery(movie) {
         galleryImages = [];
     }
 
+    const normFunc = (typeof normalizeImagePath === 'function') ? normalizeImagePath : (typeof window.normalizeImagePath === 'function' ? window.normalizeImagePath : (u => u));
+    galleryImages = galleryImages.map(u => normFunc(u)).filter(u => typeof u === 'string' && u.trim() && u !== '/shared/images/avatar.jpg');
+
     if (movie.poster && !galleryImages.includes(movie.poster)) {
-        galleryImages.unshift(movie.poster);
+        galleryImages.unshift(normFunc(movie.poster));
     }
     if (movie.bg && !galleryImages.includes(movie.bg) && movie.bg !== movie.poster) {
-        galleryImages.push(movie.bg);
+        galleryImages.push(normFunc(movie.bg));
     }
     if (movie.backdrop && !galleryImages.includes(movie.backdrop) && movie.backdrop !== movie.poster) {
-        galleryImages.push(movie.backdrop);
+        galleryImages.push(normFunc(movie.backdrop));
     }
+    galleryImages = [...new Set(galleryImages)];
 
     const galleryGrid = document.getElementById('gallery-grid');
     if (galleryGrid) {

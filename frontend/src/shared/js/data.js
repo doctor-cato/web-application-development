@@ -428,3 +428,4 @@ window.heroMovies = heroMovies;
 window.nowShowingMovies = nowShowingMovies;
 window.comingSoonMovies = comingSoonMovies;
 window.allMoviesData = allMoviesData;
+window.normalizeImagePath = normalizeImagePath;
