@@ -104,7 +104,7 @@ function mapMovieObj(m) {
         }
     }
 
-    let parsedGallery = [posterImg, bgImg].filter(Boolean);
+    let parsedGallery = [];
     if (Array.isArray(m.gallery) && m.gallery.length > 0) {
         parsedGallery = m.gallery.map(img => normalizeImagePath(img)).filter(Boolean);
     } else if (typeof m.gallery === 'string' && m.gallery.trim()) {
@@ -117,10 +117,12 @@ function mapMovieObj(m) {
                 }
             } catch (e) {}
         }
-        if (!Array.isArray(parsedGallery) || parsedGallery.length <= 2) {
-            const splitG = trimmedG.split(/[\n,]+/).map(img => normalizeImagePath(img.trim())).filter(Boolean);
-            if (splitG.length > 0) parsedGallery = splitG;
+        if (parsedGallery.length === 0) {
+            parsedGallery = trimmedG.split(/[\n,]+/).map(img => normalizeImagePath(img.trim())).filter(Boolean);
         }
+    }
+    if (parsedGallery.length === 0) {
+        parsedGallery = [posterImg, bgImg].filter(Boolean);
     }
 
     return {
@@ -139,13 +141,13 @@ function mapMovieObj(m) {
         bg: bgImg,
         backdrop: bgImg,
         language: m.language || "Tiếng Việt / Phụ đề tiếng Anh",
-        rating: m.rating || 4.8,
-        ratingCount: m.ratingCount || 120,
+        rating: typeof m.rating === 'number' ? m.rating : 4.8,
+        ratingCount: typeof m.ratingCount === 'number' ? m.ratingCount : 120,
         director: m.director || "Đang cập nhật",
         cast: parsedCast,
         gallery: parsedGallery,
-        trailer: m.trailerUrl || m.trailer || "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        trailerWatch: m.trailerUrl || m.trailer || "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        trailer: m.trailerUrl || m.trailer || "",
+        trailerWatch: m.trailerUrl || m.trailer || "",
         tags: m.genre ? m.genre.split(',').map(s => s.trim()) : (m.tags || ["2D"]),
         formats: m.formats ? (Array.isArray(m.formats) ? m.formats : m.formats.split(',').map(f=>f.trim())) : ["2D"],
         cinema: m.cinemaId || m.cinema || ""
@@ -175,8 +177,8 @@ async function fetchMovies() {
         allMoviesData = [];
     }
 
-    if (!Array.isArray(allMoviesData) || allMoviesData.length === 0) {
-        allMoviesData = getFallbackMovies();
+    if (!Array.isArray(allMoviesData)) {
+        allMoviesData = [];
     }
 
     allMoviesData = allMoviesData.filter(m => {
@@ -184,10 +186,6 @@ async function fetchMovies() {
         const mTitle = String(m.title || '').toLowerCase().trim();
         return !deletedList.includes(mId) && !deletedList.includes(mTitle);
     });
-
-    if (allMoviesData.length === 0) {
-        allMoviesData = getFallbackMovies();
-    }
 
     nowShowingMovies = allMoviesData.filter(m => m.status === 'now-showing' || m.status === 'now_showing');
     comingSoonMovies = allMoviesData.filter(m => m.status === 'coming-soon' || m.status === 'upcoming');
@@ -202,92 +200,9 @@ async function fetchMovies() {
     return allMoviesData;
 }
 
-function getFallbackMovies() {
-    return [
-        {
-            id: '947ca018-d9f2-4904-aac4-ea0133203749',
-            title: 'BACKROOMS - Thực Thể Quỷ Quyết',
-            meta: '2026 • Horror, Science Fiction, Thriller • 2h',
-            desc: 'After a therapist\'s patient disappears into a dimension beyond reality, she must venture into the unknown to save him.',
-            synopsis: 'After a therapist\'s patient disappears into a dimension beyond reality, she must venture into the unknown to save him.',
-            releaseDate: '2026-07-24',
-            year: 2026,
-            duration: '2h',
-            age: 'T16',
-            genre: 'Horror, Science Fiction, Thriller',
-            status: 'now-showing',
-            poster: 'https://i.ibb.co/m5nfSgRZ/backrooms-ver3.jpg',
-            bg: 'https://i.ibb.co/m5nfSgRZ/backrooms-ver3.jpg',
-            backdrop: 'https://i.ibb.co/m5nfSgRZ/backrooms-ver3.jpg',
-            language: 'Tiếng Anh - Phụ đề Tiếng Việt',
-            rating: 4.8,
-            ratingCount: 120,
-            director: 'Kane Parsons',
-            cast: [{ name: 'Clark', avatar: '/shared/images/avatar.jpg' }],
-            gallery: ['https://i.ibb.co/m5nfSgRZ/backrooms-ver3.jpg'],
-            trailer: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-            trailerWatch: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-            tags: ['Horror', 'Sci-Fi'],
-            formats: ['2D']
-        },
-        {
-            id: 'dune-2',
-            title: 'DUNE: HÀNH TINH CÁT - PHẦN 2',
-            meta: '2024 • Hành Động, Viễn Tưởng • 2h 46m',
-            desc: 'Paul Atreides tái hợp cùng Chani và người Fremen khi anh tìm kiếm sự trả thù cho gia đình.',
-            synopsis: 'Paul Atreides tái hợp cùng Chani và người Fremen khi anh tìm kiếm sự trả thù những kẻ đã phá hủy gia đình anh.',
-            releaseDate: '2024-03-01',
-            year: 2024,
-            duration: '2h 46m',
-            age: 'T16',
-            genre: 'Hành Động, Viễn Tưởng',
-            status: 'now-showing',
-            poster: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=600&q=80',
-            bg: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80',
-            backdrop: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80',
-            language: 'Tiếng Anh - Phụ đề Tiếng Việt',
-            rating: 4.9,
-            ratingCount: 350,
-            director: 'Denis Villeneuve',
-            cast: [{ name: 'Timothée Chalamet', avatar: '/shared/images/avatar.jpg' }, { name: 'Zendaya', avatar: '/shared/images/avatar.jpg' }],
-            gallery: ['https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=600&q=80'],
-            trailer: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-            trailerWatch: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-            tags: ['IMAX', '2D'],
-            formats: ['IMAX', '2D']
-        },
-        {
-            id: 'kungfu-panda-4',
-            title: 'KUNG FU PANDA 4',
-            meta: '2024 • Hoạt Hình, Hài, Võ Thuật • 1h 34m',
-            desc: 'Po chuẩn bị trở thành Thủ Lĩnh Tinh Thần của Thung Lũng Bình Yên.',
-            synopsis: 'Po được chọn trở thành Thủ Lĩnh Tinh Thần của Thung Lũng Bình Yên và cần tìm một Thần Long Đại Hiệp mới.',
-            releaseDate: '2024-03-08',
-            year: 2024,
-            duration: '1h 34m',
-            age: 'P',
-            genre: 'Hoạt Hình, Hài, Võ Thuật',
-            status: 'now-showing',
-            poster: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=600&q=80',
-            bg: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=1200&q=80',
-            backdrop: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=1200&q=80',
-            language: 'Lồng tiếng / Phụ đề Tiếng Việt',
-            rating: 4.7,
-            ratingCount: 210,
-            director: 'Mike Mitchell',
-            cast: [{ name: 'Jack Black', avatar: '/shared/images/avatar.jpg' }],
-            gallery: ['https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=600&q=80'],
-            trailer: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-            trailerWatch: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-            tags: ['2D', '3D'],
-            formats: ['2D', '3D']
-        }
-    ];
-}
-
 window.fetchMoviesPromise = fetchMovies().catch(err => {
-    console.warn("Error fetching movies, loading fallback list:", err);
-    return getFallbackMovies();
+    console.warn("Error fetching movies:", err);
+    return [];
 });
 
 function getFallbackCinemas() {
