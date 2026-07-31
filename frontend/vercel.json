@@ -5,12 +5,16 @@
       "destination": "http://3hd2k-api.somee.com/api/:path*"
     },
     {
-      "source": "/notificationHub",
-      "destination": "http://3hd2k-api.somee.com/notificationHub"
+      "source": "/seatHub/:path*",
+      "destination": "http://3hd2k-api.somee.com/seatHub/:path*"
     },
     {
-      "source": "/cinematchHub",
-      "destination": "http://3hd2k-api.somee.com/cinematchHub"
+      "source": "/notificationHub/:path*",
+      "destination": "http://3hd2k-api.somee.com/notificationHub/:path*"
+    },
+    {
+      "source": "/cinematchHub/:path*",
+      "destination": "http://3hd2k-api.somee.com/cinematchHub/:path*"
     },
     {
       "source": "/uploads/:path*",
