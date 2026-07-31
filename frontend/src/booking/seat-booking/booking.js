@@ -113,8 +113,6 @@ async function init() {
         localStorage.removeItem('group_booking_active');
     }
 
-    console.log("[DEBUG] movieId from URL:", movieId);
-
   if (movieId) {
     const allMovies = window.allMoviesData || [];
     let foundMovie = allMovies.find(m => String(m.id).toLowerCase() === String(movieId).toLowerCase());
@@ -133,7 +131,6 @@ async function init() {
     }
 
     if (foundMovie) {
-      console.log("[DEBUG] Found movie:", foundMovie.title);
       const imgUrl = foundMovie.posterUrl || foundMovie.poster || `/images/movies/placeholder.jpg`;
       movieData = {
         id: foundMovie.id,
@@ -142,9 +139,6 @@ async function init() {
         genre: foundMovie.genre || foundMovie.tags?.join(', ') || 'N/A',
         tags: foundMovie.tags || ["2D", "IMAX"]
       };
-      console.log("[DEBUG] movieData updated:", movieData.title);
-    } else {
-      console.log("[DEBUG] Movie not found for id:", movieId);
     }
   }
 
@@ -157,8 +151,6 @@ async function init() {
           tags: []
       };
   }
-
-  console.log("[DEBUG] Calling renderMovieInfo with:", movieData.title);
 
   renderMovieInfo();
 

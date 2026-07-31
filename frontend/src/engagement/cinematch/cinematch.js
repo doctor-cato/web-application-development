@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
-    state.userId = session?.email || 'demo_' + Math.random().toString(36).substr(2, 6);
+    state.userId = session?.email || 'demo_' + Math.random().toString(36).slice(2, 8);
     state.userName = session?.fullname || session?.name || session?.username || "Người dùng";
 
     // Init SignalR if not demo

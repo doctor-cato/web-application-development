@@ -86,7 +86,10 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.AddMemoryCache();
+builder.Services.AddHttpClient();
 builder.Services.AddScoped<IFileService, FileService>();
+builder.Services.AddScoped<IRatingService, RatingService>();
 
 builder.Services.AddScoped<appweb.Repositories.UserRepository>();
 builder.Services.AddScoped<appweb.Repositories.MovieRepository>();

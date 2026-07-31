@@ -26,7 +26,7 @@ async function renderRealHistory() {
     let needsSave = false;
     bookings.forEach(b => {
         if (!b.id) {
-            b.id = '3HD2K-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+            b.id = '3HD2K-' + Math.random().toString(36).slice(2, 11).toUpperCase();
             needsSave = true;
         }
     });
@@ -193,8 +193,6 @@ function loadUserInfo() {
         console.error("getCurrentUser error", e);
     }
 
-    console.log('[Profile] isLogged:', isLogged, '| session:', session);
-
     if (!session && !isLogged) {
 
         const nameEl = document.getElementById('sidebar-name');
@@ -228,14 +226,7 @@ function loadUserInfo() {
                 if (!avatar) avatar = found.avatar || avatar;
                 if (!dob) dob = found.dob || dob;
                 if (!gender) gender = found.gender || gender;
-                console.log('[Profile] Found user in registeredUsers:', found);
             }
-        } catch(e) {
-            console.error('[Profile] registeredUsers parse error', e);
-        }
-    }
-
-    console.log('[Profile] Resolved name:', name, '| email:', email);
 
     const nameEl = document.getElementById('sidebar-name');
     if (nameEl) nameEl.innerText = name || (email ? email.split('@')[0] : 'User');
@@ -278,7 +269,7 @@ function loadUserInfo() {
 
     let customerCode = localStorage.getItem('userCustomerCode');
     if (!customerCode && (email || name)) {
-        customerCode = '3HD2K-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+        customerCode = '3HD2K-' + Math.random().toString(36).slice(2, 8).toUpperCase();
         localStorage.setItem('userCustomerCode', customerCode);
     }
     const customerCodeInput = document.getElementById('customerCode');

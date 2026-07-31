@@ -67,7 +67,7 @@ function mapMovieObj(m) {
     if (!movieStatus) movieStatus = 'now-showing';
 
     return {
-        id: m.id || m.movieId || ('mv_' + Math.random().toString(36).substr(2, 9)),
+        id: m.id || m.movieId || ('mv_' + Math.random().toString(36).slice(2, 11)),
         title: m.title || 'Phim Chưa Có Tiêu Đề',
         meta: m.meta || `${m.releaseDate ? new Date(m.releaseDate).getFullYear() : '2026'} • ${m.genre || 'Hành Động'} • ${formattedDuration}`,
         desc: m.description || m.desc || "Nội dung phim đang được cập nhật...",
@@ -137,7 +137,7 @@ async function fetchMovies() {
         if (Array.isArray(local1)) {
             local1.forEach(lm => {
                 if (lm && lm.title && !lm.id && !lm.movieId) {
-                    lm.id = 'mv_' + Math.random().toString(36).substr(2, 9);
+                    lm.id = 'mv_' + Math.random().toString(36).slice(2, 11);
                     modified1 = true;
                 }
             });
@@ -147,7 +147,7 @@ async function fetchMovies() {
         if (Array.isArray(local2)) {
             local2.forEach(lm => {
                 if (lm && lm.title && !lm.id && !lm.movieId) {
-                    lm.id = 'mv_' + Math.random().toString(36).substr(2, 9);
+                    lm.id = 'mv_' + Math.random().toString(36).slice(2, 11);
                     modified2 = true;
                 }
             });
@@ -342,7 +342,7 @@ function normalizeShowtime(s) {
 
     return {
         ...s,
-        id: s.id || ('st_' + Math.random().toString(36).substr(2, 9)),
+        id: s.id || ('st_' + Math.random().toString(36).slice(2, 11)),
         movieId: s.movieId ? String(s.movieId) : '',
         movieTitle: s.movieTitle || '',
         cinemaId: cId,
@@ -381,7 +381,7 @@ function getFallbackShowtimes(movieId) {
                 }
 
                 showtimes.push({
-                    id: Math.random().toString(36).substr(2,9),
+                    id: Math.random().toString(36).slice(2, 11),
                     movieId: movieId,
                     cinemaId: cinema.id,
                     cinemaName: cinema.name,

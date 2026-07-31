@@ -342,7 +342,7 @@ async function fetchUsers() {
         const email = u.email || u.username || '';
         if (email && !usersList.some(x => x.email === email)) {
             usersList.push({
-                id: u.id || ('local-' + Math.random().toString(36).substr(2, 9)),
+                id: u.id || ('local-' + Math.random().toString(36).slice(2, 11)),
                 username: u.username || email,
                 name: u.name || u.fullname || email.split('@')[0],
                 email: email,
@@ -877,7 +877,7 @@ async function handleMovieSubmit(e) {
     const formattedDur = `${Math.floor(durationNum / 60)}h ${durationNum % 60}m`;
 
     const movieItem = {
-        id: id || ('mv_' + Math.random().toString(36).substr(2, 9)),
+        id: id || ('mv_' + Math.random().toString(36).slice(2, 11)),
         title: title,
         genre: genre,
         duration: durationNum,
@@ -1267,7 +1267,7 @@ async function handleShowtimeSubmit(e) {
     }
 
     const newShowtime = {
-        id: 'st_' + Math.random().toString(36).substr(2, 9),
+        id: 'st_' + Math.random().toString(36).slice(2, 11),
         movieId: movieId,
         movieTitle: movie ? movie.title : 'Phim #' + movieId,
         cinemaId: cinemaId,

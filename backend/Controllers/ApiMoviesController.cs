@@ -31,6 +31,22 @@ namespace appweb.Controllers
             return Ok(movie);
         }
 
+        [HttpGet("{id}/ratings")]
+        public async Task<IActionResult> GetRatings(Guid id, [FromServices] appweb.Services.IRatingService ratingService)
+        {
+            var movie = await _movieRepository.GetByIdAsync(id);
+            var title = movie?.Title ?? "Unknown Movie";
+            var ratings = await ratingService.GetRatingsAsync(title);
+            return Ok(ratings);
+        }
+
+        [HttpGet("ratings-by-title")]
+        public async Task<IActionResult> GetRatingsByTitle([FromQuery] string title, [FromServices] appweb.Services.IRatingService ratingService)
+        {
+            var ratings = await ratingService.GetRatingsAsync(title ?? "");
+            return Ok(ratings);
+        }
+
         [Authorize(Roles = "ADMIN")]
         [HttpPost]
         public async Task<IActionResult> CreateMovie([FromBody] Movie movie)

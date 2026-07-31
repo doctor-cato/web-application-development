@@ -4,6 +4,7 @@ import { API_BASE_URL, getHeaders } from '../../shared/utils/apiConfig.js?v=4';
 let connection = null;
 let currentRoomId = null;
 let seatUpdateCallback = null;
+let seatBroadcastChannel = null;
 
 const getSignalRUrl = () => {
     try {
@@ -14,13 +15,51 @@ const getSignalRUrl = () => {
     }
 };
 
+export function initBroadcastChannel(roomId) {
+    if ('BroadcastChannel' in window) {
+        if (seatBroadcastChannel) {
+            try { seatBroadcastChannel.close(); } catch (e) {}
+        }
+        seatBroadcastChannel = new BroadcastChannel('cine_seat_channel_' + roomId);
+        seatBroadcastChannel.onmessage = (event) => {
+            const data = event.data;
+            if (!data || data.showtimeId !== roomId) return;
+            if (seatUpdateCallback) {
+                seatUpdateCallback(data);
+            }
+        };
+    }
+}
+
+export function broadcastLocalSeatChange(type, seatId, roomId, userId) {
+    if (seatBroadcastChannel) {
+        try {
+            seatBroadcastChannel.postMessage({
+                type,
+                seatId,
+                showtimeId: roomId,
+                userId,
+                timestamp: Date.now()
+            });
+        } catch (e) {}
+    }
+}
+
 export async function initSignalR(roomId) {
+    currentRoomId = roomId;
+    initBroadcastChannel(roomId);
+
+    // Auto cleanup on window unload/pagehide
+    const handleUnload = () => {
+        closeSeatSyncChannel();
+    };
+    window.addEventListener('beforeunload', handleUnload, { once: true });
+    window.addEventListener('pagehide', handleUnload, { once: true });
+
     if (!window.signalR) {
-        console.error("SignalR is not loaded!");
+        console.warn("SignalR library not present, falling back to BroadcastChannel multi-tab sync only.");
         return;
     }
-
-    currentRoomId = roomId;
 
     connection = new signalR.HubConnectionBuilder()
         .withUrl(getSignalRUrl(), {
@@ -56,7 +95,6 @@ export async function initSignalR(roomId) {
 
     try {
         await connection.start();
-        console.log("SignalR Connected.");
         await connection.invoke("JoinRoom", roomId);
     } catch (err) {
         console.error("SignalR Connection Error: ", err);
@@ -68,6 +106,10 @@ export function subscribeSeatUpdates(callback) {
 }
 
 export function closeSeatSyncChannel() {
+    if (seatBroadcastChannel) {
+        try { seatBroadcastChannel.close(); } catch (e) {}
+        seatBroadcastChannel = null;
+    }
     if (connection && currentRoomId) {
         connection.invoke("LeaveRoom", currentRoomId).then(() => {
             connection.stop();
@@ -80,6 +122,7 @@ export function getSeatMap(showtimeId) {
 }
 
 export function lockSeat(showtimeId, seatId, userId) {
+    broadcastLocalSeatChange('seat_locked', seatId, showtimeId, userId);
     if (connection && connection.state === signalR.HubConnectionState.Connected) {
         connection.invoke("SelectSeat", showtimeId, seatId, userId).catch(err => console.error(err));
     }
@@ -87,6 +130,7 @@ export function lockSeat(showtimeId, seatId, userId) {
 }
 
 export function unlockSeat(showtimeId, seatId, userId) {
+    broadcastLocalSeatChange('seat_unlocked', seatId, showtimeId, userId);
     if (connection && connection.state === signalR.HubConnectionState.Connected) {
         connection.invoke("ReleaseSeat", showtimeId, seatId).catch(err => console.error(err));
     }

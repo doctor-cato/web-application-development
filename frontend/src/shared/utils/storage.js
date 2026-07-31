@@ -7,8 +7,30 @@ export const KEYS = {
   SEAT_LOCKS: 'cinema_seat_locks',
   CHECKOUT: 'cinema_checkout',
   LAST_BOOKING: 'cinema_last_booking',
-  PENDING_PAYMENTS: 'cinema_pending_payments'
+  PENDING_PAYMENTS: 'cinema_pending_payments',
+  AUTH_TOKEN: 'auth_token',
+  IS_LOGGED_IN: 'isLoggedIn',
+  USER_NAME: 'userName',
+  USER_EMAIL: 'userEmail',
+  USER_AVATAR: 'userAvatar'
 };
+
+// Safe UTF-8 Base64 Helpers replacing deprecated escape/unescape
+export function safeBtoa(str) {
+  try {
+    return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (_, p1) => String.fromCharCode('0x' + p1)));
+  } catch (e) {
+    return btoa(str);
+  }
+}
+
+export function safeAtob(str) {
+  try {
+    return decodeURIComponent(atob(str).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+  } catch (e) {
+    return atob(str);
+  }
+}
 
 export function lsGet(key, defaultValue = null) {
   try {
@@ -86,9 +108,61 @@ export function savePendingPayments(map) {
   lsSet(KEYS.PENDING_PAYMENTS, map);
 }
 
-export function getUsers() { return lsGet(KEYS.USERS, []); }
-export function saveUsers(users) { lsSet(KEYS.USERS, users); }
+export function getUsers() {
+  return lsGet(KEYS.USERS, []);
+}
 
-export function getCurrentUser() { return ssGet(KEYS.CURRENT_USER, null); }
-export function setCurrentUser(user) { ssSet(KEYS.CURRENT_USER, user); }
-export function clearCurrentUser() { ssRemove(KEYS.CURRENT_USER); }
+export function saveUsers(users) {
+  lsSet(KEYS.USERS, users);
+}
+
+export function getCurrentUser() {
+  try {
+    const token = localStorage.getItem(KEYS.AUTH_TOKEN);
+    if (!token) return ssGet(KEYS.CURRENT_USER, null);
+    const payload = JSON.parse(safeAtob(token));
+    if (payload.exp && Date.now() > payload.exp) {
+      clearCurrentUser();
+      return null;
+    }
+    return payload;
+  } catch (e) {
+    return ssGet(KEYS.CURRENT_USER, null);
+  }
+}
+
+export function setCurrentUser(userPayload) {
+  if (!userPayload) return;
+  const token = safeBtoa(JSON.stringify(userPayload));
+  localStorage.setItem(KEYS.AUTH_TOKEN, token);
+  localStorage.setItem(KEYS.IS_LOGGED_IN, 'true');
+  localStorage.setItem(KEYS.USER_NAME, userPayload.fullname || userPayload.fullName || userPayload.name || '');
+  localStorage.setItem(KEYS.USER_EMAIL, userPayload.email || '');
+  localStorage.setItem(KEYS.USER_AVATAR, userPayload.avatar || '');
+
+  const role = (userPayload.role || '').toLowerCase();
+  if (role === 'vip') {
+    localStorage.setItem('is_vip', 'true');
+    localStorage.setItem('vip_plan', userPayload.vipPlan || userPayload.vip_plan || '');
+  } else {
+    localStorage.removeItem('is_vip');
+    localStorage.removeItem('vip_plan');
+  }
+  ssSet(KEYS.CURRENT_USER, userPayload);
+}
+
+export function clearCurrentUser() {
+  localStorage.removeItem(KEYS.AUTH_TOKEN);
+  localStorage.removeItem(KEYS.IS_LOGGED_IN);
+  localStorage.removeItem(KEYS.USER_NAME);
+  localStorage.removeItem(KEYS.USER_EMAIL);
+  localStorage.removeItem(KEYS.USER_AVATAR);
+  localStorage.removeItem('userPhone');
+  localStorage.removeItem('userDob');
+  localStorage.removeItem('userGender');
+  localStorage.removeItem('3hd2k_rewards');
+  localStorage.removeItem('is_vip');
+  localStorage.removeItem('vip_plan');
+  localStorage.removeItem('avatar_border_class');
+  ssRemove(KEYS.CURRENT_USER);
+}
