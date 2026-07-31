@@ -79,4 +79,33 @@ test.describe('Cine-Match Feature E2E Verification', () => {
     expect(scrollWidth).toBeLessThanOrEqual(clientWidth);
   });
 
+  test('Empty state rescan button window.startMatching works properly', async ({ page }) => {
+    await page.addInitScript(() => {
+      const user = { id: 1, fullname: 'Rescan User', email: 'rescan@example.com' };
+      localStorage.setItem('isLoggedIn', 'true');
+      sessionStorage.setItem('cinema_current_user', JSON.stringify(user));
+    });
+
+    await page.goto('/engagement/cinematch/index.html');
+    
+    // Direct trigger empty state lobby
+    await page.evaluate(() => {
+      window.renderLobby([]);
+      document.querySelectorAll('.step-container').forEach(s => s.style.display = 'none');
+      document.getElementById('step-candidates').style.display = 'block';
+    });
+
+    // Verify empty state container is visible
+    const emptyCard = page.locator('.empty-lobby-card');
+    await expect(emptyCard).toBeVisible();
+
+    // Click "Quét Tìm Lại (15s)" button
+    const retryBtn = emptyCard.locator('button', { hasText: 'Quét Tìm Lại' });
+    await expect(retryBtn).toBeVisible();
+    await retryBtn.click();
+
+    // Verify transition back to radar step
+    await expect(page.locator('#step-radar')).toBeVisible();
+  });
+
 });

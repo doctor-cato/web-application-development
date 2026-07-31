@@ -301,7 +301,7 @@ function switchStep(stepName) {
 // ============================================================
 // MATCHING
 // ============================================================
-function startMatching() {
+window.startMatching = function startMatching() {
     // Reset previous states to prevent stuck match
     state.roomId = null;
     state.bothAccepted = false;
@@ -349,13 +349,13 @@ function startMatching() {
         }, 15000);
         joinSignalRQueue();
     }
-}
+};
 
-function cancelSearch() {
+window.cancelSearch = function cancelSearch() {
     clearTimers();
     if (!DEMO_MODE) leaveSignalRQueue();
     switchStep('form');
-}
+};
 
 // ============================================================
 // RADAR ANIMATION
@@ -417,10 +417,10 @@ window.renderLobby = function(candidates) {
                     Hệ thống đã quét 15 giây nhưng hiện chưa có người dùng nào phù hợp với tiêu chí của bạn trong sảnh chờ.
                 </p>
                 <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
-                    <button onclick="startMatching()" class="neon-btn" style="padding: 12px 25px; font-size: 0.95rem; justify-content: center;">
+                    <button onclick="window.startMatching()" class="neon-btn" style="padding: 12px 25px; font-size: 0.95rem; justify-content: center;">
                         <i class="fa-solid fa-rotate-right"></i> Quét Tìm Lại (15s)
                     </button>
-                    <button onclick="cancelSearch()" class="cancel-btn" style="padding: 12px 25px; font-size: 0.95rem;">
+                    <button onclick="window.cancelSearch()" class="cancel-btn" style="padding: 12px 25px; font-size: 0.95rem;">
                         <i class="fa-solid fa-sliders"></i> Thay Đổi Tiêu Chí
                     </button>
                 </div>
