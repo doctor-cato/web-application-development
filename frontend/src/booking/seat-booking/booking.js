@@ -99,7 +99,7 @@ async function init() {
   }
 
   const urlParams = new URLSearchParams(window.location.search);
-    const movieId = urlParams.get('id');
+    const movieId = urlParams.get('id') || urlParams.get('movieId');
     currentShowtimeId = urlParams.get('showtimeId') || 'st_200';
 
     if ((urlParams.get('cinematch') === 'true' || localStorage.getItem('cinematch_active') === 'true') && toggleCineMatch) {
