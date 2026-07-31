@@ -4,6 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <DefaultItemExcludes>$(DefaultItemExcludes);publish\**;publish-latest\**;publish_output\**;*.zip</DefaultItemExcludes>
   </PropertyGroup>
 
   <ItemGroup>

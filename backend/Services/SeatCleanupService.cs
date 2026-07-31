@@ -30,7 +30,7 @@ public class SeatCleanupService : BackgroundService
             {
                 await CleanupExpiredHolds(stoppingToken);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Prevent DB connection errors from crashing the entire ASP.NET Core host process
             }
