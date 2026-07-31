@@ -549,6 +549,7 @@
             display: flex;
             align-items: center;
             gap: 20px;
+            min-width: 0;
         }
 
         .stat-icon {
@@ -559,6 +560,7 @@
             justify-content: center;
             align-items: center;
             font-size: 1.5rem;
+            flex-shrink: 0;
         }
 
         .stat-icon.red { background: rgba(229, 9, 20, 0.1); color: var(--primary-red); }
@@ -570,6 +572,8 @@
         .stat-info {
             display: flex;
             flex-direction: column;
+            min-width: 0;
+            overflow: hidden;
         }
 
         .stat-label {
@@ -577,12 +581,18 @@
             color: var(--text-muted);
             font-weight: 600;
             text-transform: uppercase;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
         }
 
         .stat-value {
-            font-size: 1.8rem;
+            font-size: clamp(1.1rem, 1.3vw, 1.6rem);
             font-weight: 800;
             color: #fff;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
         }
 
         .table-card {

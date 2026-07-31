@@ -47,6 +47,12 @@ let currentBrokenSeats = [];
 
 const formatVND = (amount) => (amount || 0).toLocaleString("vi-VN") + "đ";
 const formatMoney = formatVND;
+const formatCompactVND = (amount) => {
+    const val = Number(amount) || 0;
+    if (val >= 1e9) return (val / 1e9).toFixed(2).replace(/\.00$/, '') + " tỷ đ";
+    if (val >= 1e6) return (val / 1e6).toFixed(2).replace(/\.00$/, '') + " tr đ";
+    return val.toLocaleString("vi-VN") + "đ";
+};
 
 function showToast(message, type = 'info') {
     let container = document.getElementById('toast-container');
@@ -586,7 +592,10 @@ function renderDashboard() {
     if (elMovies) elMovies.textContent = totalMovies;
     if (elShowtimes) elShowtimes.textContent = totalShowtimes;
     if (elTickets) elTickets.textContent = ticketsSold;
-    if (elRevenue) elRevenue.textContent = formatVND(totalCombinedRevenue);
+    if (elRevenue) {
+        elRevenue.textContent = formatCompactVND(totalCombinedRevenue);
+        elRevenue.title = formatVND(totalCombinedRevenue);
+    }
     if (elUsers) elUsers.textContent = totalUsers;
 
     const recentTbody = document.getElementById('recent-bookings-tbody');
