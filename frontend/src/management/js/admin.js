@@ -311,7 +311,7 @@ async function fetchUsers() {
         const res = await fetch('/api/users', { headers });
         if (res.ok) {
             const data = await res.json();
-            if (Array.isArray(data) && data.length > 0) {
+            if (Array.isArray(data)) {
                 usersList = data.map(u => ({
                     id: u.id,
                     username: u.email || u.phone || u.id,
@@ -324,35 +324,12 @@ async function fetchUsers() {
                     createdAt: u.createdAt
                 }));
             }
+        } else {
+            console.warn('Fetch users API returned status:', res.status);
         }
     } catch (e) {
         console.error('Fetch users API error:', e);
     }
-
-    const r1 = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
-    const r2 = JSON.parse(localStorage.getItem('3hd2k_users') || '[]');
-    const r3 = JSON.parse(localStorage.getItem('cinema_users') || '[]');
-
-    let allRegistered = [];
-    if (Array.isArray(r1)) allRegistered = allRegistered.concat(r1);
-    if (Array.isArray(r2)) allRegistered = allRegistered.concat(r2);
-    if (Array.isArray(r3)) allRegistered = allRegistered.concat(r3);
-
-    allRegistered.forEach(u => {
-        const email = u.email || u.username || '';
-        if (email && !usersList.some(x => x.email === email)) {
-            usersList.push({
-                id: u.id || ('local-' + Math.random().toString(36).slice(2, 11)),
-                username: u.username || email,
-                name: u.name || u.fullname || email.split('@')[0],
-                email: email,
-                phone: u.phone || '',
-                role: (u.role || 'customer').toLowerCase(),
-                status: u.status || 'active',
-                points: u.points || 0
-            });
-        }
-    });
 
     db.users = usersList;
 }
@@ -449,33 +426,6 @@ function loadLocalDatabaseCache() {
         db.bookings = uniqueB;
     }
 
-    const r1 = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
-    const r2 = JSON.parse(localStorage.getItem('3hd2k_users') || '[]');
-    const r3 = JSON.parse(localStorage.getItem('cinema_users') || '[]');
-
-    let allRegistered = [];
-    if (Array.isArray(r1)) allRegistered = allRegistered.concat(r1);
-    if (Array.isArray(r2)) allRegistered = allRegistered.concat(r2);
-    if (Array.isArray(r3)) allRegistered = allRegistered.concat(r3);
-
-    const registeredUsersList = [];
-    const seenEmails = new Set();
-    allRegistered.forEach(u => {
-        const e = u.email || u.username;
-        if (e && !seenEmails.has(e)) {
-            seenEmails.add(e);
-            registeredUsersList.push({
-                username: u.username || e,
-                name: u.name || u.fullname || e.split('@')[0],
-                email: e,
-                role: (u.role || 'customer').toLowerCase() === 'admin' ? 'admin' : 'customer',
-                status: u.status || 'active'
-            });
-        }
-    });
-    if (registeredUsersList.length > 0) {
-        db.users = registeredUsersList;
-    }
 
     const localCombos = JSON.parse(localStorage.getItem('cinema_combos') || '[]');
     if (Array.isArray(localCombos) && localCombos.length > 0) {
@@ -1677,96 +1627,97 @@ function filterUsersTable() {
 
 async function toggleUserStatus(idOrUsername) {
     const u = db.users.find(user => user.id === idOrUsername || user.username === idOrUsername);
-    if (!u) return;
-
-    if (u.id && !u.id.toString().startsWith('local-')) {
-        try {
-            const token = localStorage.getItem('jwt_token') || localStorage.getItem('auth_token');
-            const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
-            const res = await fetch(`/api/users/${u.id}/toggle-lock`, { method: 'PUT', headers });
-            if (res.ok) {
-                const resData = await res.json();
-                u.status = resData.isLocked ? 'banned' : 'active';
-                showToast(resData.message || 'Cập nhật trạng thái thành công', 'success');
-                renderUsersTable();
-                return;
-            }
-        } catch (e) {
-            console.error('Toggle status error:', e);
-        }
+    if (!u || !u.id) {
+        showToast('Không tìm thấy ID người dùng hợp lệ để cập nhật', 'warning');
+        return;
     }
 
-    u.status = u.status === 'active' ? 'banned' : 'active';
-    showToast(`Đã ${u.status === 'banned' ? 'khóa' : 'mở khóa'} tài khoản ${u.name}`, 'info');
-    renderUsersTable();
+    try {
+        const token = localStorage.getItem('jwt_token') || localStorage.getItem('auth_token');
+        const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+        const res = await fetch(`/api/users/${u.id}/toggle-lock`, { method: 'PUT', headers });
+        if (res.ok) {
+            const resData = await res.json();
+            u.status = resData.isLocked ? 'banned' : 'active';
+            showToast(resData.message || 'Cập nhật trạng thái thành công', 'success');
+            renderUsersTable();
+        } else {
+            const errData = await res.json().catch(() => ({}));
+            showToast(errData.message || 'Không thể cập nhật trạng thái người dùng', 'error');
+        }
+    } catch (e) {
+        console.error('Toggle status error:', e);
+        showToast('Lỗi kết nối khi cập nhật trạng thái người dùng', 'error');
+    }
 }
 
 async function changeUserRolePrompt(idOrUsername) {
     const u = db.users.find(user => user.id === idOrUsername || user.username === idOrUsername);
-    if (!u) return;
+    if (!u || !u.id) {
+        showToast('Không tìm thấy ID người dùng hợp lệ để đổi vai trò', 'warning');
+        return;
+    }
 
-    const newRole = prompt(`Chọn vai trò mới cho ${u.name}:\n(ADMIN, STAFF, CUSTOMER)`, u.role.toUpperCase());
+    const currentRoleUpper = (u.role || 'CUSTOMER').toUpperCase();
+    const newRole = prompt(`Chọn vai trò mới cho ${u.name}:\n(ADMIN, STAFF, CUSTOMER, VIP)`, currentRoleUpper);
     if (!newRole) return;
 
     const formattedRole = newRole.trim().toUpperCase();
     if (!['ADMIN', 'STAFF', 'CUSTOMER', 'VIP'].includes(formattedRole)) {
-        showToast('Vai trò không hợp lệ. Vui lòng chọn ADMIN, STAFF, hoặc CUSTOMER.', 'warning');
+        showToast('Vai trò không hợp lệ. Vui lòng chọn ADMIN, STAFF, CUSTOMER hoặc VIP.', 'warning');
         return;
     }
 
-    if (u.id && !u.id.toString().startsWith('local-')) {
-        try {
-            const token = localStorage.getItem('jwt_token') || localStorage.getItem('auth_token');
-            const headers = { 'Content-Type': 'application/json' };
-            if (token) headers['Authorization'] = `Bearer ${token}`;
+    try {
+        const token = localStorage.getItem('jwt_token') || localStorage.getItem('auth_token');
+        const headers = { 'Content-Type': 'application/json' };
+        if (token) headers['Authorization'] = `Bearer ${token}`;
 
-            const res = await fetch(`/api/users/${u.id}/role`, {
-                method: 'PUT',
-                headers,
-                body: JSON.stringify({ role: formattedRole })
-            });
+        const res = await fetch(`/api/users/${u.id}/role`, {
+            method: 'PUT',
+            headers,
+            body: JSON.stringify({ role: formattedRole })
+        });
 
-            if (res.ok) {
-                u.role = formattedRole.toLowerCase();
-                showToast(`Cập nhật vai trò thành ${formattedRole}`, 'success');
-                renderUsersTable();
-                return;
-            }
-        } catch (e) {
-            console.error('Change role error:', e);
+        if (res.ok) {
+            u.role = formattedRole.toLowerCase();
+            showToast(`Cập nhật vai trò thành ${formattedRole}`, 'success');
+            renderUsersTable();
+        } else {
+            const errData = await res.json().catch(() => ({}));
+            showToast(errData.message || 'Không thể thay đổi vai trò người dùng', 'error');
         }
+    } catch (e) {
+        console.error('Change role error:', e);
+        showToast('Lỗi kết nối khi đổi vai trò người dùng', 'error');
     }
-
-    u.role = formattedRole.toLowerCase();
-    showToast(`Đã đổi vai trò ${u.name} thành ${formattedRole}`, 'info');
-    renderUsersTable();
 }
 
 async function deleteUserConfirm(idOrUsername) {
     const u = db.users.find(user => user.id === idOrUsername || user.username === idOrUsername);
-    if (!u) return;
+    if (!u || !u.id) {
+        showToast('Không tìm thấy ID người dùng hợp lệ để xóa', 'warning');
+        return;
+    }
 
     if (!confirm(`Bạn có chắc chắn muốn xóa tài khoản ${u.name} (${u.email})?`)) return;
 
-    if (u.id && !u.id.toString().startsWith('local-')) {
-        try {
-            const token = localStorage.getItem('jwt_token') || localStorage.getItem('auth_token');
-            const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
-            const res = await fetch(`/api/users/${u.id}`, { method: 'DELETE', headers });
-            if (res.ok) {
-                db.users = db.users.filter(x => x.id !== u.id);
-                showToast('Xóa người dùng thành công!', 'success');
-                renderUsersTable();
-                return;
-            }
-        } catch (e) {
-            console.error('Delete user API error:', e);
+    try {
+        const token = localStorage.getItem('jwt_token') || localStorage.getItem('auth_token');
+        const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+        const res = await fetch(`/api/users/${u.id}`, { method: 'DELETE', headers });
+        if (res.ok) {
+            db.users = db.users.filter(x => x.id !== u.id);
+            showToast('Xóa người dùng thành công!', 'success');
+            renderUsersTable();
+        } else {
+            const errData = await res.json().catch(() => ({}));
+            showToast(errData.message || 'Không thể xóa người dùng', 'error');
         }
+    } catch (e) {
+        console.error('Delete user API error:', e);
+        showToast('Lỗi kết nối khi xóa người dùng', 'error');
     }
-
-    db.users = db.users.filter(x => x.username !== u.username && x.id !== u.id);
-    showToast(`Đã xóa tài khoản ${u.name}`, 'info');
-    renderUsersTable();
 }
 
 function openAddUserModal() {
@@ -1808,29 +1759,14 @@ async function saveUserForm(e) {
             closeUserModal();
             await fetchUsers();
             renderUsersTable();
-            return;
         } else {
             const errData = await res.json().catch(() => ({}));
             showToast(errData.message || 'Không thể tạo người dùng qua API', 'error');
         }
     } catch (err) {
         console.error('Save user error:', err);
+        showToast('Lỗi kết nối khi tạo người dùng', 'error');
     }
-
-    const newUser = {
-        id: 'local-' + Date.now(),
-        username: email,
-        name: fullname,
-        email: email,
-        phone: phone,
-        role: role.toLowerCase(),
-        status: 'active',
-        points: 0
-    };
-    db.users.unshift(newUser);
-    showToast('Tạo người dùng thành công (Lưu tạm cục bộ)!', 'info');
-    closeUserModal();
-    renderUsersTable();
 }
 
 function viewUserHistory(username) {
