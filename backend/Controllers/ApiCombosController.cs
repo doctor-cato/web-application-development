@@ -14,11 +14,11 @@ namespace appweb.Controllers
         private static readonly List<ComboDto> _combos = new List<ComboDto>
         {
             new ComboDto { Id = "cb_1", Name = "Combo Solo", Desc = "1 Bắp ngọt lớn + 1 Nước ngọt 22oz tự chọn", Price = 75000, Stock = 120, Image = "/images/F&B/combo_single.png", Category = "Combo" },
-            new ComboDto { Id = "cb_2", Name = "Combo Couple", Desc = "1 Bắp ngọt khổng lồ + 2 Nước ngọt 22oz", Price = 99000, Stock = 85, Image = "/images/F&B/combo_double.png", Category = "Combo" },
-            new ComboDto { Id = "cb_3", Name = "Combo Gia Đình (Party)", Desc = "2 Bắp lớn + 3 Nước ngọt tùy chọn + 1 Snack", Price = 155000, Stock = 40, Image = "/images/F&B/combo_double.png", Category = "Combo" },
-            new ComboDto { Id = "fb_1", Name = "Bắp Ngọt (Lớn)", Desc = "Bắp rang bơ vị ngọt", Price = 45000, Stock = 200, Image = "/images/F&B/food_popcorn.png", Category = "Đồ thường" },
-            new ComboDto { Id = "fb_2", Name = "Pepsi Lon 330ml", Desc = "Nước ngọt có ga", Price = 25000, Stock = 150, Image = "/images/F&B/food_pepsi.png", Category = "Đồ thường" },
-            new ComboDto { Id = "fb_3", Name = "Coca-Cola Chai 390ml", Desc = "Nước ngọt có ga", Price = 25000, Stock = 150, Image = "/images/F&B/food_coca.png", Category = "Đồ thường" }
+            new ComboDto { Id = "cb_2", Name = "Combo Couple", Desc = "1 Bắp ngọt khổng lồ + 2 Nước ngọt 22oz", Price = 99000, Stock = 85, Image = "/images/F&B/combo_couple.png", Category = "Combo" },
+            new ComboDto { Id = "cb_3", Name = "Combo Gia Đình (Party)", Desc = "2 Bắp lớn + 3 Nước ngọt tùy chọn + 1 Snack", Price = 155000, Stock = 40, Image = "/images/F&B/combo_family.png", Category = "Combo" },
+            new ComboDto { Id = "fb_1", Name = "Bắp Ngọt (Lớn)", Desc = "Bắp rang bơ vị ngọt", Price = 45000, Stock = 200, Image = "/shared/images/food_popcorn.png", Category = "Đồ thường" },
+            new ComboDto { Id = "fb_2", Name = "Pepsi Lon 330ml", Desc = "Nước ngọt có ga", Price = 25000, Stock = 150, Image = "/shared/images/food_pepsi.png", Category = "Đồ thường" },
+            new ComboDto { Id = "fb_3", Name = "Coca-Cola Chai 390ml", Desc = "Nước ngọt có ga", Price = 25000, Stock = 150, Image = "/shared/images/food_coca.png", Category = "Đồ thường" }
         };
 
         [HttpGet]
