@@ -254,6 +254,71 @@ namespace appweb.Controllers
             });
         }
 
+        [HttpPost("verify-2fa-login")]
+        public async Task<IActionResult> Verify2faLogin([FromBody] VerifyEmailDto model)
+        {
+            var user = await _userRepository.GetByEmailAsync(model.Email);
+            if (user == null) return Unauthorized(new { message = "Không tìm thấy người dùng." });
+
+            if (user.OtpCode != model.OtpCode) return BadRequest(new { message = "Mã OTP không chính xác." });
+            if (user.OtpExpiryTime < DateTime.UtcNow) return BadRequest(new { message = "Mã OTP đã hết hạn." });
+
+            user.OtpCode = null;
+            user.OtpExpiryTime = null;
+            await _userRepository.UpdateAsync(user);
+
+            var jwtId = Guid.NewGuid().ToString();
+            var token = GenerateJwtToken(user, jwtId);
+            var refreshToken = GenerateRefreshToken();
+
+            var rt = new RefreshToken
+            {
+                JwtId = jwtId,
+                IsUsed = false,
+                IsRevoked = false,
+                UserId = user.UserId,
+                AddedDate = DateTime.UtcNow,
+                ExpiryDate = DateTime.UtcNow.AddDays(7),
+                Token = refreshToken
+            };
+
+            await _context.RefreshTokens.AddAsync(rt);
+            await _context.SaveChangesAsync();
+
+            return Ok(new {
+                message = "Đăng nhập thành công",
+                token,
+                refreshToken,
+                user = new {
+                    email = user.Email,
+                    fullname = user.Fullname,
+                    phone = user.Phone,
+                    dateOfBirth = user.DateOfBirth,
+                    gender = user.Gender,
+                    role = user.Role,
+                    vipPlan = user.VipPlan,
+                    avatar = user.AvatarUrl
+                }
+            });
+        }
+
+        [Authorize]
+        [HttpPut("toggle-2fa")]
+        public async Task<IActionResult> Toggle2fa([FromBody] Toggle2faDto model)
+        {
+            var userIdStr = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdStr) || !Guid.TryParse(userIdStr, out var userId))
+                return Unauthorized();
+
+            var user = await _userRepository.GetByIdAsync(userId);
+            if (user == null) return NotFound("User not found");
+
+            user.IsTwoFactorEnabled = model.IsEnabled;
+            await _userRepository.UpdateAsync(user);
+
+            return Ok(new { message = "Đã cập nhật trạng thái Xác minh hai bước.", isTwoFactorEnabled = user.IsTwoFactorEnabled });
+        }
+
         [HttpPost("refresh-token")]
         public async Task<IActionResult> RefreshToken([FromBody] TokenRequestDto model)
         {
