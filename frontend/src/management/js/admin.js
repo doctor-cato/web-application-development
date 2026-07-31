@@ -1,5 +1,9 @@
 
-const API_BASE_URL = (typeof window !== 'undefined' && window.API_BASE_URL) || 'http://3hd2k-api.somee.com/api';
+const isHTTPS = typeof window !== 'undefined' && window.location.protocol === 'https:';
+const isVercelHost = typeof window !== 'undefined' && (window.location.hostname.includes('vercel.app') || window.location.hostname.includes('vercel'));
+
+const API_BASE_URL = (typeof window !== 'undefined' && window.API_BASE_URL) || 
+    ((isHTTPS || isVercelHost) ? `${window.location.origin}/api` : 'http://3hd2k-api.somee.com/api');
 
 function getApiUrl(path) {
     const base = API_BASE_URL.replace(/\/+$/, '');
