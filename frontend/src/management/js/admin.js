@@ -1644,7 +1644,7 @@ async function handleComboSubmit(e) {
         desc: document.getElementById('combo-desc-input').value
     };
 
-    const token = localStorage.getItem('3hd2k_token');
+    const token = localStorage.getItem('jwt_token') || localStorage.getItem('3hd2k_token');
     const authHeaders = {
         'Content-Type': 'application/json'
     };
@@ -1682,7 +1682,7 @@ async function handleComboSubmit(e) {
 }
 
 async function deleteCombo(id) {
-    const token = localStorage.getItem('3hd2k_token');
+    const token = localStorage.getItem('jwt_token') || localStorage.getItem('3hd2k_token');
     const authHeaders = {};
     if (token) authHeaders['Authorization'] = `Bearer ${token}`;
 

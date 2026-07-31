@@ -101,6 +101,9 @@ builder.Services.AddHostedService<appweb.Services.SeatCleanupService>();
 
 var app = builder.Build();
 
+// PONYTAIL: Force Developer Exception Page to see why Somee is crashing with 500
+app.UseDeveloperExceptionPage();
+
 using var scope = app.Services.CreateScope();
 var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 try {
@@ -134,17 +137,26 @@ app.UseSwaggerUI(c =>
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
-var frontendDevPath = Path.GetFullPath(Path.Combine(builder.Environment.ContentRootPath, "../frontend"));
-var frontendProdPath = Path.GetFullPath(Path.Combine(builder.Environment.ContentRootPath, "frontend"));
-var frontendPath = Directory.Exists(frontendProdPath) ? frontendProdPath : (Directory.Exists(frontendDevPath) ? frontendDevPath : null);
+string? frontendPath = null;
+try {
+    var frontendDevPath = Path.GetFullPath(Path.Combine(builder.Environment.ContentRootPath, "../frontend"));
+    var frontendProdPath = Path.GetFullPath(Path.Combine(builder.Environment.ContentRootPath, "frontend"));
+    frontendPath = Directory.Exists(frontendProdPath) ? frontendProdPath : (Directory.Exists(frontendDevPath) ? frontendDevPath : null);
+} catch (Exception ex) {
+    app.Logger.LogWarning(ex, "Could not resolve frontend path, skipping static files for frontend.");
+}
 
 if (frontendPath != null)
 {
-    app.UseStaticFiles(new StaticFileOptions
-    {
-        FileProvider = new PhysicalFileProvider(frontendPath),
-        RequestPath = ""
-    });
+    try {
+        app.UseStaticFiles(new StaticFileOptions
+        {
+            FileProvider = new PhysicalFileProvider(frontendPath),
+            RequestPath = ""
+        });
+    } catch (Exception ex) {
+        app.Logger.LogWarning(ex, "Could not use static files for frontend.");
+    }
 }
 
 app.UseRouting();

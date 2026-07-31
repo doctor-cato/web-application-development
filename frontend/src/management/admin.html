@@ -1315,7 +1315,13 @@
                     const base64 = payloadBase64.replace(/-/g, '+').replace(/_/g, '/');
                     user = JSON.parse(decodeURIComponent(escape(window.atob(base64))));
                 } else {
-                    user = JSON.parse(decodeURIComponent(atob(token)));
+                    try {
+                        const binaryStr = atob(token);
+                        const uriStr = binaryStr.split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('');
+                        user = JSON.parse(decodeURIComponent(uriStr));
+                    } catch (e2) {
+                        user = JSON.parse(atob(token));
+                    }
                 }
 
                 const role = (user.role || user.Role || '').toUpperCase();
