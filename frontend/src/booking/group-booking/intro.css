@@ -69,7 +69,6 @@ body {
     z-index: -2;
     opacity: 0.5;
 
-    background-attachment: fixed;
     mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
     -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
 }
