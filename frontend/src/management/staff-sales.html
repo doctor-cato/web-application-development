@@ -1668,9 +1668,12 @@
                 .then(combos => {
                     if (Array.isArray(combos) && combos.length > 0) {
                         const apiProducts = combos.map(c => {
-                            let imgUrl = c.image || c.Image || "http://3hd2k-api.somee.com/images/F&B/combo_double.png";
-                            if (imgUrl && !imgUrl.startsWith('http')) {
-                                imgUrl = 'http://3hd2k-api.somee.com/' + imgUrl.replace(/^\//, '');
+                            let imgUrl = c.image || c.Image || "/images/F&B/combo_double.png";
+                            if (imgUrl && imgUrl.includes('3hd2k-api.somee.com')) {
+                                imgUrl = imgUrl.replace(/^https?:\/\/3hd2k-api\.somee\.com/, '');
+                            }
+                            if (imgUrl && !imgUrl.startsWith('http') && !imgUrl.startsWith('/')) {
+                                imgUrl = '/' + imgUrl;
                             }
                             return {
                                 id: (c.id || c.Id || '').toString(),
@@ -1695,8 +1698,11 @@
                         const nowShowing = movies.filter(m => m.status === 'NOW_SHOWING' || m.status === 'now-showing');
                         API_MOVIES = nowShowing.map(m => {
                             let img = m.posterUrl || m.PosterUrl;
-                            if (img && !img.startsWith('http')) {
-                                img = 'http://3hd2k-api.somee.com/' + img.replace(/^\//, '');
+                            if (img && img.includes('3hd2k-api.somee.com')) {
+                                img = img.replace(/^https?:\/\/3hd2k-api\.somee\.com/, '');
+                            }
+                            if (img && !img.startsWith('http') && !img.startsWith('/')) {
+                                img = '/' + img;
                             } else if (!img) {
                                 img = 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=300&q=80';
                             }

@@ -13,17 +13,19 @@ function normalizeImagePath(path) {
         path = path.trim().replace(/^["'\[\s]+|["'\]\s]+$/g, '');
     }
     if (!path) return '/shared/images/avatar.jpg';
+    if (path.includes('3hd2k-api.somee.com')) {
+        path = path.replace(/^https?:\/\/3hd2k-api\.somee\.com/, '');
+    }
     if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) {
         return path;
     }
     if (path.startsWith('/shared/') || path.startsWith('../') || path.startsWith('assets/')) {
         return path;
     }
-    // Use real data from Somee
     if (path.startsWith('/')) {
-        return `https://3hd2k-api.somee.com${path}`;
+        return path;
     }
-    return `https://3hd2k-api.somee.com/${path}`;
+    return `/${path}`;
 }
 
 function formatMovieDuration(rawDuration) {

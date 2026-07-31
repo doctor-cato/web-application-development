@@ -303,8 +303,8 @@ async function init() {
                       COMBOS[item.id] = item.price;
                       let imgUrl = item.image;
                       if (!imgUrl) imgUrl = '/shared/images/combo_single.png';
-                      else if (imgUrl.startsWith('/')) imgUrl = `http://3hd2k-api.somee.com${imgUrl}`;
-                      else if (!imgUrl.startsWith('http')) imgUrl = `http://3hd2k-api.somee.com/${imgUrl}`;
+                      else if (imgUrl.includes('3hd2k-api.somee.com')) imgUrl = imgUrl.replace(/^https?:\/\/3hd2k-api\.somee\.com/, '');
+                      else if (!imgUrl.startsWith('http') && !imgUrl.startsWith('/')) imgUrl = `/${imgUrl}`;
                       
                       upsellPanel.innerHTML += `
                           <label class="combo-card" data-name="${item.name}">
