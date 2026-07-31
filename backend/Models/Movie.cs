@@ -31,7 +31,7 @@ namespace appweb.Models
         public string Genre { get; set; } = string.Empty;
 
         [NotMapped]
-        public string ImageUrl { get; set; } = string.Empty;
+        public string? ImageUrl { get; set; }
 
         [Column("poster_url")]
         public string PosterUrl { get; set; } = string.Empty;

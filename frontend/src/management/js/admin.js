@@ -2314,10 +2314,10 @@ window.populateModalRooms = populateModalRooms;
 window.handleShowtimeSubmit = handleShowtimeSubmit;
 window.deleteShowtime = deleteShowtime;
 
-window.loadRoomSeatMap = loadRoomSeatMap;
-window.renderSeatingGrid = renderSeatingGrid;
-window.updateRoomGridSize = updateRoomGridSize;
-window.saveCurrentRoomLayout = saveCurrentRoomLayout;
+// window.loadRoomSeatMap = loadRoomSeatMap;
+// window.renderSeatingGrid = renderSeatingGrid;
+// window.updateRoomGridSize = updateRoomGridSize;
+// window.saveCurrentRoomLayout = saveCurrentRoomLayout;
 
 window.filterBookingsTable = filterBookingsTable;
 window.approveBooking = approveBooking;
