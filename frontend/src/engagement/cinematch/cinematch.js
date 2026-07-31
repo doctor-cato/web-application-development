@@ -376,18 +376,11 @@ function spawnRadarNode() {
 }
 
 // ============================================================
-// MATCH FOUND
+// LOBBY & MATCHING LOGIC
 // ============================================================
-// ============================================================
-// LOBBY RENDERING & INVITATIONS
-// ============================================================
-// The SignalR backend automatically matches, so lobby logic is mostly bypassed.
-window.renderLobby = function(candidates) {
-    // Left for Demo Mode compatibility
-};
-
+// ponytail: SignalR handles real-time queue matching automatically.
+// Ceiling: Manual peer lobby invitation is simplified for instant matching.
 window.sendInvite = function(partnerKey, partnerName) {
-    // Only used in Demo Mode now
     if (DEMO_MODE) {
         switchStep('sync');
         if (DOM.sync.partnerName) DOM.sync.partnerName.innerText = partnerName;
@@ -395,10 +388,6 @@ window.sendInvite = function(partnerKey, partnerName) {
         setTimeout(onBothAccepted, 2000);
     }
 };
-
-window.showInvitePopup = function(inviteData, inviteKey) {};
-window.declineInvite = function() {};
-window.acceptInvite = function() {};
 
 function onBothAccepted() {
     switchStep('room');

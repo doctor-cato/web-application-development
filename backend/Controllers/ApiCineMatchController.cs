@@ -97,9 +97,9 @@ namespace appweb.Controllers
                     m.RevealCode,
                     m.IsRevealed,
                     IsInitiator = m.UserId == userId,
-                    MovieTitle = m.Showtime.Movie.Title,
-                    RoomId = m.Showtime.RoomId,
-                    Time = m.Showtime.StartTime
+                    MovieTitle = m.Showtime != null && m.Showtime.Movie != null ? m.Showtime.Movie.Title : "",
+                    RoomId = m.Showtime != null ? m.Showtime.RoomId : Guid.Empty,
+                    Time = m.Showtime != null ? m.Showtime.StartTime : DateTime.MinValue
                 })
                 .ToListAsync();
 

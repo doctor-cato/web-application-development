@@ -144,7 +144,7 @@ namespace appweb.Hubs
             }
         }
 
-        public override Task OnDisconnectedAsync(Exception? exception)
+        public override async Task OnDisconnectedAsync(Exception? exception)
         {
 
             lock (_queue)
@@ -159,11 +159,11 @@ namespace appweb.Hubs
                 var room = roomKV.Value;
                 var otherClient = room.User1.ConnectionId == Context.ConnectionId ? room.User2.ConnectionId : room.User1.ConnectionId;
 
-                Clients.Client(otherClient).SendAsync("OnPartnerDisconnected").Wait();
+                await Clients.Client(otherClient).SendAsync("OnPartnerDisconnected");
                 _rooms.TryRemove(roomKV.Key, out _);
             }
 
-            return base.OnDisconnectedAsync(exception);
+            await base.OnDisconnectedAsync(exception);
         }
     }
 }
