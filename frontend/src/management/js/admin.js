@@ -162,7 +162,13 @@ async function fetchMovies() {
                             status: m.status || 'now-showing',
                             poster: m.posterUrl || 'https://images.unsplash.com/photo-1536440136628-849c177e76a1',
                             trailer: m.trailerUrl || '',
-                            desc: m.description || ''
+                            desc: m.description || '',
+                            releaseDate: m.releaseDate || '',
+                            director: m.director || '',
+                            language: m.language || '',
+                            cast: m.cast || '',
+                            backdrop: m.backdropUrl || '',
+                            gallery: m.gallery || ''
                         };
                     });
                 return;
@@ -901,7 +907,16 @@ function openEditMovieModal(id) {
         if (Array.isArray(m.cast)) {
             currentCastList = m.cast.map(c => typeof c === 'string' ? { name: c, avatar: '/shared/images/avatar.jpg' } : c);
         } else if (typeof m.cast === 'string' && m.cast.trim()) {
-            currentCastList = m.cast.split(',').map(name => ({ name: name.trim(), avatar: '/shared/images/avatar.jpg' }));
+            try {
+                const parsed = JSON.parse(m.cast);
+                if (Array.isArray(parsed)) {
+                    currentCastList = parsed.map(c => typeof c === 'string' ? { name: c, avatar: '/shared/images/avatar.jpg' } : c);
+                } else {
+                    currentCastList = m.cast.split(',').map(name => ({ name: name.trim(), avatar: '/shared/images/avatar.jpg' }));
+                }
+            } catch(_) {
+                currentCastList = m.cast.split(',').map(name => ({ name: name.trim(), avatar: '/shared/images/avatar.jpg' }));
+            }
         }
         renderCastList();
 
@@ -910,7 +925,16 @@ function openEditMovieModal(id) {
         if (Array.isArray(m.gallery)) {
             currentGalleryList = [...m.gallery];
         } else if (typeof m.gallery === 'string' && m.gallery.trim()) {
-            currentGalleryList = m.gallery.split(',').map(u => u.trim());
+            try {
+                const parsed = JSON.parse(m.gallery);
+                if (Array.isArray(parsed)) {
+                    currentGalleryList = parsed;
+                } else {
+                    currentGalleryList = m.gallery.split(',').map(u => u.trim());
+                }
+            } catch(_) {
+                currentGalleryList = m.gallery.split(',').map(u => u.trim());
+            }
         }
         renderGalleryList();
 
@@ -1022,7 +1046,7 @@ async function handleMovieSubmit(e) {
     localStorage.setItem('3hd2k_movies', JSON.stringify(movieStore1));
     localStorage.setItem('cinema_movies', JSON.stringify(movieStore2));
 
-    const castString = currentCastList.map(c => c.name).join(', ') || "Đang cập nhật";
+    const castString = JSON.stringify(currentCastList);
 
     const apiData = {
         title: title,
@@ -1037,21 +1061,27 @@ async function handleMovieSubmit(e) {
         backdropUrl: backdrop || null,
         trailerUrl: trailer,
         ageRating: age,
-        status: status
+        status: status,
+        gallery: JSON.stringify(currentGalleryList)
     };
 
+    const token = localStorage.getItem('auth_token') || localStorage.getItem('jwt_token');
+    const authHeaders = {
+        'Content-Type': 'application/json',
+        ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+    };
     try {
         if (id) {
             apiData.id = id;
             await fetch(`/api/movies/${id}`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: authHeaders,
                 body: JSON.stringify(apiData)
             });
         } else {
             await fetch(`/api/movies`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: authHeaders,
                 body: JSON.stringify(apiData)
             });
         }

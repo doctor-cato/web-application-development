@@ -175,8 +175,6 @@ namespace appweb.Controllers
             if (user.LockoutEnd.HasValue && user.LockoutEnd > DateTime.UtcNow)
                 return StatusCode(StatusCodes.Status429TooManyRequests, new { message = "Tài khoản của bạn đang bị khóa tạm thời. Vui lòng thử lại sau." });
 
-            if (!user.IsVerifiedOtp && user.Role != "ADMIN")
-                return BadRequest(new { message = "Tài khoản chưa xác nhận email. Vui lòng xác nhận email trước khi đăng nhập." });
 
             bool isPasswordValid = false;
             if (!string.IsNullOrEmpty(user.Password))
@@ -208,6 +206,18 @@ namespace appweb.Controllers
             user.AccessFailedCount = 0;
             user.LockoutEnd = null;
             await _userRepository.UpdateAsync(user);
+
+            if (user.IsTwoFactorEnabled)
+            {
+                string otp = System.Security.Cryptography.RandomNumberGenerator.GetInt32(100000, 999999).ToString();
+                user.OtpCode = otp;
+                user.OtpExpiryTime = DateTime.UtcNow.AddMinutes(5);
+                await _userRepository.UpdateAsync(user);
+
+                await SendEmailAsync(user.Email, "Mã xác minh 2 bước (2FA) - 3HD2K Cinema", $"Xin chào,\n\nMã OTP xác minh 2 bước của bạn là: {otp}\n\nMã này sẽ hết hạn sau 5 phút.\n\nTrân trọng,\nĐội ngũ 3HD2K Cinema.");
+
+                return Ok(new { require2fa = true, message = "Vui lòng nhập mã OTP để hoàn tất đăng nhập.", email = user.Email });
+            }
 
             var jwtId = Guid.NewGuid().ToString();
             var token = GenerateJwtToken(user, jwtId);

@@ -79,6 +79,7 @@ namespace appweb.Controllers
             existingMovie.Director = movie.Director;
             existingMovie.Cast = movie.Cast;
             existingMovie.Language = movie.Language;
+            existingMovie.Gallery = movie.Gallery;
 
             await _movieRepository.UpdateAsync(existingMovie);
             return Ok(existingMovie);

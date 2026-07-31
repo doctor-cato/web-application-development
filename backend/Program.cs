@@ -103,7 +103,11 @@ var app = builder.Build();
 
 using var scope = app.Services.CreateScope();
 var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
+try {
+    context.Database.ExecuteSqlRaw("IF COL_LENGTH('users', 'is_two_factor_enabled') IS NULL ALTER TABLE users ADD is_two_factor_enabled BIT NOT NULL DEFAULT 0;");
+} catch (Exception ex) {
+    app.Logger.LogWarning(ex, "Failed to run alter table for 2FA column.");
+}
 if (builder.Configuration.GetValue<bool>("Database:InitializeOnStartup"))
 {
     try

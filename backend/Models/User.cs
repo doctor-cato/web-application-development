@@ -38,6 +38,9 @@ namespace appweb.Models
         [Column("is_verified_otp")]
         public bool IsVerifiedOtp { get; set; } = false;
 
+        [Column("is_two_factor_enabled")]
+        public bool IsTwoFactorEnabled { get; set; } = false;
+
         [Column("avatar_url")]
         public string? AvatarUrl { get; set; }
 
