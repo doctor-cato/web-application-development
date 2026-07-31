@@ -129,7 +129,7 @@ body { background-color: var(--bg-color); color: var(--text-main); font-family: 
     border: none;
     border-radius: 6px;
     color: var(--text-muted);
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-primary);
     font-size: 0.9375rem;
     font-weight: 500;
     cursor: pointer;
@@ -549,7 +549,7 @@ body { background-color: var(--bg-color); color: var(--text-main); font-family: 
     border: 1px solid var(--glass-border) !important;
     border-radius: 20px !important;
     color: white !important;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-primary);
     outline: none;
     transition: all 0.25s;
 }
@@ -572,7 +572,7 @@ select {
     border: 1px solid var(--glass-border);
     border-radius: 4px;
     color: white;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-primary);
     font-size: 0.875rem;
     outline: none;
     cursor: pointer;
@@ -1146,7 +1146,7 @@ input[type="text"], input[type="url"], input[type="number"], input[type="date"],
     border: 1px solid var(--glass-border);
     border-radius: 4px;
     color: white;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-primary);
     font-size: 0.875rem;
     outline: none;
     transition: all 0.25s;
@@ -1189,7 +1189,7 @@ textarea {
     .admin-sidebar .sidebar-header::after {
         content: '3H';
         color: var(--primary-red);
-        font-family: 'Inter', sans-serif;
+        font-family: var(--font-primary);
         font-size: 1.8rem;
     }
     .menu-item {
