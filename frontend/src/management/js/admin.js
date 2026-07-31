@@ -132,58 +132,36 @@ document.addEventListener('click', function(event) {
 });
 
 async function fetchMovies() {
-    let deletedList = [];
-    try {
-        deletedList = JSON.parse(localStorage.getItem('3hd2k_deleted_movies') || '[]').map(x => String(x).toLowerCase().trim());
-    } catch (_) {}
-
     try {
         const res = await fetch('/api/movies');
         if (res.ok) {
             const data = await res.json();
-            if (Array.isArray(data) && data.length > 0) {
-                db.movies = data
-                    .filter(m => {
-                        const mId = String(m.id || '').toLowerCase().trim();
-                        const mTitle = String(m.title || '').toLowerCase().trim();
-                        return !deletedList.includes(mId) && !deletedList.includes(mTitle);
-                    })
-                    .map(m => {
-                        let d = parseInt(m.duration || m.durationMinutes, 10);
-                        if (isNaN(d) || d <= 0) d = 120;
-                        else if (d < 10) d = d * 60;
+            db.movies = (Array.isArray(data) ? data : []).map(m => {
+                let d = parseInt(m.duration || m.durationMinutes, 10);
+                if (isNaN(d) || d <= 0) d = 120;
+                else if (d < 10) d = d * 60;
 
-                        return {
-                            id: m.id ? m.id.toString() : '',
-                            title: m.title || '',
-                            genre: m.genre || 'Phim',
-                            duration: d,
-                            age: m.ageRating || 'T13',
-                            status: m.status || 'now-showing',
-                            poster: m.posterUrl || 'https://images.unsplash.com/photo-1536440136628-849c177e76a1',
-                            trailer: m.trailerUrl || '',
-                            desc: m.description || '',
-                            releaseDate: m.releaseDate || '',
-                            director: m.director || '',
-                            language: m.language || '',
-                            cast: m.cast || '',
-                            backdrop: m.backdropUrl || '',
-                            gallery: m.gallery || ''
-                        };
-                    });
-                return;
-            }
+                return {
+                    id: m.id ? m.id.toString() : '',
+                    title: m.title || '',
+                    genre: m.genre || 'Phim',
+                    duration: d,
+                    age: m.ageRating || 'T13',
+                    status: m.status || 'now-showing',
+                    poster: m.posterUrl || 'https://images.unsplash.com/photo-1536440136628-849c177e76a1',
+                    trailer: m.trailerUrl || '',
+                    desc: m.description || '',
+                    releaseDate: m.releaseDate || '',
+                    director: m.director || '',
+                    language: m.language || '',
+                    cast: m.cast || '',
+                    backdrop: m.backdropUrl || '',
+                    gallery: m.gallery || ''
+                };
+            });
         }
     } catch (e) {
         console.error('Fetch movies API error:', e);
-    }
-    const local = JSON.parse(localStorage.getItem('3hd2k_movies') || '[]');
-    if (local.length > 0) {
-        db.movies = local.filter(m => {
-            const mId = String(m.id || '').toLowerCase().trim();
-            const mTitle = String(m.title || '').toLowerCase().trim();
-            return !deletedList.includes(mId) && !deletedList.includes(mTitle);
-        });
     }
 }
 
@@ -994,59 +972,6 @@ async function handleMovieSubmit(e) {
     const trailer = document.getElementById('movie-trailer-input').value;
     const desc = document.getElementById('movie-desc-input').value;
 
-    const formattedDur = `${Math.floor(durationNum / 60)}h ${durationNum % 60}m`;
-    const relYear = releaseDate ? new Date(releaseDate).getFullYear() : 2026;
-
-    const movieItem = {
-        id: id || ('mv_' + Math.random().toString(36).slice(2, 11)),
-        title: title,
-        genre: genre,
-        duration: durationNum,
-        releaseDate: releaseDate,
-        year: relYear,
-        language: language,
-        director: director,
-        cast: currentCastList,
-        age: age,
-        status: status,
-        poster: poster,
-        posterUrl: poster,
-        backdrop: backdrop || poster,
-        backdropUrl: backdrop || poster,
-        bg: backdrop || poster,
-        gallery: currentGalleryList.length > 0 ? currentGalleryList : [poster, backdrop || poster],
-        trailer: trailer,
-        trailerUrl: trailer,
-        desc: desc,
-        synopsis: desc
-    };
-
-    // Update memory db.movies
-    if (id) {
-        const dbIdx = db.movies.findIndex(m => m.id === id);
-        if (dbIdx >= 0) db.movies[dbIdx] = movieItem;
-        else db.movies.push(movieItem);
-    } else {
-        db.movies.unshift(movieItem);
-    }
-
-    // Save to LocalStorage '3hd2k_movies' & 'cinema_movies'
-    let movieStore1 = JSON.parse(localStorage.getItem('3hd2k_movies') || '[]');
-    let movieStore2 = JSON.parse(localStorage.getItem('cinema_movies') || '[]');
-
-    [movieStore1, movieStore2].forEach(store => {
-        if (id) {
-            const idx = store.findIndex(m => m.id === id);
-            if (idx >= 0) store[idx] = movieItem;
-            else store.push(movieItem);
-        } else {
-            store.unshift(movieItem);
-        }
-    });
-
-    localStorage.setItem('3hd2k_movies', JSON.stringify(movieStore1));
-    localStorage.setItem('cinema_movies', JSON.stringify(movieStore2));
-
     const castString = JSON.stringify(currentCastList);
 
     const apiData = {
@@ -1072,68 +997,49 @@ async function handleMovieSubmit(e) {
         ...(token ? { 'Authorization': `Bearer ${token}` } : {})
     };
     try {
+        let res;
         if (id) {
             apiData.id = id;
-            await fetch(`/api/movies/${id}`, {
+            res = await fetch(`/api/movies/${id}`, {
                 method: 'PUT',
                 headers: authHeaders,
                 body: JSON.stringify(apiData)
             });
         } else {
-            await fetch(`/api/movies`, {
+            res = await fetch(`/api/movies`, {
                 method: 'POST',
                 headers: authHeaders,
                 body: JSON.stringify(apiData)
             });
         }
+        if (!res.ok) throw new Error("API request failed");
+        
+        await fetchMovies();
+        renderMoviesTable();
+        closeMovieModal();
+        showToast(id ? "Đã cập nhật thông tin phim thành công!" : "Đã thêm phim mới thành công!");
     } catch (err) {
-        console.warn("API movie update fallback to localStorage only:", err);
+        console.error("API movie update error:", err);
+        showToast("Lỗi cập nhật phim!", "error");
     }
-
-    closeMovieModal();
-    renderMoviesTable();
-    showToast(id ? "Đã cập nhật thông tin phim thành công!" : "Đã thêm phim mới thành công!");
 }
 
 async function deleteMovie(id) {
     if (confirm("Bạn có chắc chắn muốn xóa phim này khỏi hệ thống API?")) {
-        const targetMovie = (db.movies || []).find(m => m.id === id || String(m.id).toLowerCase() === String(id).toLowerCase());
-        const targetTitle = targetMovie ? targetMovie.title.toLowerCase().trim() : '';
-
-        // 1. Remove from LocalStorage ('3hd2k_movies' & 'cinema_movies')
-        ['3hd2k_movies', 'cinema_movies'].forEach(storeKey => {
-            try {
-                let items = JSON.parse(localStorage.getItem(storeKey) || '[]');
-                if (Array.isArray(items)) {
-                    items = items.filter(m => {
-                        const mId = String(m.id || m.movieId || '').toLowerCase().trim();
-                        const mTitle = String(m.title || '').toLowerCase().trim();
-                        const isMatchId = id && mId === String(id).toLowerCase().trim();
-                        const isMatchTitle = targetTitle && mTitle === targetTitle;
-                        return !isMatchId && !isMatchTitle;
-                    });
-                    localStorage.setItem(storeKey, JSON.stringify(items));
-                }
-            } catch (e) {}
-        });
-
-        // 2. Track deleted ID/Title in '3hd2k_deleted_movies'
+        const token = localStorage.getItem('auth_token') || localStorage.getItem('jwt_token');
+        const authHeaders = {
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        };
         try {
-            let deleted = JSON.parse(localStorage.getItem('3hd2k_deleted_movies') || '[]');
-            if (!Array.isArray(deleted)) deleted = [];
-            if (id && !deleted.includes(String(id))) deleted.push(String(id));
-            if (targetTitle && !deleted.includes(targetTitle)) deleted.push(targetTitle);
-            localStorage.setItem('3hd2k_deleted_movies', JSON.stringify(deleted));
-        } catch (e) {}
-
-        // 3. Delete from API
-        try {
-            await fetch(`/api/movies/${id}`, { method: 'DELETE' });
+            const res = await fetch(`/api/movies/${id}`, { method: 'DELETE', headers: authHeaders });
+            if (!res.ok) throw new Error("API request failed");
             showToast('Đã xóa phim thành công!', 'success');
         } catch (err) {
             console.error("API delete error", err);
             showToast('Lỗi khi xóa phim', 'error');
         }
+        await fetchMovies();
+        renderMoviesTable();
         await reloadDatabase();
     }
 }
