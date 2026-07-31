@@ -1912,82 +1912,144 @@
         <div class="modal-admin-content glass-panel">
             <span class="close-admin-modal" onclick="closeMovieModal()">&times;</span>
             <h3 id="movie-modal-title">Thêm phim mới</h3>
+
+            <!-- Tab Navigation (Bảng 1 & Bảng 2) -->
+            <div class="movie-modal-tabs">
+                <button type="button" class="movie-tab-btn active" id="tab-btn-info" onclick="switchMovieModalTab('info')">
+                    <i class="fas fa-file-alt"></i> Bảng 1: Thông tin phim
+                </button>
+                <button type="button" class="movie-tab-btn" id="tab-btn-media" onclick="switchMovieModalTab('media')">
+                    <i class="fas fa-photo-video"></i> Bảng 2: Media & Hình ảnh
+                </button>
+            </div>
+
             <form id="movie-form" onsubmit="handleMovieSubmit(event)">
                 <input type="hidden" id="movie-id">
 
-                <div class="form-group">
-                    <label for="movie-title-input">Tên phim:</label>
-                    <input type="text" id="movie-title-input" required placeholder="Nhập tên phim...">
-                </div>
-
-                <div class="form-row">
+                <!-- BẢNG 1: THÔNG TIN PHIM -->
+                <div id="movie-tab-info" class="movie-tab-content active">
                     <div class="form-group">
-                        <label for="movie-genre-input">Thể loại:</label>
-                        <input type="text" id="movie-genre-input" required placeholder="Hành Động, Viễn Tưởng...">
+                        <label for="movie-title-input">Tên phim:</label>
+                        <input type="text" id="movie-title-input" required placeholder="Nhập tên phim...">
                     </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="movie-genre-input">Thể loại:</label>
+                            <input type="text" id="movie-genre-input" required placeholder="Hành Động, Viễn Tưởng...">
+                        </div>
+                        <div class="form-group">
+                            <label for="movie-duration-input">Thời lượng (số phút):</label>
+                            <input type="number" id="movie-duration-input" min="1" max="600" value="120" required placeholder="120">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="movie-release-date-input">📅 Ngày khởi chiếu:</label>
+                            <input type="date" id="movie-release-date-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="movie-language-input">🗣️ Ngôn ngữ / Phụ đề:</label>
+                            <input type="text" id="movie-language-input" placeholder="Tiếng Việt / Phụ đề tiếng Anh">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="movie-age-input">Độ tuổi:</label>
+                            <select id="movie-age-input">
+                                <option value="P">P - Mọi lứa tuổi</option>
+                                <option value="T13">T13 - Trên 13 tuổi</option>
+                                <option value="T16">T16 - Trên 16 tuổi</option>
+                                <option value="T18">T18 - Trên 18 tuổi</option>
+                                <option value="C18">C18 - Trên 18 tuổi (Cấm trẻ em)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="movie-status-input">Trạng thái:</label>
+                            <select id="movie-status-input">
+                                <option value="now-showing">Đang chiếu</option>
+                                <option value="coming-soon">Sắp chiếu</option>
+                            </select>
+                        </div>
+                    </div>
+
                     <div class="form-group">
-                        <label for="movie-duration-input">Thời lượng (số phút):</label>
-                        <input type="number" id="movie-duration-input" min="1" max="600" value="120" required placeholder="Số phút (ví dụ: 120)">
+                        <label for="movie-director-input">🎬 Đạo diễn:</label>
+                        <input type="text" id="movie-director-input" placeholder="Tên đạo diễn (ví dụ: Christopher Nolan)">
                     </div>
-                </div>
 
-                <div class="form-row">
+                    <!-- Quản lý danh sách diễn viên (Thêm nhiều diễn viên) -->
                     <div class="form-group">
-                        <label for="movie-age-input">Độ tuổi:</label>
-                        <select id="movie-age-input">
-                            <option value="P">P - Mọi lứa tuổi</option>
-                            <option value="T13">T13 - Trên 13 tuổi</option>
-                            <option value="T16">T16 - Trên 16 tuổi</option>
-                            <option value="T18">T18 - Trên 18 tuổi</option>
-                            <option value="C18">C18 - Trên 18 tuổi (Cấm trẻ em)</option>
-                        </select>
+                        <label>🎭 Diễn viên (Thêm từng diễn viên):</label>
+                        <div style="display: flex; gap: 8px; margin-bottom: 6px;">
+                            <input type="text" id="cast-name-input" placeholder="Tên diễn viên..." style="flex: 2;">
+                            <input type="url" id="cast-avatar-input" placeholder="Link ảnh đại diện (tùy chọn)..." style="flex: 3;">
+                            <button type="button" class="btn btn-outline" style="white-space: nowrap; border-color: var(--primary-red); color: #fff; padding: 6px 14px;" onclick="addCastMember()">
+                                <i class="fas fa-plus"></i> Thêm
+                            </button>
+                        </div>
+                        <div id="cast-items-list" class="cast-items-container">
+                            <!-- Cast chips will be rendered here -->
+                        </div>
                     </div>
+
                     <div class="form-group">
-                        <label for="movie-status-input">Trạng thái:</label>
-                        <select id="movie-status-input">
-                            <option value="now-showing">Đang chiếu</option>
-                            <option value="coming-soon">Sắp chiếu</option>
-                        </select>
+                        <label for="movie-desc-input">Mô tả phim:</label>
+                        <textarea id="movie-desc-input" rows="3" placeholder="Tóm tắt ngắn nội dung phim..."></textarea>
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="movie-poster-input">🖼️ Ảnh Poster (dọc — dùng cho card phim):</label>
-                    <input type="url" id="movie-poster-input" placeholder="https://example.com/poster.jpg">
-                    <small style="color: var(--text-muted); font-size: 0.78rem; margin-top: 4px; display: block;">Ảnh tỉ lệ dọc (2:3) — hiển thị ở danh sách phim, tìm kiếm</small>
-                </div>
-
-                <div class="form-group">
-                    <label for="movie-backdrop-input">🎬 Ảnh Banner (ngang — dùng cho Hero Banner):</label>
-                    <input type="url" id="movie-backdrop-input" placeholder="https://example.com/backdrop.jpg">
-                    <small style="color: var(--text-muted); font-size: 0.78rem; margin-top: 4px; display: block;">Ảnh tỉ lệ ngang (16:9) — hiển thị ở banner trang chủ</small>
-                </div>
-
-                <!-- Preview ảnh -->
-                <div id="movie-img-preview" style="display:none; gap: 15px; margin-bottom: 15px;">
-                    <div style="flex: 1; text-align: center;">
-                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 6px;">POSTER</div>
-                        <img id="preview-poster" src="" alt="Poster preview" style="height: 120px; width: auto; border-radius: 8px; border: 1px solid var(--glass-border); object-fit: cover;">
+                <!-- BẢNG 2: MEDIA & HÌNH ẢNH -->
+                <div id="movie-tab-media" class="movie-tab-content">
+                    <div class="form-group">
+                        <label for="movie-poster-input">🖼️ Ảnh Poster (dọc — dùng cho card phim):</label>
+                        <input type="url" id="movie-poster-input" placeholder="https://example.com/poster.jpg">
+                        <small style="color: var(--text-muted); font-size: 0.78rem; margin-top: 4px; display: block;">Ảnh tỉ lệ dọc (2:3) — hiển thị ở danh sách phim, tìm kiếm</small>
                     </div>
-                    <div style="flex: 2; text-align: center;">
-                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 6px;">BANNER</div>
-                        <img id="preview-backdrop" src="" alt="Backdrop preview" style="height: 120px; width: 100%; border-radius: 8px; border: 1px solid var(--glass-border); object-fit: cover;">
+
+                    <div class="form-group">
+                        <label for="movie-backdrop-input">🎬 Ảnh Banner (ngang — dùng cho Hero Banner):</label>
+                        <input type="url" id="movie-backdrop-input" placeholder="https://example.com/backdrop.jpg">
+                        <small style="color: var(--text-muted); font-size: 0.78rem; margin-top: 4px; display: block;">Ảnh tỉ lệ ngang (16:9) — hiển thị ở banner trang chủ</small>
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <label for="movie-trailer-input">Link Trailer (YouTube Video URL):</label>
-                    <input type="url" id="movie-trailer-input" placeholder="https://www.youtube.com/watch?v=...">
-                </div>
+                    <div class="form-group">
+                        <label for="movie-trailer-input">▶️ Link Trailer (YouTube Video URL):</label>
+                        <input type="url" id="movie-trailer-input" placeholder="https://www.youtube.com/watch?v=...">
+                    </div>
 
-                <div class="form-group">
-                    <label for="movie-desc-input">Mô tả phim:</label>
-                    <textarea id="movie-desc-input" rows="3" placeholder="Tóm tắt ngắn nội dung phim..."></textarea>
+                    <!-- Quản lý bộ sưu tập ảnh thường (Thêm nhiều ảnh) -->
+                    <div class="form-group">
+                        <label>📸 Ảnh thường / Gallery (Thêm nhiều ảnh):</label>
+                        <div style="display: flex; gap: 8px; margin-bottom: 6px;">
+                            <input type="url" id="gallery-url-input" placeholder="https://example.com/gallery-photo.jpg" style="flex: 1;">
+                            <button type="button" class="btn btn-outline" style="white-space: nowrap; border-color: var(--btn-cyan-color); color: var(--btn-cyan-color); padding: 6px 14px;" onclick="addGalleryImage()">
+                                <i class="fas fa-plus"></i> Thêm ảnh
+                            </button>
+                        </div>
+                        <div id="gallery-items-list" class="gallery-items-grid">
+                            <!-- Gallery thumbnails will be rendered here -->
+                        </div>
+                    </div>
+
+                    <!-- Live Preview ảnh Poster & Banner -->
+                    <div id="movie-img-preview" style="display:none; gap: 15px; margin-top: 15px; border-top: 1px dashed var(--glass-border); padding-top: 15px;">
+                        <div style="flex: 1; text-align: center;">
+                            <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 6px;">POSTER DỌC</div>
+                            <img id="preview-poster" src="" alt="Poster preview" style="height: 120px; width: auto; border-radius: 8px; border: 1px solid var(--glass-border); object-fit: cover;">
+                        </div>
+                        <div style="flex: 2; text-align: center;">
+                            <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 6px;">BANNER NGANG</div>
+                            <img id="preview-backdrop" src="" alt="Backdrop preview" style="height: 120px; width: 100%; border-radius: 8px; border: 1px solid var(--glass-border); object-fit: cover;">
+                        </div>
+                    </div>
                 </div>
 
                 <div class="form-actions">
                     <button type="button" class="btn btn-outline" style="border-color: var(--glass-border);" onclick="closeMovieModal()">Hủy</button>
-                    <button type="submit" class="btn btn-primary">Lưu phim</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Lưu phim</button>
                 </div>
             </form>
         </div>

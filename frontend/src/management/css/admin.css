@@ -1226,3 +1226,162 @@ textarea {
         gap: 0;
     }
 }
+
+/* ==========================================================================
+   Movie Modal 2-Table Tabs & Dynamic Items (Cast & Gallery)
+   ========================================================================== */
+#movie-modal .modal-admin-content {
+    max-width: 720px;
+    width: 92%;
+}
+
+.movie-modal-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--glass-border);
+    padding-bottom: 12px;
+}
+
+.movie-tab-btn {
+    flex: 1;
+    padding: 11px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.movie-tab-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.movie-tab-btn.active {
+    background: linear-gradient(135deg, rgba(229, 9, 20, 0.85), rgba(180, 0, 10, 0.95));
+    color: #fff;
+    border-color: rgba(229, 9, 20, 0.8);
+    box-shadow: 0 4px 12px rgba(229, 9, 20, 0.35);
+}
+
+.movie-tab-content {
+    display: none;
+    animation: fadeInTab 0.3s ease;
+}
+
+.movie-tab-content.active {
+    display: block;
+}
+
+@keyframes fadeInTab {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Cast Chips Container */
+.cast-items-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+    max-height: 120px;
+    overflow-y: auto;
+    padding: 4px;
+}
+
+.cast-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 4px 10px 4px 6px;
+    font-size: 0.82rem;
+    color: #fff;
+    transition: background 0.2s;
+}
+
+.cast-chip:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.cast-chip img {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: #333;
+}
+
+.cast-chip .remove-cast-btn {
+    cursor: pointer;
+    color: #ff6b6b;
+    font-weight: bold;
+    margin-left: 4px;
+    font-size: 1rem;
+    line-height: 1;
+}
+
+.cast-chip .remove-cast-btn:hover {
+    color: #ff2222;
+}
+
+/* Gallery Items Grid */
+.gallery-items-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+    max-height: 150px;
+    overflow-y: auto;
+    padding: 4px;
+}
+
+.gallery-thumb-card {
+    position: relative;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid var(--glass-border);
+    aspect-ratio: 16 / 9;
+    background: #000;
+}
+
+.gallery-thumb-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.gallery-thumb-card .remove-gallery-btn {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    background: rgba(0, 0, 0, 0.75);
+    color: #ff4d4d;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.gallery-thumb-card .remove-gallery-btn:hover {
+    transform: scale(1.15);
+    background: var(--primary-red);
+    color: #fff;
+}
+

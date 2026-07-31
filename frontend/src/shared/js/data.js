@@ -66,13 +66,39 @@ function mapMovieObj(m) {
     }
     if (!movieStatus) movieStatus = 'now-showing';
 
+    let releaseDateVal = m.releaseDate;
+    if (releaseDateVal && typeof releaseDateVal === 'string' && releaseDateVal.includes('T')) {
+        releaseDateVal = releaseDateVal.split('T')[0];
+    }
+    if (!releaseDateVal && m.year) {
+        releaseDateVal = `${m.year}-01-01`;
+    }
+
+    let parsedCast = [];
+    if (Array.isArray(m.cast)) {
+        parsedCast = m.cast.map(c => {
+            if (typeof c === 'string') return { name: c, avatar: '/shared/images/avatar.jpg' };
+            return { name: c.name || 'Diễn viên', avatar: normalizeImagePath(c.avatar || '/shared/images/avatar.jpg') };
+        });
+    } else if (typeof m.cast === 'string' && m.cast.trim() && m.cast !== 'Đang cập nhật') {
+        parsedCast = m.cast.split(',').map(name => ({ name: name.trim(), avatar: '/shared/images/avatar.jpg' }));
+    }
+
+    let parsedGallery = [posterImg, bgImg];
+    if (Array.isArray(m.gallery) && m.gallery.length > 0) {
+        parsedGallery = m.gallery.map(img => normalizeImagePath(img));
+    } else if (typeof m.gallery === 'string' && m.gallery.trim()) {
+        parsedGallery = m.gallery.split(',').map(img => normalizeImagePath(img.trim()));
+    }
+
     return {
         id: m.id || m.movieId || ('mv_' + Math.random().toString(36).slice(2, 11)),
         title: m.title || 'Phim Chưa Có Tiêu Đề',
-        meta: m.meta || `${m.releaseDate ? new Date(m.releaseDate).getFullYear() : '2026'} • ${m.genre || 'Hành Động'} • ${formattedDuration}`,
+        meta: m.meta || `${releaseDateVal ? new Date(releaseDateVal).getFullYear() : '2026'} • ${m.genre || 'Hành Động'} • ${formattedDuration}`,
         desc: m.description || m.desc || "Nội dung phim đang được cập nhật...",
         synopsis: m.description || m.synopsis || m.desc || "Nội dung phim đang được cập nhật...",
-        year: m.releaseDate ? new Date(m.releaseDate).getFullYear() : (m.year || '2026'),
+        releaseDate: releaseDateVal || "Đang cập nhật",
+        year: releaseDateVal ? new Date(releaseDateVal).getFullYear() : (m.year || '2026'),
         duration: formattedDuration,
         age: m.ageRating || m.age || 'P',
         genre: m.genre || (m.tags ? m.tags.join(', ') : 'Chưa phân loại'),
@@ -84,8 +110,8 @@ function mapMovieObj(m) {
         rating: m.rating || 4.8,
         ratingCount: m.ratingCount || 120,
         director: m.director || "Đang cập nhật",
-        cast: m.cast || [],
-        gallery: m.gallery || [posterImg, bgImg],
+        cast: parsedCast,
+        gallery: parsedGallery,
         trailer: m.trailerUrl || m.trailer || "https://www.youtube.com/embed/dQw4w9WgXcQ",
         trailerWatch: m.trailerUrl || m.trailer || "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
         tags: m.genre ? m.genre.split(',').map(s => s.trim()) : (m.tags || ["2D"]),

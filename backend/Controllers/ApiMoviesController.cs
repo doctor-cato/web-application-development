@@ -75,6 +75,10 @@ namespace appweb.Controllers
             existingMovie.AgeRating = movie.AgeRating;
             existingMovie.Genre = movie.Genre;
             existingMovie.Status = movie.Status;
+            existingMovie.ReleaseDate = movie.ReleaseDate;
+            existingMovie.Director = movie.Director;
+            existingMovie.Cast = movie.Cast;
+            existingMovie.Language = movie.Language;
 
             await _movieRepository.UpdateAsync(existingMovie);
             return Ok(existingMovie);

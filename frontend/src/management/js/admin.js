@@ -741,30 +741,181 @@ function filterMoviesTable() {
     renderMoviesTable();
 }
 
+let currentCastList = [];
+let currentGalleryList = [];
+
+function switchMovieModalTab(tabName) {
+    const infoTabBtn = document.getElementById('tab-btn-info');
+    const mediaTabBtn = document.getElementById('tab-btn-media');
+    const infoContent = document.getElementById('movie-tab-info');
+    const mediaContent = document.getElementById('movie-tab-media');
+
+    if (!infoTabBtn || !mediaTabBtn || !infoContent || !mediaContent) return;
+
+    if (tabName === 'media') {
+        infoTabBtn.classList.remove('active');
+        mediaTabBtn.classList.add('active');
+        infoContent.classList.remove('active');
+        mediaContent.classList.add('active');
+    } else {
+        mediaTabBtn.classList.remove('active');
+        infoTabBtn.classList.add('active');
+        mediaContent.classList.remove('active');
+        infoContent.classList.add('active');
+    }
+}
+
+// Dynamic Cast Management
+function addCastMember() {
+    const nameInput = document.getElementById('cast-name-input');
+    const avatarInput = document.getElementById('cast-avatar-input');
+    if (!nameInput) return;
+
+    const name = nameInput.value.trim();
+    const avatar = avatarInput ? avatarInput.value.trim() : '';
+
+    if (!name) {
+        showToast('Vui lòng nhập tên diễn viên!');
+        return;
+    }
+
+    currentCastList.push({
+        name: name,
+        avatar: avatar || '/shared/images/avatar.jpg'
+    });
+
+    nameInput.value = '';
+    if (avatarInput) avatarInput.value = '';
+
+    renderCastList();
+}
+
+function removeCastMember(idx) {
+    currentCastList.splice(idx, 1);
+    renderCastList();
+}
+
+function renderCastList() {
+    const container = document.getElementById('cast-items-list');
+    if (!container) return;
+
+    if (currentCastList.length === 0) {
+        container.innerHTML = `<span style="font-size: 0.8rem; color: var(--text-muted); font-style: italic;">Chưa có diễn viên nào. Nhập tên và bấm "+ Thêm".</span>`;
+        return;
+    }
+
+    container.innerHTML = currentCastList.map((item, idx) => `
+        <div class="cast-chip">
+            <img src="${item.avatar || '/shared/images/avatar.jpg'}" alt="${item.name}" onerror="this.src='/shared/images/avatar.jpg'">
+            <span>${item.name}</span>
+            <span class="remove-cast-btn" onclick="removeCastMember(${idx})" title="Xóa">&times;</span>
+        </div>
+    `).join('');
+}
+
+// Dynamic Gallery Management
+function addGalleryImage() {
+    const urlInput = document.getElementById('gallery-url-input');
+    if (!urlInput) return;
+
+    const url = urlInput.value.trim();
+    if (!url) {
+        showToast('Vui lòng nhập URL ảnh thường!');
+        return;
+    }
+
+    currentGalleryList.push(url);
+    urlInput.value = '';
+    renderGalleryList();
+}
+
+function removeGalleryImage(idx) {
+    currentGalleryList.splice(idx, 1);
+    renderGalleryList();
+}
+
+function renderGalleryList() {
+    const container = document.getElementById('gallery-items-list');
+    if (!container) return;
+
+    if (currentGalleryList.length === 0) {
+        container.innerHTML = `<span style="font-size: 0.8rem; color: var(--text-muted); font-style: italic;">Chưa có ảnh gallery nào. Nhập URL và bấm "+ Thêm ảnh".</span>`;
+        return;
+    }
+
+    container.innerHTML = currentGalleryList.map((url, idx) => `
+        <div class="gallery-thumb-card">
+            <img src="${url}" alt="Gallery photo ${idx + 1}" onerror="this.src='/shared/images/avatar.jpg'">
+            <span class="remove-gallery-btn" onclick="removeGalleryImage(${idx})" title="Xóa ảnh">&times;</span>
+        </div>
+    `).join('');
+}
+
 function openAddMovieModal() {
     document.getElementById('movie-id').value = '';
     document.getElementById('movie-form').reset();
     document.getElementById('movie-duration-input').value = 120;
+    document.getElementById('movie-release-date-input').value = new Date().toISOString().split('T')[0];
+    document.getElementById('movie-language-input').value = "Tiếng Việt / Phụ đề tiếng Anh";
+    document.getElementById('movie-director-input').value = "";
     document.getElementById('movie-modal-title').textContent = "Thêm phim mới";
+    
+    currentCastList = [];
+    currentGalleryList = [];
+    renderCastList();
+    renderGalleryList();
+    
+    switchMovieModalTab('info');
     document.getElementById('movie-img-preview').style.display = 'none';
     document.getElementById('movie-modal').style.display = 'flex';
 }
 
 function openEditMovieModal(id) {
-    const m = db.movies.find(item => item.id === id);
+    const m = db.movies.find(item => item.id === id) || (function(){
+        const stored = JSON.parse(localStorage.getItem('3hd2k_movies') || '[]');
+        return stored.find(item => item.id === id);
+    })();
+
     if (m) {
         document.getElementById('movie-id').value = m.id;
         document.getElementById('movie-title-input').value = m.title || '';
         document.getElementById('movie-genre-input').value = m.genre || '';
-        document.getElementById('movie-duration-input').value = m.duration || 120;
+        document.getElementById('movie-duration-input').value = parseDurationMinutes(m.duration) || 120;
         document.getElementById('movie-age-input').value = m.age || 'T13';
         document.getElementById('movie-status-input').value = m.status || 'now-showing';
+        
+        let rDate = m.releaseDate;
+        if (rDate && rDate.includes('T')) rDate = rDate.split('T')[0];
+        if (!rDate && m.year) rDate = `${m.year}-01-01`;
+        document.getElementById('movie-release-date-input').value = rDate || new Date().toISOString().split('T')[0];
+        
+        document.getElementById('movie-language-input').value = m.language || "Tiếng Việt / Phụ đề tiếng Anh";
+        document.getElementById('movie-director-input').value = m.director || "";
         document.getElementById('movie-poster-input').value = m.poster || m.posterUrl || '';
         document.getElementById('movie-backdrop-input').value = m.backdrop || m.backdropUrl || m.bg || '';
         document.getElementById('movie-trailer-input').value = m.trailer || m.trailerUrl || '';
-        document.getElementById('movie-desc-input').value = m.desc || '';
+        document.getElementById('movie-desc-input').value = m.desc || m.synopsis || m.description || '';
+
+        // Load Cast List
+        currentCastList = [];
+        if (Array.isArray(m.cast)) {
+            currentCastList = m.cast.map(c => typeof c === 'string' ? { name: c, avatar: '/shared/images/avatar.jpg' } : c);
+        } else if (typeof m.cast === 'string' && m.cast.trim()) {
+            currentCastList = m.cast.split(',').map(name => ({ name: name.trim(), avatar: '/shared/images/avatar.jpg' }));
+        }
+        renderCastList();
+
+        // Load Gallery List
+        currentGalleryList = [];
+        if (Array.isArray(m.gallery)) {
+            currentGalleryList = [...m.gallery];
+        } else if (typeof m.gallery === 'string' && m.gallery.trim()) {
+            currentGalleryList = m.gallery.split(',').map(u => u.trim());
+        }
+        renderGalleryList();
+
         document.getElementById('movie-modal-title').textContent = "Sửa thông tin phim";
-        // Hiện preview nếu có ảnh
+        switchMovieModalTab('info');
         updateImgPreview();
         document.getElementById('movie-modal').style.display = 'flex';
     }
@@ -774,7 +925,6 @@ function closeMovieModal() {
     document.getElementById('movie-modal').style.display = 'none';
 }
 
-// Live preview ảnh poster & backdrop khi admin nhập URL
 function updateImgPreview() {
     const posterUrl = document.getElementById('movie-poster-input')?.value || '';
     const backdropUrl = document.getElementById('movie-backdrop-input')?.value || '';
@@ -798,14 +948,6 @@ function updateImgPreview() {
     }
 }
 
-// Gắn event listener preview khi DOM sẵn sàng
-document.addEventListener('DOMContentLoaded', () => {
-    const posterInput = document.getElementById('movie-poster-input');
-    const backdropInput = document.getElementById('movie-backdrop-input');
-    if (posterInput) posterInput.addEventListener('input', updateImgPreview);
-    if (backdropInput) backdropInput.addEventListener('input', updateImgPreview);
-});
-
 async function handleMovieSubmit(e) {
     if (e) e.preventDefault();
     const id = document.getElementById('movie-id').value;
@@ -817,33 +959,53 @@ async function handleMovieSubmit(e) {
 
     const title = document.getElementById('movie-title-input').value;
     const genre = document.getElementById('movie-genre-input').value;
+    const releaseDate = document.getElementById('movie-release-date-input').value;
+    const language = document.getElementById('movie-language-input').value || "Tiếng Việt / Phụ đề tiếng Anh";
     const age = document.getElementById('movie-age-input').value;
     const status = document.getElementById('movie-status-input').value;
+    const director = document.getElementById('movie-director-input').value || "Đang cập nhật";
     const poster = document.getElementById('movie-poster-input').value;
     const backdrop = document.getElementById('movie-backdrop-input').value;
     const trailer = document.getElementById('movie-trailer-input').value;
     const desc = document.getElementById('movie-desc-input').value;
 
     const formattedDur = `${Math.floor(durationNum / 60)}h ${durationNum % 60}m`;
+    const relYear = releaseDate ? new Date(releaseDate).getFullYear() : 2026;
 
     const movieItem = {
         id: id || ('mv_' + Math.random().toString(36).slice(2, 11)),
         title: title,
         genre: genre,
         duration: durationNum,
+        releaseDate: releaseDate,
+        year: relYear,
+        language: language,
+        director: director,
+        cast: currentCastList,
         age: age,
         status: status,
         poster: poster,
         posterUrl: poster,
-        backdrop: backdrop || poster,   // fallback về poster nếu không có backdrop
+        backdrop: backdrop || poster,
         backdropUrl: backdrop || poster,
         bg: backdrop || poster,
+        gallery: currentGalleryList.length > 0 ? currentGalleryList : [poster, backdrop || poster],
         trailer: trailer,
         trailerUrl: trailer,
-        desc: desc
+        desc: desc,
+        synopsis: desc
     };
 
-    // Save to LocalStorage '3hd2k_movies' & 'cinema_movies' so home page & detail page immediately sync
+    // Update memory db.movies
+    if (id) {
+        const dbIdx = db.movies.findIndex(m => m.id === id);
+        if (dbIdx >= 0) db.movies[dbIdx] = movieItem;
+        else db.movies.push(movieItem);
+    } else {
+        db.movies.unshift(movieItem);
+    }
+
+    // Save to LocalStorage '3hd2k_movies' & 'cinema_movies'
     let movieStore1 = JSON.parse(localStorage.getItem('3hd2k_movies') || '[]');
     let movieStore2 = JSON.parse(localStorage.getItem('cinema_movies') || '[]');
 
@@ -860,14 +1022,17 @@ async function handleMovieSubmit(e) {
     localStorage.setItem('3hd2k_movies', JSON.stringify(movieStore1));
     localStorage.setItem('cinema_movies', JSON.stringify(movieStore2));
 
+    const castString = currentCastList.map(c => c.name).join(', ') || "Đang cập nhật";
+
     const apiData = {
         title: title,
         description: desc,
         duration: durationNum,
-        releaseDate: new Date().toISOString(),
+        releaseDate: releaseDate ? new Date(releaseDate).toISOString() : new Date().toISOString(),
         genre: genre,
-        director: "Đang cập nhật",
-        cast: "Đang cập nhật",
+        director: director,
+        cast: castString,
+        language: language,
         posterUrl: poster,
         backdropUrl: backdrop || null,
         trailerUrl: trailer,
@@ -878,6 +1043,26 @@ async function handleMovieSubmit(e) {
     try {
         if (id) {
             apiData.id = id;
+            await fetch(`/api/movies/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(apiData)
+            });
+        } else {
+            await fetch(`/api/movies`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(apiData)
+            });
+        }
+    } catch (err) {
+        console.warn("API movie update fallback to localStorage only:", err);
+    }
+
+    closeMovieModal();
+    renderMoviesTable();
+    showToast(id ? "Đã cập nhật thông tin phim thành công!" : "Đã thêm phim mới thành công!");
+}
             await fetch(`/api/movies/${id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
@@ -2162,6 +2347,11 @@ window.handleMovieSubmit = handleMovieSubmit;
 window.deleteMovie = deleteMovie;
 window.openTrailerModal = openTrailerModal;
 window.closeTrailerModal = closeTrailerModal;
+window.switchMovieModalTab = switchMovieModalTab;
+window.addCastMember = addCastMember;
+window.removeCastMember = removeCastMember;
+window.addGalleryImage = addGalleryImage;
+window.removeGalleryImage = removeGalleryImage;
 
 window.filterShowtimesTable = filterShowtimesTable;
 window.openAddShowtimeModal = openAddShowtimeModal;

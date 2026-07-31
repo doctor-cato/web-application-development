@@ -48,6 +48,15 @@ namespace appweb.Models
         [Column("status")]
         public string Status { get; set; } = "now-showing";
 
+        [NotMapped]
+        public string? Director { get; set; }
+
+        [NotMapped]
+        public string? Cast { get; set; }
+
+        [NotMapped]
+        public string? Language { get; set; }
+
         [System.Text.Json.Serialization.JsonIgnore]
         public List<Showtime> Showtimes { get; set; } = new List<Showtime>();
     }

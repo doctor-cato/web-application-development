@@ -150,6 +150,17 @@ function renderMetadata(movie) {
 
     const metaGrid = document.getElementById('meta-grid');
     if (metaGrid) {
+        let displayRelDate = movie.releaseDate;
+        if (displayRelDate && displayRelDate !== 'Đang cập nhật' && displayRelDate !== 'undefined') {
+            if (displayRelDate.includes('T')) displayRelDate = displayRelDate.split('T')[0];
+            if (displayRelDate.includes('-')) {
+                const p = displayRelDate.split('-');
+                if (p.length === 3) displayRelDate = `${p[2]}/${p[1]}/${p[0]}`;
+            }
+        } else {
+            displayRelDate = 'Đang cập nhật';
+        }
+
         metaGrid.innerHTML = `
             <div class="detail-meta-item">
                 <span class="meta-label">Thời lượng</span>
@@ -161,15 +172,15 @@ function renderMetadata(movie) {
             </div>
             <div class="detail-meta-item">
                 <span class="meta-label">Ngày khởi chiếu</span>
-                <span class="meta-value"><i class="fas fa-calendar" style="color:var(--primary-red);margin-right:6px;"></i>${movie.releaseDate}</span>
+                <span class="meta-value"><i class="fas fa-calendar" style="color:var(--primary-red);margin-right:6px;"></i>${displayRelDate}</span>
             </div>
             <div class="detail-meta-item">
                 <span class="meta-label">Đạo diễn</span>
-                <span class="meta-value"><a href="#">${movie.director}</a></span>
+                <span class="meta-value"><a href="#">${movie.director || 'Đang cập nhật'}</a></span>
             </div>
             <div class="detail-meta-item">
                 <span class="meta-label">Ngôn ngữ</span>
-                <span class="meta-value">${movie.language}</span>
+                <span class="meta-value">${movie.language || 'Tiếng Việt / Phụ đề tiếng Anh'}</span>
             </div>
             <div class="detail-meta-item">
                 <span class="meta-label">Phân loại</span>
