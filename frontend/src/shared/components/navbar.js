@@ -213,7 +213,7 @@ export function renderNavbar() {
     display: inline-flex !important;
     align-items: center !important;
     gap: 6px !important;
-    transition: all 0.3s ease !important;
+    transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease !important;
 }
 
 .nav-links a.cine-match-nav:hover {
@@ -251,11 +251,11 @@ export function renderNavbar() {
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     opacity: 0;
     visibility: hidden;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.25s;
     z-index: 1000;
     padding: 24px;
     cursor: default;
@@ -316,7 +316,7 @@ export function renderNavbar() {
     outline: none;
     appearance: none;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .qb-step select:focus {
@@ -351,7 +351,7 @@ export function renderNavbar() {
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    transition: all 0.2s;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
 .qb-select-trigger input {
@@ -389,7 +389,7 @@ export function renderNavbar() {
     opacity: 0;
     visibility: hidden;
     transform: translateY(-5px);
-    transition: all 0.2s;
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
     z-index: 1010;
     overflow: hidden;
 }
@@ -493,7 +493,7 @@ export function renderNavbar() {
     background: rgba(255, 255, 255, 0.07);
     border: 1px solid rgba(255, 255, 255, 0.1);
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .search-pill:hover {
@@ -589,7 +589,7 @@ export function renderNavbar() {
     max-height: 36px !important;
     border-radius: 50% !important;
     text-decoration: none !important;
-    transition: all 0.3s ease;
+    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
     cursor: pointer;
     font-size: 0 !important;
     flex-shrink: 0;
@@ -617,7 +617,7 @@ export function renderNavbar() {
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-    transition: all 0.25s ease;
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
     border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.12));
     box-shadow: 0 8px 24px rgba(0,0,0,0.8);
     z-index: 10001;
@@ -699,12 +699,12 @@ export function renderNavbar() {
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     opacity: 0;
     visibility: hidden;
     transform: translateY(-10px);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.25s;
     z-index: 1000;
     cursor: default; /* Reset cursor for dropdown content */
 }
@@ -858,7 +858,7 @@ export function renderNavbar() {
     color: rgba(255, 255, 255, 0.6);
     font-size: 0.85rem;
     text-decoration: none;
-    transition: all 0.2s;
+    transition: color 0.2s ease, background-color 0.2s ease;
     border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
@@ -905,12 +905,12 @@ export function renderNavbar() {
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     opacity: 0;
     visibility: hidden;
     transform: translateY(-10px);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.25s;
     z-index: 1000;
     cursor: default;
 }
@@ -982,7 +982,7 @@ export function renderNavbar() {
     color: rgba(255, 255, 255, 0.8);
     text-decoration: none;
     font-size: 0.95rem;
-    transition: all 0.2s;
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .user-menu-list li a i {
@@ -1008,7 +1008,7 @@ export function renderNavbar() {
 }
 
 #hamburger-dropdown a i {
-    transition: all 0.2s ease;
+    transition: color 0.2s ease, transform 0.2s ease;
 }
 
 #hamburger-dropdown a:hover i {

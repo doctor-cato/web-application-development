@@ -62,7 +62,7 @@
     height: 100%;
     border-radius: 50%;
     object-fit: cover;
-    transition: all 0.3s ease;
+    transition: transform 0.2s ease, filter 0.2s ease;
 }
 
 .avatar-upload-btn {
@@ -111,7 +111,7 @@
     display: flex;
     align-items: center;
     gap: 15px;
-    transition: all 0.3s;
+    transition: color 0.2s ease, background-color 0.2s ease, border-left-color 0.2s ease;
     font-weight: 500;
 }
 
@@ -206,7 +206,7 @@
     font-family: var(--font-primary);
     font-size: 1rem;
     outline: none;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .form-group input:focus-visible {
@@ -267,7 +267,7 @@
     border-radius: 8px;
     cursor: pointer;
     outline: none;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .btn-save:hover {
@@ -333,7 +333,7 @@
     border-radius: 10px;
     padding: 15px;
     gap: 20px;
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .history-card:hover {
@@ -485,7 +485,7 @@
     font-size: 0.9rem;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: color 0.2s ease, background-color 0.2s ease;
 }
 
 .filter-btn:hover {
@@ -604,7 +604,7 @@
     border-radius: 6px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
 }
 
 .btn-use-offer:hover {
@@ -888,7 +888,7 @@ input:checked + .slider:before {
     padding: 12px 15px;
     border-radius: 10px;
     font-size: 0.95rem;
-    transition: all 0.3s ease;
+    transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .modal-body .custom-select-selected:hover {
@@ -1215,7 +1215,7 @@ input:checked + .slider:before {
     padding: 10px;
     border-radius: 8px;
     border: 1px solid transparent;
-    transition: all 0.3s;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .border-option:hover {

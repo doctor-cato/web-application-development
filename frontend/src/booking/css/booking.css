@@ -31,9 +31,9 @@
 }
 
 .booking-card {
-    background: rgba(26, 28, 28, 0.4);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
+    background: rgba(26, 28, 28, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     border: 1px solid var(--glass-border, rgba(255,255,255,0.08));
     border-radius: 16px;
     padding: 1.5rem;
@@ -141,7 +141,7 @@
     font-size: 10px;
     font-weight: bold;
     cursor: pointer;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
     border-top-left-radius: 12px !important;
     border-top-right-radius: 12px !important;
     border-bottom-left-radius: 4px !important;
@@ -258,7 +258,7 @@
     letter-spacing: 1.5px;
     box-shadow: inset 0 0 8px rgba(229, 9, 20, 0.2), 0 0 10px rgba(229, 9, 20, 0.3);
     text-shadow: 0 0 4px rgba(229, 9, 20, 0.8);
-    transition: all 0.3s ease;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .seat-tag:hover {
@@ -350,7 +350,7 @@
     border-radius: 16px;
     background: linear-gradient(145deg, rgba(30, 32, 32, 0.8), rgba(20, 22, 22, 0.9));
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    transition: transform 0.25s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.25s ease, border-color 0.25s ease, background-color 0.25s ease;
     align-items: center;
     text-align: center;
     box-shadow: 0 4px 6px rgba(0,0,0,0.3);
@@ -444,7 +444,7 @@
     font-size: 1.25rem;
     opacity: 0;
     transform: scale(0);
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: opacity 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .combo-card.selected .combo-check {
@@ -464,7 +464,7 @@
     font-weight: 600;
     font-size: 0.875rem;
     text-decoration: none;
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    transition: transform 0.25s cubic-bezier(0.25, 0.8, 0.25, 1), background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
     box-shadow: 0 0 10px rgba(229, 9, 20, 0.1);
     position: relative;
     overflow: hidden;
@@ -514,7 +514,7 @@
     border: 1px solid var(--glass-border);
     border-radius: 12px;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .payment-card:hover {
@@ -644,7 +644,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
 }
 
 .group-seat-btn:hover:not(:disabled) {

@@ -136,7 +136,7 @@ function renderChatWidget() {
         align-items: center;
         justify-content: center;
         border-radius: 50%;
-        transition: all 0.3s;
+        transition: transform 0.2s ease, background-color 0.2s ease;
     }
     .chat-close:hover {
         background: rgba(255,255,255,0.1);
@@ -217,7 +217,7 @@ function renderChatWidget() {
         color: white;
         font-size: 0.8rem;
         cursor: pointer;
-        transition: all 0.3s;
+        transition: background-color 0.2s ease, border-color 0.2s ease;
         white-space: nowrap;
     }
     .quick-btn:hover {
@@ -241,7 +241,7 @@ function renderChatWidget() {
         color: white;
         font-size: 0.9rem;
         outline: none;
-        transition: all 0.3s;
+        transition: border-color 0.2s ease, background-color 0.2s ease;
     }
     .chat-input:focus {
         border-color: var(--primary-red);
@@ -259,7 +259,7 @@ function renderChatWidget() {
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: all 0.3s;
+        transition: background-color 0.2s ease, transform 0.2s ease;
     }
     .chat-send:hover {
         background: #cc0812;

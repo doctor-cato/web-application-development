@@ -91,8 +91,8 @@ body {
 }
 
 .timer-box {
-    background: rgba(10, 10, 10, 0.6);
-    backdrop-filter: blur(20px);
+    background: rgba(10, 10, 10, 0.85);
+    backdrop-filter: blur(8px);
     border: 1px solid var(--neon-red);
     box-shadow: 0 0 20px var(--neon-red-glow);
     padding: 1.5rem 2.5rem;
@@ -144,7 +144,7 @@ body {
 
 .panel-section {
     background-color: var(--bg-panel);
-    backdrop-filter: blur(15px);
+    backdrop-filter: blur(8px);
     border: 1px solid rgba(255,255,255,0.05);
     padding: 2.5rem;
     border-radius: 1.5rem;
@@ -180,7 +180,7 @@ body {
     border-radius: 1rem;
     background: rgba(255,255,255,0.03);
     border: 1px solid rgba(255,255,255,0.1);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
     position: relative;
     overflow: hidden;
 }
@@ -203,7 +203,7 @@ body {
     justify-content: center;
     margin-bottom: 1rem;
     font-size: 1.5rem;
-    transition: all 0.3s;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
 }
 .member-card.paid .avatar-circle {
     background: transparent;
@@ -264,7 +264,7 @@ body {
     border-radius: 0.5rem;
     font-weight: 800;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: box-shadow 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
     text-transform: uppercase;
 }
 .btn-copy:hover {
@@ -289,7 +289,7 @@ body {
     font-size: 1rem;
     font-weight: 700;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }
 .btn-share.whatsapp {
     background-color: rgba(37, 211, 102, 0.1);
@@ -557,7 +557,7 @@ body {
     width: 90%;
     max-width: 450px;
     transform: translateY(20px) scale(0.95);
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
     position: relative;
 }
 .modal-backdrop.active .payment-modal {
@@ -607,7 +607,7 @@ body {
     border: 1px solid rgba(255,255,255,0.1);
     background: rgba(255,255,255,0.02);
     cursor: pointer;
-    transition: all 0.2s;
+    transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 .payment-method:hover {
     background: rgba(255,255,255,0.05);
@@ -636,7 +636,7 @@ body {
     letter-spacing: 2px;
     border-radius: 1rem;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
     text-shadow: 0 0 5px rgba(16, 185, 129, 0.5);
     box-shadow: 0 0 15px rgba(16, 185, 129, 0.2), inset 0 0 10px rgba(16, 185, 129, 0.1);
 }
@@ -691,7 +691,7 @@ body {
     font-size: 0.8rem;
     font-weight: 800;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
     text-transform: uppercase;
     width: 100%;
     position: relative;
@@ -725,7 +725,7 @@ body {
     font-size: 0.75rem;
     font-weight: 700;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
     text-transform: uppercase;
     width: 100%;
 }
@@ -887,7 +887,7 @@ body {
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
 }
 .btn-add-combo:hover {
     background: var(--primary-red);
@@ -930,7 +930,7 @@ body {
     border-radius: 16px;
     background: linear-gradient(145deg, rgba(30, 32, 32, 0.8), rgba(20, 22, 22, 0.9));
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    transition: transform 0.25s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.25s ease, border-color 0.25s ease;
     align-items: center;
     text-align: center;
     box-shadow: 0 4px 6px rgba(0,0,0,0.3);
@@ -1024,7 +1024,7 @@ body {
     font-size: 1.25rem;
     opacity: 0;
     transform: scale(0);
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: opacity 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .combo-card.selected .combo-check {
@@ -1044,7 +1044,7 @@ body {
     font-weight: 600;
     font-size: 0.875rem;
     text-decoration: none;
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    transition: transform 0.25s cubic-bezier(0.25, 0.8, 0.25, 1), background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
     box-shadow: 0 0 10px rgba(229, 9, 20, 0.1);
     position: relative;
     overflow: hidden;
@@ -1094,7 +1094,7 @@ body {
     border: 1px solid var(--glass-border);
     border-radius: 12px;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .payment-card:hover {
@@ -1224,7 +1224,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
 }
 
 .group-seat-btn:hover:not(:disabled) {

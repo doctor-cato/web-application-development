@@ -35,7 +35,7 @@
     font-family: 'Inter', sans-serif;
     font-size: 0.9rem;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
 .notif-page-actions button:hover {
@@ -80,7 +80,7 @@
     font-weight: 500;
     text-align: left;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: background-color 0.2s ease, color 0.2s ease;
     margin-bottom: 4px;
 }
 
@@ -134,7 +134,7 @@
     border-radius: 12px;
     padding: 20px;
     position: relative;
-    transition: all 0.2s;
+    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
 }
@@ -219,7 +219,7 @@
     height: 36px;
     border-radius: 50%;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;

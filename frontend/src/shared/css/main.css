@@ -132,7 +132,7 @@ a:hover {
     text-align: center;
     cursor: pointer;
     font-size: 0.875rem;
-    transition: all 0.3s ease;
+    transition: background-color 0.2s ease, transform 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .btn-primary {
@@ -275,7 +275,7 @@ a:hover {
     background: rgba(255, 255, 255, 0.07);
     border: 1px solid rgba(255, 255, 255, 0.1);
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 .search-pill:hover {
@@ -401,12 +401,12 @@ a:hover {
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     opacity: 0;
     visibility: hidden;
     transform: translateY(-10px);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.25s;
     z-index: 1000;
     cursor: default; /* Reset cursor for dropdown content */
 }
@@ -560,7 +560,7 @@ a:hover {
     color: rgba(255, 255, 255, 0.6);
     font-size: 0.85rem;
     text-decoration: none;
-    transition: all 0.2s;
+    transition: color 0.2s ease, background-color 0.2s ease;
     border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
@@ -607,12 +607,12 @@ a:hover {
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     opacity: 0;
     visibility: hidden;
     transform: translateY(-10px);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.25s;
     z-index: 1000;
     cursor: default;
 }
@@ -684,7 +684,7 @@ a:hover {
     color: rgba(255, 255, 255, 0.8);
     text-decoration: none;
     font-size: 0.95rem;
-    transition: all 0.2s;
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .user-menu-list li a i {
@@ -947,7 +947,7 @@ footer {
     font-size: 0.875rem;
     cursor: pointer;
     background: transparent;
-    transition: all 0.3s ease;
+    transition: color 0.2s ease, opacity 0.2s ease;
     padding: 0;
     justify-content: space-between;
     width: 100%;
@@ -970,15 +970,15 @@ footer {
     top: calc(100% + 15px);
     left: 0;
     background: rgba(18, 18, 18, 0.95);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
     opacity: 0;
     visibility: hidden;
     transform: translateY(-10px);
-    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition: opacity 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94), visibility 0.25s;
     z-index: 100;
     min-width: 200px;
     overflow: hidden;
@@ -1010,7 +1010,7 @@ footer {
     font-size: 0.875rem;
     color: rgba(255, 255, 255, 0.75);
     cursor: pointer;
-    transition: all 0.25s ease;
+    transition: background-color 0.2s ease, color 0.2s ease, padding-left 0.2s ease;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
@@ -1055,7 +1055,8 @@ footer {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s ease;
+    transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+    will-change: transform;
     position: relative;
 }
 .float-support-toggle::before {
@@ -1098,7 +1099,7 @@ footer {
     font-family: 'Inter', sans-serif;
     cursor: pointer;
     text-decoration: none;
-    transition: all 0.2s;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
     white-space: nowrap;
 }
 .float-support-item:hover {

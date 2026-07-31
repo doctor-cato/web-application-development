@@ -413,7 +413,7 @@ body {
     justify-content: center;
     cursor: pointer;
     border: 2px solid var(--surface);
-    transition: all 0.2s ease-in-out;
+    transition: transform 0.2s ease, background-color 0.2s ease;
 }
 
 .avatar-upload-btn:hover {
@@ -558,7 +558,7 @@ body {
     border: 2px solid var(--surface-border);
     border-radius: 10px;
     outline: none;
-    transition: all 0.25s ease;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
     caret-color: var(--primary-red);
 }
 

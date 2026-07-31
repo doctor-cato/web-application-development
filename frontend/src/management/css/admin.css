@@ -134,7 +134,7 @@ body { background-color: var(--bg-color); color: var(--text-main); font-family: 
     font-weight: 500;
     cursor: pointer;
     text-align: left;
-    transition: all 0.25s ease;
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .menu-item:hover {
@@ -210,7 +210,7 @@ body { background-color: var(--bg-color); color: var(--text-main); font-family: 
     font-size: 1.1rem;
     padding: 8px;
     border-radius: 4px;
-    transition: all 0.25s;
+    transition: color 0.2s ease, background-color 0.2s ease;
 }
 
 .btn-logout:hover {
@@ -274,7 +274,7 @@ body { background-color: var(--bg-color); color: var(--text-main); font-family: 
     padding: 10px 12px;
     cursor: pointer;
     border-radius: 8px;
-    transition: all 0.25s;
+    transition: background-color 0.2s ease;
 }
 
 .notification-pill:hover {
@@ -800,7 +800,7 @@ select:focus {
     font-size: 0.6875rem;
     font-weight: 700;
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: transform 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
     user-select: none;
     border: 1px solid transparent;
 }
@@ -819,7 +819,7 @@ select:focus {
     font-size: 10px;
     font-weight: bold;
     cursor: pointer;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
     border-top-left-radius: 12px !important;
     border-top-right-radius: 12px !important;
     border-bottom-left-radius: 4px !important;
