@@ -598,19 +598,6 @@ function initProfile() {
 }
 
 
-function initProfile() {
-    try { initTabs(); } catch(e) { console.error('initTabs error:', e); }
-    try { loadUserInfo(); } catch(e) { console.error('loadUserInfo error:', e); }
-    try { setupProfileForm(); } catch(e) { console.error('setupProfileForm error:', e); }
-    try { setupProfileUI(); } catch(e) { console.error('setupProfileUI error:', e); }
-    try { renderRealHistory(); } catch(e) { console.error('renderRealHistory error:', e); }
-    try { initLogout(); } catch(e) { console.error('initLogout error:', e); }
-    try { initAvatarBorders(); } catch(e) { console.error('initAvatarBorders error:', e); }
-    try { setupAvatarUpload(); } catch(e) { console.error('setupAvatarUpload error:', e); }
-    try { setup2FA(); } catch(e) { console.error('setup2FA error:', e); }
-    try { loadRealOffers(); } catch(e) { console.error('loadRealOffers error:', e); }
-}
-
 function setup2FA() {
     const toggle2FA = document.getElementById('toggle-2fa');
     if (!toggle2FA) return;
