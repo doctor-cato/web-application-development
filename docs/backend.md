@@ -21,12 +21,15 @@ Mã nguồn được tổ chức theo chuẩn phân tầng Enterprise ASP.NET Co
 ```text
 backend/
 ├── Controllers/
-│   ├── AccountController.cs    # Đăng nhập, đăng ký, đăng xuất, cookie auth
-│   ├── BookingsController.cs   # Xử lý tạo đơn đặt vé, hóa đơn & chi tiết đặt ghế
-│   ├── MoviesController.cs     # API & View xem danh sách phim, chi tiết phim
-│   ├── SeatsController.cs      # Truy vấn sơ đồ ghế theo phòng chiếu & suất chiếu
-│   ├── UploadsController.cs    # Xử lý lưu trữ và phân phối tệp hình ảnh
-│   └── HomeController.cs       # Điều hướng trang chủ MVC
+│   ├── AuthController.cs       # Đăng nhập, đăng ký, đăng xuất, JWT/Cookie auth
+│   ├── ApiBookingsController.cs# Xử lý tạo đơn đặt vé, hóa đơn & chi tiết đặt ghế
+│   ├── ApiMoviesController.cs  # API xem danh sách phim, chi tiết phim
+│   ├── ApiShowtimesController.cs # API lấy suất chiếu phim
+│   ├── ApiUsersController.cs   # API quản lý tài khoản người dùng
+│   ├── ApiCineMatchController.cs # API cho tính năng CineMatch Minigame
+│   ├── ApiPaymentController.cs # API thanh toán QR Code
+│   ├── ApiGroupBookingController.cs # API đặt vé nhóm
+│   └── UploadsController.cs    # Xử lý lưu trữ và phân phối tệp hình ảnh
 ├── Models/
 │   ├── User.cs                 # Entity tài khoản khách hàng / quản trị
 │   ├── Movie.cs                # Entity thông tin bộ phim
@@ -48,9 +51,7 @@ backend/
 │   ├── IFileService.cs         # Interface quản lý file
 │   └── FileService.cs          # Lưu trữ ảnh poster phim tải lên
 ├── Infrastructure/
-│   └── DbInitializer.cs        # Khởi tạo DB & Nạp dữ liệu JSON mẫu (Seeding)
-├── DataSeeding/
-│   └── movies.json             # File dữ liệu phim gốc ban đầu
+│   └── DbInitializer.cs        # Khởi tạo DB & Nạp dữ liệu mẫu (Seeding)
 ├── Program.cs                  # File điểm vào (Entry Point), cấu hình Dependency Injection
 └── appsettings.json           # File cấu hình chuỗi kết nối SQL Server & logging
 ```
@@ -103,5 +104,5 @@ builder.Entity<BookingDetail>()
 Khi ứng dụng khởi chạy trong `Program.cs`, phương thức `DbInitializer.Initialize(context)` được gọi:
 
 1. Kiểm tra xem CSDL `movie_booking_db` đã tồn tại chưa (`context.Database.EnsureCreated()`).
-2. Nếu chưa có dữ liệu phim, hệ thống tự động đọc tệp `DataSeeding/movies.json`.
-3. Chuyển đổi dữ liệu JSON thành danh sách thực thể `Movie` và lưu vào SQL Server qua EF Core.
+2. Nếu chưa có dữ liệu phim, hệ thống tự động khởi tạo danh sách phim trực tiếp qua Entity Framework `List<Movie>`.
+3. Lưu dữ liệu vào SQL Server qua EF Core.

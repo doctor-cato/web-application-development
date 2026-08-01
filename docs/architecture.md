@@ -88,10 +88,11 @@ Tầng Backend được thiết kế theo mô hình chuẩn **Layered Architectu
 ```text
 backend/
 ├── Controllers/
-│   ├── AccountController.cs    # Đăng nhập, Đăng ký, Cookie Auth
-│   ├── BookingsController.cs   # Tạo hóa đơn, kiểm tra ghế trống
-│   ├── MoviesController.cs     # CRUD Phim, danh sách suất chiếu
-│   ├── SeatsController.cs      # Trạng thái sơ đồ ghế
+│   ├── AuthController.cs       # Đăng nhập, Đăng ký, JWT Auth
+│   ├── ApiBookingsController.cs# Tạo hóa đơn, kiểm tra ghế trống
+│   ├── ApiMoviesController.cs  # CRUD Phim, danh sách phim
+│   ├── ApiShowtimesController.cs# API quản lý suất chiếu
+│   ├── ApiUsersController.cs   # API thông tin người dùng
 │   └── UploadsController.cs    # Quản lý file ảnh poster upload
 ├── Services/
 │   ├── BookingService.cs       # Logic tính tiền, giảm giá, khóa ghế DB

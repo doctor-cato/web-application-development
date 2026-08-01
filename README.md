@@ -2,10 +2,10 @@
 
 Ứng dụng web mô phỏng toàn bộ luồng đặt vé rạp chiếu phim chuyên nghiệp: xem phim, chọn ghế real-time, combo đồ ăn, thanh toán QR code, mini-game Cine-Match, chương trình VIP & Đổi thưởng, và quản lý tài khoản.
 
-![3HD2Kcinema Banner](https://img.shields.io/badge/3HD2Kcinema-v3.0.7-red?style=for-the-badge)
-![Git Commits](https://img.shields.io/badge/Commits-511-blue?style=for-the-badge)
+![3HD2Kcinema Banner](https://img.shields.io/badge/3HD2Kcinema-v3.6.7-red?style=for-the-badge)
+![Git Commits](https://img.shields.io/badge/Commits-594-blue?style=for-the-badge)
 ![Vercel Deployment](https://img.shields.io/badge/Vercel-32dk--web--app--project.vercel.app-000000?style=for-the-badge&logo=vercel&logoColor=white)
-![Playwright Tests](https://img.shields.io/badge/Playwright-8%2F8%20Passed-brightgreen?style=for-the-badge&logo=playwright)
+![Playwright Tests](https://img.shields.io/badge/Playwright-11%2F11%20Passed-brightgreen?style=for-the-badge&logo=playwright)
 ![MkDocs](https://img.shields.io/badge/Docs-MkDocs--Material-009688?style=for-the-badge)
 ![GitHub Pages](https://img.shields.io/badge/Deploy-GitHub_Pages-blue?style=for-the-badge)
 
@@ -21,16 +21,16 @@
 
 ## 🚀 Trạng thái Hiện tại của Dự án (Current Status & Version)
 
-- **Tổng số commits**: **360 commits** (được kiểm tra tự động qua Git history).
-- **Phiên bản hiện tại**: **`v3.0.7`** (Tuân thủ Semantic Versioning: Major 3, Minor 0, Patch 7).
-- **Kiểm thử E2E (Playwright)**: **8/8 test suites PASS 100%** (bao gồm Responsive layout, Visual regression, Booking flow, Minigame, và Profile).
+- **Tổng số commits**: **594 commits** (được kiểm tra tự động qua Git history).
+- **Phiên bản hiện tại**: **`v3.6.7`** (Tuân thủ Semantic Versioning).
+- **Kiểm thử E2E (Playwright)**: **11/11 test suites PASS 100%** (bao gồm Responsive layout, Visual regression, Booking flow, Minigame, và Profile).
 - **Kiểm định Product Readiness**: Đã hoàn thành đợt kiểm tra toàn diện với các skill audit chuyên sâu (`ponytail-audit`, `modern-web-guidance`, `memory-leak-debugging`, `a11y-debugging`).
 
 ---
 
-## 📋 Tính năng Mới & Cải tiến Kể từ v3.0.6 (#61 - #63)
+## 📋 Tính năng Mới & Cải tiến Kể từ v2.7.6 (#61 - #63)
 
-Sau đợt audit v3.0.6, dự án tiếp tục phát triển với 101 commits bổ sung, tập trung vào tích hợp Backend thực và nâng cấp giao diện:
+Sau đợt audit v2.7.6, dự án tiếp tục phát triển với các commits bổ sung, tập trung vào tích hợp Backend thực và nâng cấp giao diện:
 
 1. [**#61 - Seat Lock Sync & BroadcastChannel Cleanup**](https://github.com/doctor-cato/web-application-development/issues/61): Giải quyết lỗi đồng bộ khóa ghế đa tab, dọn dẹp vòng đời `BroadcastChannel` và xóa dead code liên quan.
 2. [**#62 - POS Staff VIP Sync & SignalR Resilience**](https://github.com/doctor-cato/web-application-development/issues/62): Đồng bộ dữ liệu VIP cho nhân viên bán vé tại quầy (Staff POS), cải thiện khả năng phục hồi kết nối SignalR và tạo mã QR riêng biệt cho từng ghế.
@@ -127,13 +127,19 @@ npm run storybook
 ├── tests/                     # Các kịch bản kiểm thử E2E và Accessibility
 ├── frontend/                  # Mã nguồn ứng dụng Frontend (Client-side)
 │   ├── src/
+│   │   ├── about/             # Trang giới thiệu dự án
+│   │   ├── assets/            # CSS chung, fonts, icons tĩnh
 │   │   ├── auth/              # Đăng nhập, Đăng ký, Quên mật khẩu & Auth Services
 │   │   ├── booking/           # Chọn ghế, Đồ ăn combo, Checkout, Hóa đơn & Hủy vé
-│   │   ├── explore/           # Trang chủ, Tìm kiếm phim, Chi tiết phim, Cụm rạp
-│   │   ├── user/              # Hồ sơ người dùng, Gói VIP, Đổi thưởng, Thông báo
 │   │   ├── engagement/        # Minigame CinePredict & CineMatch
+│   │   ├── explore/           # Trang chủ, Tìm kiếm phim, Chi tiết phim, Cụm rạp
+│   │   ├── footer/            # Component Footer
+│   │   ├── images/            # Hình ảnh động (posters, banners, qr)
 │   │   ├── management/        # Giao diện Quản lý Admin & Nhân viên bán vé
-│   │   └── shared/            # Shared Components (Navbar, Footer), CSS & Storage Utils
+│   │   ├── shared/            # Shared Components (Navbar, Storage Utils)
+│   │   ├── user/              # Hồ sơ người dùng, Gói VIP, Đổi thưởng, Thông báo
+│   │   ├── index.html         # Trang điều hướng ban đầu
+│   │   └── wip.html           # Trang báo lỗi/Đang phát triển
 │   └── package.json           # Tailwind CSS build scripts & serve
 └── backend/                   # Khung mã nguồn Backend (ASP.NET Core C#)
     ├── Controllers/           # Controllers MVC & Web API

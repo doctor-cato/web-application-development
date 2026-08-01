@@ -11,10 +11,11 @@
   - `Jwt__Key`: Khóa mã hóa JWT Token (độ dài tối thiểu 32 bytes).
   - `SmtpSettings__Username` / `SmtpSettings__Password`: Thông tin đăng nhập SMTP Mailer.
   - `SmtpSettings__ResendApiKey`: Resend API Key để gửi email OTP.
+  - `Payment__WebhookSecret`: Khóa bảo mật webhook thanh toán.
 
 ## 2. Xác thực và Phân quyền (Authentication & Authorization)
 
-- **Password Hashing**: Sử dụng `PasswordHasher<User>` (PBKDF2/HMAC-SHA256) hoặc BCrypt mã hóa mật khẩu trước khi lưu trữ.
+- **Password Hashing**: Sử dụng thư viện `BCrypt.Net.BCrypt` mã hóa mật khẩu trước khi lưu trữ.
 - **OTP Generation**: Sử dụng `RandomNumberGenerator` (Cryptographically Secure Pseudo-Random Number Generator) để khởi tạo mã OTP ngẫu nhiên.
 - **JWT Authorization**: Tất cả các API nhạy cảm (Đặt vé, Quản lý tài khoản, Nâng cấp VIP, CRUD Phim) phải được bảo vệ bởi nhãn `[Authorize]` hoặc `[Authorize(Roles = "ADMIN")]`.
 - **Broken Access Control Prevention**: API truy cập thông tin người dùng (`/api/users/{id}`) chỉ cho phép người dùng chính chủ hoặc tài khoản Quản trị viên (ADMIN) truy cập.

@@ -2,7 +2,7 @@
 
 Chào mừng đến với tài liệu kỹ thuật chính thức của **3HD2Kcinema** — Hệ thống đặt vé xem phim trực tuyến hiện đại.
 
-![3HD2Kcinema Banner](https://img.shields.io/badge/3HD2Kcinema-v3.0.7-red?style=for-the-badge)
+![3HD2Kcinema Banner](https://img.shields.io/badge/3HD2Kcinema-v3.6.7-red?style=for-the-badge)
 ![Git Commits](https://img.shields.io/badge/Commits-511-blue?style=for-the-badge)
 ![Vercel Live](https://img.shields.io/badge/Vercel-32dk--web--app--project.vercel.app-000000?style=for-the-badge&logo=vercel&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)

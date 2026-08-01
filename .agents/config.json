@@ -1,7 +1,7 @@
 {
   "project": {
     "name": "3HD2Kcinema",
-    "version": "2.7.7",
+    "version": "3.6.7",
     "type": "web-application",
     "tech_stack": {
       "frontend": ["HTML5", "CSS3", "Vanilla ES6 JavaScript", "Tailwind CSS", "Playwright", "Storybook", "Axe-core"],

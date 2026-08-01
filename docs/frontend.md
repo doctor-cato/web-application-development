@@ -22,34 +22,19 @@ Mã nguồn được phân chia theo từng miền tính năng (Domain):
 
 ```text
 frontend/src/
-├── index.html                   # Trang điều hướng ban đầu (Redirect sang Trang chủ)
+├── about/                       # Trang giới thiệu dự án
+├── assets/                      # CSS chung, fonts, icons tĩnh
 ├── auth/                        # Phân hệ Xác thực
-│   ├── user-login/              # Giao diện Đăng nhập & Controller
-│   ├── user-register/           # Giao diện Đăng ký tài khoản
-│   ├── forgot-password/         # Giao diện Quên & Cấp lại Mật khẩu
-│   └── auth-services/           # authService.js (Xử lý Mock Session & Auth)
-├── explore/                     # Phân hệ Khám phá Phim
-│   ├── home-page/               # Trang chủ (Banner Hero, Danh sách Phim Hot)
-│   ├── movie-details/           # Trang Chi tiết Phim, Trailer & Chọn Suất chiếu
-│   ├── movie-search/            # Tìm kiếm phim thời gian thực & Lọc định dạng (2D/3D/IMAX)
-│   └── cinema-map/              # Bản đồ cụm rạp & Định vị khoảng cách (Geolocation API)
-├── booking/                     # Phân hệ Đặt vé
-│   ├── seat-booking/            # Sơ đồ chọn ghế, Khóa ghế real-time & BroadcastChannel
-│   ├── booking-food/            # Chọn Combo Bắp Nước (Cuộn ngang Responsive)
-│   ├── checkout/                # Trang Hóa đơn thanh toán & Mã QR E-Ticket
-│   ├── booking-success/         # Màn hình Xác nhận Đặt vé Thành công
-│   └── group-booking/           # Phòng chờ đặt vé nhóm (Phát triển thử nghiệm WIP)
-├── user/                        # Phân hệ Cá nhân
-│   ├── user-profile/            # Hồ sơ người dùng, Lịch sử đặt vé & Hủy vé linh hoạt
-│   ├── loyalty-points/          # Quản lý Điểm thưởng & Hạng thành viên
-│   ├── vip-registration/        # Đăng ký Gói VIP Multiplier (Silver, Gold, Platinum)
-│   └── user-notifications/      # Trung tâm Thông báo tin nhắn hệ thống
-├── engagement/                  # Phân hệ Tương tác
-│   └── minigame/                # CineMatch Minigame (card-based, Firebase real-time, emoji chat)
-└── shared/                      # Thành phần Dùng chung
-    ├── components/              # navbar.js (Tự đóng dropdown, tìm kiếm, role-based navigation), footer.js
-    ├── utils/                   # storage.js (Lớp thao tác Storage an toàn)
-    └── css/                     # Dynamic Stylesheet & Design Tokens
+├── booking/                     # Phân hệ Đặt vé & Thanh toán
+├── engagement/                  # Phân hệ Tương tác (Minigame CineMatch, v.v.)
+├── explore/                     # Phân hệ Khám phá Phim & Bản đồ rạp
+├── footer/                      # Component Footer
+├── images/                      # Hình ảnh động (posters, banners, qr)
+├── management/                  # Giao diện Quản lý Admin & Staff POS
+├── shared/                      # Thành phần Dùng chung (Navbar, Storage Utils)
+├── user/                        # Phân hệ Cá nhân (Profile, Loyalty, VIP)
+├── index.html                   # Trang điều hướng ban đầu
+└── wip.html                     # Trang báo lỗi/Đang phát triển
 ```
 
 ---

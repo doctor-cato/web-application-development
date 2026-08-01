@@ -97,7 +97,7 @@ dotnet run
 ```
 
 !!! info "Tự động Nạp dữ liệu (Data Seeding)"
-    Khi khởi chạy lần đầu tiên, phương thức `DbInitializer` sẽ tự động tạo database `movie_booking_db` (nếu chưa có) và nạp dữ liệu phim mẫu từ file `backend/DataSeeding/movies.json`.
+    Khi khởi chạy lần đầu tiên, phương thức `DbInitializer` sẽ tự động tạo database `movie_booking_db` (nếu chưa có) và nạp dữ liệu phim mẫu trực tiếp qua Entity Framework.
 
 ---
 

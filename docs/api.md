@@ -70,14 +70,14 @@ Toàn bộ các RESTful API của hệ thống hỗ trợ định dạng dữ li
 
 ---
 
-### Phân hệ Tài khoản & Xác thực (`/api/account`)
+### Phân hệ Tài khoản & Xác thực (`/api/auth`)
 
 | HTTP Method | Endpoint | Mô tả | Quyền hạn |
 |---|---|---|---|
-| `POST` | `/api/account/register` | Đăng ký tài khoản người dùng mới | Public |
-| `POST` | `/api/account/login` | Đăng nhập và tạo Cookie Authentication Session | Public |
-| `POST` | `/api/account/logout` | Hủy phiên đăng nhập | Authenticated |
-| `GET` | `/api/account/profile` | Lấy thông tin tài khoản & điểm loyalty | Authenticated |
+| `POST` | `/api/auth/register` | Đăng ký tài khoản người dùng mới | Public |
+| `POST` | `/api/auth/login` | Đăng nhập và tạo JWT Session | Public |
+| `POST` | `/api/auth/logout` | Hủy phiên đăng nhập | Authenticated |
+| `PUT` | `/api/auth/update-profile` | Cập nhật thông tin tài khoản | Authenticated |
 
 ---
 
