@@ -8,6 +8,10 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
+using appweb.Infrastructure;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
+
 namespace appweb.Controllers
 {
     [ApiController]
@@ -16,11 +20,13 @@ namespace appweb.Controllers
     {
         private readonly BookingRepository _bookingRepository;
         private readonly IConfiguration _configuration;
+        private readonly ApplicationDbContext _context;
 
-        public ApiPaymentController(BookingRepository bookingRepository, IConfiguration configuration)
+        public ApiPaymentController(BookingRepository bookingRepository, IConfiguration configuration, ApplicationDbContext context)
         {
             _bookingRepository = bookingRepository;
             _configuration = configuration;
+            _context = context;
         }
 
         [HttpPost("webhook")]
@@ -55,6 +61,24 @@ namespace appweb.Controllers
             if (payload.Status?.ToLower() == "success")
             {
                 booking.PaymentStatus = "Paid";
+                
+                // Add points to User
+                if (booking.UserId.HasValue)
+                {
+                    var user = await _context.Users.FindAsync(booking.UserId.Value);
+                    if (user != null)
+                    {
+                        var ticketRateStr = await _context.Settings.Where(s => s.Key == "TicketPointRate").Select(s => s.Value).FirstOrDefaultAsync();
+                        decimal rate = 0.001m; // Default 1 point per 1000 VND
+                        if (decimal.TryParse(ticketRateStr, out var parsedRate)) {
+                            rate = parsedRate;
+                        }
+                        
+                        int pointsEarned = (int)(payload.Amount * rate);
+                        user.Points += pointsEarned;
+                        _context.Users.Update(user);
+                    }
+                }
             }
             else if (payload.Status?.ToLower() == "failed")
             {
@@ -62,6 +86,7 @@ namespace appweb.Controllers
             }
 
             await _bookingRepository.UpdateAsync(booking);
+            await _context.SaveChangesAsync();
 
             return Ok(new { message = "Webhook processed successfully" });
         }

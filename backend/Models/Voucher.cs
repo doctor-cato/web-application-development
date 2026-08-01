@@ -32,5 +32,7 @@ namespace appweb.Models
         public DateTime ExpiryDate { get; set; }
         
         public bool IsActive { get; set; } = true;
+        
+        public int PointsRequired { get; set; } = 0;
     }
 }

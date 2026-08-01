@@ -21,6 +21,7 @@ namespace appweb.Infrastructure
 
         public DbSet<CineMatch> CineMatches { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<Setting> Settings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

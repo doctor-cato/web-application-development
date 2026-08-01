@@ -1803,6 +1803,9 @@
                         <button class="btn btn-primary" onclick="openAddVoucherModal()">
                             <i class="fas fa-plus"></i> Thêm voucher mới
                         </button>
+                        <button class="btn btn-outline" onclick="openPointSettingsModal()" style="border-color: var(--glass-border);">
+                            <i class="fas fa-cog"></i> Cài đặt Tích điểm
+                        </button>
                     </div>
                 </div>
 
@@ -1816,6 +1819,7 @@
                                     <th>Loại giảm</th>
                                     <th>Mức giảm</th>
                                     <th>Hạn sử dụng</th>
+                                    <th>Điểm đổi</th>
                                     <th>Trạng thái</th>
                                     <th>Hành động</th>
                                 </tr>
@@ -2256,9 +2260,41 @@
                     </div>
                 </div>
 
+                <div class="form-row">
+                    <div class="form-group" style="width: 50%;">
+                        <label for="voucher-points-input">Điểm đổi (PTS):</label>
+                        <input type="number" id="voucher-points-input" min="0" value="0" placeholder="0 nếu tặng miễn phí" required>
+                    </div>
+                </div>
+
                 <div class="form-actions">
                     <button type="button" class="btn btn-outline" style="border-color: var(--glass-border);" onclick="closeVoucherModal()">Hủy</button>
                     <button type="submit" class="btn btn-primary">Lưu Voucher</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="point-settings-modal" class="modal-admin">
+        <div class="modal-admin-content glass-panel" style="max-width: 500px;">
+            <span class="close-admin-modal" onclick="closePointSettingsModal()">&times;</span>
+            <h3 style="margin-bottom: 20px; color: var(--accent);"><i class="fas fa-cog"></i> Cài đặt Hệ số Tích điểm</h3>
+            <form id="point-settings-form" onsubmit="handlePointSettingsSubmit(event)">
+                <div class="form-group">
+                    <label for="setting-ticket-rate">Hệ số điểm khi mua vé (VD: 0.001 = 1 điểm / 1000 VNĐ):</label>
+                    <input type="number" id="setting-ticket-rate" step="0.0001" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="setting-fnb-rate">Hệ số điểm khi mua Bắp nước (VD: 0.0015 = 1.5 điểm / 1000 VNĐ):</label>
+                    <input type="number" id="setting-fnb-rate" step="0.0001" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="setting-group-rate">Hệ số thưởng Đặt nhóm (VD: 1.5 = thưởng x1.5 lần):</label>
+                    <input type="number" id="setting-group-rate" step="0.1" min="1" required>
+                </div>
+                <div class="form-actions" style="margin-top: 25px;">
+                    <button type="button" class="btn btn-outline" style="border-color: var(--glass-border);" onclick="closePointSettingsModal()">Hủy</button>
+                    <button type="submit" class="btn btn-primary">Lưu cài đặt</button>
                 </div>
             </form>
         </div>
