@@ -27,7 +27,7 @@
 
 ---
 
-## 📋 Cập nhật v3.6.7 (#61 - #63) Full [ChangeLo](CHANGELOG.md)
+## 📋 Cập nhật v3.6.7 (#61 - #63) Full [ChangeLog](CHANGELOG.md)
 
 Các thay đổi chính tập trung vào tích hợp API thực và sửa lỗi:
 
