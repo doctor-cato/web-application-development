@@ -1888,6 +1888,7 @@ function openAddVoucherModal() {
     document.getElementById('voucher-modal-title').textContent = 'Thêm Voucher Mới';
     document.getElementById('voucher-status-input').value = 'true';
     document.getElementById('voucher-type-input').value = 'PERCENTAGE';
+    document.getElementById('voucher-points-input').value = 0;
     document.getElementById('voucher-modal').style.display = 'flex';
 }
 
@@ -1903,6 +1904,7 @@ function openEditVoucherModal(id) {
     document.getElementById('voucher-value-input').value = v.discountValue;
     document.getElementById('voucher-min-order-input').value = v.minOrderAmount || 0;
     document.getElementById('voucher-max-discount-input').value = v.maxDiscountAmount || '';
+    document.getElementById('voucher-points-input').value = v.pointsRequired || 0;
     
     let expiry = '';
     if (v.expiryDate) {
@@ -1931,6 +1933,7 @@ async function handleVoucherSubmit(e) {
         minOrderAmount: parseFloat(document.getElementById('voucher-min-order-input').value) || 0,
         maxDiscountAmount: parseFloat(document.getElementById('voucher-max-discount-input').value) || null,
         expiryDate: document.getElementById('voucher-expiry-input').value,
+        pointsRequired: parseInt(document.getElementById('voucher-points-input').value) || 0,
         isActive: document.getElementById('voucher-status-input').value === 'true'
     };
 
@@ -1959,6 +1962,52 @@ async function handleVoucherSubmit(e) {
         }
     } catch (err) {
         console.error('Error saving voucher:', err);
+        showToast('Lỗi kết nối API', 'error');
+    }
+}
+
+async function openPointSettingsModal() {
+    try {
+        const res = await fetch(getApiUrl('/settings'), { headers: getApiHeaders() });
+        if (res.ok) {
+            const data = await res.json();
+            document.getElementById('setting-ticket-rate').value = data['TicketPointRate'] || 0.001;
+            document.getElementById('setting-fnb-rate').value = data['FnBPointRate'] || 0.0015;
+            document.getElementById('setting-group-rate').value = data['GroupBookingPointRate'] || 1.5;
+        }
+    } catch (e) {
+        console.error('Error fetching settings:', e);
+    }
+    document.getElementById('point-settings-modal').style.display = 'flex';
+}
+
+function closePointSettingsModal() {
+    document.getElementById('point-settings-modal').style.display = 'none';
+}
+
+async function handlePointSettingsSubmit(e) {
+    e.preventDefault();
+    const settingsData = {
+        'TicketPointRate': document.getElementById('setting-ticket-rate').value,
+        'FnBPointRate': document.getElementById('setting-fnb-rate').value,
+        'GroupBookingPointRate': document.getElementById('setting-group-rate').value
+    };
+
+    try {
+        const res = await fetch(getApiUrl('/settings'), {
+            method: 'POST',
+            headers: getApiHeaders(),
+            body: JSON.stringify(settingsData)
+        });
+
+        if (res.ok) {
+            showToast('Cài đặt tích điểm đã được lưu', 'success');
+            closePointSettingsModal();
+        } else {
+            showToast('Lỗi khi lưu cài đặt', 'error');
+        }
+    } catch (e) {
+        console.error('Error saving settings:', e);
         showToast('Lỗi kết nối API', 'error');
     }
 }
@@ -2605,6 +2654,10 @@ window.openEditVoucherModal = openEditVoucherModal;
 window.closeVoucherModal = closeVoucherModal;
 window.handleVoucherSubmit = handleVoucherSubmit;
 window.deleteVoucher = deleteVoucher;
+
+window.openPointSettingsModal = openPointSettingsModal;
+window.closePointSettingsModal = closePointSettingsModal;
+window.handlePointSettingsSubmit = handlePointSettingsSubmit;
 
 
 window.filterUsersTable = filterUsersTable;

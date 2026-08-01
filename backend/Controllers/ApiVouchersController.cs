@@ -73,6 +73,7 @@ namespace appweb.Controllers
             item.MaxDiscountAmount = dto.MaxDiscountAmount;
             item.ExpiryDate = dto.ExpiryDate;
             item.IsActive = dto.IsActive;
+            item.PointsRequired = dto.PointsRequired;
 
             await _voucherRepository.UpdateAsync(item);
             await _hubContext.Clients.All.SendAsync("DataUpdated", "Vouchers");

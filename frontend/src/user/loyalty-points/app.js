@@ -94,6 +94,13 @@
 
   const STORAGE_KEY = '3hd2k_rewards';
 
+  function getApiHeaders() {
+    const headers = { 'Content-Type': 'application/json' };
+    const token = localStorage.getItem('jwt_token') || localStorage.getItem('auth_token');
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+    return headers;
+  }
+
   function loadState() {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
@@ -103,6 +110,27 @@
         state.history = parsed.history || [];
       }
     } catch (_) {  }
+  }
+
+  async function fetchUserPoints() {
+    const token = localStorage.getItem('jwt_token') || localStorage.getItem('auth_token');
+    if (!token) return;
+    try {
+      const isHTTPS = typeof window !== 'undefined' && window.location.protocol === 'https:';
+      const isVercelHost = typeof window !== 'undefined' && (window.location.hostname.includes('vercel.app') || window.location.hostname.includes('vercel'));
+      const API_BASE_URL = (typeof window !== 'undefined' && window.API_BASE_URL) || 
+          ((isHTTPS || isVercelHost) ? `${window.location.origin}/api` : 'http://3hd2k-api.somee.com/api');
+
+      const res = await fetch(`${API_BASE_URL}/auth/me`, { headers: getApiHeaders() });
+      if (res.ok) {
+        const userData = await res.json();
+        const oldPoints = state.points;
+        state.points = userData.points || 0;
+        updateUI(oldPoints, true);
+      }
+    } catch (e) {
+      console.warn('Failed to fetch user points:', e);
+    }
   }
 
   function saveState() {
@@ -613,12 +641,13 @@
     }
   }
 
-  function init() {
+  async function init() {
     loadState();
     initToastContainer();
     markStaticItems();
     buildEarnSection();
     bindTierDetailsButton();
+    await fetchUserPoints();
     loadGifts();
     updateUI(state.points, false);
     renderHistory();
