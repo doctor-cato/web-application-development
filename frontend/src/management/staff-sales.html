@@ -1679,7 +1679,7 @@
                                 id: (c.id || c.Id || '').toString(),
                                 name: c.name || c.Name || 'Combo Ưu Đãi',
                                 price: c.price || c.Price || 0,
-                                category: c.category || c.Category || "Combo",
+                                category: (c.category || c.Category || "Combo").replace(/^Bắp$/, "Đồ ăn").replace(/^Nước$/, "Nước uống"),
                                 image: imgUrl,
                                 deduct: []
                             };

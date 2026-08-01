@@ -405,7 +405,7 @@ async function fetchCombos() {
                     desc: c.desc || c.description || '',
                     price: c.price || 0,
                     stock: c.stock || 100,
-                    category: c.category || 'Combo',
+                    category: (c.category || 'Combo').replace(/^Bắp$/, "Đồ ăn").replace(/^Nước$/, "Nước uống"),
                     image: c.image || c.imageUrl || '../assets/combos/combo_solo.jpg'
                 }));
                 return;
@@ -416,12 +416,17 @@ async function fetchCombos() {
     }
     const local = JSON.parse(localStorage.getItem('cinema_combos') || '[]');
     if (local.length > 0) {
-        db.combos = local;
+        db.combos = local.map(c => ({
+            ...c,
+            category: (c.category || 'Combo').replace(/^Bắp$/, "Đồ ăn").replace(/^Nước$/, "Nước uống")
+        }));
     } else {
         db.combos = [
             { id: "cb_solo", name: "Combo Solo", desc: "1 Bắp Ngọt (L) + 1 Nước Ngọt (L)", price: 89000, stock: 150, image: "../assets/combos/combo_solo.jpg", category: "Combo" },
             { id: "cb_couple", name: "Combo Couple", desc: "1 Bắp Ngọt (XL) + 2 Nước Ngọt (L)", price: 129000, stock: 120, image: "../assets/combos/combo_couple.jpg", category: "Combo" },
-            { id: "cb_family", name: "Combo Family", desc: "2 Bắp Ngọt (XL) + 4 Nước Ngọt (L) + 1 Snack", price: 219000, stock: 80, image: "../assets/combos/combo_family.jpg", category: "Combo" }
+            { id: "cb_family", name: "Combo Family", desc: "2 Bắp Ngọt (XL) + 4 Nước Ngọt (L) + 1 Snack", price: 219000, stock: 80, image: "../assets/combos/combo_family.jpg", category: "Combo" },
+            { id: "f_popcorn", name: "Bắp Phô Mai", desc: "Bắp rang bơ phô mai", price: 55000, stock: 100, image: "../assets/combos/combo_solo.jpg", category: "Đồ ăn" },
+            { id: "f_pepsi", name: "Pepsi Lon", desc: "Pepsi lon 330ml", price: 25000, stock: 200, image: "../assets/combos/combo_couple.jpg", category: "Nước uống" }
         ];
     }
 }
