@@ -11,6 +11,7 @@ if (!requireAuth('Bạn cần đăng nhập để thanh toán vé. Hãy đăng n
 }
 
 let COMBOS = { none: 0 };
+let VOUCHERS = [];
 
 function parseDataAmount(el) {
   if (!el) return 0;
@@ -139,21 +140,26 @@ function updateTotal() {
   let total = seatsAmount + totalComboPrice;
 
   let discountAmount = 0;
-  if (currentPromoCode === 'GIAM50K' && total >= 200000) {
-    discountAmount = 50000;
-  } else if (currentPromoCode === 'BAPFREE') {
-    discountAmount = 65000;
-  } else if (currentPromoCode) {
-
-    if (currentPromoCode === 'GIAM50K') {
-      alert('Đơn hàng chưa đạt tối thiểu 200.000đ để áp dụng mã này.');
+  if (currentPromoCode) {
+    const v = VOUCHERS.find(x => x.code === currentPromoCode);
+    if (!v) {
+      alert('Mã khuyến mãi không hợp lệ hoặc đã hết hạn.');
       removePromo();
-      return;
+    } else if (total < v.minOrderAmount) {
+      alert('Đơn hàng chưa đạt tối thiểu ' + formatPrice(v.minOrderAmount) + ' để áp dụng mã này.');
+      removePromo();
+    } else {
+      if (v.discountType === 'FIXED_AMOUNT') {
+        discountAmount = v.discountValue;
+      } else {
+        discountAmount = total * (v.discountValue / 100);
+        if (v.maxDiscountAmount && discountAmount > v.maxDiscountAmount) {
+          discountAmount = v.maxDiscountAmount;
+        }
+      }
     }
   }
-
-  currentDiscount = discountAmount;
-
+  
   const isVip = localStorage.getItem('is_vip') === 'true';
   const vipPlan = localStorage.getItem('vip_plan') || '';
   let vipDiscountPercent = 0;
@@ -276,6 +282,32 @@ async function init() {
   const payBtn = document.getElementById('btn-pay');
   if (payBtn) payBtn.addEventListener('click', handlePayClick);
 
+
+  try {
+      const res = await fetch('/api/vouchers');
+      if (res.ok) {
+          VOUCHERS = await res.json();
+          VOUCHERS = VOUCHERS.filter(v => v.isActive && new Date(v.expiryDate) >= new Date());
+          
+          const offersList = document.getElementById('offers-list');
+          if (offersList && VOUCHERS.length > 0) {
+              offersList.innerHTML = VOUCHERS.map(v => `
+                  <div class="offer-item" data-code="${v.code}" style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: background 0.3s; border-radius: 6px;">
+                      <div style="display: flex; gap: 1rem; align-items: center;">
+                          <div style="font-size: 1.5rem; color: #f59e0b;"><i class="fas fa-ticket-alt"></i></div>
+                          <div>
+                              <div style="font-weight: 600; color: #f59e0b; letter-spacing: 0.5px;">${v.code}</div>
+                              <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">${v.description}</div>
+                          </div>
+                      </div>
+                      <button class="btn-select-offer" style="background: var(--primary-red); border: none; color: white; padding: 0.4rem 0.75rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600; cursor: pointer;" onclick="applyPromo('${v.code}')">Dùng</button>
+                  </div>
+              `).join('');
+          }
+      }
+  } catch(e) { console.error('Fetch vouchers failed', e); }
+
+
   try {
       const res = await fetch('/api/combos');
       if (res.ok) {
@@ -336,6 +368,14 @@ async function init() {
           }
       }
   } catch(e) { console.error('Fetch combos failed in checkout', e); }
+
+  document.querySelectorAll('.btn-select-offer').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+          const code = e.target.closest('.offer-item').getAttribute('data-code');
+          applyPromo(code);
+      });
+  });
+
 
   document.querySelectorAll('input[name="combo"]').forEach(radio => {
     radio.addEventListener('change', (e) => {
