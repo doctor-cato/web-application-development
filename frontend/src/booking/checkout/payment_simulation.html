@@ -82,6 +82,12 @@
             100% { transform: rotate(360deg); }
         }
 
+        @keyframes progress-fake {
+            0% { width: 0%; }
+            50% { width: 70%; }
+            100% { width: 90%; }
+        }
+
         .sim-btn {
             display: block;
             width: 100%;
@@ -156,9 +162,14 @@
             <div class="sim-amount" id="sim-amount" style="margin-top: 0.5rem; margin-bottom: 0;">0 đ</div>
             <p style="font-weight: 600; font-size: 1rem; color: #333; margin-top: 0.25rem; margin-bottom: 1.5rem;">3HD2K Cinema</p>
 
-            <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 1rem; background: #f8f9fa; padding: 0.5rem; border-radius: 8px;">
-                <div class="sim-spinner" id="sim-spinner" style="margin: 0; width: 16px; height: 16px; border-width: 2px;"></div>
-                <span style="font-size: 0.85rem; color: #666;">Đang chờ thanh toán... <strong class="countdown-warning" style="color: #e50914;">05:00</strong></span>
+            <div style="margin-bottom: 1rem;">
+                <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: #666; margin-bottom: 5px;">
+                    <span>Đang chờ thanh toán...</span>
+                    <strong class="countdown-warning" style="color: #e50914;">05:00</strong>
+                </div>
+                <div style="width: 100%; background: #e9ecef; height: 6px; border-radius: 4px; overflow: hidden;">
+                    <div style="width: 0%; height: 100%; background: #ae2070; transition: width 0.3s ease; animation: progress-fake 3s ease-out forwards;" id="sim-progress-bar"></div>
+                </div>
             </div>
 
             <button class="sim-btn" id="sim-btn" disabled>XÁC NHẬN ĐÃ QUÉT MÃ</button>

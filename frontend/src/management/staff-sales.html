@@ -1985,7 +1985,7 @@
 
                 return `
                     <div class="pos-item-card" style="border-color: rgba(229,9,20,0.3);">
-                        <img src="${m.poster}" alt="${m.title}" class="pos-item-img" style="height: 140px;">
+                        <img src="${m.poster}" alt="${m.title}" loading="lazy" class="pos-item-img" style="height: 140px;">
                         <div class="pos-item-info">
                             <div class="pos-item-name" style="font-size: 0.9rem; font-weight: 800;">${m.title}</div>
                             <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px;">
@@ -2026,7 +2026,7 @@
 
                 return `
                     <div class="pos-item-card ${isOutOfStock ? 'out-of-stock' : ''}" onclick="addToCart('${p.id}')">
-                        <img src="${p.image}" alt="${p.name}" class="pos-item-img">
+                        <img src="${p.image}" alt="${p.name}" loading="lazy" class="pos-item-img">
                         <div class="pos-item-info">
                             <div class="pos-item-name">${p.name}</div>
                             <div class="pos-item-meta">

@@ -1235,3 +1235,29 @@ footer {
     transform: scale(1.15) rotate(5deg);
     filter: brightness(1.3);
 }
+
+/* Minimal Skeleton Loader (Ponytail Mode) - Global */
+@keyframes pulse-opacity {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+}
+.skeleton-box {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    animation: pulse-opacity 1.5s infinite ease-in-out;
+}
+.skeleton-card {
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+.skeleton-line {
+    height: 1rem;
+    width: 100%;
+}
+.skeleton-line.short { width: 60%; }
+.skeleton-line.medium { width: 80%; }

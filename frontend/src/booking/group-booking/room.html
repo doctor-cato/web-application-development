@@ -348,7 +348,7 @@
         }
 
         if (!isValid) {
-            alert('Phiên giao dịch không tồn tại hoặc đã hết hạn.');
+            showToast('Phiên giao dịch không tồn tại hoặc đã hết hạn.', 'error');
             window.location.href = "/explore/home-page/index.html";
             return false;
         }
@@ -617,7 +617,7 @@
                     seatEl.title = `Ghế ${seat} - Chờ người khác thanh toán`;
                     seatEl.style.cursor = 'not-allowed';
                     seatEl.style.opacity = '0.7';
-                    seatEl.addEventListener('click', () => alert('Ghế này dành cho người khác. Vui lòng chỉ thanh toán phần ghế của bạn!'));
+                    seatEl.addEventListener('click', () => showToast('Ghế này dành cho người khác. Vui lòng chỉ thanh toán phần ghế của bạn!', 'error'));
                 }
             }
             seatMap.appendChild(seatEl);
@@ -693,12 +693,12 @@
             lsSet(KEYS.LAST_BOOKING, myBooking);
 
             setTimeout(() => {
-                alert("Tất cả thành viên đã thanh toán! Vé của bạn đang được xuất.");
+                showToast("Tất cả thành viên đã thanh toán! Vé của bạn đang được xuất.", 'success');
                 window.location.href = "/booking/booking-success/index.html";
             }, 1000);
         } else if (activeSeats.length === 0) {
             setTimeout(() => {
-                alert("Tất cả các ghế đã bị hủy. Đơn hàng kết thúc.");
+                showToast("Tất cả các ghế đã bị hủy. Đơn hàng kết thúc.", 'error');
                 window.location.href = "/explore/home-page/index.html";
             }, 1000);
         }
@@ -898,7 +898,7 @@
             clearInterval(timerInterval);
             countdownEl.textContent = "HẾT GIỜ";
             countdownEl.style.color = "var(--neon-red)";
-            alert('Phòng chờ đã đóng. Vé chưa thanh toán sẽ được trả lại hệ thống!');
+            showToast('Phòng chờ đã đóng. Vé chưa thanh toán sẽ được trả lại hệ thống!', 'error');
             window.location.href = "/explore/home-page/index.html";
         }
     };
@@ -921,7 +921,7 @@
     }
 
     window.shareSocial = function(platform) {
-        alert(`Đã mở giao diện chia sẻ qua ${platform} với link: ${window.location.href}`);
+        showToast(`Đã mở giao diện chia sẻ qua ${platform}`, 'success');
     }
 
     if (loadOrderData()) {
