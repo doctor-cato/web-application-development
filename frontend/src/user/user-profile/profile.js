@@ -470,42 +470,73 @@ function setupAvatarUpload() {
 
     if (!avatarInput || !avatarImg) return;
 
-    avatarInput.addEventListener('change', function(e) {
+    avatarInput.addEventListener('change', async function(e) {
         const file = e.target.files[0];
         if (!file) return;
 
-        const reader = new FileReader();
-        reader.onload = function(event) {
-            const base64Str = event.target.result;
+        // Visual feedback
+        const originalSrc = avatarImg.src;
+        avatarImg.style.opacity = '0.5';
+
+        try {
+            const token = sessionStorage.getItem('token') || localStorage.getItem('token');
+            if (!token) throw new Error('No token found');
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const response = await fetch(`${API_BASE_URL}/auth/upload-avatar`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                body: formData
+            });
+
+            if (!response.ok) {
+                const errData = await response.json();
+                throw new Error(errData.message || 'Lỗi khi upload ảnh');
+            }
+
+            const data = await response.json();
             
-            avatarImg.src = base64Str;
-            
-            localStorage.setItem('userAvatar', base64Str);
-            
+            // The backend returns avatarUrl like "/uploads/images/xxx.png"
+            // We prepend the API_BASE_URL (removing /api) to make it absolute if needed, 
+            // or just let the backend handle it. Let's use the exact path from backend:
+            const avatarUrl = API_BASE_URL.replace('/api', '') + data.avatarUrl;
+
+            // Update DOM
+            avatarImg.src = avatarUrl;
+            avatarImg.style.opacity = '1';
+
+            // Update session
             let session = null;
-            try {
-                session = getCurrentUser();
-            } catch(e) {}
-            
+            try { session = getCurrentUser(); } catch(e) {}
             if (session) {
-                session.avatar = base64Str;
+                session.avatar = avatarUrl;
                 setCurrentUser(session);
             }
+
+            // Sync with old localStorage logic if needed
+            localStorage.setItem('userAvatar', avatarUrl);
             
-            try {
-                const email = session ? session.email : localStorage.getItem('userEmail');
-                if (email) {
-                    const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
-                    const foundIndex = users.findIndex(u => u.email === email);
-                    if (foundIndex !== -1) {
-                        users[foundIndex].avatar = base64Str;
-                        localStorage.setItem('registeredUsers', JSON.stringify(users));
-                    }
-                }
-            } catch(e) {}
-        };
-        reader.readAsDataURL(file);
+            const toast = window.toast || { success: alert, error: alert };
+            if(window.toast) toast.success('Đã cập nhật ảnh đại diện thành công!');
+            else alert('Đã cập nhật ảnh đại diện thành công!');
+            
+            // Reload to update navbar
+            setTimeout(() => window.location.reload(), 1000);
+
+        } catch (error) {
+            console.error('Upload avatar error:', error);
+            avatarImg.src = originalSrc;
+            avatarImg.style.opacity = '1';
+            const toast = window.toast || { success: alert, error: alert };
+            if(window.toast) toast.error('Không thể cập nhật ảnh: ' + error.message);
+            else alert('Không thể cập nhật ảnh: ' + error.message);
+        }
     });
+});
 }
 
 
