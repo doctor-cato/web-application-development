@@ -135,6 +135,39 @@ namespace appweb.Controllers
             return Ok(new { message = "Xác nhận email thành công. Bạn có thể đăng nhập ngay bây giờ." });
         }
 
+        [HttpPut("change-password")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto model)
+        {
+            if (model == null || string.IsNullOrEmpty(model.CurrentPassword) || string.IsNullOrEmpty(model.NewPassword))
+                return BadRequest(new { message = "Dữ liệu không hợp lệ." });
+
+            var emailClaim = User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value ?? User.FindFirst("email")?.Value;
+            if (string.IsNullOrEmpty(emailClaim))
+                return Unauthorized(new { message = "Vui lòng đăng nhập để thực hiện chức năng này." });
+
+            var user = await _userRepository.GetByEmailAsync(emailClaim);
+            if (user == null)
+                return NotFound(new { message = "Không tìm thấy tài khoản." });
+
+            bool isPasswordValid = false;
+            if (user.Password.StartsWith("$2a$") || user.Password.StartsWith("$2b$") || user.Password.StartsWith("$2y$"))
+            {
+                isPasswordValid = BCrypt.Net.BCrypt.Verify(model.CurrentPassword, user.Password);
+            }
+            else if (user.Password == model.CurrentPassword)
+            {
+                isPasswordValid = true;
+            }
+
+            if (!isPasswordValid)
+                return BadRequest(new { message = "Mật khẩu hiện tại không chính xác." });
+
+            user.Password = BCrypt.Net.BCrypt.HashPassword(model.NewPassword);
+            await _userRepository.UpdateAsync(user);
+
+            return Ok(new { message = "Đổi mật khẩu thành công." });
+        }
+
         [HttpPost("resend-otp")]
         public async Task<IActionResult> ResendOtp([FromBody] ForgotPasswordDto model)
         {
