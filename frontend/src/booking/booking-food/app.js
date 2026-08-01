@@ -1,4 +1,4 @@
-﻿(async () => {
+(async () => {
   const isHTTPS = typeof window !== 'undefined' && window.location.protocol === 'https:';
   const isVercelHost = typeof window !== 'undefined' && (window.location.hostname.includes('vercel.app') || window.location.hostname.includes('vercel'));
   const API_BASE_URL = (typeof window !== 'undefined' && window.API_BASE_URL) || 
@@ -42,6 +42,22 @@
                   desc: item.desc,
                   category: item.category || 'Combo',
                   image: item.image || item.imageUrl || '../../shared/images/combo_double.png'
+              };
+          });
+      } else {
+          // Hardcoded fallback if both API and localStorage fail
+          const defaultCombos = [
+              { id: "cb_solo", name: "Combo Solo", desc: "1 Bắp Ngọt (L) + 1 Nước Ngọt (L)", price: 89000, stock: 150, image: "../../assets/combos/combo_solo.jpg", category: "Combo" },
+              { id: "cb_couple", name: "Combo Couple", desc: "1 Bắp Ngọt (XL) + 2 Nước Ngọt (L)", price: 129000, stock: 120, image: "../../assets/combos/combo_couple.jpg", category: "Combo" },
+              { id: "cb_family", name: "Combo Family", desc: "2 Bắp Ngọt (XL) + 4 Nước Ngọt (L) + 1 Snack", price: 219000, stock: 80, image: "../../assets/combos/combo_family.jpg", category: "Combo" }
+          ];
+          defaultCombos.forEach(item => {
+              products[item.id] = {
+                  name: item.name,
+                  price: item.price,
+                  desc: item.desc,
+                  category: item.category,
+                  image: item.image
               };
           });
       }
