@@ -1242,7 +1242,16 @@ input:checked + .slider:before {
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    background: url('/shared/images/avatar.jpg') center/cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.border-preview img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
 }
 
 .border-option span {
