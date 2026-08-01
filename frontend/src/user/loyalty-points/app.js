@@ -553,64 +553,63 @@
     });
   }
 
-  function bindGiftRedemption() {
-    const giftCards = $$('.gift-card');
-    giftCards.forEach((card, idx) => {
-      const title = $('h3', card).textContent.trim();
-      const ptsText = $('.gift-pts', card).textContent.trim();
-      const pts = parseInt(ptsText);
-      const btn = $('.btn-redeem', card);
+  const isHTTPS = typeof window !== 'undefined' && window.location.protocol === 'https:';
+  const isVercelHost = typeof window !== 'undefined' && (window.location.hostname.includes('vercel.app') || window.location.hostname.includes('vercel'));
+  const API_BASE_URL = (typeof window !== 'undefined' && window.API_BASE_URL) || 
+      ((isHTTPS || isVercelHost) ? `${window.location.origin}/api` : 'http://3hd2k-api.somee.com/api');
 
-      if (btn) {
+  async function loadGifts() {
+    const grid = document.querySelector('.gifts-grid');
+    if (!grid) return;
+    grid.innerHTML = '<div style="text-align:center;padding:2rem;color:#888;width:100%;grid-column:1/-1;"><i class="fas fa-spinner fa-spin fa-2x"></i><p>Đang tải phần thưởng...</p></div>';
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/vouchers`);
+      if (!res.ok) throw new Error('API error');
+      const vouchers = await res.json();
+      
+      const pointVouchers = vouchers.filter(v => v.pointsRequired && v.pointsRequired > 0);
+
+      grid.innerHTML = '';
+      if (pointVouchers.length === 0) {
+        grid.innerHTML = '<div style="text-align:center;padding:2rem;color:#888;width:100%;grid-column:1/-1;"><i class="fas fa-box-open fa-2x"></i><p>Hiện chưa có quà tặng nào để đổi.</p></div>';
+        return;
+      }
+
+      pointVouchers.forEach((v, idx) => {
+        let discountStr = v.discountType === 'Percent' ? `Giảm ${v.discountAmount}%` : `Giảm ${v.discountAmount.toLocaleString('vi-VN')}đ`;
+        
+        const card = document.createElement('article');
+        card.className = 'gift-card';
+        card.innerHTML = `
+          <div class="gift-media gift-media--voucher" style="background-image:url('https://images.unsplash.com/photo-1607083206869-4c7672f72a8a?w=480&h=280&fit=crop')"></div>
+          <div class="gift-body">
+            <h3>${v.code}</h3>
+            <p>${discountStr} - ${v.description || ''}</p>
+            <div class="gift-footer">
+              <span class="gift-pts">${v.pointsRequired} PTS</span>
+              <button class="btn-redeem">Đổi ngay</button>
+            </div>
+          </div>
+        `;
+        
+        const btn = card.querySelector('.btn-redeem');
+        if (state.points < v.pointsRequired) {
+          btn.setAttribute('disabled', 'true');
+          btn.classList.add('btn-redeem--disabled');
+          btn.textContent = 'Chưa đủ điểm';
+        }
+        
         btn.addEventListener('click', (e) => {
           e.preventDefault();
-          redeemGift(title, pts, idx);
+          redeemGift(v.code, v.pointsRequired, idx);
         });
-      }
-    });
-  }
 
-  function buildEarnSection() {
-    const section = document.createElement('section');
-    section.className = 'earn-section';
-    section.innerHTML = `
-      <div class="section-head">
-        <div class="section-title">
-          <span class="earn-icon">
-            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm0-4h-2V7h2v8z"/></svg>
-          </span>
-          CÁCH TÍCH ĐIỂM
-        </div>
-      </div>
-      <p class="earn-info-text">Điểm thưởng sẽ được cộng tự động khi bạn thực hiện các hoạt động sau tại 3HD2K:</p>
-      <div class="earn-grid">
-        ${EARN_ACTIONS.map(action => `
-          <div class="earn-card" data-action="${action.id}">
-            <span class="earn-card-icon">${action.icon}</span>
-            <span class="earn-card-label">${action.label}</span>
-            <span class="earn-card-pts">+${action.minPts === action.maxPts ? action.minPts : action.minPts + '~' + action.maxPts} PTS</span>
-          </div>
-        `).join('')}
-      </div>
-    `;
-
-    const giftsSection = $('.gifts-section');
-    giftsSection.parentNode.insertBefore(section, giftsSection);
-  }
-
-  function markStaticItems() {
-    $$('.history-item').forEach(item => {
-      item.setAttribute('data-static', 'true');
-    });
-  }
-
-  function bindTierDetailsButton() {
-    const btn = $('.btn-outline');
-    if (btn) {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        showTierDetailsModal();
+        grid.appendChild(card);
       });
+    } catch (e) {
+      console.warn('Voucher API error:', e);
+      grid.innerHTML = '<div style="text-align:center;padding:2rem;color:#888;width:100%;grid-column:1/-1;"><i class="fas fa-box-open fa-2x"></i><p>Hiện chưa có quà tặng nào để đổi.</p></div>';
     }
   }
 
@@ -620,7 +619,7 @@
     markStaticItems();
     buildEarnSection();
     bindTierDetailsButton();
-    bindGiftRedemption();
+    loadGifts();
     updateUI(state.points, false);
     renderHistory();
   }
