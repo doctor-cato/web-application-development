@@ -24,13 +24,12 @@
 - **Tổng số commits**: **594 commits** (được kiểm tra tự động qua Git history).
 - **Phiên bản hiện tại**: **`v3.6.7`** (Tuân thủ Semantic Versioning).
 - **Kiểm thử E2E (Playwright)**: **11/11 test suites PASS 100%** (bao gồm Responsive layout, Visual regression, Booking flow, Minigame, và Profile).
-- **Kiểm định Product Readiness**: Đã hoàn thành đợt kiểm tra toàn diện với các skill audit chuyên sâu (`ponytail-audit`, `modern-web-guidance`, `memory-leak-debugging`, `a11y-debugging`).
 
 ---
 
-## 📋 Tính năng Mới & Cải tiến Kể từ v2.7.6 (#61 - #63)
+## 📋 Tính năng Mới & Cải tiến Kể từ v3.6.6 (#61 - #63)
 
-Sau đợt audit v2.7.6, dự án tiếp tục phát triển với các commits bổ sung, tập trung vào tích hợp Backend thực và nâng cấp giao diện:
+Sau đợt audit v3.6.6, dự án tiếp tục phát triển với các commits bổ sung, tập trung vào tích hợp Backend thực và nâng cấp giao diện:
 
 1. [**#61 - Seat Lock Sync & BroadcastChannel Cleanup**](https://github.com/doctor-cato/web-application-development/issues/61): Giải quyết lỗi đồng bộ khóa ghế đa tab, dọn dẹp vòng đời `BroadcastChannel` và xóa dead code liên quan.
 2. [**#62 - POS Staff VIP Sync & SignalR Resilience**](https://github.com/doctor-cato/web-application-development/issues/62): Đồng bộ dữ liệu VIP cho nhân viên bán vé tại quầy (Staff POS), cải thiện khả năng phục hồi kết nối SignalR và tạo mã QR riêng biệt cho từng ghế.
