@@ -94,12 +94,7 @@
 
   const STORAGE_KEY = '3hd2k_rewards';
 
-  function getApiHeaders() {
-    const headers = { 'Content-Type': 'application/json' };
-    const token = localStorage.getItem('jwt_token') || localStorage.getItem('auth_token');
-    if (token) headers['Authorization'] = `Bearer ${token}`;
-    return headers;
-  }
+
 
   function loadState() {
     try {
@@ -116,12 +111,7 @@
     const token = localStorage.getItem('jwt_token') || localStorage.getItem('auth_token');
     if (!token) return;
     try {
-      const isHTTPS = typeof window !== 'undefined' && window.location.protocol === 'https:';
-      const isVercelHost = typeof window !== 'undefined' && (window.location.hostname.includes('vercel.app') || window.location.hostname.includes('vercel'));
-      const API_BASE_URL = (typeof window !== 'undefined' && window.API_BASE_URL) || 
-          ((isHTTPS || isVercelHost) ? `${window.location.origin}/api` : 'http://3hd2k-api.somee.com/api');
-
-      const res = await fetch(`${API_BASE_URL}/auth/me`, { headers: getApiHeaders() });
+      const res = await fetch(`${window.API_BASE_URL}/auth/me`, { headers: window.getApiHeaders() });
       if (res.ok) {
         const userData = await res.json();
         const oldPoints = state.points;
@@ -581,10 +571,7 @@
     });
   }
 
-  const isHTTPS = typeof window !== 'undefined' && window.location.protocol === 'https:';
-  const isVercelHost = typeof window !== 'undefined' && (window.location.hostname.includes('vercel.app') || window.location.hostname.includes('vercel'));
-  const API_BASE_URL = (typeof window !== 'undefined' && window.API_BASE_URL) || 
-      ((isHTTPS || isVercelHost) ? `${window.location.origin}/api` : 'http://3hd2k-api.somee.com/api');
+
 
   async function loadGifts() {
     const grid = document.querySelector('.gifts-grid');
@@ -592,7 +579,7 @@
     grid.innerHTML = '<div style="text-align:center;padding:2rem;color:#888;width:100%;grid-column:1/-1;"><i class="fas fa-spinner fa-spin fa-2x"></i><p>Đang tải phần thưởng...</p></div>';
 
     try {
-      const res = await fetch(`${API_BASE_URL}/vouchers`);
+      const res = await fetch(`${window.API_BASE_URL}/vouchers`);
       if (!res.ok) throw new Error('API error');
       const vouchers = await res.json();
       
