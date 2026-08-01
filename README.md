@@ -27,21 +27,13 @@
 
 ---
 
-## 📋 Tính năng Mới & Cải tiến Kể từ v3.6.6 (#61 - #63)
+## 📋 Cập nhật v3.6.7 (#61 - #63)
 
-Sau đợt audit v3.6.6, dự án tiếp tục phát triển với các commits bổ sung, tập trung vào tích hợp Backend thực và nâng cấp giao diện:
+Các thay đổi chính tập trung vào tích hợp API thực và sửa lỗi:
 
-1. [**#61 - Seat Lock Sync & BroadcastChannel Cleanup**](https://github.com/doctor-cato/web-application-development/issues/61): Giải quyết lỗi đồng bộ khóa ghế đa tab, dọn dẹp vòng đời `BroadcastChannel` và xóa dead code liên quan.
-2. [**#62 - POS Staff VIP Sync & SignalR Resilience**](https://github.com/doctor-cato/web-application-development/issues/62): Đồng bộ dữ liệu VIP cho nhân viên bán vé tại quầy (Staff POS), cải thiện khả năng phục hồi kết nối SignalR và tạo mã QR riêng biệt cho từng ghế.
-3. [**#63 - Admin Portal & Staff POS Integration**](https://github.com/doctor-cato/web-application-development/issues/63): Tích hợp dữ liệu người dùng thực và thống kê đặt vé trực tiếp, bổ sung quản lý suất chiếu (schedule, thêm/xóa showtime) trong Admin Portal.
-
-### Tính năng Nổi bật Thêm mới
-
-- **CineMatch Redesign**: Giao diện card-based mới với emoji chat, Firebase real-time, phân tích độ tương thích và match timer.
-- **QR Code Thanh toán Động**: Hỗ trợ 3 phương thức (Chuyển khoản Ngân hàng, ZaloPay, MoMo) với hình ảnh QR riêng biệt.
-- **Admin Portal Hoàn chỉnh 100% API-driven**: Toàn bộ dữ liệu phim, thống kê, quản lý suất chiếu đều kết nối API thực thay vì hardcode.
-- **Backend Database Seeding**: Nạp đầy đủ 12 bộ phim thực và suất chiếu vào SQL Server, đồng bộ dropdown quick-booking.
-- **Tối ưu Responsive Toàn diện**: Chuẩn hóa layout trên tất cả màn hình, sửa lỗi navbar, Admin Portal và Staff POS.
+- **Đồng bộ**: Sửa lỗi khóa ghế đa tab (dọn dẹp `BroadcastChannel`). Cải thiện kết nối SignalR cho POS Staff.
+- **Tích hợp Backend**: Admin Portal và Staff POS sử dụng API thực thay vì dữ liệu mock. Hardcode nạp dữ liệu phim trực tiếp qua C# EF Core (bỏ đọc file json).
+- **Giao diện**: Chuẩn hóa responsive layout, làm lại UI CineMatch và bổ sung QR code thanh toán động (Bank, ZaloPay, MoMo).
 
 ---
 
