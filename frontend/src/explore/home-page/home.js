@@ -436,3 +436,16 @@ window.renderComingSoon = function(movies) {
 
     comingSoonGrid.innerHTML = cardsHtml;
 };
+
+window.addEventListener('moviesUpdated', () => {
+    if (window.heroMovies && window.heroMovies.length > 0) {
+        currentHeroIndex = 0;
+        renderHeroMovie(window.heroMovies[currentHeroIndex]);
+    }
+    if (window.nowShowingMovies && typeof window.renderNowShowing === 'function') {
+        window.renderNowShowing(window.nowShowingMovies);
+    }
+    if (window.comingSoonMovies && typeof window.renderComingSoon === 'function') {
+        window.renderComingSoon(window.comingSoonMovies);
+    }
+});

@@ -430,3 +430,51 @@ window.nowShowingMovies = nowShowingMovies;
 window.comingSoonMovies = comingSoonMovies;
 window.allMoviesData = allMoviesData;
 window.normalizeImagePath = normalizeImagePath;
+
+// --- Global SignalR Real-time Notifications for User/Staff pages ---
+(function initGlobalSignalR() {
+    if (typeof signalR === 'undefined') {
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js';
+        script.onload = connectSignalR;
+        document.head.appendChild(script);
+    } else {
+        connectSignalR();
+    }
+
+    function connectSignalR() {
+        try {
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl("/notificationHub", {
+                    accessTokenFactory: () => localStorage.getItem('jwt_token') || ''
+                })
+                .withAutomaticReconnect()
+                .build();
+
+            connection.on("DataUpdated", (type) => {
+                if (type === "Movies") {
+                    if (typeof window.fetchMovies === 'function') {
+                        window.fetchMovies().then(() => {
+                            window.dispatchEvent(new Event('moviesUpdated'));
+                            console.log("Movies data updated via SignalR");
+                        });
+                    }
+                } else if (type === "Combos") {
+                    window.dispatchEvent(new Event('combosUpdated'));
+                    console.log("Combos data updated via SignalR");
+                    // If on booking-food page, force a reload to get new combos (simple approach)
+                    if (window.location.pathname.includes('booking-food') || window.location.pathname.includes('checkout')) {
+                        // Optional: a toast notification could be shown before reloading
+                        setTimeout(() => window.location.reload(), 1500);
+                    }
+                }
+            });
+
+            connection.start()
+                .then(() => console.log("Global SignalR connected for DataUpdated"))
+                .catch(e => console.warn(e));
+        } catch(e) {
+            console.warn("Global SignalR init failed", e);
+        }
+    }
+})();

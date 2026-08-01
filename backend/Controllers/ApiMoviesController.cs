@@ -1,7 +1,11 @@
 using appweb.Models;
 using appweb.Repositories;
+using appweb.Hubs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.SignalR;
+using System.Threading.Tasks;
+using System;
 
 namespace appweb.Controllers
 {
@@ -10,10 +14,12 @@ namespace appweb.Controllers
     public class ApiMoviesController : ControllerBase
     {
         private readonly MovieRepository _movieRepository;
+        private readonly IHubContext<NotificationHub> _hubContext;
 
-        public ApiMoviesController(MovieRepository movieRepository)
+        public ApiMoviesController(MovieRepository movieRepository, IHubContext<NotificationHub> hubContext)
         {
             _movieRepository = movieRepository;
+            _hubContext = hubContext;
         }
 
         [HttpGet]
@@ -56,6 +62,7 @@ namespace appweb.Controllers
                 movie.Id = Guid.NewGuid();
             }
             await _movieRepository.AddAsync(movie);
+            await _hubContext.Clients.All.SendAsync("DataUpdated", "Movies");
             return Ok(movie);
         }
 
@@ -82,6 +89,7 @@ namespace appweb.Controllers
             existingMovie.Gallery = movie.Gallery;
 
             await _movieRepository.UpdateAsync(existingMovie);
+            await _hubContext.Clients.All.SendAsync("DataUpdated", "Movies");
             return Ok(existingMovie);
         }
 
@@ -93,8 +101,8 @@ namespace appweb.Controllers
             if (existingMovie == null) return NotFound();
 
             await _movieRepository.DeleteAsync(id);
+            await _hubContext.Clients.All.SendAsync("DataUpdated", "Movies");
             return Ok(new { message = "Deleted successfully" });
         }
     }
 }
-

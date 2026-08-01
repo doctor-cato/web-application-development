@@ -2931,6 +2931,12 @@
                 showToast("🚀 CÓ ĐƠN HÀNG MỚI TỪ KHÁCH HÀNG: " + newOrder.customerName);
             });
 
+            connection.on("DataUpdated", (type) => {
+                dbInit();
+                playBeep('success');
+                showToast("🔄 Dữ liệu " + type + " vừa được cập nhật từ Admin!");
+            });
+
             connection.start().then(() => {
                 updateSignalRUI("var(--btn-green-color)", "Realtime Online");
                 console.log("Connected to SignalR Notification Hub!");

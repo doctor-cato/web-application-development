@@ -95,6 +95,7 @@ builder.Services.AddScoped<appweb.Repositories.MovieRepository>();
 builder.Services.AddScoped<appweb.Repositories.BookingRepository>();
 builder.Services.AddScoped<appweb.Repositories.ShowtimeRepository>();
 builder.Services.AddScoped<appweb.Repositories.CinemaRepository>();
+builder.Services.AddScoped<appweb.Repositories.ComboRepository>();
 
 builder.Services.AddHostedService<appweb.Services.SeatCleanupService>();
 
