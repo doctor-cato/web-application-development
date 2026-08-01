@@ -553,7 +553,7 @@ async function loadRealOffers() {
         grid.innerHTML = '';
         
         if (vouchers.length === 0) {
-            grid.innerHTML = '<div style="text-align:center;padding:2rem;color:#888;width:100%;grid-column:1/-1;"><i class="fas fa-box-open fa-2x"></i><p>Hiện chưa có ưu đãi nào.</p></div>';
+            grid.innerHTML = '<div style="text-align:center;padding:2rem;color:#888;width:100%;grid-column:1/-1;"><i class="fas fa-box-open fa-2x"></i><p>Hiện chưa có voucher nào.</p></div>';
             return;
         }
 
@@ -579,8 +579,8 @@ async function loadRealOffers() {
             grid.appendChild(card);
         });
     } catch (e) {
-        console.error('Error fetching vouchers:', e);
-        grid.innerHTML = '<div style="text-align:center;padding:2rem;color:#ff4d4f;width:100%;grid-column:1/-1;"><i class="fas fa-exclamation-triangle fa-2x"></i><p>Lỗi tải dữ liệu ưu đãi. Vui lòng thử lại sau.</p></div>';
+        console.warn('Voucher API not available or empty, showing default empty state:', e);
+        grid.innerHTML = '<div style="text-align:center;padding:2rem;color:#888;width:100%;grid-column:1/-1;"><i class="fas fa-box-open fa-2x"></i><p>Hiện chưa có voucher nào.</p></div>';
     }
 }
 
