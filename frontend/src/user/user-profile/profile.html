@@ -496,46 +496,20 @@
 
                         <div class="settings-section">
                             <h3 class="settings-title accordion-header">
-                                <span><i class="fas fa-sliders-h"></i> Cài đặt cơ bản</span>
+                                <span>
+                                    <i class="fas fa-bell"></i> Quản lý Thông báo
+                                    <span style="font-size: 0.7rem; background: var(--primary-red); color: white; padding: 3px 8px; border-radius: 4px; margin-left: 10px; font-weight: normal; vertical-align: text-bottom; text-transform: none;">Đang triển khai</span>
+                                </span>
                                 <i class="fas fa-chevron-down accordion-icon"></i>
                             </h3>
-                            <div class="settings-list">
-                                <div class="settings-item">
-                                    <div class="settings-info">
-                                        <h4>Ngôn ngữ</h4>
-                                        <p>Chọn ngôn ngữ hiển thị cho giao diện</p>
-                                    </div>
-                                    <select class="form-select-small" style="background: rgba(10,10,10,0.6); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 8px 12px; border-radius: 6px; outline: none;">
-                                        <option value="vi">Tiếng Việt</option>
-                                        <option value="en">English</option>
-                                    </select>
-                                </div>
-                                <div class="settings-item">
-                                    <div class="settings-info">
-                                        <h4>Chế độ sáng tối</h4>
-                                        <p>Giao diện Sáng / Tối</p>
-                                    </div>
-                                    <select class="form-select-small" style="background: rgba(10,10,10,0.6); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 8px 12px; border-radius: 6px; outline: none;">
-                                        <option value="dark">Tối (Mặc định)</option>
-                                        <option value="light">Sáng</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="settings-section">
-                            <h3 class="settings-title accordion-header">
-                                <span><i class="fas fa-bell"></i> Quản lý Thông báo</span>
-                                <i class="fas fa-chevron-down accordion-icon"></i>
-                            </h3>
-                            <div class="settings-list">
+                            <div class="settings-list" style="opacity: 0.5; filter: blur(0.5px); pointer-events: none;">
                                 <div class="settings-item">
                                     <div class="settings-info">
                                         <h4>Email xác nhận đặt vé</h4>
                                         <p>Nhận email biên lai ngay sau khi thanh toán thành công.</p>
                                     </div>
                                     <label class="toggle-switch">
-                                        <input type="checkbox" checked>
+                                        <input type="checkbox" checked disabled>
                                         <span class="slider round"></span>
                                     </label>
                                 </div>
@@ -545,7 +519,7 @@
                                         <p>Nhận thông báo trước giờ chiếu 2 tiếng để không lỡ phim.</p>
                                     </div>
                                     <label class="toggle-switch">
-                                        <input type="checkbox" checked>
+                                        <input type="checkbox" checked disabled>
                                         <span class="slider round"></span>
                                     </label>
                                 </div>
@@ -555,7 +529,7 @@
                                         <p>Nhận thông tin về các chương trình ưu đãi và bom tấn mới.</p>
                                     </div>
                                     <label class="toggle-switch">
-                                        <input type="checkbox">
+                                        <input type="checkbox" disabled>
                                         <span class="slider round"></span>
                                     </label>
                                 </div>
@@ -575,23 +549,23 @@
                                     </div>
                                     <div class="avatar-border-options" id="avatar-border-options">
                                         <div class="border-option active" data-border="member">
-                                            <div class="border-preview avatar-border-member"></div>
+                                            <div class="border-preview avatar-border-member"><img src="../../shared/images/avatar.jpg" alt="Member"></div>
                                             <span>Thành viên</span>
                                         </div>
                                         <div class="border-option" data-border="silver">
-                                            <div class="border-preview avatar-border-silver"></div>
+                                            <div class="border-preview avatar-border-silver"><img src="../../shared/images/avatar.jpg" alt="Silver"></div>
                                             <span>Bạc</span>
                                         </div>
                                         <div class="border-option" data-border="gold">
-                                            <div class="border-preview avatar-border-gold"></div>
+                                            <div class="border-preview avatar-border-gold"><img src="../../shared/images/avatar.jpg" alt="Gold"></div>
                                             <span>Vàng</span>
                                         </div>
                                         <div class="border-option" data-border="vjp">
-                                            <div class="border-preview avatar-border-vjp"></div>
+                                            <div class="border-preview avatar-border-vjp"><img src="../../shared/images/avatar.jpg" alt="VJP"></div>
                                             <span>VJP</span>
                                         </div>
                                         <div class="border-option" data-border="diamond">
-                                            <div class="border-preview avatar-border-diamond"></div>
+                                            <div class="border-preview avatar-border-diamond"><img src="../../shared/images/avatar.jpg" alt="Diamond"></div>
                                             <span>Bạch Kim</span>
                                         </div>
                                     </div>
@@ -608,7 +582,7 @@
                                 <div class="settings-item">
                                     <div class="settings-info">
                                         <h4>Mật khẩu</h4>
-                                        <p id="pwd-last-updated">Cập nhật lần cuối: 3 tháng trước</p>
+                                        <p id="pwd-last-updated">Quản lý mật khẩu của bạn</p>
                                     </div>
                                     <button class="btn-outline-small" id="btn-change-pwd">Đổi mật khẩu</button>
                                 </div>
@@ -621,60 +595,6 @@
                                         <input type="checkbox" id="toggle-2fa">
                                         <span class="slider round"></span>
                                     </label>
-                                </div>
-                                <div class="settings-item col-item">
-                                    <div class="settings-info w-100">
-                                        <h4>Thiết bị đang đăng nhập</h4>
-                                    </div>
-                                    <div class="device-list">
-                                        <div class="device-item current">
-                                            <div class="device-icon"><i class="fas fa-desktop"></i></div>
-                                            <div class="device-info">
-                                                <p class="device-name">Windows - Chrome</p>
-                                                <p class="device-loc">TP.HCM, Việt Nam (Thiết bị hiện tại)</p>
-                                            </div>
-                                        </div>
-                                        <div class="device-item">
-                                            <div class="device-icon"><i class="fas fa-mobile-alt"></i></div>
-                                            <div class="device-info">
-                                                <p class="device-name">iPhone 14 Pro - Safari</p>
-                                                <p class="device-loc">Hoạt động 2 ngày trước</p>
-                                            </div>
-                                            <button class="btn-text-danger btn-logout-device">Đăng xuất</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="settings-section">
-                            <h3 class="settings-title accordion-header">
-                                <span><i class="fas fa-credit-card"></i> Phương thức Thanh toán</span>
-                                <i class="fas fa-chevron-down accordion-icon"></i>
-                            </h3>
-                            <div class="settings-list">
-                                <div class="settings-item">
-                                    <div class="settings-info payment-info">
-                                        <div class="payment-icon bg-light"><i class="fab fa-cc-visa" style="color: #1a1f71;"></i></div>
-                                        <div>
-                                            <h4>Visa kết thúc bằng 4242</h4>
-                                            <p>Hết hạn: 12/28</p>
-                                        </div>
-                                    </div>
-                                    <button class="btn-text-danger btn-remove-payment">Xóa</button>
-                                </div>
-                                <div class="settings-item">
-                                    <div class="settings-info payment-info">
-                                        <div class="payment-icon"><img src="https://img.mservice.io/momo-payment/icon/images/logo512.png" alt="MoMo"></div>
-                                        <div>
-                                            <h4>Ví điện tử MoMo</h4>
-                                            <p>Đã liên kết</p>
-                                        </div>
-                                    </div>
-                                    <button class="btn-text-danger btn-remove-payment">Hủy liên kết</button>
-                                </div>
-                                <div class="settings-item border-0 pt-2 pb-0">
-                                    <button class="btn-add-payment"><i class="fas fa-plus"></i> Thêm phương thức thanh toán</button>
                                 </div>
                             </div>
                         </div>
@@ -714,59 +634,6 @@
         </div>
     </div>
 
-    <div id="logout-device-modal" class="modal-overlay">
-        <div class="modal-content" style="width: 400px; text-align: center; padding: 30px;">
-            <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #ffc107; margin-bottom: 20px;"></i>
-            <h3 style="color: white; margin-bottom: 15px; font-size: 1.4rem;">Đăng xuất thiết bị</h3>
-            <p style="color: #ccc; margin-bottom: 25px; line-height: 1.5;">Bạn có chắc chắn muốn đăng xuất tài khoản khỏi <br><b id="logout-device-name" style="color: white; font-size: 1.1rem;">thiết bị này</b>?</p>
-            <div style="display: flex; gap: 15px;">
-                <button id="btn-cancel-logout" class="btn-outline-small" style="flex: 1; padding: 12px;">Hủy</button>
-                <button id="btn-confirm-logout" class="btn-save" style="flex: 1; background: var(--primary-red);">Đăng xuất</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="remove-payment-modal" class="modal-overlay">
-        <div class="modal-content" style="width: 400px; text-align: center; padding: 30px;">
-            <i class="fas fa-trash-alt" style="font-size: 3rem; color: var(--primary-red); margin-bottom: 20px;"></i>
-            <h3 style="color: white; margin-bottom: 15px; font-size: 1.4rem;">Xóa phương thức</h3>
-            <p style="color: #ccc; margin-bottom: 25px; line-height: 1.5;">Bạn có chắc chắn muốn xóa phương thức thanh toán <br><b id="remove-payment-name" style="color: white; font-size: 1.1rem;">này</b>?</p>
-            <div style="display: flex; gap: 15px;">
-                <button id="btn-cancel-payment" class="btn-outline-small" style="flex: 1; padding: 12px;">Hủy</button>
-                <button id="btn-confirm-payment" class="btn-save" style="flex: 1; background: var(--primary-red);">Xóa</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="add-payment-modal" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Thêm thanh toán</h3>
-                <span class="close-modal" id="close-add-payment">&times;</span>
-            </div>
-            <div class="modal-body">
-                <form id="add-payment-form">
-                    <div class="form-group">
-                        <label>Loại phương thức</label>
-                        <select id="new-payment-type" class="form-select-small" style="width: 100%; padding: 12px; font-size: 1rem; border-radius: 8px;">
-                            <option value="visa">Thẻ tín dụng (Visa/Mastercard)</option>
-                            <option value="momo">Ví điện tử MoMo</option>
-                            <option value="zalopay">Ví ZaloPay</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Số thẻ / Số điện thoại</label>
-                        <input type="text" id="new-payment-number" required placeholder="Nhập số thẻ hoặc SĐT ví">
-                    </div>
-                    <div class="form-group">
-                        <label>Tên chủ thẻ / Chủ tài khoản</label>
-                        <input type="text" id="new-payment-name" required placeholder="Nhập tên không dấu">
-                    </div>
-                    <button type="submit" class="btn-save" style="width: 100%; margin-top: 15px;">Xác nhận thêm</button>
-                </form>
-            </div>
-        </div>
-    </div>
 
     <div id="footer-placeholder"></div>
 

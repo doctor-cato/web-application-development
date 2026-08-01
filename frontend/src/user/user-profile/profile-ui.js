@@ -93,15 +93,49 @@ function setupPasswordModal() {
     });
 
     if(pwdForm) {
-        pwdForm.addEventListener('submit', (e) => {
+        pwdForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-
             if(pwdError) pwdError.style.display = 'none';
-            if(pwdSuccess) {
-                pwdSuccess.textContent = "Đổi mật khẩu thành công!";
-                pwdSuccess.style.display = 'block';
+
+            const currentPassword = document.getElementById('current-pwd').value;
+            const newPassword = document.getElementById('new-pwd').value;
+            const confirmPassword = document.getElementById('confirm-pwd').value;
+
+            if (newPassword !== confirmPassword) {
+                if(pwdError) {
+                    pwdError.textContent = "Mật khẩu xác nhận không khớp.";
+                    pwdError.style.display = 'block';
+                }
+                return;
             }
-            setTimeout(() => pwdModal.style.display = 'none', 1500);
+
+            try {
+                const { API_BASE_URL, getHeaders } = await import('../../shared/utils/apiConfig.js');
+                const response = await fetch(`${API_BASE_URL}/auth/change-password`, {
+                    method: 'PUT',
+                    headers: getHeaders(),
+                    body: JSON.stringify({ currentPassword, newPassword })
+                });
+
+                if (response.ok) {
+                    if(pwdSuccess) {
+                        pwdSuccess.textContent = "Đổi mật khẩu thành công!";
+                        pwdSuccess.style.display = 'block';
+                    }
+                    setTimeout(() => pwdModal.style.display = 'none', 1500);
+                } else {
+                    const data = await response.json().catch(() => ({}));
+                    if(pwdError) {
+                        pwdError.textContent = data.message || "Đổi mật khẩu thất bại.";
+                        pwdError.style.display = 'block';
+                    }
+                }
+            } catch (err) {
+                if(pwdError) {
+                    pwdError.textContent = "Lỗi kết nối tới máy chủ.";
+                    pwdError.style.display = 'block';
+                }
+            }
         });
     }
 }
