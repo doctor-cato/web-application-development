@@ -4,24 +4,24 @@
 
   const TIERS = [
     {
-      id: 'member',
-      name: 'THÀNH VIÊN',
+      id: 'bronze',
+      name: 'ĐỒNG',
       min: 0,
       max: 199,
-      color: '#888888',
-      gradient: 'linear-gradient(160deg, #1a1a1a 0%, #121212 45%, #101010 100%)',
-      glowColor: 'rgba(136,136,136,0.25)',
+      color: '#CD7F32',
+      gradient: 'linear-gradient(160deg, #1a1610 0%, #121008 45%, #100e08 100%)',
+      glowColor: 'rgba(205,127,50,0.25)',
       privileges: [
         'Tích điểm 1x cho mỗi vé',
         'Nhận thông báo ưu đãi',
-        'Mở khóa khung viền Thành Viên'
+        'Mở khóa khung viền Đồng'
       ]
     },
     {
       id: 'silver',
       name: 'BẠC',
       min: 200,
-      max: 499,
+      max: 399,
       color: '#C0C0C0',
       gradient: 'linear-gradient(160deg, #1e1e22 0%, #151518 45%, #101012 100%)',
       glowColor: 'rgba(192,192,192,0.30)',
@@ -35,8 +35,8 @@
     {
       id: 'gold',
       name: 'VÀNG',
-      min: 500,
-      max: 999,
+      min: 400,
+      max: 599,
       color: '#FFD700',
       gradient: 'linear-gradient(160deg, #1a1814 0%, #141210 45%, #100e0c 100%)',
       glowColor: 'rgba(255,215,0,0.30)',
@@ -44,28 +44,28 @@
         'Tích điểm 1.5x',
         'Giảm 5% combo',
         'Tham gia sự kiện premiere',
-        'Mở khóa khung viền Gold'
+        'Mở khóa khung viền Vàng'
       ]
     },
     {
-      id: 'vip',
-      name: 'VIP',
-      min: 1000,
-      max: 1999,
-      color: '#E50914',
-      gradient: 'linear-gradient(160deg, #1a1214 0%, #121010 45%, #100c0c 100%)',
-      glowColor: 'rgba(229,9,20,0.35)',
+      id: 'platinum',
+      name: 'BẠCH KIM',
+      min: 600,
+      max: 799,
+      color: '#E5E4E2',
+      gradient: 'linear-gradient(160deg, #1a1a1e 0%, #141418 45%, #0e0e12 100%)',
+      glowColor: 'rgba(229,228,226,0.30)',
       privileges: [
         'Tích điểm 1.75x',
         'Giảm 8% combo',
         'Phòng chờ VIP',
-        'Mở khóa khung viền VJP'
+        'Mở khóa khung viền Bạch Kim'
       ]
     },
     {
       id: 'diamond',
-      name: 'DIAMOND',
-      min: 2000,
+      name: 'KIM CƯƠNG',
+      min: 800,
       max: Infinity,
       color: '#B9F2FF',
       gradient: 'linear-gradient(160deg, #0f1a1e 0%, #0c1418 45%, #0a0e12 100%)',
@@ -74,7 +74,7 @@
         'Tích điểm 2.0x',
         'Giảm 10% combo',
         'Quà sinh nhật đặc biệt',
-        'Mở khóa khung viền Diamond'
+        'Mở khóa khung viền Kim Cương'
       ]
     }
   ];
@@ -638,6 +638,52 @@
     } catch (e) {
       console.warn('Voucher API error:', e);
       grid.innerHTML = '<div style="text-align:center;padding:2rem;color:#888;width:100%;grid-column:1/-1;"><i class="fas fa-box-open fa-2x"></i><p>Hiện chưa có quà tặng nào để đổi.</p></div>';
+    }
+  }
+
+  function buildEarnSection() {
+    const section = document.createElement('section');
+    section.className = 'earn-section';
+    section.innerHTML = `
+      <div class="section-head">
+        <div class="section-title">
+          <span class="earn-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm0-4h-2V7h2v8z"/></svg>
+          </span>
+          CÁCH TÍCH ĐIỂM
+        </div>
+      </div>
+      <p class="earn-info-text">Điểm thưởng sẽ được cộng tự động khi bạn thực hiện các hoạt động sau tại 3HD2K:</p>
+      <div class="earn-grid">
+        ${EARN_ACTIONS.map(action => `
+          <div class="earn-card" data-action="${action.id}">
+            <span class="earn-card-icon">${action.icon}</span>
+            <span class="earn-card-label">${action.label}</span>
+            <span class="earn-card-pts">+${action.minPts === action.maxPts ? action.minPts : action.minPts + '~' + action.maxPts} PTS</span>
+          </div>
+        `).join('')}
+      </div>
+    `;
+
+    const giftsSection = $('.gifts-section');
+    if (giftsSection && giftsSection.parentNode) {
+      giftsSection.parentNode.insertBefore(section, giftsSection);
+    }
+  }
+
+  function markStaticItems() {
+    $$('.history-item').forEach(item => {
+      item.setAttribute('data-static', 'true');
+    });
+  }
+
+  function bindTierDetailsButton() {
+    const btn = $('.btn-outline');
+    if (btn) {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        showTierDetailsModal();
+      });
     }
   }
 

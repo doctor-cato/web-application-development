@@ -1850,6 +1850,7 @@ function renderVouchersTable(vouchers = null) {
                 <td><span class="badge" style="background: rgba(255,255,255,0.1);">${typeStr}</span></td>
                 <td style="color: var(--primary-red); font-weight: bold;">${valStr}</td>
                 <td>${dateStr}</td>
+                <td><span style="color: var(--accent); font-weight: bold;">${v.pointsRequired || 0} PTS</span></td>
                 <td><span class="badge ${statusClass}">${statusText}</span></td>
                 <td>
                     <div class="action-buttons">
