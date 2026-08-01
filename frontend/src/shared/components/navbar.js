@@ -1469,7 +1469,20 @@ export function renderNavbar() {
                     ? `<span class="user-points"><i class="fas fa-crown" style="color: #ffc107;"></i> VIP ${vipPlan ? vipPlan.charAt(0).toUpperCase() + vipPlan.slice(1) : ''} - ${pointsDisplay} điểm</span>`
                     : `<span class="user-points">Hạng thường - ${pointsDisplay} điểm</span>`;
 
-                const borderClass = 'avatar-border-' + (localStorage.getItem('userAvatarBorder') || 'member');
+                
+                let userBorder = localStorage.getItem('userAvatarBorder') || 'member';
+                if (isVip && vipPlan) {
+                    const planLower = vipPlan.toLowerCase();
+                    // Auto-upgrade border if they haven't explicitly set one or if it's lower than their plan
+                    if (userBorder === 'member') {
+                        if (planLower === 'platinum') userBorder = 'diamond';
+                        else if (planLower === 'gold') userBorder = 'gold';
+                        else if (planLower === 'silver') userBorder = 'silver';
+                        localStorage.setItem('userAvatarBorder', userBorder);
+                    }
+                }
+                const borderClass = 'avatar-border-' + userBorder;
+
 
                 const userRole = (session.role || '').toUpperCase();
                 let portalNavButtonsHtml = '';
