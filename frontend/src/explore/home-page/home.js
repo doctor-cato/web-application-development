@@ -376,7 +376,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const vipPlan = localStorage.getItem('vip_plan');
 
         if (isVip) {
-            btnVip.href = '../../user/user-profile/index.html';
+            btnVip.href = '../../user/user-profile/profile.html';
             btnVip.textContent = 'TRANG TÀI KHOẢN VIP';
             const rewardsSection = document.getElementById('home-rewards-section');
             if (rewardsSection) rewardsSection.style.display = 'none';
