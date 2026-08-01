@@ -31,7 +31,8 @@ let db = {
     combos: [],
     users: [],
     inventory: [],
-    roomLayouts: {}
+    roomLayouts: {},
+    vouchers: []
 };
 
 let activeTab = 'dashboard';
@@ -276,6 +277,23 @@ async function fetchCinemas() {
     }
 }
 
+async function fetchVouchers() {
+    try {
+        const res = await fetch(getApiUrl('/vouchers'), { headers: getApiHeaders() });
+        if (res.ok) {
+            const data = await res.json();
+            if (Array.isArray(data)) {
+                db.vouchers = data;
+                return;
+            }
+        }
+    } catch (e) {
+        console.error('Fetch vouchers API error:', e);
+    }
+    db.vouchers = db.vouchers || [];
+}
+
+
 async function fetchBookings() {
     try {
         const res = await fetch(getApiUrl('/bookings'), { headers: getApiHeaders() });
@@ -498,7 +516,8 @@ async function reloadDatabase() {
         fetchShowtimes(),
         fetchBookings(),
         fetchUsers(),
-        fetchCombos()
+        fetchCombos(),
+        fetchVouchers()
     ]);
 
     triggerTabRenders(activeTab);
@@ -553,6 +572,7 @@ function triggerTabRenders(tabId) {
         case 'rooms': populateRoomDropdown(); loadBrokenSeats(); break;
         case 'bookings': renderBookingsTable(); break;
         case 'combos': renderCombosTable(); break;
+        case 'vouchers': renderVouchersTable(); break;
         case 'users': renderUsersTable(); break;
         case 'inventory': renderAdminInventory(); break;
         case 'stats': renderStatsDashboard(); break;
@@ -1802,6 +1822,168 @@ async function deleteCombo(id) {
     }
 }
 
+
+// ==========================================
+// VOUCHER MANAGEMENT
+// ==========================================
+function renderVouchersTable(vouchers = null) {
+    const tbody = document.getElementById('vouchers-tbody');
+    if (!tbody) return;
+
+    const data = vouchers || db.vouchers || [];
+    if (data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center" style="padding: 20px; color: var(--text-muted);">Không tìm thấy voucher nào.</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = data.map(v => {
+        const typeStr = v.discountType === 'PERCENTAGE' ? 'Giảm %' : 'Giảm tiền';
+        const valStr = v.discountType === 'PERCENTAGE' ? (v.discountValue + '%') : formatMoney(v.discountValue);
+        const dateStr = v.expiryDate ? new Date(v.expiryDate).toLocaleDateString('vi-VN') : '';
+        const statusClass = v.isActive ? 'badge-success' : 'badge-danger';
+        const statusText = v.isActive ? 'Đang hoạt động' : 'Tạm dừng';
+
+        return `
+            <tr>
+                <td style="font-weight: bold; color: var(--btn-cyan-color);">${v.code}</td>
+                <td>${v.description || ''}</td>
+                <td><span class="badge" style="background: rgba(255,255,255,0.1);">${typeStr}</span></td>
+                <td style="color: var(--primary-red); font-weight: bold;">${valStr}</td>
+                <td>${dateStr}</td>
+                <td><span class="badge ${statusClass}">${statusText}</span></td>
+                <td>
+                    <div class="action-buttons">
+                        <button class="btn btn-icon btn-outline" style="color: var(--btn-cyan-color); border-color: var(--btn-cyan-color);" onclick="openEditVoucherModal('${v.id}')" title="Sửa">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-icon btn-outline" style="color: var(--primary-red); border-color: var(--primary-red);" onclick="deleteVoucher('${v.id}')" title="Xóa">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+function filterVouchersTable() {
+    const q = document.getElementById('voucher-search').value.toLowerCase();
+    const status = document.getElementById('voucher-filter-status').value;
+    
+    let filtered = (db.vouchers || []).filter(v => {
+        const matchQ = v.code.toLowerCase().includes(q) || (v.description || '').toLowerCase().includes(q);
+        let matchStatus = true;
+        if (status === 'active') matchStatus = v.isActive === true;
+        if (status === 'inactive') matchStatus = v.isActive === false;
+        
+        return matchQ && matchStatus;
+    });
+    
+    renderVouchersTable(filtered);
+}
+
+function openAddVoucherModal() {
+    document.getElementById('voucher-form').reset();
+    document.getElementById('voucher-id').value = '';
+    document.getElementById('voucher-modal-title').textContent = 'Thêm Voucher Mới';
+    document.getElementById('voucher-status-input').value = 'true';
+    document.getElementById('voucher-type-input').value = 'PERCENTAGE';
+    document.getElementById('voucher-modal').style.display = 'flex';
+}
+
+function openEditVoucherModal(id) {
+    const v = (db.vouchers || []).find(x => x.id === id);
+    if (!v) return;
+
+    document.getElementById('voucher-modal-title').textContent = 'Chỉnh sửa Voucher';
+    document.getElementById('voucher-id').value = v.id;
+    document.getElementById('voucher-code-input').value = v.code;
+    document.getElementById('voucher-status-input').value = v.isActive ? 'true' : 'false';
+    document.getElementById('voucher-type-input').value = v.discountType;
+    document.getElementById('voucher-value-input').value = v.discountValue;
+    document.getElementById('voucher-min-order-input').value = v.minOrderAmount || 0;
+    document.getElementById('voucher-max-discount-input').value = v.maxDiscountAmount || '';
+    
+    let expiry = '';
+    if (v.expiryDate) {
+        expiry = new Date(v.expiryDate).toISOString().split('T')[0];
+    }
+    document.getElementById('voucher-expiry-input').value = expiry;
+    document.getElementById('voucher-desc-input').value = v.description || '';
+
+    document.getElementById('voucher-modal').style.display = 'flex';
+}
+
+function closeVoucherModal() {
+    document.getElementById('voucher-modal').style.display = 'none';
+}
+
+async function handleVoucherSubmit(e) {
+    e.preventDefault();
+    const id = document.getElementById('voucher-id').value;
+    const isEdit = !!id;
+
+    const vData = {
+        code: document.getElementById('voucher-code-input').value.trim().toUpperCase(),
+        description: document.getElementById('voucher-desc-input').value.trim(),
+        discountType: document.getElementById('voucher-type-input').value,
+        discountValue: parseFloat(document.getElementById('voucher-value-input').value) || 0,
+        minOrderAmount: parseFloat(document.getElementById('voucher-min-order-input').value) || 0,
+        maxDiscountAmount: parseFloat(document.getElementById('voucher-max-discount-input').value) || null,
+        expiryDate: document.getElementById('voucher-expiry-input').value,
+        isActive: document.getElementById('voucher-status-input').value === 'true'
+    };
+
+    if (id) vData.id = id;
+    if (vData.maxDiscountAmount === 0 || isNaN(vData.maxDiscountAmount)) {
+        vData.maxDiscountAmount = null;
+    }
+
+    try {
+        const url = isEdit ? getApiUrl(`/vouchers/${id}`) : getApiUrl('/vouchers');
+        const method = isEdit ? 'PUT' : 'POST';
+
+        const res = await fetch(url, {
+            method: method,
+            headers: getApiHeaders(),
+            body: JSON.stringify(vData)
+        });
+
+        if (res.ok) {
+            showToast(isEdit ? 'Đã cập nhật voucher' : 'Đã thêm voucher', 'success');
+            closeVoucherModal();
+            await fetchVouchers();
+            renderVouchersTable();
+        } else {
+            showToast('Lỗi khi lưu voucher', 'error');
+        }
+    } catch (err) {
+        console.error('Error saving voucher:', err);
+        showToast('Lỗi kết nối API', 'error');
+    }
+}
+
+async function deleteVoucher(id) {
+    if (!confirm('Bạn có chắc chắn muốn xóa voucher này?')) return;
+    try {
+        const res = await fetch(getApiUrl(`/vouchers/${id}`), {
+            method: 'DELETE',
+            headers: getApiHeaders()
+        });
+        if (res.ok) {
+            showToast('Đã xóa voucher', 'success');
+            await fetchVouchers();
+            renderVouchersTable();
+        } else {
+            showToast('Lỗi khi xóa voucher', 'error');
+        }
+    } catch (e) {
+        console.error(e);
+        showToast('Lỗi kết nối API', 'error');
+    }
+}
+
+
 // ================= 7. TAB: USERS =================
 function renderUsersTable() {
     const searchEl = document.getElementById('user-search');
@@ -2359,6 +2541,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const showtimeModal = document.getElementById('showtime-modal');
         const comboModal = document.getElementById('combo-modal');
         const userHistoryModal = document.getElementById('user-history-modal');
+        const voucherModal = document.getElementById('voucher-modal');
         const adminRestockModal = document.getElementById('admin-restock-modal');
 
         const trailerModal = document.getElementById('trailer-modal');
@@ -2367,6 +2550,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target === trailerModal) closeTrailerModal();
         if (e.target === showtimeModal) closeShowtimeModal();
         if (e.target === comboModal) closeComboModal();
+        if (e.target === voucherModal) closeVoucherModal();
         if (e.target === userHistoryModal) closeUserHistoryModal();
         if (e.target === adminRestockModal) closeAdminRestockModal();
     });
@@ -2414,6 +2598,14 @@ window.openEditComboModal = openEditComboModal;
 window.closeComboModal = closeComboModal;
 window.handleComboSubmit = handleComboSubmit;
 window.deleteCombo = deleteCombo;
+
+window.filterVouchersTable = filterVouchersTable;
+window.openAddVoucherModal = openAddVoucherModal;
+window.openEditVoucherModal = openEditVoucherModal;
+window.closeVoucherModal = closeVoucherModal;
+window.handleVoucherSubmit = handleVoucherSubmit;
+window.deleteVoucher = deleteVoucher;
+
 
 window.filterUsersTable = filterUsersTable;
 window.toggleUserStatus = toggleUserStatus;

@@ -1400,6 +1400,9 @@
             <button class="menu-item" data-tab="combos">
                 <i class="fas fa-hamburger"></i> <span>Quản lý F&B</span>
             </button>
+            <button class="menu-item" data-tab="vouchers">
+                <i class="fas fa-ticket-alt"></i> <span>Quản lý voucher</span>
+            </button>
             <button class="menu-item" data-tab="users">
                 <i class="fas fa-users"></i> <span>Quản lý người dùng</span>
             </button>
@@ -1785,6 +1788,44 @@
                 </div>
             </section>
 
+            <section id="tab-content-vouchers" class="tab-section">
+                <div class="action-bar glass-panel">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="voucher-search" placeholder="Tìm mã voucher hoặc mô tả..." oninput="filterVouchersTable()">
+                    </div>
+                    <div class="filter-actions" style="display: flex; gap: 10px; align-items: center;">
+                        <select id="voucher-filter-status" onchange="filterVouchersTable()">
+                            <option value="all">Tất cả trạng thái</option>
+                            <option value="active">Đang hoạt động</option>
+                            <option value="inactive">Đã tắt</option>
+                        </select>
+                        <button class="btn btn-primary" onclick="openAddVoucherModal()">
+                            <i class="fas fa-plus"></i> Thêm voucher mới
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-card glass-panel">
+                    <div class="table-container">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Mã Voucher</th>
+                                    <th>Mô tả</th>
+                                    <th>Loại giảm</th>
+                                    <th>Mức giảm</th>
+                                    <th>Hạn sử dụng</th>
+                                    <th>Trạng thái</th>
+                                    <th>Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody id="vouchers-tbody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
             <section id="tab-content-users" class="tab-section">
                 <div class="action-bar glass-panel">
                     <div class="search-box">
@@ -2153,6 +2194,71 @@
                 <div class="form-actions">
                     <button type="button" class="btn btn-outline" style="border-color: var(--glass-border);" onclick="closeComboModal()">Hủy</button>
                     <button type="submit" class="btn btn-primary">Lưu mặt hàng</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="voucher-modal" class="modal-admin">
+        <div class="modal-admin-content glass-panel">
+            <span class="close-admin-modal" onclick="closeVoucherModal()">&times;</span>
+            <h3 id="voucher-modal-title">Thêm Voucher Mới</h3>
+            <form id="voucher-form" onsubmit="handleVoucherSubmit(event)">
+                <input type="hidden" id="voucher-id">
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="voucher-code-input">Mã Voucher:</label>
+                        <input type="text" id="voucher-code-input" required placeholder="Ví dụ: SUMMER2026" style="text-transform: uppercase;">
+                    </div>
+                    <div class="form-group">
+                        <label for="voucher-status-input">Trạng thái:</label>
+                        <select id="voucher-status-input" required style="background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); color: #fff; padding: 10px 16px; border-radius: 6px; outline: none; font-size: 0.9rem; width: 100%;">
+                            <option value="true">Đang hoạt động</option>
+                            <option value="false">Tạm dừng</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="voucher-type-input">Loại giảm giá:</label>
+                        <select id="voucher-type-input" required style="background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); color: #fff; padding: 10px 16px; border-radius: 6px; outline: none; font-size: 0.9rem; width: 100%;">
+                            <option value="PERCENTAGE">Giảm theo phần trăm (%)</option>
+                            <option value="FIXED_AMOUNT">Giảm số tiền cố định (VNĐ)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="voucher-value-input">Mức giảm:</label>
+                        <input type="number" id="voucher-value-input" min="1" required placeholder="VD: 10 (cho 10%) hoặc 20000 (cho 20k)">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="voucher-min-order-input">Đơn tối thiểu (VNĐ):</label>
+                        <input type="number" id="voucher-min-order-input" min="0" value="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="voucher-max-discount-input">Giảm tối đa (VNĐ):</label>
+                        <input type="number" id="voucher-max-discount-input" min="0" placeholder="Chỉ dùng cho giảm %">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="voucher-expiry-input">Hạn sử dụng:</label>
+                        <input type="date" id="voucher-expiry-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="voucher-desc-input">Mô tả (tùy chọn):</label>
+                        <input type="text" id="voucher-desc-input" placeholder="Ví dụ: Giảm 10% tối đa 50k">
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline" style="border-color: var(--glass-border);" onclick="closeVoucherModal()">Hủy</button>
+                    <button type="submit" class="btn btn-primary">Lưu Voucher</button>
                 </div>
             </form>
         </div>

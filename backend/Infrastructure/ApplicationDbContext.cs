@@ -14,12 +14,13 @@ namespace appweb.Infrastructure
         public DbSet<Showtime> Showtimes { get; set; }
 
         public DbSet<Cinema> Cinemas { get; set; }
+        public DbSet<Combo> Combos { get; set; }
+        public DbSet<Voucher> Vouchers { get; set; }
         public DbSet<Room> Rooms { get; set; }
         public DbSet<Seat> Seats { get; set; }
 
         public DbSet<CineMatch> CineMatches { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
-        public DbSet<Combo> Combos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
