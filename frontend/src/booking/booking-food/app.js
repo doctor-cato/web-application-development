@@ -1,56 +1,94 @@
-(() => {
-  const products = {
-    combo: {
-      name: 'Combo Người Yêu Phim',
-      price: 150000,
-      desc:
-        'Bữa tiệc tối thượng cho các tín đồ điện ảnh. Bao gồm một bắp XL, hai nước ngọt lớn và món nachos đẫm sốt đặc trưng.',
-    },
-    popcorn: {
-      name: 'Bắp Đơn',
-      price: 65000,
-      desc: 'Bắp rang bơ cỡ lớn đặc trưng. Tùy chọn vị Bơ, Caramel hoặc Phô mai cay.',
-    },
-    popcornDuo: {
-      name: 'Bắp Rang Đôi',
-      price: 95000,
-      desc:
-        'Phần bắp đôi dành cho 2 người, nhiều hơn, giòn hơn và cực hợp khi xem phim cùng nhau.',
-    },
-    comboFamily: { name: 'Combo Gia Đình', price: 195000, desc: '2 Bắp lớn + 4 Nước ngọt. Phù hợp cho cả nhà.' }, comboSnack: { name: 'Combo Ăn Vặt', price: 85000, desc: '1 Nước ngọt + 1 Xúc xích + 1 Khoai tây chiên.' }, comboCinema: { name: 'Combo Siêu Khổng Lồ', price: 115000, desc: '1 Bắp siêu lớn + 1 Nước khổng lồ. Ăn mãi không hết.' }, comboDate: { name: 'Combo Hẹn Hò VIP', price: 135000, desc: '2 Bắp nhỏ + 2 Nước ngọt + 2 Xúc xích nướng.' }, comboParty: { name: 'Combo Tiệc Tùng', price: 250000, desc: '4 Bắp lớn + 4 Nước ngọt + 4 Snack. Quẩy hết mình.' }, comboBimBim: {
-      name: 'Combo 2 Bỏng',
-      price: 125000,
-      desc:
-        'Một bắp rang lớn đi kèm một bim bim khoai tây, hợp để đổi vị khi xem phim cùng nhau.',
-    },
-    coupleDrink: {
-      name: 'Combo Cặp Đôi',
-      price: 55000,
-      desc:
-        'Một cốc nước to kèm 2 ống hút chia đôi, phù hợp cho cặp đôi thích chia sẻ cùng nhau.',
-    },
-    drinksCombo2: {
-      name: 'Combo 2 Nước',
-      price: 65000,
-      desc:
-        'Combo gồm 2 ly nước riêng cho 2 người, tiện hơn khi đi xem phim cùng bạn bè hoặc người yêu.',
-    },
-    coca: {
-      name: 'Coca',
-      price: 35000,
-      desc: 'Nước ngọt Coca mát lạnh, vị quen thuộc, dễ uống và hợp với bắp rang.',
-    },
-    pepsi: {
-      name: 'Pepsi',
-      price: 35000,
-      desc: 'Nước ngọt Pepsi mát lạnh, vị ngọt đậm và rất hợp để uống kèm đồ ăn xem phim.',
-    },
-  };
+﻿(async () => {
+  const isHTTPS = typeof window !== 'undefined' && window.location.protocol === 'https:';
+  const isVercelHost = typeof window !== 'undefined' && (window.location.hostname.includes('vercel.app') || window.location.hostname.includes('vercel'));
+  const API_BASE_URL = (typeof window !== 'undefined' && window.API_BASE_URL) || 
+      ((isHTTPS || isVercelHost) ? `${window.location.origin}/api` : 'http://3hd2k-api.somee.com/api');
+
+  function getApiUrl(path) {
+      const base = API_BASE_URL.replace(/\/+$/, '');
+      const p = path.startsWith('/') ? path : '/' + path;
+      return base + p;
+  }
+
+  const money = (value) => `${new Intl.NumberFormat('vi-VN').format(value)}đ`;
+
+  let products = {};
+  
+  try {
+      const res = await fetch(getApiUrl('/combos'));
+      if (res.ok) {
+          const data = await res.json();
+          data.forEach(item => {
+              products[item.id] = {
+                  name: item.name,
+                  price: item.price,
+                  desc: item.desc,
+                  category: item.category || 'Combo',
+                  image: item.image || item.imageUrl || '../../shared/images/combo_double.png'
+              };
+          });
+      }
+  } catch (e) {
+      console.warn('API /combos error, fallback to localStorage', e);
+  }
+  
+  if (Object.keys(products).length === 0) {
+      const local = JSON.parse(localStorage.getItem('cinema_combos') || '[]');
+      if (local.length > 0) {
+          local.forEach(item => {
+              products[item.id] = {
+                  name: item.name,
+                  price: item.price,
+                  desc: item.desc,
+                  category: item.category || 'Combo',
+                  image: item.image || item.imageUrl || '../../shared/images/combo_double.png'
+              };
+          });
+      }
+  }
 
   const productIds = Object.keys(products);
   const state = Object.fromEntries(
-    productIds.map((id) => [id, { added: false, qty: 1 }]),
+    productIds.map((id) => [id, { added: false, qty: 1 }])
   );
+
+  const gridCombo = document.getElementById('grid-combo');
+  const gridFood = document.getElementById('grid-food');
+
+  if (gridCombo) gridCombo.innerHTML = '';
+  if (gridFood) gridFood.innerHTML = '';
+
+  productIds.forEach(id => {
+      const p = products[id];
+      const html = `
+          <div class="card" data-product="${id}">
+              <div class="media">
+                  <img src="${p.image}" alt="">
+              </div>
+              <div class="body">
+                  <h3>${p.name}</h3>
+                  <p class="desc">${p.desc}</p>
+                  <div class="price">${money(p.price)}</div>
+                  <div class="controls">
+                      <div class="qty-row">
+                          <span class="qty-label btn-minus">-</span>
+                          <span class="qty-display">1</span>
+                          <span class="qty-label btn-plus">+</span>
+                      </div>
+                      <div class="add-row">
+                          <label class="add-label" aria-pressed="false" for="add-${id}">THÊM VÀO ĐƠN</label>
+                          <input type="checkbox" id="add-${id}" style="display:none">
+                      </div>
+                  </div>
+              </div>
+          </div>
+      `;
+      if (p.category === 'Combo') {
+          if (gridCombo) gridCombo.insertAdjacentHTML('beforeend', html);
+      } else {
+          if (gridFood) gridFood.insertAdjacentHTML('beforeend', html);
+      }
+  });
 
   const urlParams = new URLSearchParams(window.location.search);
   const returnToLobby = urlParams.get('returnToLobby');
@@ -58,7 +96,6 @@
   let order = { movie: 'Chưa chọn phim', format: '', seats: '', ticketLabel: '0x Vé', ticketPrice: 0 };
 
   if (returnToLobby) {
-
     const raw = localStorage.getItem('splitOrder_' + returnToLobby);
     if (raw) {
       try {
@@ -78,7 +115,6 @@
       } catch(e) {}
     }
   } else {
-
     const sessionRaw = sessionStorage.getItem('cinema_checkout');
     if (sessionRaw) {
       try {
@@ -110,8 +146,6 @@
   } catch (e) {
     console.error('Lỗi khi tải dữ liệu từ localStorage', e);
   }
-
-  const money = (value) => `${new Intl.NumberFormat('vi-VN').format(value)}đ`;
 
   const refs = {
     search: document.querySelector('.search'),
