@@ -378,6 +378,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (isVip) {
             btnVip.href = '../../user/user-profile/index.html';
             btnVip.textContent = 'TRANG TÀI KHOẢN VIP';
+            const rewardsSection = document.getElementById('home-rewards-section');
+            if (rewardsSection) rewardsSection.style.display = 'none';
         } else {
             btnVip.href = '../../user/vip-registration/index.html';
             btnVip.textContent = 'ĐĂNG KÝ THÀNH VIÊN VIP';

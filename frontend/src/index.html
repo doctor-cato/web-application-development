@@ -109,8 +109,9 @@
         <script>
 
             try {
-                const vipPlan = localStorage.getItem('3hd2k_vip_plan');
-                if (vipPlan === 'Platinum') {
+                const isVip = localStorage.getItem('is_vip') === 'true';
+                const vipPlan = localStorage.getItem('3hd2k_vip_plan') || localStorage.getItem('vip_plan');
+                if (isVip || vipPlan === 'Platinum') {
                     const rewardsSection = document.getElementById('home-rewards-section');
                     if (rewardsSection) rewardsSection.style.display = 'none';
                 }
