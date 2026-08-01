@@ -1686,9 +1686,32 @@
                         });
                         SALE_PRODUCTS = apiProducts;
                         renderPOSProducts();
+                    } else {
+                        // Fallback if API returns empty
+                        const fallbackCombos = [
+                            { id: "cb_solo", name: "Combo Solo", price: 89000, category: "Combo", image: "../../assets/combos/combo_solo.jpg" },
+                            { id: "cb_couple", name: "Combo Couple", price: 129000, category: "Combo", image: "../../assets/combos/combo_couple.jpg" },
+                            { id: "cb_family", name: "Combo Family", price: 219000, category: "Combo", image: "../../assets/combos/combo_family.jpg" },
+                            { id: "f_popcorn", name: "Bắp Phô Mai", price: 55000, category: "Đồ ăn", image: "../../assets/combos/combo_solo.jpg" },
+                            { id: "f_pepsi", name: "Pepsi Lon", price: 25000, category: "Nước uống", image: "../../assets/combos/combo_couple.jpg" }
+                        ];
+                        SALE_PRODUCTS = fallbackCombos;
+                        renderPOSProducts();
                     }
                 })
-                .catch(err => console.warn("API combos sync warning:", err));
+                .catch(err => {
+                    console.warn("API combos sync warning:", err);
+                    // Fallback on error
+                    const fallbackCombos = [
+                        { id: "cb_solo", name: "Combo Solo", price: 89000, category: "Combo", image: "../../assets/combos/combo_solo.jpg" },
+                        { id: "cb_couple", name: "Combo Couple", price: 129000, category: "Combo", image: "../../assets/combos/combo_couple.jpg" },
+                        { id: "cb_family", name: "Combo Family", price: 219000, category: "Combo", image: "../../assets/combos/combo_family.jpg" },
+                        { id: "f_popcorn", name: "Bắp Phô Mai", price: 55000, category: "Đồ ăn", image: "../../assets/combos/combo_solo.jpg" },
+                        { id: "f_pepsi", name: "Pepsi Lon", price: 25000, category: "Nước uống", image: "../../assets/combos/combo_couple.jpg" }
+                    ];
+                    SALE_PRODUCTS = fallbackCombos;
+                    renderPOSProducts();
+                });
 
             // Sync with backend API movies dynamically
             fetch('/api/movies')
