@@ -372,64 +372,81 @@
 
         /* Header Styling matching 3HD2K_Admin */
         .admin-header {
-            min-height: 70px;
+            min-height: 65px;
             height: auto;
-            padding: 10px 24px;
+            padding: 10px 20px;
             border-bottom: 1px solid var(--glass-border);
             display: flex;
             justify-content: space-between;
             align-items: center;
             gap: 12px;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
             z-index: 100;
             background: rgba(12, 12, 12, 0.4);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             flex-shrink: 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 1;
+            min-width: 0;
+            overflow: hidden;
         }
 
         .header-left h1 {
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             font-weight: 700;
             letter-spacing: 0.5px;
             color: #fff;
+            white-space: nowrap;
         }
 
         .header-left p {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--text-muted);
             margin-top: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .header-right {
             display: flex;
             align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
+            gap: 6px;
+            flex-wrap: nowrap;
+            flex-shrink: 0;
+            margin-left: auto;
         }
 
         .time-widget, .notification-pill {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            padding: 6px 12px;
+            padding: 0 10px;
             border-radius: 6px;
             font-size: 0.8rem;
             font-weight: 600;
             background: var(--glass-bg);
             border: 1px solid var(--glass-border);
             color: var(--text-main);
-            height: 38px;
-            max-height: 38px;
+            height: 36px;
+            max-height: 36px;
+            min-height: 36px;
             box-sizing: border-box;
             align-self: center;
             white-space: nowrap;
+            flex-shrink: 0;
         }
 
-
-        
         .notification-pill {
-            padding: 6px 10px;
+            padding: 0 10px;
             cursor: pointer;
         }
 
@@ -446,7 +463,7 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            padding: 6px 12px;
+            padding: 0 10px;
             border-radius: 6px;
             font-size: 0.8rem;
             font-weight: 600;
@@ -456,6 +473,12 @@
             transition: all 0.25s ease;
             cursor: pointer;
             text-decoration: none;
+            height: 36px;
+            max-height: 36px;
+            min-height: 36px;
+            box-sizing: border-box;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .view-site-btn:hover {
