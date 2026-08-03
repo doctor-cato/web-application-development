@@ -492,7 +492,7 @@
             align-items: center;
             justify-content: center;
             gap: 4px;
-            padding: 4px 10px;
+            padding: 4px 8px;
             border-radius: 4px;
             cursor: pointer;
             font-weight: 700;
@@ -506,8 +506,12 @@
             min-height: 28px;
             max-height: 28px;
             flex-shrink: 0;
-            align-self: center;
             white-space: nowrap;
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+            text-align: center;
+            margin: 0 auto;
         }
 
         .btn-mini:hover {
@@ -2135,25 +2139,25 @@
                             <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px;">
                                 ⏱️ ${m.duration} phút | <span class="badge badge-red" style="padding: 1px 4px; font-size: 0.65rem;">${m.age}</span>
                             </div>
-                            <div style="border-top: 1px dashed var(--glass-border); padding-top: 8px; margin-top: 4px;">
-                                <span style="font-size: 0.7rem; color: var(--btn-green-color); font-weight: 800; display: block; margin-bottom: 6px;">SUẤT CHIẾU THỰC TẠI THỜI ĐIỂM NÀY:</span>
-                                <div style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center;">
+                            <div style="border-top: 1px dashed var(--glass-border); padding-top: 8px; margin-top: 4px; width: 100%; box-sizing: border-box; text-align: center;">
+                                <span style="font-size: 0.7rem; color: var(--btn-green-color); font-weight: 800; display: block; margin-bottom: 6px; text-align: center;">SUẤT CHIẾU THỰC TẠI THỜI ĐIỂM NÀY:</span>
+                                <div style="display: flex; flex-direction: column; gap: 6px; align-items: center; justify-content: center; width: 100%; box-sizing: border-box;">
                                     ${showtimesList.map(st => {
                                         if (st.isPast) {
                                             return `
-                                                <button class="btn-mini disabled" disabled style="background: rgba(255,255,255,0.03); color: #555; border: 1px solid rgba(255,255,255,0.08); cursor: not-allowed; text-decoration: line-through; opacity: 0.5;" title="Suất chiếu này đã qua - Không thể bán vé tại quầy">
+                                                <button class="btn-mini disabled" disabled style="background: rgba(255,255,255,0.03); color: #555; border: 1px solid rgba(255,255,255,0.08); cursor: not-allowed; text-decoration: line-through; opacity: 0.5; width: 100%; text-align: center; justify-content: center; box-sizing: border-box;" title="Suất chiếu này đã qua - Không thể bán vé tại quầy">
                                                     ⏱️ ${st.time} (Đã qua)
                                                 </button>
                                             `;
                                         } else if (st.isCurrentActive) {
                                             return `
-                                                <button class="btn-mini" onclick="event.stopPropagation(); openPOSSeatModal('${st.id}', '${m.id}')" style="background: var(--btn-green-color); color: #000; font-weight: 900; border: 1px solid var(--btn-green-color); box-shadow: var(--btn-green-glow);" title="Suất chiếu thực tại thời điểm này - Click để chọn ghế ngay">
+                                                <button class="btn-mini" onclick="event.stopPropagation(); openPOSSeatModal('${st.id}', '${m.id}')" style="background: var(--btn-green-color); color: #000; font-weight: 900; border: 1px solid var(--btn-green-color); box-shadow: var(--btn-green-glow); width: 100%; text-align: center; justify-content: center; box-sizing: border-box;" title="Suất chiếu thực tại thời điểm này - Click để chọn ghế ngay">
                                                     🔥 ${st.time} (ĐANG CHIẾU)
                                                 </button>
                                             `;
                                         } else {
                                             return `
-                                                <button class="btn-mini" onclick="event.stopPropagation(); openPOSSeatModal('${st.id}', '${m.id}')" style="background: rgba(0,240,255,0.1); color: var(--btn-cyan-color); border: 1px solid var(--btn-cyan-color);">
+                                                <button class="btn-mini" onclick="event.stopPropagation(); openPOSSeatModal('${st.id}', '${m.id}')" style="background: rgba(0,240,255,0.1); color: var(--btn-cyan-color); border: 1px solid var(--btn-cyan-color); width: 100%; text-align: center; justify-content: center; box-sizing: border-box;">
                                                     ⏱️ ${st.time}
                                                 </button>
                                             `;
