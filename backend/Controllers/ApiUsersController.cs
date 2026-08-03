@@ -20,6 +20,43 @@ namespace appweb.Controllers
             _userRepository = userRepository;
         }
 
+        [AllowAnonymous]
+        [HttpGet("lookup")]
+        public async Task<IActionResult> LookupUser([FromQuery] string? phone, [FromQuery] string? email)
+        {
+            if (string.IsNullOrWhiteSpace(phone) && string.IsNullOrWhiteSpace(email))
+            {
+                return BadRequest(new { message = "Vui lòng cung cấp SĐT hoặc Email" });
+            }
+
+            try
+            {
+                var users = await _userRepository.GetAllAsync();
+                var user = users.FirstOrDefault(u =>
+                    (!string.IsNullOrEmpty(phone) && u.Phone == phone) ||
+                    (!string.IsNullOrEmpty(email) && u.Email.Equals(email, StringComparison.OrdinalIgnoreCase))
+                );
+
+                if (user == null) return NotFound(new { message = "Khách hàng chưa đăng ký VIP" });
+
+                return Ok(new
+                {
+                    id = user.UserId,
+                    fullname = user.Fullname,
+                    name = user.Fullname,
+                    email = user.Email,
+                    phone = user.Phone,
+                    role = user.Role ?? "CUSTOMER",
+                    points = user.Points,
+                    vipPlan = user.VipPlan ?? "STANDARD"
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetUsers()
         {
@@ -123,6 +160,7 @@ namespace appweb.Controllers
             return Ok(new { message = "Thêm người dùng thành công", id = user.UserId });
         }
 
+        [AllowAnonymous]
         [HttpPost("add-points")]
         public async Task<IActionResult> AddUserPoints([FromBody] AddPointsDto dto)
         {
