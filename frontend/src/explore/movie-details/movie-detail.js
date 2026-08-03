@@ -277,7 +277,14 @@ function isSameDay(stDateOrIso, targetDate) {
 
     if (typeof stDateOrIso === 'string') {
         const datePart = stDateOrIso.split('T')[0];
-        if (datePart === targetYMD) return true;
+        const parts = datePart.split('-');
+        if (parts.length === 3) {
+            const y = parts[0];
+            const m = String(parts[1]).padStart(2, '0');
+            const d = String(parts[2]).padStart(2, '0');
+            const normYMD = `${y}-${m}-${d}`;
+            if (normYMD === targetYMD) return true;
+        }
 
         const parsed = new Date(stDateOrIso.includes('T') ? stDateOrIso : `${stDateOrIso}T00:00:00`);
         if (!isNaN(parsed.getTime())) {
@@ -847,6 +854,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         window.currentMovieShowtimes = await window.fetchShowtimesByMovie(currentMovie.id);
     }
     renderCinemaShowtimes();
+
+    if (typeof window !== 'undefined') {
+        window.addEventListener('storage', async (e) => {
+            if (e.key === '3hd2k_showtimes' && currentMovie && window.fetchShowtimesByMovie) {
+                window.currentMovieShowtimes = await window.fetchShowtimesByMovie(currentMovie.id);
+                renderCinemaShowtimes();
+            }
+        });
+    }
 
     renderRatings(currentMovie);
     renderGallery(currentMovie);

@@ -410,15 +410,65 @@ function getFallbackShowtimes(movieId) {
 
 async function fetchShowtimesByMovie(movieId) {
     const targetIdStr = String(movieId || '').toLowerCase().trim();
+    let allShowtimes = [];
 
+    // 1. Fetch from Backend API
     try {
-        const response = await fetch(`/api/showtimes/movie/${movieId}`);
+        const apiUrl = typeof getApiUrl === 'function' ? getApiUrl('/showtimes') : '/api/showtimes';
+        const response = await fetch(apiUrl, {
+            headers: typeof getApiHeaders === 'function' ? getApiHeaders() : {}
+        });
         if (response.ok) {
             const data = await response.json();
-            if (Array.isArray(data) && data.length > 0) return data.map(normalizeShowtime);
+            if (Array.isArray(data)) {
+                allShowtimes.push(...data);
+            }
         }
     } catch (e) {
         console.error("Failed to fetch showtimes from API:", e);
+    }
+
+    // 2. Read from LocalStorage cache ('3hd2k_showtimes') created in Admin
+    try {
+        const localStr = localStorage.getItem('3hd2k_showtimes');
+        if (localStr) {
+            const localList = JSON.parse(localStr);
+            if (Array.isArray(localList)) {
+                allShowtimes.push(...localList);
+            }
+        }
+    } catch (e) {
+        console.error("Failed to read local showtimes cache:", e);
+    }
+
+    // 3. Deduplicate showtimes by ID & normalize
+    const showtimeMap = new Map();
+    allShowtimes.forEach(s => {
+        const norm = normalizeShowtime(s);
+        if (norm && norm.id) {
+            showtimeMap.set(norm.id, norm);
+        }
+    });
+
+    const uniqueList = Array.from(showtimeMap.values());
+
+    // 4. Filter for target movie ID or title
+    const movieShowtimes = uniqueList.filter(s => {
+        const stMovieId = String(s.movieId || '').toLowerCase().trim();
+        if (stMovieId && stMovieId === targetIdStr) return true;
+
+        if (window.currentMovie) {
+            const curTitle = String(window.currentMovie.title || '').toLowerCase().trim();
+            const stTitle = String(s.movieTitle || '').toLowerCase().trim();
+            if (curTitle && stTitle && (curTitle === stTitle || curTitle.includes(stTitle) || stTitle.includes(curTitle))) {
+                return true;
+            }
+        }
+        return false;
+    });
+
+    if (movieShowtimes.length > 0) {
+        return movieShowtimes;
     }
 
     return generateMockShowtimesForMovie(movieId).map(normalizeShowtime);
