@@ -2,23 +2,23 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://3hd2k-api.somee.com/api/:path*"
+      "destination": "http://3hd2k-api.somee.com/api/:path*"
     },
     {
       "source": "/seatHub/:path*",
-      "destination": "https://3hd2k-api.somee.com/seatHub/:path*"
+      "destination": "http://3hd2k-api.somee.com/seatHub/:path*"
     },
     {
       "source": "/notificationHub/:path*",
-      "destination": "https://3hd2k-api.somee.com/notificationHub/:path*"
+      "destination": "http://3hd2k-api.somee.com/notificationHub/:path*"
     },
     {
       "source": "/cinematchHub/:path*",
-      "destination": "https://3hd2k-api.somee.com/cinematchHub/:path*"
+      "destination": "http://3hd2k-api.somee.com/cinematchHub/:path*"
     },
     {
       "source": "/uploads/:path*",
-      "destination": "https://3hd2k-api.somee.com/uploads/:path*"
+      "destination": "http://3hd2k-api.somee.com/uploads/:path*"
     }
   ]
 }

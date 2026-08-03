@@ -6,10 +6,10 @@ const isLocalhost = typeof window !== 'undefined' && (
     window.location.hostname.startsWith('10.')
 );
 
-// Trỏ về local proxy khi chạy localhost, hoặc HTTPS API Server khi chạy trên Vercel/Web
-export const API_BASE_URL = isLocalhost
+// Trỏ về origin proxy (/api) để Vercel/Web proxy tự động chuyển tiếp tới HTTP Backend (tránh ERR_CONNECTION_RESET)
+export const API_BASE_URL = typeof window !== 'undefined'
     ? `${window.location.origin}/api`
-    : 'https://3hd2k-api.somee.com/api';
+    : 'http://3hd2k-api.somee.com/api';
 
 export function getHeaders() {
     const headers = {
