@@ -185,7 +185,9 @@ export function getSession() {
 }
 
 export function isLoggedIn() {
-    return Boolean(getSession());
+    const session = getSession();
+    const jwtToken = localStorage.getItem('jwt_token');
+    return Boolean(session && jwtToken);
 }
 
 export async function updateProfile(updates) {

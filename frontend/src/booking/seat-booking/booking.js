@@ -156,6 +156,21 @@ async function init() {
 
   const seatMap = getSeatMap(currentShowtimeId);
   initSignalR(currentShowtimeId);
+  const isLoggedInStatus = localStorage.getItem('isLoggedIn') === 'true';
+  const userStr = localStorage.getItem('user_info');
+  if (userStr) {
+      try {
+          const user = JSON.parse(userStr);
+          currentUserId = user.id || user.Id || user.email;
+          currentUserEmail = user.email;
+      } catch(e) {}
+  }
+
+  if (!currentUserId || !currentUserEmail) {
+      alert("Bạn cần đăng nhập để đặt vé!");
+      window.location.href = '../../auth/user-login/login.html?returnUrl=' + encodeURIComponent(window.location.href);
+      return;
+  }
   const container = document.getElementById('seat-grid');
 
   try {

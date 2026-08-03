@@ -1,11 +1,11 @@
-
 (function() {
     const MODAL_ID = 'auth-guard-modal';
 
     function isAuthenticated() {
-        const session = localStorage.getItem('currentUser');
+        const session = localStorage.getItem('user_info');
         const isLoggedIn = localStorage.getItem('isLoggedIn');
-        return Boolean(session) || isLoggedIn === 'true';
+        const jwtToken = localStorage.getItem('jwt_token');
+        return (Boolean(session) || isLoggedIn === 'true') && Boolean(jwtToken);
     }
 
     function showAuthModal(message) {

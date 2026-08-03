@@ -102,8 +102,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Session check
     const session = getSession();
-    if (!session && !DEMO_MODE) {
-        alert("Bạn cần đăng nhập để tham gia Cine-Match!");
+    const jwtToken = localStorage.getItem('jwt_token');
+    if ((!session || !jwtToken) && !DEMO_MODE) {
+        alert("Phiên đăng nhập đã hết hạn hoặc không hợp lệ. Vui lòng đăng nhập lại để tham gia Cine-Match!");
+        localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('user_info');
         window.location.href = '../../auth/user-login/login.html?returnUrl=' + encodeURIComponent(window.location.href);
         return;
     }
