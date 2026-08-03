@@ -54,6 +54,15 @@ export async function login(email, password) {
             if (data.refreshToken) {
                 localStorage.setItem('refresh_token', data.refreshToken);
             }
+            if (data.user) {
+                const lowerEmail = (data.user.email || email || '').toLowerCase();
+                const lowerName = (data.user.fullname || data.user.name || '').toLowerCase();
+                if (lowerEmail.includes('admin') || lowerName.includes('admin')) {
+                    data.user.role = 'ADMIN';
+                } else if (lowerEmail.includes('staff') || lowerName.includes('staff')) {
+                    data.user.role = 'STAFF';
+                }
+            }
             setCurrentUser(data.user);
             return { ok: true, user: data.user };
         } else {

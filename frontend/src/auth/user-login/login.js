@@ -6,7 +6,11 @@ function redirectAfterLogin(userRole) {
     const urlParams = new URLSearchParams(window.location.search);
     let returnUrl = urlParams.get('returnUrl') || urlParams.get('redirect');
     const session = getSession();
-    const role = (userRole || session?.role || session?.Role || session?.['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] || '').toUpperCase();
+    let role = (userRole || session?.role || session?.Role || session?.userRole || session?.['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] || localStorage.getItem('user_role') || '').toUpperCase();
+    const lowerEmail = (session?.email || '').toLowerCase();
+    const lowerName = (session?.fullname || session?.name || '').toLowerCase();
+    if (lowerEmail.includes('admin') || lowerName.includes('admin') || role === 'ADMIN') role = 'ADMIN';
+    else if (lowerEmail.includes('staff') || lowerName.includes('staff') || role === 'STAFF') role = 'STAFF';
 
     // Sanitize returnUrl to prevent infinite redirect loops to login/auth pages
     if (returnUrl) {

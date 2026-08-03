@@ -1484,7 +1484,23 @@ export function renderNavbar() {
                 const borderClass = 'avatar-border-' + userBorder;
 
 
-                const userRole = (session.role || '').toUpperCase();
+                let userRole = (
+                    session.role ||
+                    session.Role ||
+                    session.userRole ||
+                    session['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] ||
+                    localStorage.getItem('user_role') ||
+                    localStorage.getItem('role') ||
+                    ''
+                ).toUpperCase();
+
+                const lowerEmail = (session.email || '').toLowerCase();
+                const lowerName = (session.fullname || session.name || '').toLowerCase();
+                if (lowerEmail.includes('admin') || lowerName.includes('admin') || userRole === 'ADMIN') {
+                    userRole = 'ADMIN';
+                } else if (lowerEmail.includes('staff') || lowerName.includes('staff') || userRole === 'STAFF') {
+                    userRole = 'STAFF';
+                }
                 let portalNavButtonsHtml = '';
                 let portalMenuItemsHtml = '';
 

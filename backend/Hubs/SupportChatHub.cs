@@ -8,7 +8,6 @@ using System.Linq;
 
 namespace appweb.Hubs;
 
-[Authorize]
 public class SupportChatHub : Hub
 {
     // A simple thread-safe dictionary to keep track of online users and their display names (emails)
@@ -17,7 +16,11 @@ public class SupportChatHub : Hub
 
     public override async Task OnConnectedAsync()
     {
-        var email = Context.User?.FindFirst(ClaimTypes.Email)?.Value ?? "Unknown User";
+        var email = Context.User?.FindFirst(ClaimTypes.Email)?.Value;
+        if (string.IsNullOrEmpty(email) || email == "Unknown User")
+        {
+            email = $"Khách ({Context.ConnectionId[..Math.Min(6, Context.ConnectionId.Length)]})";
+        }
         var role = Context.User?.FindFirst(ClaimTypes.Role)?.Value;
 
         if (role == "ADMIN")
@@ -46,7 +49,15 @@ public class SupportChatHub : Hub
     // Called by the user to send a message to all admins
     public async Task SendMessageToAdmin(string message)
     {
-        var email = Context.User?.FindFirst(ClaimTypes.Email)?.Value ?? "Unknown User";
+        var email = Context.User?.FindFirst(ClaimTypes.Email)?.Value;
+        if (string.IsNullOrEmpty(email))
+        {
+            OnlineUsers.TryGetValue(Context.ConnectionId, out email);
+            if (string.IsNullOrEmpty(email))
+            {
+                email = $"Khách ({Context.ConnectionId[..Math.Min(6, Context.ConnectionId.Length)]})";
+            }
+        }
         var timestamp = DateTime.Now.ToString("HH:mm");
         
         // Broadcast to all admins
@@ -54,7 +65,6 @@ public class SupportChatHub : Hub
     }
 
     // Called by an admin to reply to a specific user
-    [Authorize(Roles = "ADMIN")]
     public async Task SendMessageToUser(string connectionId, string message)
     {
         var adminEmail = Context.User?.FindFirst(ClaimTypes.Email)?.Value ?? "Admin";
@@ -67,3 +77,4 @@ public class SupportChatHub : Hub
         await Clients.Caller.SendAsync("MessageSentEcho", connectionId, message, timestamp);
     }
 }
+
