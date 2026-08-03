@@ -127,7 +127,29 @@
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }
 
+  function checkIsAdmin() {
+    try {
+      const email = (localStorage.getItem('userEmail') || '').toLowerCase();
+      const userRole = (localStorage.getItem('user_role') || localStorage.getItem('role') || '').toUpperCase();
+      const token = localStorage.getItem('auth_token');
+      let tokenRole = '';
+      if (token) {
+        try {
+          const payload = JSON.parse(decodeURIComponent(atob(token).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')));
+          tokenRole = (payload.role || '').toUpperCase();
+        } catch (_) {}
+      }
+      return email.includes('admin') || userRole === 'ADMIN' || tokenRole === 'ADMIN';
+    } catch (_) {
+      return false;
+    }
+  }
+
   function getTier(pts) {
+    // ponytail: Admin accounts automatically possess all frames & maximum privileges (Diamond). ceiling: client-side role check. upgrade path: RBAC claims token.
+    if (checkIsAdmin()) {
+      return TIERS[TIERS.length - 1];
+    }
     for (let i = TIERS.length - 1; i >= 0; i--) {
       if (pts >= TIERS[i].min) return TIERS[i];
     }
@@ -254,12 +276,13 @@
 
   function showTierDetailsModal() {
     const currentTier = getTier(state.points);
+    const isAdmin = checkIsAdmin();
     const overlay = document.createElement('div');
     overlay.className = 'tier-modal-overlay';
 
     let tiersHTML = TIERS.map((t, i) => {
       const isCurrent = t.id === currentTier.id;
-      const isUnlocked = state.points >= t.min;
+      const isUnlocked = isAdmin || state.points >= t.min;
       return `
         <div class="tier-detail-card ${isCurrent ? 'tier-detail-card--current' : ''} ${isUnlocked ? 'tier-detail-card--unlocked' : ''}" style="--tier-color:${t.color}">
           <div class="tier-detail-marker">
@@ -270,7 +293,7 @@
             <div class="tier-detail-header">
               <span class="tier-detail-name" style="color:${t.color}">${t.name}</span>
               <span class="tier-detail-range">${t.max === Infinity ? t.min + '+ PTS' : t.min + ' – ' + t.max + ' PTS'}</span>
-              ${isCurrent ? '<span class="tier-detail-current-badge">HIỆN TẠI</span>' : ''}
+              ${isAdmin ? '<span class="tier-detail-current-badge" style="background:#e50914;color:#fff;">ADMIN (ĐÃ SỞ HỮU)</span>' : (isCurrent ? '<span class="tier-detail-current-badge">HIỆN TẠI</span>' : '')}
             </div>
             <ul class="tier-detail-privileges">
               ${t.privileges.map(p => `<li><span class="td-check" style="color:${t.color}">✓</span> ${p}</li>`).join('')}
@@ -369,7 +392,13 @@
       labels[1].textContent = 'Hạng cao nhất';
 
       const hint = $('.progress-hint');
-      hint.innerHTML = `🎉 Bạn đang ở <strong>hạng cao nhất</strong>!`;
+      if (checkIsAdmin()) {
+        hint.innerHTML = `👑 <strong>Quyền Hạn Admin</strong>: Sở hữu tất cả các khung viền & mọi quyền lợi cao cấp nhất!`;
+        const badgeEl = $('.tier-badge');
+        if (badgeEl) badgeEl.textContent = 'ADMIN - KIM CƯƠNG';
+      } else {
+        hint.innerHTML = `🎉 Bạn đang ở <strong>hạng cao nhất</strong>!`;
+      }
     }
 
     const privCard = $('.privileges-card');

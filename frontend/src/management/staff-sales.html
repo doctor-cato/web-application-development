@@ -1103,7 +1103,7 @@
         }
     </style>
     <script>
-        // Auth check for Staff Sales
+        // ponytail: resilient admin and staff role verification preventing JSON parse crashes on local fallback tokens. ceiling: client-side localStorage role check. upgrade path: JWT claim verification middleware.
         (function() {
             function clearAuthAndRedirect() {
                 localStorage.removeItem('jwt_token');
@@ -1114,65 +1114,72 @@
                 window.location.href = '/auth/user-login/login.html';
             }
 
-            let session = null;
-            let rawSession = localStorage.getItem('3hd2k_user') || localStorage.getItem('cinema_current_user');
-            
-            if (!rawSession) {
-                const jwt = localStorage.getItem('jwt_token') || localStorage.getItem('auth_token');
-                if (jwt) {
-                    try {
-                        const parts = jwt.split('.');
-                        if (parts.length === 3) {
-                            const payloadBase64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
-                            session = JSON.parse(decodeURIComponent(escape(window.atob(payloadBase64))));
-                        } else if (jwt.startsWith('{')) {
-                            session = JSON.parse(jwt);
+            function getUserAndRole() {
+                let user = null;
+                const rawUser = sessionStorage.getItem('cinema_current_user') || localStorage.getItem('3hd2k_user');
+                if (rawUser) {
+                    try { user = typeof rawUser === 'string' ? JSON.parse(rawUser) : rawUser; } catch(_) {}
+                }
+
+                if (!user) {
+                    const authToken = localStorage.getItem('auth_token');
+                    if (authToken) {
+                        try {
+                            const decoded = decodeURIComponent(atob(authToken).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+                            user = JSON.parse(decoded);
+                        } catch(_) {
+                            try { user = JSON.parse(atob(authToken)); } catch(_) {}
                         }
-                    } catch(e) {}
+                    }
                 }
-            } else {
-                try {
-                    session = JSON.parse(rawSession);
-                } catch(e) { }
-            }
 
-            if (!session) {
-                clearAuthAndRedirect();
-                return;
-            }
+                if (!user) {
+                    const jwt = localStorage.getItem('jwt_token');
+                    if (jwt && jwt.includes('.')) {
+                        try {
+                            const payloadBase64 = jwt.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+                            user = JSON.parse(decodeURIComponent(escape(window.atob(payloadBase64))));
+                        } catch(_) {}
+                    }
+                }
 
-            try {
-                let role = (
-                    session.role || 
-                    session.Role || 
-                    session.userRole ||
-                    session['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] ||
-                    localStorage.getItem('user_role') ||
-                    localStorage.getItem('role') ||
-                    ''
-                ).toUpperCase();
+                const email = (user && (user.email || user.Email || user['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'])) || localStorage.getItem('userEmail') || '';
+                const fullname = (user && (user.fullname || user.Fullname || user.name)) || localStorage.getItem('userName') || '';
+                const role = (user && (user.role || user.Role || user.userRole || user['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'])) || localStorage.getItem('user_role') || localStorage.getItem('role') || '';
 
-                let email = session.email || session.Email || session['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] || '';
                 const lowerEmail = email.toLowerCase();
-                const lowerName = (session.fullname || session.Fullname || session.name || '').toLowerCase();
-                
-                if (lowerEmail.includes('admin') || lowerName.includes('admin') || role === 'ADMIN') {
-                    role = 'ADMIN';
-                } else if (lowerEmail.includes('staff') || lowerName.includes('staff') || role === 'STAFF') {
-                    role = 'STAFF';
+                const lowerName = fullname.toLowerCase();
+                const upperRole = (role || '').toUpperCase();
+
+                let finalRole = upperRole;
+                if (lowerEmail.includes('admin') || lowerName.includes('admin') || upperRole === 'ADMIN') {
+                    finalRole = 'ADMIN';
+                } else if (lowerEmail.includes('staff') || lowerName.includes('staff') || upperRole === 'STAFF') {
+                    finalRole = 'STAFF';
                 }
 
-                if (role !== 'ADMIN' && role !== 'STAFF') {
-                    window.location.href = '../explore/home-page/index.html';
-                    return;
-                }
-            } catch (e) {
-                console.error("Auth Token Parse Error:", e);
+                const hasToken = !!(localStorage.getItem('jwt_token') || localStorage.getItem('auth_token') || localStorage.getItem('isLoggedIn') === 'true');
+
+                return {
+                    user: user || { email, fullname, role: finalRole },
+                    role: finalRole,
+                    email,
+                    isLoggedIn: hasToken || !!email
+                };
+            }
+
+            const auth = getUserAndRole();
+            if (!auth.isLoggedIn && !auth.email) {
                 clearAuthAndRedirect();
                 return;
             }
 
-            let user = session;
+            if (auth.role !== 'ADMIN' && auth.role !== 'STAFF') {
+                window.location.href = '../explore/home-page/index.html';
+                return;
+            }
+
+            const user = auth.user;
             
             // Hide Admin link if not Admin & load profile
             document.addEventListener('DOMContentLoaded', function() {

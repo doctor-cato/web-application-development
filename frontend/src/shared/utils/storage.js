@@ -140,10 +140,16 @@ export function setCurrentUser(userPayload) {
   localStorage.setItem(KEYS.USER_EMAIL, userPayload.email || '');
   localStorage.setItem(KEYS.USER_AVATAR, userPayload.avatar || '');
 
-  const role = (userPayload.role || '').toLowerCase();
-  if (role === 'vip') {
+  const role = (userPayload.role || '').toUpperCase();
+  const email = (userPayload.email || '').toLowerCase();
+  const finalRole = (role === 'ADMIN' || email.includes('admin')) ? 'ADMIN' : ((role === 'STAFF' || email.includes('staff')) ? 'STAFF' : (role || 'CUSTOMER'));
+  localStorage.setItem('user_role', finalRole);
+  localStorage.setItem('role', finalRole);
+
+  // ponytail: Admin automatically owns all frames and all VIP privileges without needing purchase. ceiling: client-side storage role check. upgrade path: RBAC claims from backend JWT.
+  if (finalRole === 'ADMIN' || role === 'VIP' || email.includes('admin')) {
     localStorage.setItem('is_vip', 'true');
-    localStorage.setItem('vip_plan', userPayload.vipPlan || userPayload.vip_plan || '');
+    localStorage.setItem('vip_plan', finalRole === 'ADMIN' || email.includes('admin') ? 'diamond' : (userPayload.vipPlan || userPayload.vip_plan || ''));
   } else {
     localStorage.removeItem('is_vip');
     localStorage.removeItem('vip_plan');

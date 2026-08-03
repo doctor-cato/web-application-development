@@ -9,6 +9,42 @@ function formatPrice(amount) {
     return amount.toLocaleString('vi-VN') + 'đ';
 }
 
+function checkIsAdminUser(session) {
+    if (!session) {
+        try { session = getCurrentUser(); } catch(_) {}
+    }
+    const email = (localStorage.getItem('userEmail') || (session && session.email) || '').toLowerCase();
+    const name = (localStorage.getItem('userName') || (session && (session.name || session.fullname)) || '').toLowerCase();
+    const role = (localStorage.getItem('user_role') || localStorage.getItem('role') || (session && session.role) || '').toUpperCase();
+    return role === 'ADMIN' || email.includes('admin') || name.includes('admin');
+}
+
+function showToast(message, type = 'info') {
+    let container = document.getElementById('profile-toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'profile-toast-container';
+        container.style.cssText = 'position:fixed; top:24px; right:24px; z-index:99999; display:flex; flex-direction:column; gap:10px; pointer-events:none; font-family:"Inter", sans-serif;';
+        document.body.appendChild(container);
+    }
+    const toast = document.createElement('div');
+    const isSuccess = type === 'success';
+    toast.style.cssText = `padding: 12px 20px; border-radius: 8px; font-size: 0.9rem; color: white; background: ${isSuccess ? 'rgba(16, 185, 129, 0.95)' : 'rgba(239, 68, 68, 0.95)'}; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 10px 25px rgba(0,0,0,0.5); backdrop-filter: blur(10px); pointer-events: auto; transition: opacity 0.3s ease, transform 0.3s ease; transform: translateY(-10px); opacity: 0; font-weight: 500;`;
+    toast.textContent = message;
+    container.appendChild(toast);
+
+    requestAnimationFrame(() => {
+        toast.style.opacity = '1';
+        toast.style.transform = 'translateY(0)';
+    });
+
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(-10px)';
+        setTimeout(() => toast.remove(), 300);
+    }, 3200);
+}
+
 async function renderRealHistory() {
     const container = document.getElementById('real-history-container');
     if (!container) return;
@@ -239,9 +275,12 @@ function loadUserInfo() {
 
     const vipEl = document.querySelector('.sidebar-vip');
     if (vipEl) {
-        const isVip = localStorage.getItem('is_vip') === 'true';
+        const isAdmin = checkIsAdminUser(session);
+        const isVip = localStorage.getItem('is_vip') === 'true' || isAdmin;
         const vipPlan = (session && session.vip_plan) ? session.vip_plan : (localStorage.getItem('vip_plan') || '');
-        if (isVip || vipPlan) {
+        if (isAdmin) {
+            vipEl.innerHTML = `<i class="fas fa-user-shield" style="color: #ff4b4b;"></i> QUẢN TRỊ VIÊN - <span id="sidebar-points">${rewardsPoints}</span> điểm (Mọi khung & Quyền lợi)`;
+        } else if (isVip || vipPlan) {
             const planLabel = vipPlan ? vipPlan.charAt(0).toUpperCase() + vipPlan.slice(1) : '';
             vipEl.innerHTML = `<i class="fas fa-crown"></i> VIP ${planLabel} - <span id="sidebar-points">${rewardsPoints}</span> điểm`;
         } else {
@@ -279,9 +318,12 @@ function loadUserInfo() {
 
     const membershipInput = document.getElementById('membership');
     if (membershipInput) {
-        const isVip = localStorage.getItem('is_vip') === 'true';
+        const isAdmin = checkIsAdminUser(session);
+        const isVip = localStorage.getItem('is_vip') === 'true' || isAdmin;
         const vipPlan = (session && session.vip_plan) ? session.vip_plan : (localStorage.getItem('vip_plan') || '');
-        if (isVip || vipPlan) {
+        if (isAdmin) {
+            membershipInput.value = 'Quản trị viên (Toàn quyền & Tất cả khung viền)';
+        } else if (isVip || vipPlan) {
             const planLabel = vipPlan ? vipPlan.charAt(0).toUpperCase() + vipPlan.slice(1) : '';
             membershipInput.value = `VIP ${planLabel}`;
         } else {
@@ -365,7 +407,6 @@ function initAvatarBorders() {
     const borderOptions = document.querySelectorAll('.border-option');
     if (!avatarImg || borderOptions.length === 0) return;
 
-    
     let points = 0;
     try {
         const rewardsData = JSON.parse(localStorage.getItem('3hd2k_rewards') || '{}');
@@ -381,11 +422,13 @@ function initAvatarBorders() {
     };
     
     let session = null;
-    try { session = JSON.parse(sessionStorage.getItem('userSession') || localStorage.getItem('userSession')); } catch(e) {}
-    const isVip = localStorage.getItem('is_vip') === 'true' || (session && session.role === 'vip');
+    try { session = getCurrentUser(); } catch(e) {}
+    const isAdmin = checkIsAdminUser(session);
+    const isVip = localStorage.getItem('is_vip') === 'true' || (session && session.role === 'vip') || isAdmin;
     const vipPlan = (localStorage.getItem('vip_plan') || (session && session.vip_plan) || '').toLowerCase();
 
     function hasAccess(bType) {
+        if (isAdmin) return true;
         if (points >= requiredPoints[bType]) return true;
         if (isVip) {
             if (vipPlan === 'platinum' && ['silver', 'gold', 'vjp', 'diamond'].includes(bType)) return true;
@@ -398,7 +441,7 @@ function initAvatarBorders() {
     let savedBorder = localStorage.getItem('userAvatarBorder') || 'member';
     if (!hasAccess(savedBorder)) {
         if (isVip) {
-            if (vipPlan === 'platinum') savedBorder = 'diamond';
+            if (isAdmin || vipPlan === 'platinum') savedBorder = 'diamond';
             else if (vipPlan === 'gold') savedBorder = 'gold';
             else if (vipPlan === 'silver') savedBorder = 'silver';
             else savedBorder = 'member';
@@ -408,9 +451,8 @@ function initAvatarBorders() {
         localStorage.setItem('userAvatarBorder', savedBorder);
     }
     
-    // Force max VIP border if they are currently member
     if (savedBorder === 'member' && isVip) {
-        if (vipPlan === 'platinum') savedBorder = 'diamond';
+        if (isAdmin || vipPlan === 'platinum') savedBorder = 'diamond';
         else if (vipPlan === 'gold') savedBorder = 'gold';
         else if (vipPlan === 'silver') savedBorder = 'silver';
         localStorage.setItem('userAvatarBorder', savedBorder);
@@ -421,6 +463,10 @@ function initAvatarBorders() {
     borderOptions.forEach(option => {
         const borderType = option.getAttribute('data-border');
         const req = requiredPoints[borderType] || 0;
+
+        option.classList.remove('locked');
+        const existingLock = option.querySelector('.fa-lock');
+        if (existingLock) existingLock.remove();
 
         if (!hasAccess(borderType)) {
             option.classList.add('locked');
@@ -438,18 +484,27 @@ function initAvatarBorders() {
             option.appendChild(iconEl);
         }
 
-        option.addEventListener('click', () => {
+        option.onclick = (e) => {
+            e.preventDefault();
             if (!hasAccess(borderType)) {
-                alert(`Bạn cần đạt tối thiểu ${req} điểm hoặc đăng ký VIP để sử dụng viền này!`);
+                showToast(`🔒 Cần tối thiểu ${req} điểm hoặc đăng ký VIP để sử dụng viền này!`, 'error');
                 return;
             }
             applyBorder(borderType);
             localStorage.setItem('userAvatarBorder', borderType);
-            
-            // Reload the page to reflect in navbar or dispatch event
-            window.location.reload();
-        });
+            showToast(`✨ Đã thay đổi viền đại diện thành công!`, 'success');
+        };
     });
+
+    function applyBorder(borderType) {
+        avatarImg.className = '';
+        avatarImg.classList.add(`avatar-border-${borderType}`);
+
+        borderOptions.forEach(opt => opt.classList.remove('active'));
+        const activeOpt = document.querySelector(`.border-option[data-border="${borderType}"]`);
+        if (activeOpt) activeOpt.classList.add('active');
+    }
+}
 
     function applyBorder(borderType) {
         avatarImg.className = '';

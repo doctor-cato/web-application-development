@@ -74,12 +74,31 @@ function renderHeroMovie(movie) {
 
     if (heroSection && (movie.bg || movie.poster)) {
         // Desktop uses horizontal banner (bg), mobile uses vertical poster (poster)
-        const desktopBg = movie.bg || movie.poster;
-        const mobileBg = movie.poster || movie.bg;
+        let desktopBg = movie.bg || movie.poster || '';
+        let mobileBg = movie.poster || movie.bg || '';
+
+        if (desktopBg && !desktopBg.startsWith('http') && !desktopBg.startsWith('/')) {
+            if (desktopBg.startsWith('images/') || desktopBg.startsWith('assets/')) {
+                desktopBg = '/shared/' + desktopBg;
+            }
+        }
+        if (mobileBg && !mobileBg.startsWith('http') && !mobileBg.startsWith('/')) {
+            if (mobileBg.startsWith('images/') || mobileBg.startsWith('assets/')) {
+                mobileBg = '/shared/' + mobileBg;
+            }
+        }
+
         heroSection.style.setProperty('--hero-bg-desktop', `url('${desktopBg}')`);
         heroSection.style.setProperty('--hero-bg-mobile', `url('${mobileBg}')`);
         heroSection.style.setProperty('--hero-bg-url', `url('${desktopBg}')`);
-        const bgOverlay = document.getElementById('hero-bg-overlay');
+        
+        let bgOverlay = document.getElementById('hero-bg-overlay');
+        if (!bgOverlay && heroSection) {
+            bgOverlay = document.createElement('div');
+            bgOverlay.className = 'hero-bg-overlay';
+            bgOverlay.id = 'hero-bg-overlay';
+            heroSection.insertBefore(bgOverlay, heroSection.firstChild);
+        }
         if (bgOverlay) bgOverlay.style.backgroundImage = `url('${desktopBg}')`;
     }
 

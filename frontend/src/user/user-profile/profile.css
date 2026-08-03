@@ -1,4 +1,8 @@
 
+body, button, input, select, textarea, h1, h2, h3, h4, h5, h6, p, span, div, label, a, .tab-content, .settings-section, .settings-item, .border-option, .accordion-header {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+}
+
 .profile-dashboard {
     position: relative;
     min-height: calc(100vh - 80px);

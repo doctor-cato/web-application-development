@@ -1464,26 +1464,6 @@ export function renderNavbar() {
                     const rewardsData = JSON.parse(localStorage.getItem('3hd2k_rewards') || '{}');
                     rewardsPoints = rewardsData.points || 0;
                 } catch(_) {}
-                const pointsDisplay = rewardsPoints.toLocaleString('vi-VN');
-                const userPointsHtml = isVip
-                    ? `<span class="user-points"><i class="fas fa-crown" style="color: #ffc107;"></i> VIP ${vipPlan ? vipPlan.charAt(0).toUpperCase() + vipPlan.slice(1) : ''} - ${pointsDisplay} điểm</span>`
-                    : `<span class="user-points">Hạng thường - ${pointsDisplay} điểm</span>`;
-
-                
-                let userBorder = localStorage.getItem('userAvatarBorder') || 'member';
-                if (isVip && vipPlan) {
-                    const planLower = vipPlan.toLowerCase();
-                    // Auto-upgrade border if they haven't explicitly set one or if it's lower than their plan
-                    if (userBorder === 'member') {
-                        if (planLower === 'platinum') userBorder = 'diamond';
-                        else if (planLower === 'gold') userBorder = 'gold';
-                        else if (planLower === 'silver') userBorder = 'silver';
-                        localStorage.setItem('userAvatarBorder', userBorder);
-                    }
-                }
-                const borderClass = 'avatar-border-' + userBorder;
-
-
                 let userRole = (
                     session.role ||
                     session.Role ||
@@ -1501,6 +1481,33 @@ export function renderNavbar() {
                 } else if (lowerEmail.includes('staff') || lowerName.includes('staff') || userRole === 'STAFF') {
                     userRole = 'STAFF';
                 }
+
+                // ponytail: Admin owns all frames & full privileges by default. ceiling: client-side session role check. upgrade path: JWT claim verification.
+                const isAdmin = userRole === 'ADMIN';
+
+                const userPointsHtml = isAdmin
+                    ? `<span class="user-points" style="color: #ff4b4b;"><i class="fas fa-user-shield"></i> Quản trị viên - Mọi khung & Quyền lợi</span>`
+                    : (isVip
+                        ? `<span class="user-points"><i class="fas fa-crown" style="color: #ffc107;"></i> VIP ${vipPlan ? vipPlan.charAt(0).toUpperCase() + vipPlan.slice(1) : ''} - ${pointsDisplay} điểm</span>`
+                        : `<span class="user-points">Hạng thường - ${pointsDisplay} điểm</span>`);
+
+                let userBorder = localStorage.getItem('userAvatarBorder') || 'member';
+                if (isAdmin) {
+                    if (userBorder === 'member') {
+                        userBorder = 'diamond';
+                        localStorage.setItem('userAvatarBorder', userBorder);
+                    }
+                } else if (isVip && vipPlan) {
+                    const planLower = vipPlan.toLowerCase();
+                    // Auto-upgrade border if they haven't explicitly set one or if it's lower than their plan
+                    if (userBorder === 'member') {
+                        if (planLower === 'platinum') userBorder = 'diamond';
+                        else if (planLower === 'gold') userBorder = 'gold';
+                        else if (planLower === 'silver') userBorder = 'silver';
+                        localStorage.setItem('userAvatarBorder', userBorder);
+                    }
+                }
+                const borderClass = 'avatar-border-' + userBorder;
                 let portalNavButtonsHtml = '';
                 let portalMenuItemsHtml = '';
 

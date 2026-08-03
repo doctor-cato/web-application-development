@@ -43,25 +43,37 @@ function setupAccordions() {
             const list = section.querySelector('.settings-list');
             const icon = this.querySelector('.accordion-icon');
 
-            section.classList.toggle('expanded');
+            const isExpanded = section.classList.contains('expanded');
+            
+            document.querySelectorAll('.settings-section').forEach(s => {
+                s.classList.remove('expanded');
+                const l = s.querySelector('.settings-list');
+                const ic = s.querySelector('.accordion-icon');
+                if (l) l.style.maxHeight = '0px';
+                if (ic) ic.style.transform = 'rotate(0deg)';
+            });
 
-            if (section.classList.contains('expanded')) {
-                list.style.maxHeight = list.scrollHeight + "px";
-                if(icon) icon.style.transform = "rotate(180deg)";
-            } else {
-                list.style.maxHeight = "0px";
-                if(icon) icon.style.transform = "rotate(0deg)";
+            if (!isExpanded && list) {
+                section.classList.add('expanded');
+                list.style.maxHeight = (list.scrollHeight + 60) + "px";
+                if (icon) icon.style.transform = "rotate(180deg)";
             }
         });
     });
 
-    document.querySelectorAll('.settings-section').forEach((section) => {
+    const sections = document.querySelectorAll('.settings-section');
+    sections.forEach((section, idx) => {
         const list = section.querySelector('.settings-list');
         const icon = section.querySelector('.accordion-icon');
-
-        section.classList.remove('expanded');
-        if(list) list.style.maxHeight = "0px";
-        if(icon) icon.style.transform = "rotate(0deg)";
+        if (idx === 1 || section.classList.contains('expanded')) {
+            section.classList.add('expanded');
+            if (list) list.style.maxHeight = (list.scrollHeight + 60) + "px";
+            if (icon) icon.style.transform = "rotate(180deg)";
+        } else {
+            section.classList.remove('expanded');
+            if (list) list.style.maxHeight = "0px";
+            if (icon) icon.style.transform = "rotate(0deg)";
+        }
     });
 }
 
