@@ -592,7 +592,7 @@
       }
 
       pointVouchers.forEach((v, idx) => {
-        let discountStr = v.discountType === 'Percent' ? `Giảm ${v.discountAmount}%` : `Giảm ${v.discountAmount.toLocaleString('vi-VN')}đ`;
+        let discountStr = v.discountType === 'PERCENTAGE' ? `Giảm ${v.discountValue}%` : `Giảm ${v.discountValue.toLocaleString('vi-VN')}đ`;
         
         const card = document.createElement('article');
         card.className = 'gift-card';
@@ -684,6 +684,10 @@
     loadGifts();
     updateUI(state.points, false);
     renderHistory();
+    window.addEventListener('vouchersUpdated', () => {
+      console.log('Reloading gifts due to SignalR update...');
+      loadGifts();
+    });
   }
 
   if (document.readyState === 'loading') {

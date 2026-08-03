@@ -558,9 +558,9 @@ async function loadRealOffers() {
         }
 
         vouchers.forEach(v => {
-            let discountStr = v.discountType === 'Percent' ? `Giảm ${v.discountAmount}%` : `Giảm ${v.discountAmount.toLocaleString('vi-VN')}đ`;
+            let discountStr = v.discountType === 'PERCENTAGE' ? `Giảm ${v.discountValue}%` : `Giảm ${v.discountValue.toLocaleString('vi-VN')}đ`;
             let minOrderStr = v.minOrderAmount > 0 ? `Áp dụng cho hóa đơn từ ${v.minOrderAmount.toLocaleString('vi-VN')}đ.` : 'Áp dụng cho mọi hóa đơn.';
-            let maxDiscountStr = v.discountType === 'Percent' && v.maxDiscountAmount > 0 ? ` Giảm tối đa ${v.maxDiscountAmount.toLocaleString('vi-VN')}đ.` : '';
+            let maxDiscountStr = v.discountType === 'PERCENTAGE' && v.maxDiscountAmount > 0 ? ` Giảm tối đa ${v.maxDiscountAmount.toLocaleString('vi-VN')}đ.` : '';
             let dateStr = v.expiryDate ? new Date(v.expiryDate).toLocaleDateString('vi-VN') : 'Không thời hạn';
             
             const card = document.createElement('div');
@@ -595,6 +595,11 @@ function initProfile() {
     try { setupAvatarUpload(); } catch(e) { console.error('setupAvatarUpload error:', e); }
     try { setup2FA(); } catch(e) { console.error('setup2FA error:', e); }
     try { loadRealOffers(); } catch(e) { console.error('loadRealOffers error:', e); }
+    
+    window.addEventListener('vouchersUpdated', () => {
+        console.log('Reloading offers due to SignalR update...');
+        try { loadRealOffers(); } catch(e) { console.error('loadRealOffers error:', e); }
+    });
 }
 
 

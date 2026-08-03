@@ -862,6 +862,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                 renderCinemaShowtimes();
             }
         });
+
+        window.addEventListener('showtimesUpdated', async () => {
+            console.log('Realtime showtimes update received');
+            if (currentMovie && window.fetchShowtimesByMovie) {
+                window.currentMovieShowtimes = await window.fetchShowtimesByMovie(currentMovie.id);
+                renderCinemaShowtimes();
+            }
+        });
     }
 
     renderRatings(currentMovie);

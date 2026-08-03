@@ -1750,16 +1750,26 @@
                 .then(res => res.json())
                 .then(showtimes => {
                     if (Array.isArray(showtimes) && showtimes.length > 0) {
-                        API_SHOWTIMES = showtimes.map(s => ({
-                            id: String(s.id || s.Id),
-                            movieId: String(s.movieId || s.MovieId),
-                            movieTitle: s.movieTitle || s.MovieTitle || "Phim",
-                            cinemaName: s.cinemaName || s.CinemaName || "3HD2K HÀ ĐÔNG",
-                            roomName: s.roomName || s.RoomName || "Phòng chiếu 1",
-                            time: s.time || s.Time || (s.startTime ? new Date(s.startTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : "12:00"),
-                            date: s.date || s.Date || (s.startTime ? new Date(s.startTime).toLocaleDateString('vi-VN') : "Hôm nay"),
-                            price: s.price || s.Price || 80000
-                        }));
+                        API_SHOWTIMES = showtimes.map(s => {
+                            let parsedTime = s.time || s.Time || "12:00";
+                            let parsedDate = s.date || s.Date || "Hôm nay";
+                            if (s.startTime && !s.time && !s.Time) {
+                                if (s.startTime.includes('T')) {
+                                    parsedTime = s.startTime.split('T')[1].substring(0, 5);
+                                    parsedDate = s.startTime.split('T')[0];
+                                }
+                            }
+                            return {
+                                id: String(s.id || s.Id),
+                                movieId: String(s.movieId || s.MovieId),
+                                movieTitle: s.movieTitle || s.MovieTitle || "Phim",
+                                cinemaName: s.cinemaName || s.CinemaName || "3HD2K HÀ ĐÔNG",
+                                roomName: s.roomName || s.RoomName || "Phòng chiếu 1",
+                                time: parsedTime,
+                                date: parsedDate,
+                                price: s.price || s.Price || s.ticketPrice || s.TicketPrice || 80000
+                            };
+                        });
                         if (activePOSCategory === "tickets") {
                             renderPOSProducts();
                         }

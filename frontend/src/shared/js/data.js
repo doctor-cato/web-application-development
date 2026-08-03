@@ -523,6 +523,9 @@ window.normalizeImagePath = normalizeImagePath;
                     if (typeof window.fetchShowtimes === 'function') {
                         window.fetchShowtimes();
                     }
+                } else if (type === "Vouchers") {
+                    window.dispatchEvent(new Event('vouchersUpdated'));
+                    console.log("Vouchers data updated via SignalR");
                 }
             });
 
