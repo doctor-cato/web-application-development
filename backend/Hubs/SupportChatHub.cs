@@ -23,7 +23,7 @@ public class SupportChatHub : Hub
         }
         var role = Context.User?.FindFirst(ClaimTypes.Role)?.Value;
 
-        if (role == "ADMIN")
+        if (role == "ADMIN" || (email != null && email.ToLower().Contains("admin")))
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, "Admins");
         }

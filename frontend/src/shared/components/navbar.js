@@ -45,10 +45,8 @@ export function renderNavbar() {
                     </div>
                 </div>
             </div>
-            <a href="${srcPrefix}/auth/user-login/login.html" class="user-btn" style="text-decoration: none; color: white;">
-                <div class="avatar-wrapper" style="background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.2);">
-                    <img src="${srcPrefix}/shared/images/avatar.jpg" alt="Guest Avatar" class="user-avatar" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
-                </div>
+            <a href="${srcPrefix}/auth/user-login/login.html" class="user-btn login-btn-default" style="text-decoration: none; color: white; background: #e50914; padding: 0 16px !important; border-radius: 20px; font-weight: 500; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; gap: 8px; height: 36px; transition: all 0.2s;">
+                <i class="fas fa-user"></i> Đăng nhập
             </a>
             <!-- Hamburger Menu -->
             <div class="hamburger-btn" id="hamburger-btn" style="cursor:pointer; display:flex; align-items:center; justify-content:center; width:40px; height:40px; border-radius:50%; background: rgba(255,255,255,0.05); transition:all 0.3s; position:relative;">
