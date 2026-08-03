@@ -1237,88 +1237,102 @@
                     }
 
                     let inlineStyle = `
-                        width: 36px; height: 36px; font-size: 0.7rem; font-weight: 800; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s ease; user-select: none;
+                        width: 44px; height: 38px; font-size: 0.75rem; font-weight: 800; border-radius: 4px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: all 0.15s ease; user-select: none; box-sizing: border-box;
                     `;
 
                     if (dangChon) {
-                        inlineStyle += `background: var(--do-thuong-hieu); color: #fff; border: 1px solid var(--do-thuong-hieu); box-shadow: 0 0 10px rgba(229, 9, 20, 0.6);`;
+                        inlineStyle += `background: #e50914; color: #fff; border: 1px solid #e50914; box-shadow: 0 0 12px rgba(229, 9, 20, 0.8);`;
                         htmlSoDo += `<button style="${inlineStyle}" onclick="KhachHangClickChonGhe('${maGhe}')">${maGhe}</button>`;
                     } else if (daDat) {
-                        inlineStyle += `background: #222; color: #555; border: 1px solid #333; cursor: not-allowed; opacity: 0.4; text-decoration: line-through;`;
+                        inlineStyle += `background: #141414; color: #444; border: 1px solid #222; cursor: not-allowed; opacity: 0.4; text-decoration: line-through;`;
                         htmlSoDo += `<button style="${inlineStyle}" disabled>${maGhe}</button>`;
                     } else if (type === 'vip') {
-                        inlineStyle += `background: rgba(245, 158, 11, 0.18); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.4);`;
+                        inlineStyle += `background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid #f59e0b;`;
                         htmlSoDo += `<button style="${inlineStyle}" onclick="KhachHangClickChonGhe('${maGhe}')">${maGhe}</button>`;
                     } else if (type === 'double') {
-                        inlineStyle += `background: rgba(236, 72, 153, 0.18); color: #ec4899; border: 1px solid rgba(236, 72, 153, 0.4);`;
+                        inlineStyle += `background: rgba(236, 72, 153, 0.15); color: #ec4899; border: 1px solid #ec4899;`;
                         htmlSoDo += `<button style="${inlineStyle}" onclick="KhachHangClickChonGhe('${maGhe}')">${maGhe}</button>`;
                     } else {
-                        inlineStyle += `background: rgba(255,255,255,0.06); color: #ccc; border: 1px solid var(--glass-border);`;
+                        inlineStyle += `background: #1e1e1e; color: #fff; border: 1px solid #333;`;
                         htmlSoDo += `<button style="${inlineStyle}" onclick="KhachHangClickChonGhe('${maGhe}')">${maGhe}</button>`;
                     }
                 }
             }
 
             vungChinh.innerHTML = `
-                <div class="man-hinh-chon-ghe" style="padding: 15px 24px;">
-                    <div class="thong-tin-phim-da-chon-header" style="margin-bottom: 12px;">
-                        <button style="background: transparent; border: 1px solid var(--glass-border); color: #ccc; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8rem;" onclick="ChuyenTrangThai('EVENT_IDLE')">
-                            <i class="fas fa-arrow-left"></i> Chọn Phim Khác
-                        </button>
-                        <div style="text-align: center;">
-                            <span style="font-weight: 800; font-size: 1.1rem; color: #fff; display: block;">🎬 ${PhimDangChonTen}</span>
-                            <span style="font-size: 0.8rem; color: var(--mau-chu-phu);">Suất: 19:00 | Phòng chiếu 1 | 3HD2K HÀ ĐÔNG</span>
+                <div class="man-hinh-chon-ghe" style="padding: 10px 30px; font-family: system-ui, -apple-system, sans-serif;">
+                    <!-- HEADER GIỐNG HỆT 100% -->
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
+                        <div style="display: flex; flex-direction: column; gap: 4px;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <i class="fas fa-film" style="color: #e50914; font-size: 1.4rem;"></i>
+                                <h2 style="font-size: 1.5rem; font-weight: 800; color: #fff; margin: 0;">${PhimDangChonTen}</h2>
+                            </div>
+                            <div style="font-size: 0.88rem; color: #888; margin-top: 2px;">
+                                Suất: 19:00 | Phòng chiếu 1 | 3HD2K HÀ ĐÔNG
+                            </div>
                         </div>
-                        <span style="font-size: 0.85rem; color: var(--xanh-luc-highlight); font-weight: 800;">GIÁ VÉ TỪ 80.000đ</span>
+
+                        <div style="text-align: right;">
+                            <span style="font-size: 0.72rem; color: #888; text-transform: uppercase; letter-spacing: 0.5px; display: block;">GIÁ VÉ TỪ</span>
+                            <span style="font-size: 1.6rem; font-weight: 900; color: #00ff66; margin-top: 2px; display: block;">80.000đ</span>
+                        </div>
                     </div>
 
-                    <!-- CHÚ THÍCH PHÂN LOẠI GHẾ GIỐNG STAFF POS -->
-                    <div style="display: flex; justify-content: center; gap: 16px; margin-bottom: 14px; font-size: 0.8rem; color: #ccc; flex-wrap: wrap;">
-                        <div style="display: flex; align-items: center; gap: 6px;">
-                            <span style="width: 14px; height: 14px; background: rgba(255,255,255,0.1); border: 1px solid #666; border-radius: 3px;"></span>
+                    <!-- LEGEND BAR GIỐNG HỆT 100% -->
+                    <div style="display: flex; justify-content: center; align-items: center; gap: 24px; margin-bottom: 15px; font-size: 0.82rem; color: #ccc; flex-wrap: wrap;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span style="width: 16px; height: 16px; background: rgba(255,255,255,0.06); border: 1px solid #444; border-radius: 3px;"></span>
                             <span>Thường (80k)</span>
                         </div>
-                        <div style="display: flex; align-items: center; gap: 6px;">
-                            <span style="width: 14px; height: 14px; background: rgba(245, 158, 11, 0.4); border: 1px solid #f59e0b; border-radius: 3px;"></span>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span style="width: 16px; height: 16px; background: rgba(245, 158, 11, 0.2); border: 1px solid #f59e0b; border-radius: 3px;"></span>
                             <span>VIP (100k)</span>
                         </div>
-                        <div style="display: flex; align-items: center; gap: 6px;">
-                            <span style="width: 14px; height: 14px; background: rgba(236, 72, 153, 0.4); border: 1px solid #ec4899; border-radius: 3px;"></span>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span style="width: 16px; height: 16px; background: rgba(236, 72, 153, 0.2); border: 1px solid #ec4899; border-radius: 3px;"></span>
                             <span>Đôi (160k)</span>
                         </div>
-                        <div style="display: flex; align-items: center; gap: 6px;">
-                            <span style="width: 14px; height: 14px; background: var(--do-thuong-hieu); border-radius: 3px;"></span>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span style="width: 16px; height: 16px; background: #e50914; border-radius: 3px;"></span>
                             <span style="color: #fff; font-weight: 700;">Đang chọn</span>
                         </div>
-                        <div style="display: flex; align-items: center; gap: 6px;">
-                            <span style="width: 14px; height: 14px; background: #222; border: 1px solid #333; opacity: 0.5; border-radius: 3px;"></span>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span style="width: 16px; height: 16px; background: #222; border: 1px solid #333; opacity: 0.4; border-radius: 3px;"></span>
                             <span>Đã đặt / Khóa</span>
                         </div>
                     </div>
 
-                    <div class="khung-man-chieu" style="margin-bottom: 16px;">
-                        <div class="man-chieu-cong" style="box-shadow: 0 0 15px rgba(0, 240, 255, 0.5); border-color: var(--xanh-lam-highlight);"></div>
-                        <div class="chu-man-chieu" style="color: var(--xanh-lam-highlight); letter-spacing: 2px;">MÀN CHIẾU (SCREEN)</div>
+                    <!-- SCREEN BAR GIỐNG HỆT 100% -->
+                    <div style="text-align: center; margin-bottom: 25px;">
+                        <div style="height: 3px; background: linear-gradient(90deg, transparent, #00f0ff, transparent); box-shadow: 0 0 15px #00f0ff; width: 85%; margin: 0 auto 10px auto; border-radius: 50%;"></div>
+                        <div style="color: #666; font-size: 0.75rem; letter-spacing: 3px; text-transform: uppercase;">M À N  C H I Ế U  ( S C R E E N )</div>
                     </div>
 
-                    <div class="luoi-ghe-container" style="display: flex; justify-content: center; margin-bottom: 16px;">
-                        <div class="luoi-ghe-grid" style="display: grid; grid-template-columns: repeat(${cols}, 36px); gap: 6px;">
+                    <!-- SEAT GRID GIỐNG HỆT 100% -->
+                    <div style="display: flex; justify-content: center; margin-bottom: 25px;">
+                        <div style="display: grid; grid-template-columns: repeat(${cols}, 44px); gap: 8px;">
                             ${htmlSoDo}
                         </div>
                     </div>
 
-                    <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); padding: 12px 20px; border-radius: 8px;">
-                        <div>
-                            <span style="font-size: 0.8rem; color: var(--mau-chu-phu); display: block;">Ghế đã chọn:</span>
-                            <strong style="color: #fff; font-size: 0.95rem;">${selectedSeats.length > 0 ? selectedSeats.join(', ') : 'Chưa chọn ghế nào'}</strong>
+                    <!-- FOOTER BAR GIỐNG HỆT 100% -->
+                    <div style="border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 18px; margin-top: 10px; display: flex; justify-content: space-between; align-items: center;">
+                        <div style="display: flex; flex-direction: column; gap: 4px;">
+                            <span style="color: #888; font-size: 0.85rem;">Ghế đã chọn:</span>
+                            <span style="color: #fff; font-size: 1.25rem; font-weight: 800;">${selectedSeats.length > 0 ? selectedSeats.join(', ') : 'Chưa chọn ghế nào'}</span>
                         </div>
-                        <div style="text-align: right;">
-                            <span style="font-size: 0.8rem; color: var(--mau-chu-phu); display: block;">TỔNG TIỀN VÉ</span>
-                            <strong style="color: var(--xanh-luc-highlight); font-size: 1.3rem;">${totalSeatPrice.toLocaleString('vi-VN')}đ</strong>
+
+                        <div style="display: flex; align-items: center;">
+                            <div style="display: flex; flex-direction: column; text-align: right; margin-right: 25px;">
+                                <span style="color: #888; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">TỔNG TIỀN VÉ</span>
+                                <span style="color: #00ff66; font-size: 1.9rem; font-weight: 900; text-shadow: 0 0 10px rgba(0, 255, 102, 0.3);">${totalSeatPrice.toLocaleString('vi-VN')}đ</span>
+                            </div>
+
+                            <button style="background: #e50914; color: #fff; font-size: 1rem; font-weight: 800; border: none; border-radius: 6px; padding: 14px 32px; text-transform: uppercase; cursor: pointer; letter-spacing: 0.5px; box-shadow: 0 0 20px rgba(229, 9, 20, 0.5); transition: all 0.2s ease;" onclick="KhachHangXacNhanDoiSangThanhToan()">
+                                XÁC NHẬN CHỌN VÉ
+                            </button>
                         </div>
-                        <button class="nut-xac-nhan-thanh-toan-cfd" style="width: auto; padding: 10px 24px; margin-top: 0; background: var(--do-thuong-hieu); color: #fff; font-weight: 800; border-radius: 6px;" onclick="KhachHangXacNhanDoiSangThanhToan()">
-                            <i class="fas fa-credit-card"></i> XÁC NHẬN CHỌN GHẾ ➔ THANH TOÁN
-                        </button>
                     </div>
                 </div>
             `;
