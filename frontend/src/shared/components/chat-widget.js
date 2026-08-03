@@ -412,7 +412,6 @@ function renderChatWidget() {
                  signalRUrl = `http://localhost:5111/supportChatHub`;
              }
         } else {
-             // Use relative path for production so Vercel rewrite handles it
              signalRUrl = `/supportChatHub`;
         }
 
@@ -420,7 +419,8 @@ function renderChatWidget() {
         if (!connection) {
             connection = new signalR.HubConnectionBuilder()
                 .withUrl(signalRUrl, {
-                    accessTokenFactory: () => localStorage.getItem('jwt_token') || ''
+                    accessTokenFactory: () => localStorage.getItem('jwt_token') || '',
+                    transport: signalR.HttpTransportType.LongPolling
                 })
                 .withAutomaticReconnect()
                 .build();

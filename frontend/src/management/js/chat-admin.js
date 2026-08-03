@@ -44,7 +44,10 @@ async function initSignalR() {
 
 
     connection = new signalR.HubConnectionBuilder()
-        .withUrl(signalRUrl, { accessTokenFactory: () => token })
+        .withUrl(signalRUrl, { 
+            accessTokenFactory: () => token,
+            transport: signalR.HttpTransportType.LongPolling
+        })
         .withAutomaticReconnect()
         .build();
 
