@@ -1261,15 +1261,20 @@
 
             vungChinh.innerHTML = `
                 <div class="man-hinh-chon-ghe" style="padding: 10px 30px; font-family: system-ui, -apple-system, sans-serif;">
-                    <!-- HEADER GIỐNG HỆT 100% -->
-                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
-                        <div style="display: flex; flex-direction: column; gap: 4px;">
-                            <div style="display: flex; align-items: center; gap: 10px;">
-                                <i class="fas fa-film" style="color: #e50914; font-size: 1.4rem;"></i>
-                                <h2 style="font-size: 1.5rem; font-weight: 800; color: #fff; margin: 0;">${PhimDangChonTen}</h2>
-                            </div>
-                            <div style="font-size: 0.88rem; color: #888; margin-top: 2px;">
-                                Suất: 19:00 | Phòng chiếu 1 | 3HD2K HÀ ĐÔNG
+                    <!-- HEADER CĂN ĐỀU 2 BÊN KÈM NÚT CHỌN PHIM KHÁC -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; width: 100%; max-width: 900px; margin-left: auto; margin-right: auto;">
+                        <div style="display: flex; align-items: center; gap: 14px;">
+                            <button style="background: rgba(255,255,255,0.06); border: 1px solid var(--glass-border); color: #ccc; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;" onclick="ChuyenTrangThai('EVENT_IDLE')">
+                                <i class="fas fa-arrow-left"></i> Chọn Phim Khác
+                            </button>
+                            <div style="display: flex; flex-direction: column; gap: 4px;">
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <i class="fas fa-film" style="color: #e50914; font-size: 1.3rem;"></i>
+                                    <h2 style="font-size: 1.4rem; font-weight: 800; color: #fff; margin: 0;">${PhimDangChonTen}</h2>
+                                </div>
+                                <div style="font-size: 0.85rem; color: #888;">
+                                    Suất: 19:00 | Phòng chiếu 1 | 3HD2K HÀ ĐÔNG
+                                </div>
                             </div>
                         </div>
 
@@ -1316,23 +1321,16 @@
                         </div>
                     </div>
 
-                    <!-- FOOTER BAR GIỐNG HỆT 100% -->
-                    <div style="border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 18px; margin-top: 10px; display: flex; justify-content: space-between; align-items: center;">
+                    <!-- FOOTER BAR: CHỈ GIỮ GHẾ ĐÃ CHỌN VÀ NÚT XÁC NHẬN CHỌN VÉ (ĐÃ XÓA TỔNG TIỀN VÉ) -->
+                    <div style="border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 18px; margin-top: 10px; display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 900px; margin-left: auto; margin-right: auto;">
                         <div style="display: flex; flex-direction: column; gap: 4px;">
                             <span style="color: #888; font-size: 0.85rem;">Ghế đã chọn:</span>
                             <span style="color: #fff; font-size: 1.25rem; font-weight: 800;">${selectedSeats.length > 0 ? selectedSeats.join(', ') : 'Chưa chọn ghế nào'}</span>
                         </div>
 
-                        <div style="display: flex; align-items: center;">
-                            <div style="display: flex; flex-direction: column; text-align: right; margin-right: 25px;">
-                                <span style="color: #888; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">TỔNG TIỀN VÉ</span>
-                                <span style="color: #00ff66; font-size: 1.9rem; font-weight: 900; text-shadow: 0 0 10px rgba(0, 255, 102, 0.3);">${totalSeatPrice.toLocaleString('vi-VN')}đ</span>
-                            </div>
-
-                            <button style="background: #e50914; color: #fff; font-size: 1rem; font-weight: 800; border: none; border-radius: 6px; padding: 14px 32px; text-transform: uppercase; cursor: pointer; letter-spacing: 0.5px; box-shadow: 0 0 20px rgba(229, 9, 20, 0.5); transition: all 0.2s ease;" onclick="KhachHangXacNhanDoiSangThanhToan()">
-                                XÁC NHẬN CHỌN VÉ
-                            </button>
-                        </div>
+                        <button style="background: #e50914; color: #fff; font-size: 1rem; font-weight: 800; border: none; border-radius: 6px; padding: 14px 36px; text-transform: uppercase; cursor: pointer; letter-spacing: 0.5px; box-shadow: 0 0 20px rgba(229, 9, 20, 0.5); transition: all 0.2s ease;" onclick="KhachHangXacNhanDoiSangThanhToan()">
+                            XÁC NHẬN CHỌN VÉ
+                        </button>
                     </div>
                 </div>
             `;
