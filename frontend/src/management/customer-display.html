@@ -1043,6 +1043,15 @@
             });
         }
 
+        function TinhTongTienGhe(selectedSeats, basePrice = 80000) {
+            let total = 0;
+            (selectedSeats || []).forEach(maGhe => {
+                const { price } = LayLoaiVaGiaGhe(maGhe, basePrice);
+                total += price;
+            });
+            return total;
+        }
+
         function KhachHangClickChonGhe(maGhe) {
             const index = DuLieuSoDoGhe.selectedSeats.indexOf(maGhe);
             if (index > -1) {
@@ -1053,12 +1062,12 @@
 
             HienThiSoDoGhe();
 
+            const tongTien = TinhTongTienGhe(DuLieuSoDoGhe.selectedSeats);
             const itemsVe = DuLieuSoDoGhe.selectedSeats.length > 0 ? [{
                 name: `Vé xem phim ${PhimDangChonTen}: ${DuLieuSoDoGhe.selectedSeats.join(', ')}`,
                 qty: DuLieuSoDoGhe.selectedSeats.length,
-                price: 80000
+                price: Math.round(tongTien / (DuLieuSoDoGhe.selectedSeats.length || 1))
             }] : [];
-            const tongTien = DuLieuSoDoGhe.selectedSeats.length * 80000;
 
             CapNhatGioHang(itemsVe, tongTien);
 
@@ -1093,11 +1102,11 @@
                 alert("Vui lòng chạm chọn ít nhất 1 ghế xem phim!");
                 return;
             }
-            const tongTien = DuLieuSoDoGhe.selectedSeats.length * 80000;
+            const tongTien = TinhTongTienGhe(DuLieuSoDoGhe.selectedSeats);
             const itemsVe = [{
                 name: `Vé xem phim ${PhimDangChonTen}: ${DuLieuSoDoGhe.selectedSeats.join(', ')}`,
                 qty: DuLieuSoDoGhe.selectedSeats.length,
-                price: 80000
+                price: Math.round(tongTien / (DuLieuSoDoGhe.selectedSeats.length || 1))
             }];
             CapNhatGioHang(itemsVe, tongTien);
 
@@ -1187,67 +1196,130 @@
             `;
         }
 
-        /* 2. SEAT SELECTION STATE */
+        /* 2. SEAT SELECTION STATE (ĐỒNG BỘ 100% GIỐNG STAFF POS) */
+        function LayLoaiVaGiaGhe(maGhe, basePrice = 80000) {
+            const rowChar = maGhe.charAt(0);
+            const rIndex = rowChar.charCodeAt(0) - 65;
+            const vipRows = [3, 4, 5]; // D, E, F
+            const doubleRows = [7]; // H
+
+            if (vipRows.includes(rIndex)) {
+                return { type: 'vip', price: basePrice * 1.25, label: 'VIP (100k)' };
+            }
+            if (doubleRows.includes(rIndex)) {
+                return { type: 'double', price: basePrice * 2, label: 'Đôi (160k)' };
+            }
+            return { type: 'standard', price: basePrice, label: 'Thường (80k)' };
+        }
+
         function HienThiSoDoGhe() {
             const vungChinh = document.getElementById('vung-hien-thi-dong');
             const rows = DuLieuSoDoGhe.rows || 8;
             const cols = DuLieuSoDoGhe.cols || 12;
             const selectedSeats = DuLieuSoDoGhe.selectedSeats || [];
             const bookedSeats = DuLieuSoDoGhe.bookedSeats || LayDanhSachGheDaDat(PhimDangChonId);
+            const basePrice = 80000;
 
+            let totalSeatPrice = 0;
             let htmlSoDo = '';
+
             for (let r = 0; r < rows; r++) {
                 const hangChar = String.fromCharCode(65 + r);
                 for (let c = 1; c <= cols; c++) {
                     const maGhe = `${hangChar}${c.toString().padStart(2, '0')}`;
+                    const { type, price } = LayLoaiVaGiaGhe(maGhe, basePrice);
+
                     const dangChon = selectedSeats.includes(maGhe);
                     const daDat = bookedSeats.includes(maGhe);
 
-                    if (daDat) {
-                        htmlSoDo += `<div class="o-ghe-cfd ghe-da-dat">${maGhe}</div>`;
-                    } else if (dangChon) {
-                        htmlSoDo += `<div class="o-ghe-cfd ghe-dang-chon" onclick="KhachHangClickChonGhe('${maGhe}')">${maGhe}</div>`;
+                    if (dangChon) {
+                        totalSeatPrice += price;
+                    }
+
+                    let inlineStyle = `
+                        width: 36px; height: 36px; font-size: 0.7rem; font-weight: 800; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s ease; user-select: none;
+                    `;
+
+                    if (dangChon) {
+                        inlineStyle += `background: var(--do-thuong-hieu); color: #fff; border: 1px solid var(--do-thuong-hieu); box-shadow: 0 0 10px rgba(229, 9, 20, 0.6);`;
+                        htmlSoDo += `<button style="${inlineStyle}" onclick="KhachHangClickChonGhe('${maGhe}')">${maGhe}</button>`;
+                    } else if (daDat) {
+                        inlineStyle += `background: #222; color: #555; border: 1px solid #333; cursor: not-allowed; opacity: 0.4; text-decoration: line-through;`;
+                        htmlSoDo += `<button style="${inlineStyle}" disabled>${maGhe}</button>`;
+                    } else if (type === 'vip') {
+                        inlineStyle += `background: rgba(245, 158, 11, 0.18); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.4);`;
+                        htmlSoDo += `<button style="${inlineStyle}" onclick="KhachHangClickChonGhe('${maGhe}')">${maGhe}</button>`;
+                    } else if (type === 'double') {
+                        inlineStyle += `background: rgba(236, 72, 153, 0.18); color: #ec4899; border: 1px solid rgba(236, 72, 153, 0.4);`;
+                        htmlSoDo += `<button style="${inlineStyle}" onclick="KhachHangClickChonGhe('${maGhe}')">${maGhe}</button>`;
                     } else {
-                        htmlSoDo += `<div class="o-ghe-cfd ghe-trong" onclick="KhachHangClickChonGhe('${maGhe}')"></div>`;
+                        inlineStyle += `background: rgba(255,255,255,0.06); color: #ccc; border: 1px solid var(--glass-border);`;
+                        htmlSoDo += `<button style="${inlineStyle}" onclick="KhachHangClickChonGhe('${maGhe}')">${maGhe}</button>`;
                     }
                 }
             }
 
             vungChinh.innerHTML = `
-                <div class="man-hinh-chon-ghe">
-                    <div class="thong-tin-phim-da-chon-header">
+                <div class="man-hinh-chon-ghe" style="padding: 15px 24px;">
+                    <div class="thong-tin-phim-da-chon-header" style="margin-bottom: 12px;">
                         <button style="background: transparent; border: 1px solid var(--glass-border); color: #ccc; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8rem;" onclick="ChuyenTrangThai('EVENT_IDLE')">
                             <i class="fas fa-arrow-left"></i> Chọn Phim Khác
                         </button>
-                        <span style="font-weight: 800; font-size: 1rem; color: #fff;">🎬 ${PhimDangChonTen}</span>
-                        <span style="font-size: 0.8rem; color: var(--xanh-luc-highlight); font-weight: 700;">80.000đ/vé</span>
+                        <div style="text-align: center;">
+                            <span style="font-weight: 800; font-size: 1.1rem; color: #fff; display: block;">🎬 ${PhimDangChonTen}</span>
+                            <span style="font-size: 0.8rem; color: var(--mau-chu-phu);">Suất: 19:00 | Phòng chiếu 1 | 3HD2K HÀ ĐÔNG</span>
+                        </div>
+                        <span style="font-size: 0.85rem; color: var(--xanh-luc-highlight); font-weight: 800;">GIÁ VÉ TỪ 80.000đ</span>
                     </div>
 
-                    <div class="khung-man-chieu">
-                        <div class="man-chieu-cong"></div>
-                        <div class="chu-man-chieu">MÀN CHIẾU (CHẠM GHẾ ĐỂ CHỌN)</div>
+                    <!-- CHÚ THÍCH PHÂN LOẠI GHẾ GIỐNG STAFF POS -->
+                    <div style="display: flex; justify-content: center; gap: 16px; margin-bottom: 14px; font-size: 0.8rem; color: #ccc; flex-wrap: wrap;">
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <span style="width: 14px; height: 14px; background: rgba(255,255,255,0.1); border: 1px solid #666; border-radius: 3px;"></span>
+                            <span>Thường (80k)</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <span style="width: 14px; height: 14px; background: rgba(245, 158, 11, 0.4); border: 1px solid #f59e0b; border-radius: 3px;"></span>
+                            <span>VIP (100k)</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <span style="width: 14px; height: 14px; background: rgba(236, 72, 153, 0.4); border: 1px solid #ec4899; border-radius: 3px;"></span>
+                            <span>Đôi (160k)</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <span style="width: 14px; height: 14px; background: var(--do-thuong-hieu); border-radius: 3px;"></span>
+                            <span style="color: #fff; font-weight: 700;">Đang chọn</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <span style="width: 14px; height: 14px; background: #222; border: 1px solid #333; opacity: 0.5; border-radius: 3px;"></span>
+                            <span>Đã đặt / Khóa</span>
+                        </div>
                     </div>
 
-                    <div class="luoi-ghe-container">
-                        <div class="luoi-ghe-grid" style="grid-template-columns: repeat(${cols}, 40px);">
+                    <div class="khung-man-chieu" style="margin-bottom: 16px;">
+                        <div class="man-chieu-cong" style="box-shadow: 0 0 15px rgba(0, 240, 255, 0.5); border-color: var(--xanh-lam-highlight);"></div>
+                        <div class="chu-man-chieu" style="color: var(--xanh-lam-highlight); letter-spacing: 2px;">MÀN CHIẾU (SCREEN)</div>
+                    </div>
+
+                    <div class="luoi-ghe-container" style="display: flex; justify-content: center; margin-bottom: 16px;">
+                        <div class="luoi-ghe-grid" style="display: grid; grid-template-columns: repeat(${cols}, 36px); gap: 6px;">
                             ${htmlSoDo}
                         </div>
                     </div>
 
-                    <div class="chu-thich-ghe-container">
-                        <div class="muc-chu-thich">
-                            <div class="mau-chu-thich-chon"></div>
-                            <span>Ghế bạn chọn</span>
+                    <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); padding: 12px 20px; border-radius: 8px;">
+                        <div>
+                            <span style="font-size: 0.8rem; color: var(--mau-chu-phu); display: block;">Ghế đã chọn:</span>
+                            <strong style="color: #fff; font-size: 0.95rem;">${selectedSeats.length > 0 ? selectedSeats.join(', ') : 'Chưa chọn ghế nào'}</strong>
                         </div>
-                        <div class="muc-chu-thich">
-                            <div class="mau-chu-thich-trong"></div>
-                            <span>Ghế trống</span>
+                        <div style="text-align: right;">
+                            <span style="font-size: 0.8rem; color: var(--mau-chu-phu); display: block;">TỔNG TIỀN VÉ</span>
+                            <strong style="color: var(--xanh-luc-highlight); font-size: 1.3rem;">${totalSeatPrice.toLocaleString('vi-VN')}đ</strong>
                         </div>
+                        <button class="nut-xac-nhan-thanh-toan-cfd" style="width: auto; padding: 10px 24px; margin-top: 0; background: var(--do-thuong-hieu); color: #fff; font-weight: 800; border-radius: 6px;" onclick="KhachHangXacNhanDoiSangThanhToan()">
+                            <i class="fas fa-credit-card"></i> XÁC NHẬN CHỌN GHẾ ➔ THANH TOÁN
+                        </button>
                     </div>
-
-                    <button class="nut-xac-nhan-thanh-toan-cfd" onclick="KhachHangXacNhanDoiSangThanhToan()">
-                        <i class="fas fa-credit-card"></i> XÁC NHẬN CHỌN GHẾ (${selectedSeats.length} GHẾ) ➔ THANH TOÁN
-                    </button>
                 </div>
             `;
         }
