@@ -2238,7 +2238,7 @@
             renderCart();
         };
 
-        function renderCart() {
+        function renderCart(isFromCFD = false) {
             const container = document.getElementById("cart-container");
             const submitBtn = document.getElementById("btn-checkout-action");
             const totalValEl = document.getElementById("cart-total-value");
@@ -2249,7 +2249,7 @@
                 container.innerHTML = `<div style="color: rgba(255, 255, 255, 0.6); text-align: center; font-style: italic; font-size: 0.85rem; padding-top: 20px;">🛒 Giỏ hàng trống. Click chọn sản phẩm phía trên để bán.</div>`;
                 totalValEl.textContent = "0đ";
                 submitBtn.disabled = true;
-                phatSuKienCFD('EVENT_UPDATE_CART', { cart: [], totalAmount: 0 });
+                if (!isFromCFD) phatSuKienCFD('EVENT_UPDATE_CART', { cart: [], totalAmount: 0 });
                 return;
             }
 
@@ -2279,9 +2279,60 @@
             totalValEl.textContent = total.toLocaleString('vi-VN') + "đ";
             submitBtn.disabled = false;
 
-            // Broadcast real-time cart update to CFD screen
-            const cfdCart = cart.map(i => ({ name: i.product.name, qty: i.qty, price: i.product.price }));
-            phatSuKienCFD('EVENT_UPDATE_CART', { cart: cfdCart, totalAmount: total });
+            if (!isFromCFD) {
+                const cfdCart = cart.map(i => ({ name: i.product.name, qty: i.qty, price: i.product.price }));
+                phatSuKienCFD('EVENT_UPDATE_CART', { cart: cfdCart, totalAmount: total });
+            }
+        }
+
+        // LẮNG NGHE TÍN HIỆU ĐỒNG BỘ 2 CHIỀU TỪ MÀN HÌNH KHÁCH CFD VỀ STAFF POS
+        kenhTruyenCFD.onmessage = function(event) {
+            const { type, data } = event.data || {};
+            handleIncomingCFDEvent(type, data);
+        };
+
+        window.addEventListener('storage', (e) => {
+            if (e.key === '3hd2k_cfd_event') {
+                try {
+                    const eventData = JSON.parse(e.newValue);
+                    if (eventData && eventData.type) {
+                        handleIncomingCFDEvent(eventData.type, eventData.data);
+                    }
+                } catch (err) {}
+            }
+        });
+
+        function handleIncomingCFDEvent(type, data) {
+            if (!data) return;
+
+            if (type === 'EVENT_UPDATE_CART') {
+                if (data.cart && Array.isArray(data.cart)) {
+                    cart = data.cart.map(item => ({
+                        product: {
+                            id: item.id || 'CFD-' + Math.random().toString(36).substr(2, 6),
+                            name: item.name,
+                            price: item.price
+                        },
+                        qty: item.qty || 1
+                    }));
+                    renderCart(true);
+                }
+            } else if (type === 'EVENT_PAYMENT_INIT') {
+                if (data.paymentMethod) {
+                    activePaymentMethod = data.paymentMethod;
+                    document.querySelectorAll(".payment-btn").forEach(b => b.classList.remove("active"));
+                    if (data.paymentMethod === 'cash') document.getElementById("pay-cash")?.classList.add("active");
+                    if (data.paymentMethod === 'card') document.getElementById("pay-card")?.classList.add("active");
+                    if (data.paymentMethod === 'qr') document.getElementById("pay-qr")?.classList.add("active");
+                }
+                if (data.totalAmount && cart.length > 0) {
+                    const totalValEl = document.getElementById("cart-total-value");
+                    if (totalValEl) totalValEl.textContent = data.totalAmount.toLocaleString('vi-VN') + "đ";
+                }
+            } else if (type === 'EVENT_IDLE') {
+                cart = [];
+                renderCart(true);
+            }
         }
 
         // --- Payment Method Selector ---
