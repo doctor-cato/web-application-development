@@ -1464,6 +1464,7 @@ export function renderNavbar() {
                     const rewardsData = JSON.parse(localStorage.getItem('3hd2k_rewards') || '{}');
                     rewardsPoints = rewardsData.points || 0;
                 } catch(_) {}
+                const pointsDisplay = rewardsPoints.toLocaleString('vi-VN');
                 let userRole = (
                     session.role ||
                     session.Role ||
