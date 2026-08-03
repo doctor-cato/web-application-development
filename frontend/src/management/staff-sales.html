@@ -1661,25 +1661,9 @@
 
             let movieSts = (showtimes || []).filter(s => String(s.movieId) === String(m.id) || (s.movieTitle && s.movieTitle.toLowerCase() === m.title.toLowerCase()));
 
-            // Nếu không có lịch chiếu tùy chỉnh trong DB, tự tạo các suất chiếu thực tế xoay quanh giờ hiện tại
             if (movieSts.length === 0) {
-                let baseHour = currentHours;
-                let baseMin = currentMinutes < 30 ? 30 : 0;
-                if (baseMin === 0) baseHour = (baseHour + 1) % 24;
-
-                const time1Str = `${String(baseHour).padStart(2, '0')}:${String(baseMin).padStart(2, '0')}`;
-                
-                let nextHour1 = (baseHour + 2) % 24;
-                const time2Str = `${String(nextHour1).padStart(2, '0')}:00`;
-
-                let nextHour2 = (baseHour + 4) % 24;
-                const time3Str = `${String(nextHour2).padStart(2, '0')}:30`;
-
-                movieSts = [
-                    { id: "ST-" + m.id + "-1", movieId: m.id, movieTitle: m.title, cinemaName: "3HD2K HÀ ĐÔNG", roomName: "Phòng chiếu 1", time: time1Str, date: "Hôm nay", price: 80000 },
-                    { id: "ST-" + m.id + "-2", movieId: m.id, movieTitle: m.title, cinemaName: "3HD2K HÀ ĐÔNG", roomName: "Phòng chiếu IMAX", time: time2Str, date: "Hôm nay", price: 100000 },
-                    { id: "ST-" + m.id + "-3", movieId: m.id, movieTitle: m.title, cinemaName: "3HD2K VIP", roomName: "Phòng chiếu VIP", time: time3Str, date: "Hôm nay", price: 120000 }
-                ];
+                const localShowtimes = JSON.parse(localStorage.getItem("3hd2k_showtimes")) || [];
+                movieSts = localShowtimes.filter(s => String(s.movieId) === String(m.id) || (s.movieTitle && s.movieTitle.toLowerCase() === m.title.toLowerCase()));
             }
 
             return movieSts.map(st => {

@@ -786,14 +786,8 @@
         let API_MOVIES = [];
         let API_SHOWTIMES = [];
 
-        /* Mặc định danh sách phim dự phòng */
-        const MAC_DINH_DANH_SACH_PHIM = [
-            { id: "MV-001", tieuDe: "Núi Tế Vong", poster: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=800", thoiLuong: "2h", doTuoi: "T16", theLoai: ["Kinh Dị"] },
-            { id: "MV-002", tieuDe: "Thanh gươm diệt quỷ: Vô hạn...", poster: "https://images.unsplash.com/photo-1578632767115-351597cf2477?w=800", thoiLuong: "2h", doTuoi: "T16", theLoai: ["Hành Động", "Hoạt Hình"] },
-            { id: "MV-003", tieuDe: "Spider Man: Across the Spider-Verse", poster: "https://images.unsplash.com/photo-1635805737707-575885ab0820?w=800", thoiLuong: "2h", doTuoi: "P", theLoai: ["Hành Động", "Siêu anh hùng"] },
-            { id: "MV-004", tieuDe: "Trò Chơi Ảo Giác: Ares", poster: "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800", thoiLuong: "2h", doTuoi: "T16", theLoai: ["Hành động", "Khoa học viễn tưởng"] },
-            { id: "MV-005", tieuDe: "BACKROOMS - Thực Tại...", poster: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800", thoiLuong: "2h", doTuoi: "T16", theLoai: ["Horror", "Science Fiction"] }
-        ];
+        /* Chỉ lấy danh sách phim thật từ Backend và cài đặt của Staff/Admin */
+        const MAC_DINH_DANH_SACH_PHIM = [];
 
         /* CHỈ LỌC CÁC PHIM CÓ SUẤT CHIẾU Ở KHUNG GIỜ NÀY TẠI QUẦY */
         function LocPhimTheoGioChieuHienTai(danhSachPhim, danhSachSuatChieu) {
@@ -829,7 +823,7 @@
                     return activeIds.has(pId) || activeTitles.has(pTitle);
                 });
 
-                return phimFilter.length > 0 ? phimFilter : danhSachPhim;
+                return phimFilter;
             }
 
             const setMovieIds = new Set(suatChieuHienTai.map(st => String(st.movieId || st.MovieId || '')));
@@ -841,7 +835,7 @@
                 return setMovieIds.has(pId) || setMovieTitles.has(pTitle);
             });
 
-            return phimChoQuay.length > 0 ? phimChoQuay : danhSachPhim;
+            return phimChoQuay;
         }
 
         /* LẤY SUẤT CHIẾU THỰC TẾ CỦA TỪNG PHIM TRÙNG KHỚP VỚI MÀN HÌNH STAFF */
@@ -854,23 +848,8 @@
             let suatChieuPhim = (API_SHOWTIMES || []).filter(s => String(s.movieId) === String(p.id) || (s.movieTitle && s.movieTitle.toLowerCase() === (p.tieuDe || p.title || '').toLowerCase()));
 
             if (suatChieuPhim.length === 0) {
-                let baseHour = currentHours;
-                let baseMin = currentMinutes < 30 ? 30 : 0;
-                if (baseMin === 0) baseHour = (baseHour + 1) % 24;
-
-                const time1Str = `${String(baseHour).padStart(2, '0')}:${String(baseMin).padStart(2, '0')}`;
-                
-                let nextHour1 = (baseHour + 2) % 24;
-                const time2Str = `${String(nextHour1).padStart(2, '0')}:00`;
-
-                let nextHour2 = (baseHour + 4) % 24;
-                const time3Str = `${String(nextHour2).padStart(2, '0')}:30`;
-
-                suatChieuPhim = [
-                    { id: "ST-" + p.id + "-1", movieId: p.id, movieTitle: p.tieuDe, time: time1Str, price: 80000 },
-                    { id: "ST-" + p.id + "-2", movieId: p.id, movieTitle: p.tieuDe, time: time2Str, price: 100000 },
-                    { id: "ST-" + p.id + "-3", movieId: p.id, movieTitle: p.tieuDe, time: time3Str, price: 120000 }
-                ];
+                const localShowtimes = JSON.parse(localStorage.getItem("3hd2k_showtimes")) || [];
+                suatChieuPhim = localShowtimes.filter(s => String(s.movieId) === String(p.id) || (s.movieTitle && s.movieTitle.toLowerCase() === (p.tieuDe || p.title || '').toLowerCase()));
             }
 
             return suatChieuPhim.map(st => {
@@ -948,10 +927,6 @@
                 }
             }
 
-            if (danhSachPhimCoSan.length === 0) {
-                danhSachPhimCoSan = MAC_DINH_DANH_SACH_PHIM;
-            }
-
             API_MOVIES = danhSachPhimCoSan;
 
             try {
@@ -971,9 +946,7 @@
             if (showtimeId && bookedSeatsStore[showtimeId]) {
                 return bookedSeatsStore[showtimeId];
             }
-            const allKeys = Object.keys(bookedSeatsStore);
-            if (allKeys.length > 0) return bookedSeatsStore[allKeys[0]] || [];
-            return ['B04', 'B05', 'D07', 'D08'];
+            return [];
         }
 
         function CapNhatDongHo() {
