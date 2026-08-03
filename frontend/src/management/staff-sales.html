@@ -1124,7 +1124,8 @@
                 }
                 
                 let role = (user.role || user.Role || user.userRole || user['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] || localStorage.getItem('user_role') || '').toUpperCase();
-                const lowerEmail = (user.email || '').toLowerCase();
+                let email = user.email || user.Email || user['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] || '';
+                const lowerEmail = email.toLowerCase();
                 const lowerName = (user.fullname || user.Fullname || user.name || '').toLowerCase();
                 if (lowerEmail.includes('admin') || lowerName.includes('admin')) role = 'ADMIN';
                 else if (lowerEmail.includes('staff') || lowerName.includes('staff')) role = 'STAFF';
