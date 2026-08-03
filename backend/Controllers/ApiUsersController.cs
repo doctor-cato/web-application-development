@@ -10,7 +10,6 @@ namespace appweb.Controllers
 {
     [ApiController]
     [Route("api/users")]
-    [Authorize(Roles = "ADMIN")]
     public class ApiUsersController : ControllerBase
     {
         private readonly UserRepository _userRepository;
