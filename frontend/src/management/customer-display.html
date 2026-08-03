@@ -1065,14 +1065,19 @@
 
             HienThiSoDoGhe();
 
-            const tongTien = TinhTongTienGhe(DuLieuSoDoGhe.selectedSeats);
-            const itemsVe = DuLieuSoDoGhe.selectedSeats.length > 0 ? [{
+            const tongTienVe = TinhTongTienGhe(DuLieuSoDoGhe.selectedSeats);
+            const itemVeMoi = DuLieuSoDoGhe.selectedSeats.length > 0 ? [{
                 name: `Vé xem phim ${PhimDangChonTen}: ${DuLieuSoDoGhe.selectedSeats.join(', ')}`,
                 qty: DuLieuSoDoGhe.selectedSeats.length,
-                price: Math.round(tongTien / (DuLieuSoDoGhe.selectedSeats.length || 1))
+                price: Math.round(tongTienVe / (DuLieuSoDoGhe.selectedSeats.length || 1))
             }] : [];
 
-            CapNhatGioHang(itemsVe, tongTien);
+            // GIỮ LẠI TOÀN BỘ ĐỒ ĂN VÀ NƯỚC UỐNG ĐANG CÓ TRONG GIỎ HÀNG
+            const doAnNuocUong = DuLieuGioHang.filter(item => item.name && !item.name.startsWith('Vé xem phim'));
+            const gioHangMoi = [...doAnNuocUong, ...itemVeMoi];
+            const tongTienMoi = gioHangMoi.reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+            CapNhatGioHang(gioHangMoi, tongTienMoi);
 
             PhatSuKienDongBo('EVENT_SELECT_SEAT', {
                 movieId: PhimDangChonId,
@@ -1082,8 +1087,8 @@
                 selectedSeats: [...DuLieuSoDoGhe.selectedSeats]
             });
             PhatSuKienDongBo('EVENT_UPDATE_CART', {
-                cart: itemsVe,
-                totalAmount: tongTien
+                cart: gioHangMoi,
+                totalAmount: tongTienMoi
             });
         }
 
@@ -1101,31 +1106,38 @@
         }
 
         function KhachHangXacNhanDoiSangThanhToan() {
-            if (DuLieuSoDoGhe.selectedSeats.length === 0) {
-                alert("Vui lòng chạm chọn ít nhất 1 ghế xem phim!");
+            if (TongTienGioHang <= 0 && DuLieuSoDoGhe.selectedSeats.length === 0) {
+                alert("Vui lòng chạm chọn ghế xem phim hoặc sản phẩm đồ ăn!");
                 return;
             }
-            const tongTien = TinhTongTienGhe(DuLieuSoDoGhe.selectedSeats);
-            const itemsVe = [{
+
+            const tongTienVe = TinhTongTienGhe(DuLieuSoDoGhe.selectedSeats);
+            const itemVeMoi = DuLieuSoDoGhe.selectedSeats.length > 0 ? [{
                 name: `Vé xem phim ${PhimDangChonTen}: ${DuLieuSoDoGhe.selectedSeats.join(', ')}`,
                 qty: DuLieuSoDoGhe.selectedSeats.length,
-                price: Math.round(tongTien / (DuLieuSoDoGhe.selectedSeats.length || 1))
-            }];
-            CapNhatGioHang(itemsVe, tongTien);
+                price: Math.round(tongTienVe / (DuLieuSoDoGhe.selectedSeats.length || 1))
+            }] : [];
+
+            // GIỮ LẠI TOÀN BỘ ĐỒ ĂN VÀ NƯỚC UỐNG ĐANG CÓ TRONG GIỎ HÀNG
+            const doAnNuocUong = DuLieuGioHang.filter(item => item.name && !item.name.startsWith('Vé xem phim'));
+            const gioHangMoi = [...doAnNuocUong, ...itemVeMoi];
+            const tongTienMoi = gioHangMoi.reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+            CapNhatGioHang(gioHangMoi, tongTienMoi);
 
             const dataPay = {
                 paymentMethod: PhuongThucThanhToanHienTai || 'qr',
-                totalAmount: tongTien,
-                cart: itemsVe,
+                totalAmount: tongTienMoi,
+                cart: gioHangMoi,
                 selectedSeats: [...DuLieuSoDoGhe.selectedSeats],
                 movieTitle: PhimDangChonTen,
-                qrUrl: `https://img.vietqr.io/image/MB-0345678999-compact2.png?amount=${tongTien}&addInfo=${encodeURIComponent('THANH TOAN DON HANG 3HD2K')}&accountName=${encodeURIComponent('RAP PHIM 3HD2K')}`
+                qrUrl: `https://img.vietqr.io/image/MB-0345678999-compact2.png?amount=${tongTienMoi}&addInfo=${encodeURIComponent('THANH TOAN DON HANG 3HD2K')}&accountName=${encodeURIComponent('RAP PHIM 3HD2K')}`
             };
             ChuyenTrangThai('EVENT_PAYMENT_INIT', dataPay);
             PhatSuKienDongBo('EVENT_PAYMENT_INIT', dataPay);
             PhatSuKienDongBo('EVENT_UPDATE_CART', {
-                cart: itemsVe,
-                totalAmount: tongTien
+                cart: gioHangMoi,
+                totalAmount: tongTienMoi
             });
         }
 

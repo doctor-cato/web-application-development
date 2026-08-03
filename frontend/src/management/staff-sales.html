@@ -2708,7 +2708,9 @@
                 }
             };
 
-            cart.push({ product: ticketProd, qty: 1 });
+            // GIỮ LẠI TOÀN BỘ ĐỒ ĂN VÀ NƯỚC UỐNG ĐANG CÓ TRONG GIỎ HÀNG, CHỈ THAY THẾ MÓN VÉ PHIM
+            const foodAndDrinks = cart.filter(item => !(item.product.isTicket || (item.product.name && item.product.name.startsWith('Vé xem phim'))));
+            cart = [...foodAndDrinks, { product: ticketProd, qty: 1 }];
             renderCart();
             closePOSSeatModal();
             showToast(`Đã chọn ${selectedTicketSeats.length} ghế! Chọn PTTT (Tiền mặt, ATM, QR) để thanh toán.`);
