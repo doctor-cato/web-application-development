@@ -113,7 +113,7 @@ npm run storybook
 ├── .lighthouserc.js           # Cấu hình kiểm thử hiệu năng Lighthouse CI
 ├── mkdocs.yml                 # Cấu hình website tài liệu MkDocs Material
 ├── .github/
-│   └── workflows/             # Workflows CI/CD GitHub Actions
+│   └── workflows/             # Workflows CI/CD GitHub Actions (Playwright, Docs, Vercel, Lighthouse, Chromatic)
 ├── docs/                      # Thư mục tài liệu chi tiết (Architecture, API, DB, Testing,...)
 ├── tests/                     # Các kịch bản kiểm thử E2E và Accessibility
 ├── frontend/                  # Mã nguồn ứng dụng Frontend (Client-side)
@@ -126,18 +126,36 @@ npm run storybook
 │   │   ├── explore/           # Trang chủ, Tìm kiếm phim, Chi tiết phim, Cụm rạp
 │   │   ├── footer/            # Component Footer
 │   │   ├── images/            # Hình ảnh động (posters, banners, qr)
-│   │   ├── management/        # Giao diện Quản lý Admin & Nhân viên bán vé
+│   │   ├── management/        # Giao diện Quản lý Admin & Nhân viên bán vé (POS)
 │   │   ├── shared/            # Shared Components (Navbar, Storage Utils)
 │   │   ├── user/              # Hồ sơ người dùng, Gói VIP, Đổi thưởng, Thông báo
 │   │   ├── index.html         # Trang điều hướng ban đầu
 │   │   └── wip.html           # Trang báo lỗi/Đang phát triển
 │   └── package.json           # Tailwind CSS build scripts & serve
-└── backend/                   # Khung mã nguồn Backend (ASP.NET Core C#)
-    ├── Controllers/           # Controllers MVC & Web API
-    ├── Models/                # Entity Framework Models
-    ├── Repositories/          # Data Access Layer Repositories
-    ├── Services/              # Business Logic Services
-    └── Program.cs             # ASP.NET Core App Startup Config
+└── backend/                   # Khung mã nguồn Backend (ASP.NET Core 8.0 C#)
+    ├── bin/                   # Thư mục chứa binaries đã biên dịch
+    ├── Controllers/           # Controllers Web API & MVC (Movies, Bookings, Auth, Showtimes, Users)
+    ├── DTOs/                  # Data Transfer Objects cho API Request/Response
+    ├── Hubs/                  # SignalR WebSockets Hubs (Real-time Booking & POS Notification)
+    ├── Infrastructure/        # Cấu hình nạp dữ liệu ban đầu (DbInitializer / EF Seeding)
+    ├── Migrations/            # EF Core Database Migrations
+    ├── Models/                # Entity Framework Database Entities & DbContext
+    ├── obj/                   # Thư mục tạm biên dịch C#
+    ├── Properties/            # Launch settings & cấu hình ứng dụng
+    ├── publish-latest/        # Bản đóng gói artifact sẵn sàng deploy production
+    ├── Repositories/          # Data Access Layer (Repository Pattern)
+    ├── Services/              # Business Logic Services (BookingService, FileService, Auth)
+    ├── Views/                 # Giao diện MVC Views
+    ├── wwwroot/               # Static assets backend (Uploads, Images)
+    ├── appsettings.json       # Cấu hình hệ thống & chuỗi kết nối Database SQL Server
+    ├── appsettings.Development.json # Cấu hình môi trường Development
+    ├── appsettings.Production.json   # Cấu hình môi trường Production
+    ├── appweb.csproj          # File dự án C# ASP.NET Core
+    ├── appweb.slnx            # File Solution Visual Studio
+    ├── fix_encoding.js        # Script sửa lỗi mã hóa dữ liệu
+    ├── migrate_movie_fields.sql# Kịch bản SQL migration dữ liệu phim
+    ├── migrate_somee_safe.sql # Kịch bản SQL tương thích Remote Hosting
+    └── Program.cs             # ASP.NET Core Application Entry Point & Dependency Injection
 ```
 
 ---
