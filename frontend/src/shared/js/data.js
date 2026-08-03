@@ -517,6 +517,12 @@ window.normalizeImagePath = normalizeImagePath;
                         // Optional: a toast notification could be shown before reloading
                         setTimeout(() => window.location.reload(), 1500);
                     }
+                } else if (type === "Showtimes") {
+                    window.dispatchEvent(new Event('showtimesUpdated'));
+                    console.log("Showtimes data updated via SignalR");
+                    if (typeof window.fetchShowtimes === 'function') {
+                        window.fetchShowtimes();
+                    }
                 }
             });
 

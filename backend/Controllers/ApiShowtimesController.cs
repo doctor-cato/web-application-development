@@ -1,8 +1,10 @@
 using appweb.Infrastructure;
 using appweb.Models;
 using appweb.Repositories;
+using appweb.Hubs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.SignalR;
 
 namespace appweb.Controllers
 {
@@ -12,11 +14,13 @@ namespace appweb.Controllers
     {
         private readonly ShowtimeRepository _showtimeRepository;
         private readonly ApplicationDbContext _context;
+        private readonly IHubContext<NotificationHub> _hubContext;
 
-        public ApiShowtimesController(ShowtimeRepository showtimeRepository, ApplicationDbContext context)
+        public ApiShowtimesController(ShowtimeRepository showtimeRepository, ApplicationDbContext context, IHubContext<NotificationHub> hubContext)
         {
             _showtimeRepository = showtimeRepository;
             _context = context;
+            _hubContext = hubContext;
         }
 
         [HttpGet]
@@ -92,6 +96,7 @@ namespace appweb.Controllers
             if (string.IsNullOrEmpty(showtime.RoomName)) showtime.RoomName = "Phòng chiếu 1";
 
             await _showtimeRepository.AddAsync(showtime);
+            await _hubContext.Clients.All.SendAsync("DataUpdated", "Showtimes");
             return Ok(showtime);
         }
 
@@ -115,6 +120,7 @@ namespace appweb.Controllers
             existing.MovieTitle = showtime.MovieTitle;
 
             await _showtimeRepository.UpdateAsync(guidId, existing);
+            await _hubContext.Clients.All.SendAsync("DataUpdated", "Showtimes");
             return Ok(existing);
         }
 
@@ -129,6 +135,7 @@ namespace appweb.Controllers
                 if (target != null)
                 {
                     await _showtimeRepository.DeleteAsync(target.Id);
+                    await _hubContext.Clients.All.SendAsync("DataUpdated", "Showtimes");
                     return Ok(new { message = "Showtime deleted successfully" });
                 }
                 return NotFound();
@@ -138,6 +145,7 @@ namespace appweb.Controllers
             if (existing == null) return NotFound();
 
             await _showtimeRepository.DeleteAsync(guidId);
+            await _hubContext.Clients.All.SendAsync("DataUpdated", "Showtimes");
             return Ok(new { message = "Showtime deleted successfully" });
         }
     }
