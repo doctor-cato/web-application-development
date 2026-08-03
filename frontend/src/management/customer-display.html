@@ -1268,6 +1268,14 @@
         }
 
         /* 4. PAYMENT STATE (ĐẾM NGƯỢC CHUẨN 5 PHÚT = 300S, KHÔNG TÍNH ÂM, HẾT 5P HỦY GIAO DỊCH) */
+        function TaoMaQRVietQRDynamic(amount, description = '') {
+            const bank = "MB";
+            const accountNo = "0345678999";
+            const accountName = "RAP PHIM 3HD2K";
+            const addInfo = encodeURIComponent(description || `TT 3HD2K ${amount}D`);
+            return `https://img.vietqr.io/image/${bank}-${accountNo}-compact2.png?amount=${amount}&addInfo=${addInfo}&accountName=${encodeURIComponent(accountName)}`;
+        }
+
         function HienThiThanhToan() {
             const vungChinh = document.getElementById('vung-hien-thi-dong');
             const payment = DuLieuThanhToan || { totalAmount: TongTienGioHang, qrUrl: '', paymentMethod: PhuongThucThanhToanHienTai };
@@ -1276,15 +1284,17 @@
             // Đếm ngược 5 phút = 300 giây
             let giayConLai = 300;
 
-            const qrUrl = payment.qrUrl || `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=PAY_3HD2K_${tongTien}`;
+            const qrUrl = (payment && payment.qrUrl && !payment.qrUrl.includes('qrserver.com'))
+                ? payment.qrUrl
+                : TaoMaQRVietQRDynamic(tongTien, `THANH TOAN DON HANG 3HD2K`);
 
             let noiDungChiTietPTTT = '';
 
             if (PhuongThucThanhToanHienTai === 'qr') {
                 noiDungChiTietPTTT = `
                     <div class="khung-qr-thanh-toan">
-                        <img src="${qrUrl}" alt="QR Payment" class="img-qr-code">
-                        <div class="nhan-phu-qr">VIETQR / MOMO AUTO CHECK</div>
+                        <img src="${qrUrl}" alt="Mã VietQR / MoMo Thanh Toán Thật" class="img-qr-code">
+                        <div class="nhan-phu-qr">VIETQR / MOMO AUTO CHECK (RẠP PHIM 3HD2K)</div>
                     </div>
                     <div class="dem-nguoc-thanh-toan">
                         <i class="fas fa-clock"></i>

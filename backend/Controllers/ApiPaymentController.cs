@@ -104,6 +104,27 @@ namespace appweb.Controllers
 
             return Ok(new { status = booking.PaymentStatus });
         }
+
+        [HttpGet("generate-qr")]
+        public IActionResult GenerateQr([FromQuery] decimal amount, [FromQuery] string? description)
+        {
+            var targetBank = _configuration["Payment:BankId"] ?? "MB";
+            var targetAccount = _configuration["Payment:AccountNo"] ?? "0345678999";
+            var accountName = _configuration["Payment:AccountName"] ?? "RAP PHIM 3HD2K";
+            var addInfo = string.IsNullOrEmpty(description) ? $"TT DON HANG 3HD2K {(long)amount}D" : description;
+            
+            // Standard Dynamic VietQR / MoMo QuickPay Image URL
+            var qrUrl = $"https://img.vietqr.io/image/{targetBank}-{targetAccount}-compact2.png?amount={(long)amount}&addInfo={Uri.EscapeDataString(addInfo)}&accountName={Uri.EscapeDataString(accountName)}";
+
+            return Ok(new {
+                qrUrl = qrUrl,
+                bank = targetBank,
+                accountNo = targetAccount,
+                accountName = accountName,
+                amount = amount,
+                addInfo = addInfo
+            });
+        }
     }
 
     public class WebhookPayload

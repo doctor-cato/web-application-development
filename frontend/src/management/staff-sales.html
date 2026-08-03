@@ -2293,6 +2293,15 @@
             if (method === 'cash') document.getElementById("pay-cash").classList.add("active");
             if (method === 'card') document.getElementById("pay-card").classList.add("active");
             if (method === 'qr') document.getElementById("pay-qr").classList.add("active");
+
+            // Broadcast payment method & real VietQR url to CFD screen
+            const total = cart.reduce((sum, item) => sum + (item.product.price * item.qty), 0);
+            const qrUrl = `https://img.vietqr.io/image/MB-0345678999-compact2.png?amount=${total}&addInfo=${encodeURIComponent('THANH TOAN DON HANG 3HD2K')}&accountName=${encodeURIComponent('RAP PHIM 3HD2K')}`;
+            phatSuKienCFD('EVENT_PAYMENT_INIT', {
+                paymentMethod: method,
+                totalAmount: total,
+                qrUrl: qrUrl
+            });
         }
 
         // --- VIP Customer Phone Lookup ---
