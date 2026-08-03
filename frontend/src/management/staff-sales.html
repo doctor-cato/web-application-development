@@ -358,12 +358,12 @@
             text-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
         }
 
-        /* RIGHT COLUMN: MAIN CONTENT WRAPPER */
+        /* RIGHT COLUMN: MAIN CONTENT WRAPPER - FULL WIDTH */
         .admin-wrapper {
             flex-grow: 1;
             height: 100vh;
-            margin-left: 380px;
-            width: calc(100% - 380px);
+            margin-left: 0;
+            width: 100%;
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -1135,55 +1135,17 @@
 </head>
 <body class="admin-body">
 
-    <!-- LEFT COLUMN: STAFF SIDEBAR (APP QUEUE) -->
-    <aside class="admin-sidebar">
-        <div class="sidebar-header">
-            <a href="../index.html" class="logo" title="Quay về trang chủ 3HD2K">3HD2K</a>
-            <span class="portal-badge" style="color: var(--btn-green-color); text-shadow: 0 0 5px rgba(13, 242, 134, 0.3);">STAFF PORTAL</span>
-        </div>
-        
-        <!-- App Queue content inside the sidebar -->
-        <div style="flex-grow: 1; padding: 20px 24px; display: flex; flex-direction: column; gap: 15px; overflow: hidden;">
-            <div class="column-header" style="margin-bottom: 2px; flex-shrink: 0;">
-                <h2 style="font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 8px;">
-                    <i class="fas fa-ticket-alt" style="color: var(--btn-green-color);"></i> Đơn Đặt Trước (App Queue)
-                </h2>
-                <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 3px;">Nhập SĐT hoặc quét QR để giao đồ ăn uống</p>
-            </div>
-
-            <!-- QR code / Phone search -->
-            <div class="search-box">
-                <i class="fas fa-qrcode"></i>
-                <input type="text" id="order-scan-search" placeholder="Quét mã QR hoặc nhập SĐT..." oninput="filterAppOrders()">
-            </div>
-
-            <!-- Scrollable list of orders -->
-            <div class="orders-list" id="app-orders-container" style="flex-grow: 1; overflow-y: auto;">
-                <!-- Orders rendered dynamically -->
-            </div>
-        </div>
-
-        <div class="sidebar-footer">
-            <div class="admin-profile">
-                <div class="admin-avatar" style="background: var(--btn-green-color); color: #000; font-weight: 800;">S</div>
-                <div class="admin-info">
-                    <p class="admin-name">Nhân viên POS</p>
-                    <p class="admin-role">Cashier & Service</p>
-                </div>
-            </div>
-            <a href="#" onclick="localStorage.removeItem('auth_token'); localStorage.removeItem('3hd2k_is_logged_in'); window.location.href='../auth/user-login/login.html';" class="btn-logout" title="Đăng xuất">
-                <i class="fas fa-sign-out-alt"></i>
-            </a>
-        </div>
-    </aside>
-
-    <!-- RIGHT COLUMN: MAIN CONTENT (POS GRID & CHECKOUT) -->
-    <div class="admin-wrapper" style="width: calc(100% - 380px);">
+    <!-- MAIN CONTENT: FULL-WIDTH STAFF POS -->
+    <div class="admin-wrapper" style="width: 100%; margin-left: 0;">
         <!-- HEADER matching 3HD2K_Admin -->
         <header class="admin-header">
-            <div class="header-left">
-                <h1>Quầy Bán Hàng</h1>
-                <p>Thao tác bán hàng trực tiếp và xử lý đơn đặt trước</p>
+            <div class="header-left" style="display: flex; align-items: center; gap: 15px;">
+                <a href="../index.html" class="logo" style="font-size: 1.5rem; font-weight: 900; color: #fff; text-decoration: none; letter-spacing: 1px;" title="Quay về trang chủ 3HD2K">3HD2K</a>
+                <span class="portal-badge" style="color: var(--btn-green-color); text-shadow: 0 0 5px rgba(13, 242, 134, 0.3); font-size: 0.75rem; font-weight: 800; border: 1px solid rgba(13, 242, 134, 0.4); padding: 3px 8px; border-radius: 4px; background: rgba(13, 242, 134, 0.08);">STAFF PORTAL</span>
+                <div style="border-left: 1px solid var(--glass-border); padding-left: 15px;">
+                    <h1 style="font-size: 1.25rem; font-weight: 800; color: #fff; margin: 0;">Quầy Bán Hàng Trực Tiếp</h1>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;">Thao tác chọn vé xem phim, combo đồ ăn và xuất hóa đơn bán lẻ tại quầy</p>
+                </div>
             </div>
             <div class="header-right">
                 <button class="time-widget glass-panel" onclick="window.open('customer-display.html', '_blank', 'width=1280,height=720')" style="color: var(--btn-green-color); border-color: rgba(0, 255, 102, 0.4); cursor: pointer; background: rgba(0, 255, 102, 0.1);" title="Mở Màn Hình Phụ Dành Cho Khách Hàng (CFD)">
