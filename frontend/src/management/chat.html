@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <link rel="icon" type="image/jpeg" href="/assets/favicon.jpg?v=2">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Support Chat - 3HD2K Admin</title>
+
+    <link rel="stylesheet" href="../shared/css/main.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="./css/admin.css">
+    <style>
+        :root {
+            --primary-red: #E50914;
+            --bg-color: #0c0c0c;
+            --text-main: #f5f5f5;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }
+        body { background-color: var(--bg-color); color: var(--text-main); font-family: var(--font-primary); overflow: hidden; }
+        .admin-body { display: flex; height: 100vh; overflow: hidden; }
+        
+        .chat-container {
+            display: flex;
+            flex: 1;
+            margin-left: 260px; /* Sidebar width */
+            padding: 20px;
+            gap: 20px;
+            height: 100vh;
+        }
+
+        /* Sidebar styles copied for standalone use */
+        .admin-sidebar {
+            width: 260px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: rgba(12, 12, 12, 0.95);
+            border-right: 1px solid var(--glass-border);
+            display: flex;
+            flex-direction: column;
+            z-index: 110;
+        }
+        .sidebar-header { padding: 24px; border-bottom: 1px solid var(--glass-border); }
+        .sidebar-header .logo { font-size: 2.2rem; color: var(--primary-red); font-weight: bold; }
+        .sidebar-menu { flex-grow: 1; padding: 20px 12px; display: flex; flex-direction: column; gap: 6px; }
+        .menu-item {
+            display: flex; align-items: center; gap: 14px; padding: 12px 16px; 
+            border-radius: 6px; color: #888; text-decoration: none; font-size: 0.95rem;
+        }
+        .menu-item:hover, .menu-item.active { background: rgba(229, 9, 20, 0.1); color: var(--primary-red); }
+
+        /* Chat layout */
+        .users-list {
+            width: 300px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .users-list-header {
+            padding: 15px;
+            background: rgba(229,9,20,0.1);
+            border-bottom: 1px solid var(--glass-border);
+            font-weight: bold;
+        }
+        .user-item {
+            padding: 15px;
+            border-bottom: 1px solid var(--glass-border);
+            cursor: pointer;
+            transition: background 0.2s;
+            position: relative;
+        }
+        .user-item:hover, .user-item.active {
+            background: rgba(255,255,255,0.05);
+        }
+        .user-item .email { font-weight: bold; }
+        .user-item .conn-id { font-size: 0.75rem; color: #888; }
+        .user-item.unread::after {
+            content: '';
+            position: absolute;
+            top: 15px; right: 15px;
+            width: 10px; height: 10px;
+            background: var(--primary-red);
+            border-radius: 50%;
+        }
+        
+        .chat-box {
+            flex: 1;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+        }
+        .chat-header {
+            padding: 15px;
+            border-bottom: 1px solid var(--glass-border);
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+        }
+        .messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .msg { max-width: 70%; padding: 10px 15px; border-radius: 12px; line-height: 1.4; }
+        .msg.admin { align-self: flex-end; background: var(--primary-red); border-radius: 12px 12px 0 12px; }
+        .msg.user { align-self: flex-start; background: rgba(255,255,255,0.1); border-radius: 12px 12px 12px 0; }
+        .msg-time { font-size: 0.7rem; opacity: 0.7; margin-top: 5px; text-align: right; }
+        
+        .chat-input-area {
+            padding: 15px;
+            border-top: 1px solid var(--glass-border);
+            display: flex;
+            gap: 10px;
+        }
+        .chat-input-area input {
+            flex: 1; padding: 10px 15px; border-radius: 20px;
+            border: 1px solid var(--glass-border); background: rgba(255,255,255,0.05); color: white;
+            outline: none;
+        }
+        .chat-input-area button {
+            padding: 10px 20px; border-radius: 20px; border: none;
+            background: var(--primary-red); color: white; cursor: pointer;
+        }
+    </style>
+</head>
+<body class="admin-body">
+
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+        <div class="sidebar-header">
+            <div class="logo">3HD2K</div>
+            <div class="portal-badge">MANAGEMENT PORTAL</div>
+        </div>
+        <nav class="sidebar-menu">
+            <a href="admin.html" class="menu-item">
+                <i class="fas fa-home"></i> Tổng quan
+            </a>
+            <a href="chat.html" class="menu-item active">
+                <i class="fas fa-headset"></i> Live Support Chat
+            </a>
+            <a href="staff-sales.html" class="menu-item">
+                <i class="fas fa-cash-register"></i> Quầy Bán Vé (POS)
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="chat-container">
+        
+        <!-- Danh sách user đang online -->
+        <div class="users-list">
+            <div class="users-list-header">
+                Khách hàng trực tuyến (<span id="online-count">0</span>)
+            </div>
+            <div id="users-container" style="flex: 1; overflow-y: auto;">
+                <!-- User items appear here -->
+            </div>
+        </div>
+
+        <!-- Cửa sổ chat -->
+        <div class="chat-box">
+            <div class="chat-header">
+                <span id="current-chat-name">Chưa chọn đoạn chat</span>
+                <span id="conn-status" style="color: #888; font-size: 0.8rem;">Đang kết nối...</span>
+            </div>
+            
+            <div class="messages" id="messages-container">
+                <!-- Messages go here -->
+            </div>
+            
+            <div class="chat-input-area">
+                <input type="text" id="admin-chat-input" placeholder="Nhập tin nhắn..." disabled autocomplete="off">
+                <button id="admin-chat-send" disabled><i class="fas fa-paper-plane"></i> Gửi</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
+    <script src="./js/chat-admin.js"></script>
+</body>
+</html>

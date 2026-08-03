@@ -1,68 +1,19 @@
-// Simple AI Chatbot for 3HD2K Cinema
-const chatResponses = {
-    greeting: [
-        "Xin chào! Tôi là trợ lý ảo của 3HD2K Cinema. Tôi có thể giúp gì cho bạn? 😊",
-        "Chào bạn! Bạn cần hỗ trợ gì về đặt vé hay thông tin phim không?"
-    ],
-    booking: [
-        "Để đặt vé, bạn có thể chọn phim trên trang chủ → Chọn suất chiếu → Chọn ghế → Thanh toán. Rất đơn giản! 🎬",
-        "Bạn có thể đặt vé online tại trang chủ, chọn phim và suất chiếu phù hợp nhé!"
-    ],
-    price: [
-        "Giá vé dao động từ 80.000đ - 150.000đ tùy suất chiếu và loại ghế (thường/VIP/đôi). Bạn muốn biết giá cụ thể phim nào? 💰"
-    ],
-    location: [
-        "Chúng tôi có 15+ cụm rạp trên toàn quốc. Bạn có thể xem danh sách rạp tại mục 'Cụm Rạp' trên menu. 📍"
-    ],
-    food: [
-        "Chúng tôi có combo bắp nước từ 65.000đ - 95.000đ. Bạn có thể đặt kèm khi thanh toán vé! 🍿"
-    ],
-    payment: [
-        "Chúng tôi chấp nhận thanh toán qua MoMo, VNPay, ZaloPay, và thẻ ngân hàng. An toàn & tiện lợi! 💳"
-    ],
-    cancel: [
-        "Bạn có thể hủy vé trong vòng 2h trước suất chiếu. Vui lòng liên hệ hotline 1900 1234 để được hỗ trợ."
-    ],
-    vip: [
-        "Gói VIP của chúng tôi có 3 hạng: Silver (199k/tháng), Gold (499k/tháng), Platinum (999k/tháng) với nhiều ưu đãi đặc biệt! ⭐"
-    ],
-    default: [
-        "Xin lỗi, tôi chưa hiểu câu hỏi của bạn. Bạn có thể hỏi về: đặt vé, giá vé, rạp chiếu, combo đồ ăn, thanh toán, VIP... hoặc liên hệ hotline 1900 1234.",
-        "Tôi có thể giúp bạn về: đặt vé, giá vé, cụm rạp, đồ ăn, thanh toán. Bạn cần hỗ trợ gì?"
-    ]
-};
-
-function detectIntent(message) {
-    const msg = message.toLowerCase().trim();
-    
-    if (/(xin chào|chào|hi|hello|hey)/i.test(msg)) return 'greeting';
-    if (/(đặt vé|book|dat ve|mua vé|chọn ghế)/i.test(msg)) return 'booking';
-    if (/(giá|price|bao nhiêu|phí)/i.test(msg)) return 'price';
-    if (/(rạp|cinema|địa chỉ|cụm rạp|ở đâu)/i.test(msg)) return 'location';
-    if (/(bắp|nước|combo|đồ ăn|thức ăn)/i.test(msg)) return 'food';
-    if (/(thanh toán|payment|momo|vnpay|thẻ)/i.test(msg)) return 'payment';
-    if (/(hủy|cancel|hoàn|refund)/i.test(msg)) return 'cancel';
-    if (/(vip|member|thành viên|gói)/i.test(msg)) return 'vip';
-    
-    return 'default';
-}
-
-function getRandomResponse(intent) {
-    const responses = chatResponses[intent] || chatResponses.default;
-    return responses[Math.floor(Math.random() * responses.length)];
-}
+// Live Support Chat for 3HD2K Cinema
 
 let chatHistory = [];
+let connection = null;
 
 function renderChatWidget() {
+    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    
     const chatHTML = `
     <div class="chat-widget" id="chat-widget">
         <div class="chat-header">
             <div style="display: flex; align-items: center; gap: 10px;">
-                <i class="fas fa-robot" style="font-size: 1.5rem;"></i>
+                <i class="fas fa-headset" style="font-size: 1.5rem;"></i>
                 <div>
-                    <div style="font-weight: 700;">Trợ Lý AI</div>
-                    <div style="font-size: 0.75rem; opacity: 0.7;">Trực tuyến 24/7</div>
+                    <div style="font-weight: 700;">Hỗ Trợ Khách Hàng</div>
+                    <div style="font-size: 0.75rem; opacity: 0.7;" id="chat-status">Đang kết nối...</div>
                 </div>
             </div>
             <button class="chat-close" id="chat-close" aria-label="Đóng chat">
@@ -72,20 +23,23 @@ function renderChatWidget() {
         
         <div class="chat-messages" id="chat-messages">
             <div class="chat-message bot">
-                <div class="chat-avatar"><i class="fas fa-robot"></i></div>
-                <div class="chat-bubble">Xin chào! Tôi là trợ lý ảo của 3HD2K Cinema. Tôi có thể giúp gì cho bạn? 😊</div>
+                <div class="chat-avatar"><i class="fas fa-headset"></i></div>
+                <div class="chat-bubble">
+                    Xin chào! Bạn cần hỗ trợ gì ạ?
+                </div>
             </div>
-        </div>
-        
-        <div class="chat-quick-actions">
-            <button class="quick-btn" data-question="Đặt vé như thế nào?">Đặt vé</button>
-            <button class="quick-btn" data-question="Giá vé bao nhiêu?">Giá vé</button>
-            <button class="quick-btn" data-question="Có những rạp nào?">Cụm rạp</button>
+            ${!isLoggedIn ? `
+            <div class="chat-message bot">
+                <div class="chat-avatar"><i class="fas fa-exclamation-triangle"></i></div>
+                <div class="chat-bubble" style="background: rgba(229,9,20,0.2); border: 1px solid var(--primary-red);">
+                    Vui lòng <a href="/src/auth/login.html" style="color: white; text-decoration: underline;">Đăng nhập</a> để sử dụng tính năng chat trực tuyến.
+                </div>
+            </div>` : ''}
         </div>
         
         <div class="chat-input-wrapper">
-            <input type="text" id="chat-input" class="chat-input" placeholder="Nhập tin nhắn..." autocomplete="off">
-            <button class="chat-send" id="chat-send" aria-label="Gửi tin nhắn">
+            <input type="text" id="chat-input" class="chat-input" placeholder="Nhập tin nhắn..." autocomplete="off" ${!isLoggedIn ? 'disabled' : ''}>
+            <button class="chat-send" id="chat-send" aria-label="Gửi tin nhắn" ${!isLoggedIn ? 'disabled style="opacity: 0.5"' : ''}>
                 <i class="fas fa-paper-plane"></i>
             </button>
         </div>
@@ -202,29 +156,6 @@ function renderChatWidget() {
         border-radius: 16px 16px 16px 0;
     }
     
-    .chat-quick-actions {
-        display: flex;
-        gap: 8px;
-        padding: 0 20px 15px;
-        flex-wrap: wrap;
-    }
-    
-    .quick-btn {
-        padding: 8px 14px;
-        background: rgba(255,255,255,0.05);
-        border: 1px solid var(--glass-border);
-        border-radius: 20px;
-        color: white;
-        font-size: 0.8rem;
-        cursor: pointer;
-        transition: background-color 0.2s ease, border-color 0.2s ease;
-        white-space: nowrap;
-    }
-    .quick-btn:hover {
-        background: rgba(229,9,20,0.2);
-        border-color: var(--primary-red);
-    }
-    
     .chat-input-wrapper {
         display: flex;
         gap: 10px;
@@ -284,6 +215,7 @@ function renderChatWidget() {
     const chatInput = document.getElementById('chat-input');
     const chatSend = document.getElementById('chat-send');
     const chatMessages = document.getElementById('chat-messages');
+    const chatStatus = document.getElementById('chat-status');
     
     chatClose.addEventListener('click', () => {
         chatWidget.classList.remove('active');
@@ -293,39 +225,99 @@ function renderChatWidget() {
         const messageDiv = document.createElement('div');
         messageDiv.className = `chat-message ${isUser ? 'user' : 'bot'}`;
         messageDiv.innerHTML = `
-            <div class="chat-avatar"><i class="fas fa-${isUser ? 'user' : 'robot'}"></i></div>
+            <div class="chat-avatar"><i class="fas fa-${isUser ? 'user' : 'headset'}"></i></div>
             <div class="chat-bubble">${text}</div>
         `;
         chatMessages.appendChild(messageDiv);
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
     
-    function handleSendMessage() {
+    async function initSignalR() {
+        if (!isLoggedIn) {
+            chatStatus.textContent = "Chưa đăng nhập";
+            return;
+        }
+
+        if (!window.signalR) {
+            console.error("SignalR library not found!");
+            chatStatus.textContent = "Lỗi kết nối (Thiếu thư viện)";
+            return;
+        }
+
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        let host = window.location.host;
+        if (host.includes('3000')) {
+            host = host.replace('3000', '5282'); 
+        } else if (host.includes('5000') || host.includes('5001')) {
+            host = 'localhost:5282';
+        }
+        
+        let signalRUrl = '';
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+             signalRUrl = `http://localhost:5282/supportChatHub`;
+        } else {
+             // Production backend URL
+             signalRUrl = `https://cine-backend-c6c7gugffeb2cuhk.southeastasia-01.azurewebsites.net/supportChatHub`;
+        }
+
+        connection = new signalR.HubConnectionBuilder()
+            .withUrl(signalRUrl, {
+                accessTokenFactory: () => localStorage.getItem('jwt_token') || ''
+            })
+            .withAutomaticReconnect()
+            .build();
+
+        connection.on("ReceiveMessage", (adminEmail, message, timestamp) => {
+            addMessage(message, false);
+        });
+
+        try {
+            await connection.start();
+            chatStatus.textContent = "Trực tuyến 24/7";
+            chatStatus.style.color = "#00ff88";
+        } catch (err) {
+            console.error("SignalR Connection Error:", err);
+            chatStatus.textContent = "Mất kết nối";
+            chatStatus.style.color = "red";
+        }
+    }
+
+    async function handleSendMessage() {
+        if (!isLoggedIn) return;
         const message = chatInput.value.trim();
         if (!message) return;
         
-        addMessage(message, true);
-        chatInput.value = '';
-        
-        setTimeout(() => {
-            const intent = detectIntent(message);
-            const response = getRandomResponse(intent);
-            addMessage(response);
-        }, 500);
+        if (connection && connection.state === signalR.HubConnectionState.Connected) {
+            addMessage(message, true);
+            chatInput.value = '';
+            
+            try {
+                await connection.invoke("SendMessageToAdmin", message);
+            } catch (err) {
+                console.error("Lỗi gửi tin nhắn:", err);
+                addMessage("Lỗi gửi tin nhắn, vui lòng thử lại sau.", false);
+            }
+        } else {
+            addMessage("Đang mất kết nối với máy chủ, vui lòng chờ trong giây lát...", false);
+        }
     }
     
     chatSend.addEventListener('click', handleSendMessage);
     chatInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') handleSendMessage();
     });
-    
-    document.querySelectorAll('.quick-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const question = btn.getAttribute('data-question');
-            chatInput.value = question;
-            handleSendMessage();
-        });
-    });
+
+    // Load SignalR script dynamically if not present
+    if (!window.signalR) {
+        const script = document.createElement('script');
+        script.src = "https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js";
+        script.onload = () => {
+            initSignalR();
+        };
+        document.head.appendChild(script);
+    } else {
+        initSignalR();
+    }
 }
 
 window.openChatWidget = function() {
