@@ -80,7 +80,7 @@ function renderHeroMovie(movie) {
         heroSection.style.setProperty('--hero-bg-mobile', `url('${mobileBg}')`);
         heroSection.style.setProperty('--hero-bg-url', `url('${desktopBg}')`);
         const bgOverlay = document.getElementById('hero-bg-overlay');
-        if (bgOverlay) bgOverlay.style.backgroundImage = '';
+        if (bgOverlay) bgOverlay.style.backgroundImage = `url('${desktopBg}')`;
     }
 
     if (movie.trailer && iframe) {

@@ -55,11 +55,18 @@ function formatMovieDuration(rawDuration) {
 function mapMovieObj(m) {
     // Tách biệt hoàn toàn: poster (ảnh dọc cho card) và backdrop (ảnh ngang cho hero banner)
     const rawPoster = m.posterUrl || m.poster;
-    const rawBg = m.bgUrl || m.backdropUrl || m.bg;
+    const rawBg = m.bgUrl || m.backdropUrl || m.bg || m.backdrop;
 
-    const posterImg = normalizeImagePath(rawPoster);
-    // backdrop chỉ fallback về poster nếu thực sự không có ảnh ngang nào
-    const bgImg = rawBg ? normalizeImagePath(rawBg) : posterImg;
+    let posterImg = rawPoster ? normalizeImagePath(rawPoster) : '';
+    let bgImg = rawBg ? normalizeImagePath(rawBg) : '';
+
+    if (!posterImg || posterImg.includes('avatar.jpg')) {
+        posterImg = rawBg ? normalizeImagePath(rawBg) : '/shared/images/avatar.jpg';
+    }
+    if (!bgImg || bgImg.includes('avatar.jpg')) {
+        bgImg = (posterImg && !posterImg.includes('avatar.jpg')) ? posterImg : 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1200&q=80';
+    }
+
     const formattedDuration = formatMovieDuration(m.duration);
 
     let movieStatus = m.status;
@@ -157,26 +164,45 @@ async function fetchMovies() {
         deletedList = JSON.parse(localStorage.getItem('3hd2k_deleted_movies') || '[]').map(x => String(x).toLowerCase().trim());
     } catch (_) {}
 
+    let apiMovies = [];
     try {
         const response = await fetch(`/api/movies`);
         if (response.ok) {
             const data = await response.json();
             if (Array.isArray(data) && data.length > 0) {
-                allMoviesData = data.map(m => mapMovieObj(m));
-            } else {
-                allMoviesData = [];
+                apiMovies = data;
             }
-        } else {
-            allMoviesData = [];
         }
     } catch (e) {
         console.warn("Failed to fetch movies from API:", e);
-        allMoviesData = [];
     }
 
-    if (!Array.isArray(allMoviesData)) {
-        allMoviesData = [];
+    let localMovies = [];
+    try {
+        localMovies = JSON.parse(localStorage.getItem('3hd2k_movies') || '[]');
+    } catch (_) {}
+
+    const combinedMap = new Map();
+
+    if (Array.isArray(apiMovies)) {
+        apiMovies.forEach(m => {
+            const key = String(m.id || m.movieId || m.title || '').toLowerCase().trim();
+            if (key) combinedMap.set(key, m);
+        });
     }
+
+    if (Array.isArray(localMovies)) {
+        localMovies.forEach(lm => {
+            const key = String(lm.id || lm.movieId || lm.title || '').toLowerCase().trim();
+            if (key) {
+                const existing = combinedMap.get(key) || {};
+                combinedMap.set(key, { ...existing, ...lm });
+            }
+        });
+    }
+
+    const rawList = Array.from(combinedMap.values());
+    allMoviesData = rawList.map(m => mapMovieObj(m));
 
     allMoviesData = allMoviesData.filter(m => {
         const mId = String(m.id || '').toLowerCase().trim();
