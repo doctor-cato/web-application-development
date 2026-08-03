@@ -419,7 +419,80 @@
             background: var(--glass-bg);
             border: 1px solid var(--glass-border);
             color: var(--text-main);
+            height: 38px;
+            max-height: 38px;
+            box-sizing: border-box;
+            align-self: center;
+            white-space: nowrap;
         }
+
+        /* Sample Movies & Showtimes Database for POS Counter */
+        const DEFAULT_MOVIES = [
+            { id: "MV-001", title: "Thanh gươm diệt quỷ: Vô hạn...", poster: "https://images.unsplash.com/photo-1578632767115-351597cf2477?w=800", duration: 125, age: "T16", genre: "Hành Động" },
+            { id: "MV-002", title: "Spider Man: Across the Spider-Verse", poster: "https://images.unsplash.com/photo-1635805737707-575885ab0820?w=800", duration: 140, age: "P", genre: "Hành Động" },
+            { id: "MV-003", title: "Núi Tế Vong", poster: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=800", duration: 120, age: "T16", genre: "Kinh Dị" },
+            { id: "MV-004", title: "Trò Chơi Ảo Giác: Ares", poster: "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800", duration: 115, age: "T16", genre: "Khoa học viễn tưởng" },
+            { id: "MV-005", title: "BACKROOMS - Thực Tại...", poster: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800", duration: 110, age: "T16", genre: "Kinh dị" }
+        ];
+        const DEFAULT_SHOWTIMES = [];
+
+        let API_MOVIES = [];
+        let API_SHOWTIMES = [];
+
+        function getPOSMovies() {
+            if (API_MOVIES.length > 0) return API_MOVIES;
+
+            let local = JSON.parse(localStorage.getItem("3hd2k_movies")) || [];
+            if (local.length > 0) {
+                return local.map(m => ({
+                    id: m.id || 'MV-' + Math.random().toString(36).substr(2, 4),
+                    title: m.title || 'Phim Chiếu Rạp',
+                    genre: m.genre || 'Hành động',
+                    duration: m.duration || 120,
+                    age: m.age || 'T13',
+                    poster: m.poster || m.bg || 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=300&q=80'
+                }));
+            }
+            return DEFAULT_MOVIES;
+        }
+
+        function getPOSShowtimes(movieId) {
+            let local = JSON.parse(localStorage.getItem("3hd2k_showtimes")) || [];
+            let all = API_SHOWTIMES.length > 0 ? API_SHOWTIMES : (local.length > 0 ? local : DEFAULT_SHOWTIMES);
+            if (movieId) {
+                return all.filter(s => String(s.movieId) === String(movieId));
+            }
+            return all;
+        }
+
+        // TÍNH TOÁN SUẤT CHIẾU THỰC TẠI THỜI ĐIỂM BÁN VÉ TẠI QUẦY
+        function getPOSRealtimeShowtimes(m, showtimes) {
+            const now = new Date();
+            const currentHours = now.getHours();
+            const currentMinutes = now.getMinutes();
+            const currentTotalMinutes = currentHours * 60 + currentMinutes;
+
+            let movieSts = (showtimes || []).filter(s => String(s.movieId) === String(m.id) || (s.movieTitle && s.movieTitle.toLowerCase() === m.title.toLowerCase()));
+
+            if (movieSts.length === 0) {
+                const localShowtimes = JSON.parse(localStorage.getItem("3hd2k_showtimes")) || [];
+                movieSts = localShowtimes.filter(s => String(s.movieId) === String(m.id) || (s.movieTitle && s.movieTitle.toLowerCase() === m.title.toLowerCase()));
+            }
+
+            if (movieSts.length === 0) {
+                let baseHour = currentHours;
+                let baseMin = currentMinutes < 30 ? 30 : 0;
+                if (baseMin === 0) baseHour = (baseHour + 1) % 24;
+
+                const time1Str = `${String(baseHour).padStart(2, '0')}:${String(baseMin).padStart(2, '0')}`;
+                let nextHour1 = (baseHour + 2) % 24;
+                const time2Str = `${String(nextHour1).padStart(2, '0')}:00`;
+
+                movieSts = [
+                    { id: "ST-" + m.id + "-1", movieId: m.id, movieTitle: m.title, cinemaName: "3HD2K HÀ ĐÔNG", roomName: "Phòng chiếu 1", time: time1Str, date: "Hôm nay", price: 80000 },
+                    { id: "ST-" + m.id + "-2", movieId: m.id, movieTitle: m.title, cinemaName: "3HD2K HÀ ĐÔNG", roomName: "Phòng chiếu IMAX", time: time2Str, date: "Hôm nay", price: 100000 }
+                ];
+            }
         
         .notification-pill {
             padding: 6px 10px;
@@ -1617,83 +1690,6 @@
             try {
                 localStorage.setItem("3hd2k_cfd_event", JSON.stringify({ type: type, data: data, time: Date.now() }));
             } catch (e) {}
-        }
-
-        // Sample Movies & Showtimes Database for POS Counter
-        const DEFAULT_MOVIES = [];
-        const DEFAULT_SHOWTIMES = [];
-
-        let API_MOVIES = [];
-        let API_SHOWTIMES = [];
-
-        function getPOSMovies() {
-            if (API_MOVIES.length > 0) return API_MOVIES;
-
-            let local = JSON.parse(localStorage.getItem("3hd2k_movies")) || [];
-            if (local.length > 0) {
-                return local.map(m => ({
-                    id: m.id || 'MV-' + Math.random().toString(36).substr(2, 4),
-                    title: m.title || 'Phim Chiếu Rạp',
-                    genre: m.genre || 'Hành động',
-                    duration: m.duration || 120,
-                    age: m.age || 'T13',
-                    poster: m.poster || m.bg || 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=300&q=80'
-                }));
-            }
-            return DEFAULT_MOVIES;
-        }
-
-        function getPOSShowtimes(movieId) {
-            let local = JSON.parse(localStorage.getItem("3hd2k_showtimes")) || [];
-            let all = API_SHOWTIMES.length > 0 ? API_SHOWTIMES : (local.length > 0 ? local : DEFAULT_SHOWTIMES);
-            if (movieId) {
-                return all.filter(s => String(s.movieId) === String(movieId));
-            }
-            return all;
-        }
-
-        // TÍNH TOÁN SUẤT CHIẾU THỰC TẠI THỜI ĐIỂM BÁN VÉ TẠI QUẦY
-        function getPOSRealtimeShowtimes(m, showtimes) {
-            const now = new Date();
-            const currentHours = now.getHours();
-            const currentMinutes = now.getMinutes();
-            const currentTotalMinutes = currentHours * 60 + currentMinutes;
-
-            let movieSts = (showtimes || []).filter(s => String(s.movieId) === String(m.id) || (s.movieTitle && s.movieTitle.toLowerCase() === m.title.toLowerCase()));
-
-            if (movieSts.length === 0) {
-                const localShowtimes = JSON.parse(localStorage.getItem("3hd2k_showtimes")) || [];
-                movieSts = localShowtimes.filter(s => String(s.movieId) === String(m.id) || (s.movieTitle && s.movieTitle.toLowerCase() === m.title.toLowerCase()));
-            }
-
-            return movieSts.map(st => {
-                let isPast = false;
-                let isCurrentActive = false;
-
-                if (st.time) {
-                    const parts = st.time.split(':');
-                    if (parts.length >= 2) {
-                        const stHours = parseInt(parts[0]);
-                        const stMins = parseInt(parts[1]);
-                        const stTotalMinutes = stHours * 60 + stMins;
-
-                        // Suất chiếu đã qua quá 20 phút -> Khóa không cho chọn bán vé
-                        if (stTotalMinutes < currentTotalMinutes - 20) {
-                            isPast = true;
-                        }
-                        // Suất chiếu nằm trong khung giờ hiện tại [-20min đến +60min] -> Nổi bật suất chiếu thực tại thời điểm này
-                        else if (stTotalMinutes >= currentTotalMinutes - 20 && stTotalMinutes <= currentTotalMinutes + 60) {
-                            isCurrentActive = true;
-                        }
-                    }
-                }
-
-                return {
-                    ...st,
-                    isPast: isPast,
-                    isCurrentActive: isCurrentActive
-                };
-            });
         }
 
         // Initialize LocalStorage Database if empty
