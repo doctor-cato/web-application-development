@@ -1,7 +1,7 @@
 
 import { getSeatMap, lockSeat, unlockSeat, subscribeSeatUpdates, closeSeatSyncChannel, initSignalR } from './bookingService.js';
 import { renderSeatGrid, updateSeat, getSelectedSeats, getSeatType, setGroupSize, setCineMatchMode, getCineMatchAdjacentSeat } from '../../shared/components/seatGrid.js';
-import { saveCheckout } from '../../shared/utils/storage.js';
+import { saveCheckout, getCurrentUser } from '../../shared/utils/storage.js';
 import { requireAuth } from '../../shared/utils/authGuard.js';
 
 if (!requireAuth('Bạn cần đăng nhập để đặt vé xem phim. Hãy đăng nhập hoặc tạo tài khoản để tiếp tục.')) {
@@ -16,7 +16,8 @@ let currentBasePrice = 80000;
 
 let countdownTimer = null;
 let currentShowtimeId = null;
-let currentUserId = localStorage.getItem('user_id') || localStorage.getItem('currentUserId') || null;
+let currentUserId = null;
+let currentUserEmail = null;
 let movieData = null;
 
 async function init() {
@@ -156,14 +157,11 @@ async function init() {
 
   const seatMap = getSeatMap(currentShowtimeId);
   initSignalR(currentShowtimeId);
-  const isLoggedInStatus = localStorage.getItem('isLoggedIn') === 'true';
-  const userStr = localStorage.getItem('user_info');
-  if (userStr) {
-      try {
-          const user = JSON.parse(userStr);
-          currentUserId = user.id || user.Id || user.email;
-          currentUserEmail = user.email;
-      } catch(e) {}
+  
+  const currentUser = getCurrentUser();
+  if (currentUser) {
+      currentUserId = currentUser.id || currentUser.Id || currentUser.email;
+      currentUserEmail = currentUser.email;
   }
 
   if (!currentUserId || !currentUserEmail) {

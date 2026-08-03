@@ -65,7 +65,7 @@ function renderHeroMovie(movie) {
 
     if (btnBookNow) {
         btnBookNow.style.display = 'inline-flex';
-        if (movie.id) btnBookNow.href = `/booking/seat-booking/booking.html?id=${movie.id}&movieId=${movie.id}`;
+        if (movie.id) btnBookNow.href = `/explore/movie-details/index.html?id=${movie.id}`;
     }
 
     if (btnWatch) {
