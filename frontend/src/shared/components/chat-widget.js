@@ -412,7 +412,8 @@ function renderChatWidget() {
                  signalRUrl = `http://localhost:5111/supportChatHub`;
              }
         } else {
-             signalRUrl = `https://cine-backend-c6c7gugffeb2cuhk.southeastasia-01.azurewebsites.net/supportChatHub`;
+             // Use relative path for production so Vercel rewrite handles it
+             signalRUrl = `/supportChatHub`;
         }
 
 
