@@ -2305,8 +2305,8 @@
         function handleIncomingCFDEvent(type, data) {
             if (!data) return;
 
-            if (type === 'EVENT_UPDATE_CART') {
-                if (data.cart && Array.isArray(data.cart)) {
+            if (type === 'EVENT_UPDATE_CART' || type === 'EVENT_PAYMENT_INIT') {
+                if (data.cart && Array.isArray(data.cart) && data.cart.length > 0) {
                     cart = data.cart.map(item => ({
                         product: {
                             id: item.id || 'CFD-' + Math.random().toString(36).substr(2, 6),
@@ -2315,9 +2315,19 @@
                         },
                         qty: item.qty || 1
                     }));
-                    renderCart(true);
+                } else if (data.totalAmount > 0 && cart.length === 0) {
+                    const movieName = data.movieTitle || 'Phim chọn từ CFD';
+                    const seatsText = data.selectedSeats && data.selectedSeats.length > 0 ? data.selectedSeats.join(', ') : 'Ghế chọn tại CFD';
+                    cart = [{
+                        product: {
+                            id: 'CFD-TICKET-' + Date.now(),
+                            name: `Vé xem phim ${movieName}: ${seatsText}`,
+                            price: data.totalAmount
+                        },
+                        qty: 1
+                    }];
                 }
-            } else if (type === 'EVENT_PAYMENT_INIT') {
+
                 if (data.paymentMethod) {
                     activePaymentMethod = data.paymentMethod;
                     document.querySelectorAll(".payment-btn").forEach(b => b.classList.remove("active"));
@@ -2325,10 +2335,8 @@
                     if (data.paymentMethod === 'card') document.getElementById("pay-card")?.classList.add("active");
                     if (data.paymentMethod === 'qr') document.getElementById("pay-qr")?.classList.add("active");
                 }
-                if (data.totalAmount && cart.length > 0) {
-                    const totalValEl = document.getElementById("cart-total-value");
-                    if (totalValEl) totalValEl.textContent = data.totalAmount.toLocaleString('vi-VN') + "đ";
-                }
+
+                renderCart(true);
             } else if (type === 'EVENT_IDLE') {
                 cart = [];
                 renderCart(true);

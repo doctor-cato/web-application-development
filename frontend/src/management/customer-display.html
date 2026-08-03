@@ -1081,7 +1081,10 @@
             HienThiThanhToan();
             PhatSuKienDongBo('EVENT_PAYMENT_INIT', {
                 paymentMethod: phuongThuc,
-                totalAmount: TongTienGioHang
+                totalAmount: TongTienGioHang,
+                cart: DuLieuGioHang,
+                movieTitle: PhimDangChonTen,
+                selectedSeats: DuLieuSoDoGhe.selectedSeats
             });
         }
 
@@ -1091,13 +1094,27 @@
                 return;
             }
             const tongTien = DuLieuSoDoGhe.selectedSeats.length * 80000;
+            const itemsVe = [{
+                name: `Vé xem phim ${PhimDangChonTen}: ${DuLieuSoDoGhe.selectedSeats.join(', ')}`,
+                qty: DuLieuSoDoGhe.selectedSeats.length,
+                price: 80000
+            }];
+            CapNhatGioHang(itemsVe, tongTien);
+
             const dataPay = {
                 paymentMethod: PhuongThucThanhToanHienTai || 'qr',
                 totalAmount: tongTien,
-                qrUrl: `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=PAY_3HD2K_${tongTien}`
+                cart: itemsVe,
+                selectedSeats: [...DuLieuSoDoGhe.selectedSeats],
+                movieTitle: PhimDangChonTen,
+                qrUrl: `https://img.vietqr.io/image/MB-0345678999-compact2.png?amount=${tongTien}&addInfo=${encodeURIComponent('THANH TOAN DON HANG 3HD2K')}&accountName=${encodeURIComponent('RAP PHIM 3HD2K')}`
             };
             ChuyenTrangThai('EVENT_PAYMENT_INIT', dataPay);
             PhatSuKienDongBo('EVENT_PAYMENT_INIT', dataPay);
+            PhatSuKienDongBo('EVENT_UPDATE_CART', {
+                cart: itemsVe,
+                totalAmount: tongTien
+            });
         }
 
         function KhachHangXacNhanDaThanhToan() {
