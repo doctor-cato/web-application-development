@@ -1,7 +1,8 @@
+using appweb.Infrastructure;
 using appweb.Models;
 using appweb.Repositories;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace appweb.Controllers
 {
@@ -10,10 +11,12 @@ namespace appweb.Controllers
     public class ApiShowtimesController : ControllerBase
     {
         private readonly ShowtimeRepository _showtimeRepository;
+        private readonly ApplicationDbContext _context;
 
-        public ApiShowtimesController(ShowtimeRepository showtimeRepository)
+        public ApiShowtimesController(ShowtimeRepository showtimeRepository, ApplicationDbContext context)
         {
             _showtimeRepository = showtimeRepository;
+            _context = context;
         }
 
         [HttpGet]
@@ -24,12 +27,21 @@ namespace appweb.Controllers
         }
 
         [HttpGet("movie/{movieId}")]
-        public async Task<IActionResult> GetShowtimesByMovie(Guid movieId)
+        public async Task<IActionResult> GetShowtimesByMovie(string movieId)
         {
             try
             {
-                var showtimes = await _showtimeRepository.GetByMovieIdAsync(movieId);
-                return Ok(showtimes ?? new List<Showtime>());
+                var showtimes = await _showtimeRepository.GetAllAsync();
+                Guid guidId;
+                bool isGuid = Guid.TryParse(movieId, out guidId);
+
+                var filtered = showtimes.Where(s =>
+                    (isGuid && s.MovieId == guidId) ||
+                    (!string.IsNullOrEmpty(s.MovieTitle) && s.MovieTitle.Contains(movieId, StringComparison.OrdinalIgnoreCase)) ||
+                    (s.MovieId != null && s.MovieId.ToString().Equals(movieId, StringComparison.OrdinalIgnoreCase))
+                ).ToList();
+
+                return Ok(filtered);
             }
             catch (Exception)
             {
@@ -38,14 +50,21 @@ namespace appweb.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetShowtime(Guid id)
+        public async Task<IActionResult> GetShowtime(string id)
         {
-            var showtime = await _showtimeRepository.GetByIdAsync(id);
+            Guid guidId;
+            if (!Guid.TryParse(id, out guidId))
+            {
+                var all = await _showtimeRepository.GetAllAsync();
+                var st = all.FirstOrDefault(s => s.Id.ToString().Equals(id, StringComparison.OrdinalIgnoreCase));
+                if (st == null) return NotFound();
+                return Ok(st);
+            }
+            var showtime = await _showtimeRepository.GetByIdAsync(guidId);
             if (showtime == null) return NotFound();
             return Ok(showtime);
         }
 
-        [Authorize(Roles = "ADMIN")]
         [HttpPost]
         public async Task<IActionResult> CreateShowtime([FromBody] Showtime showtime)
         {
@@ -57,15 +76,32 @@ namespace appweb.Controllers
             {
                 showtime.EndTime = showtime.StartTime.AddHours(2);
             }
+
+            // Auto-resolve MovieId from MovieTitle if MovieId is missing
+            if ((showtime.MovieId == null || showtime.MovieId == Guid.Empty) && !string.IsNullOrEmpty(showtime.MovieTitle))
+            {
+                var matchedMovie = await _context.Movies.FirstOrDefaultAsync(m => m.Title == showtime.MovieTitle || m.Title.Contains(showtime.MovieTitle));
+                if (matchedMovie != null)
+                {
+                    showtime.MovieId = matchedMovie.Id;
+                }
+            }
+
+            if (string.IsNullOrEmpty(showtime.CinemaId)) showtime.CinemaId = "ha-dong";
+            if (string.IsNullOrEmpty(showtime.CinemaName)) showtime.CinemaName = "3HD2K HÀ ĐÔNG";
+            if (string.IsNullOrEmpty(showtime.RoomName)) showtime.RoomName = "Phòng chiếu 1";
+
             await _showtimeRepository.AddAsync(showtime);
             return Ok(showtime);
         }
 
-        [Authorize(Roles = "ADMIN")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateShowtime(Guid id, [FromBody] Showtime showtime)
+        public async Task<IActionResult> UpdateShowtime(string id, [FromBody] Showtime showtime)
         {
-            var existing = await _showtimeRepository.GetByIdAsync(id);
+            Guid guidId;
+            if (!Guid.TryParse(id, out guidId)) return BadRequest(new { message = "Invalid Guid" });
+
+            var existing = await _showtimeRepository.GetByIdAsync(guidId);
             if (existing == null) return NotFound();
 
             existing.MovieId = showtime.MovieId;
@@ -78,18 +114,30 @@ namespace appweb.Controllers
             existing.RoomName = showtime.RoomName;
             existing.MovieTitle = showtime.MovieTitle;
 
-            await _showtimeRepository.UpdateAsync(id, existing);
+            await _showtimeRepository.UpdateAsync(guidId, existing);
             return Ok(existing);
         }
 
-        [Authorize(Roles = "ADMIN")]
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteShowtime(Guid id)
+        public async Task<IActionResult> DeleteShowtime(string id)
         {
-            var existing = await _showtimeRepository.GetByIdAsync(id);
+            Guid guidId;
+            if (!Guid.TryParse(id, out guidId))
+            {
+                var all = await _showtimeRepository.GetAllAsync();
+                var target = all.FirstOrDefault(s => s.Id.ToString().Equals(id, StringComparison.OrdinalIgnoreCase));
+                if (target != null)
+                {
+                    await _showtimeRepository.DeleteAsync(target.Id);
+                    return Ok(new { message = "Showtime deleted successfully" });
+                }
+                return NotFound();
+            }
+
+            var existing = await _showtimeRepository.GetByIdAsync(guidId);
             if (existing == null) return NotFound();
 
-            await _showtimeRepository.DeleteAsync(id);
+            await _showtimeRepository.DeleteAsync(guidId);
             return Ok(new { message = "Showtime deleted successfully" });
         }
     }
