@@ -1328,34 +1328,52 @@
                 window.location.href = '/auth/user-login/login.html';
             }
 
-            const token = localStorage.getItem('jwt_token') || localStorage.getItem('auth_token') || localStorage.getItem('cinema_current_user') || localStorage.getItem('3hd2k_user');
-            if (!token) {
+            let session = null;
+            let rawSession = localStorage.getItem('3hd2k_user') || localStorage.getItem('cinema_current_user');
+            
+            if (!rawSession) {
+                const jwt = localStorage.getItem('jwt_token') || localStorage.getItem('auth_token');
+                if (jwt) {
+                    try {
+                        const parts = jwt.split('.');
+                        if (parts.length === 3) {
+                            const payloadBase64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+                            session = JSON.parse(decodeURIComponent(escape(window.atob(payloadBase64))));
+                        } else if (jwt.startsWith('{')) {
+                            session = JSON.parse(jwt);
+                        }
+                    } catch(e) {}
+                }
+            } else {
+                try {
+                    session = JSON.parse(rawSession);
+                } catch(e) { }
+            }
+
+            if (!session) {
                 clearAuthAndRedirect();
                 return;
             }
-            let user = null;
+
             try {
-                if (token.startsWith('{')) {
-                    user = JSON.parse(token);
-                } else if (token.includes('.')) {
-                    const payloadBase64 = token.split('.')[1];
-                    const base64 = payloadBase64.replace(/-/g, '+').replace(/_/g, '/');
-                    user = JSON.parse(decodeURIComponent(escape(window.atob(base64))));
-                } else {
-                    try {
-                        const binaryStr = atob(token);
-                        const uriStr = binaryStr.split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('');
-                        user = JSON.parse(decodeURIComponent(uriStr));
-                    } catch (e2) {
-                        user = JSON.parse(atob(token));
-                    }
+                let role = (
+                    session.role || 
+                    session.Role || 
+                    session.userRole ||
+                    session['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] ||
+                    localStorage.getItem('user_role') ||
+                    localStorage.getItem('role') ||
+                    ''
+                ).toUpperCase();
+
+                let email = session.email || session.Email || session['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] || '';
+                const lowerEmail = email.toLowerCase();
+                const lowerName = (session.fullname || session.Fullname || session.name || '').toLowerCase();
+                
+                if (lowerEmail.includes('admin') || lowerName.includes('admin') || role === 'ADMIN') {
+                    role = 'ADMIN';
                 }
 
-                let role = (user.role || user.Role || user.userRole || user['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] || localStorage.getItem('user_role') || '').toUpperCase();
-                let email = user.email || user.Email || user['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] || '';
-                const lowerEmail = email.toLowerCase();
-                const lowerName = (user.fullname || user.Fullname || user.name || '').toLowerCase();
-                if (lowerEmail.includes('admin') || lowerName.includes('admin')) role = 'ADMIN';
                 if (role !== 'ADMIN') {
                     window.location.href = '../explore/home-page/index.html';
                     return;
@@ -1365,6 +1383,8 @@
                 clearAuthAndRedirect();
                 return;
             }
+
+            let user = session;
 
             document.addEventListener('DOMContentLoaded', function() {
                 if (user) {
