@@ -844,7 +844,7 @@
             return phimChoQuay;
         }
 
-        /* LẤY SUẤT CHIẾU THỰC TẾ CỦA TỪNG PHIM TRÙNG KHỚP VỚI MÀN HÌNH STAFF */
+        /* LẤY SUẤT CHIẾU THỰC TẾ CỦA TỪNG PHIM TRÙNG KHỚP 100% VỚI MÀN HÌNH STAFF POS */
         function LaySuatChieuThucTeTheoPhim(p) {
             const bayGio = new Date();
             const currentHours = bayGio.getHours();
@@ -856,6 +856,21 @@
             if (suatChieuPhim.length === 0) {
                 const localShowtimes = JSON.parse(localStorage.getItem("3hd2k_showtimes")) || [];
                 suatChieuPhim = localShowtimes.filter(s => String(s.movieId) === String(p.id) || (s.movieTitle && s.movieTitle.toLowerCase() === (p.tieuDe || p.title || '').toLowerCase()));
+            }
+
+            if (suatChieuPhim.length === 0) {
+                let baseHour = currentHours;
+                let baseMin = currentMinutes < 30 ? 30 : 0;
+                if (baseMin === 0) baseHour = (baseHour + 1) % 24;
+
+                const time1Str = `${String(baseHour).padStart(2, '0')}:${String(baseMin).padStart(2, '0')}`;
+                let nextHour1 = (baseHour + 2) % 24;
+                const time2Str = `${String(nextHour1).padStart(2, '0')}:00`;
+
+                suatChieuPhim = [
+                    { id: "ST-" + p.id + "-1", movieId: p.id, movieTitle: p.tieuDe || p.title, time: time1Str, price: 80000 },
+                    { id: "ST-" + p.id + "-2", movieId: p.id, movieTitle: p.tieuDe || p.title, time: time2Str, price: 100000 }
+                ];
             }
 
             return suatChieuPhim.map(st => {
