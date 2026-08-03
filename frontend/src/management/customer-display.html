@@ -786,8 +786,14 @@
         let API_MOVIES = [];
         let API_SHOWTIMES = [];
 
-        /* Chỉ lấy danh sách phim thật từ Backend và cài đặt của Staff/Admin */
-        const MAC_DINH_DANH_SACH_PHIM = [];
+        /* Danh sách phim dự phòng hiển thị mượt mà khi API chưa có dữ liệu */
+        const MAC_DINH_DANH_SACH_PHIM = [
+            { id: "MV-001", tieuDe: "Thanh gươm diệt quỷ: Vô hạn...", poster: "https://images.unsplash.com/photo-1578632767115-351597cf2477?w=800", thoiLuong: "125m", doTuoi: "T16", theLoai: ["Hành Động", "Hoạt Hình"] },
+            { id: "MV-002", tieuDe: "Spider Man: Across the Spider-Verse", poster: "https://images.unsplash.com/photo-1635805737707-575885ab0820?w=800", thoiLuong: "140m", doTuoi: "P", theLoai: ["Hành Động", "Siêu anh hùng"] },
+            { id: "MV-003", tieuDe: "Núi Tế Vong", poster: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=800", thoiLuong: "120m", doTuoi: "T16", theLoai: ["Kinh Dị"] },
+            { id: "MV-004", tieuDe: "Trò Chơi Ảo Giác: Ares", poster: "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800", thoiLuong: "115m", doTuoi: "T16", theLoai: ["Hành động", "Khoa học viễn tưởng"] },
+            { id: "MV-005", tieuDe: "BACKROOMS - Thực Tại...", poster: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800", thoiLuong: "110m", doTuoi: "T16", theLoai: ["Horror", "Science Fiction"] }
+        ];
 
         /* CHỈ LỌC CÁC PHIM CÓ SUẤT CHIẾU Ở KHUNG GIỜ NÀY TẠI QUẦY */
         function LocPhimTheoGioChieuHienTai(danhSachPhim, danhSachSuatChieu) {
@@ -925,6 +931,10 @@
                         poster: m.poster || m.bg || 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=800'
                     }));
                 }
+            }
+
+            if (danhSachPhimCoSan.length === 0) {
+                danhSachPhimCoSan = MAC_DINH_DANH_SACH_PHIM;
             }
 
             API_MOVIES = danhSachPhimCoSan;
