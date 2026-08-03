@@ -64,7 +64,7 @@ export function renderNavbar() {
                     <div style="padding: 10px 20px; font-family:'Inter', sans-serif; text-transform:uppercase; font-weight:700; color: var(--primary-red, #e50914); font-size: 0.9rem; letter-spacing:1px; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 5px; margin-top: 5px;">Hệ Sinh Thái 3HD2K</div>
                     <ul style="list-style:none; padding:0; margin:0;">
 
-                        <li><a href="${srcPrefix}/engagement/minigame/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-gamepad" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Cine Predict</a></li>
+
                         <li><a href="${srcPrefix}/engagement/cinematch/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-heart" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Cine-Match (Ghép đôi)</a></li>
                         <li><a href="${srcPrefix}/user/loyalty-points/index.html" style="display:block; padding:12px 20px; color:white; text-decoration:none; font-family:'Inter', sans-serif; transition:background 0.2s;"><i class="fas fa-crown" style="margin-right:10px; color:#e50914; width:20px; text-align:center;"></i>Gói hội viên</a></li>
                     </ul>
