@@ -26,8 +26,17 @@ namespace appweb.Controllers
         [HttpGet]
         public async Task<IActionResult> GetShowtimes()
         {
-            var showtimes = await _showtimeRepository.GetAllAsync();
-            return Ok(showtimes);
+            try
+            {
+                var showtimes = await _showtimeRepository.GetAllAsync();
+                if (showtimes != null && showtimes.Count > 0) return Ok(showtimes);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Showtimes fetch DB fallback: " + ex.Message);
+            }
+
+            return Ok(new List<Showtime>());
         }
 
         [HttpGet("movie/{movieId}")]
