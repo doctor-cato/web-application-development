@@ -414,7 +414,7 @@ async function fetchUsers() {
             const data = await res.json();
             if (Array.isArray(data)) {
                 usersList = data.map(u => ({
-                    id: u.id,
+                    id: u.id || u.email,
                     username: u.email || u.phone || u.id,
                     name: u.fullname || u.name || (u.email ? u.email.split('@')[0] : 'Thành viên'),
                     email: u.email || '',
@@ -422,19 +422,60 @@ async function fetchUsers() {
                     role: (u.role || 'CUSTOMER').toLowerCase(),
                     status: u.isLocked ? 'banned' : 'active',
                     points: u.points || 0,
-                    createdAt: u.createdAt
+                    createdAt: u.createdAt || new Date().toISOString()
                 }));
             }
         } else {
             console.warn('Fetch users API returned status:', res.status);
-            if (typeof showToast === 'function') {
-                if (res.status === 401 || res.status === 403) {
-                    showToast('Không thể tải danh sách người dùng: Phiên đăng nhập đã hết hạn hoặc không có quyền Admin.', 'error');
-                }
-            }
         }
     } catch (e) {
-        console.error('Fetch users API error:', e);
+        console.warn('Fetch users API error/offline fallback:', e);
+    }
+
+    try {
+        const localUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+        const existingEmails = new Set(usersList.map(u => (u.email || '').toLowerCase()));
+
+        localUsers.forEach((u, idx) => {
+            const email = (u.email || '').toLowerCase();
+            if (email && !existingEmails.has(email)) {
+                existingEmails.add(email);
+                usersList.push({
+                    id: u.id || `local_${idx}_${Date.now()}`,
+                    username: u.email || u.phone || u.id,
+                    name: u.fullname || u.name || (u.email ? u.email.split('@')[0] : 'Thành viên'),
+                    email: u.email || '',
+                    phone: u.phone || '',
+                    role: (u.role || (email.includes('admin') ? 'admin' : (email.includes('staff') ? 'staff' : 'customer'))).toLowerCase(),
+                    status: u.isLocked ? 'banned' : 'active',
+                    points: u.points || 0,
+                    createdAt: u.createdAt || new Date().toISOString()
+                });
+            }
+        });
+
+        const curUserRaw = sessionStorage.getItem('cinema_current_user') || localStorage.getItem('3hd2k_user') || localStorage.getItem('currentUser');
+        if (curUserRaw) {
+            try {
+                const curUser = typeof curUserRaw === 'string' ? JSON.parse(curUserRaw) : curUserRaw;
+                const email = (curUser.email || curUser.Email || '').toLowerCase();
+                if (email && !existingEmails.has(email)) {
+                    usersList.push({
+                        id: curUser.id || `cur_${Date.now()}`,
+                        username: curUser.email || curUser.name || 'Admin',
+                        name: curUser.fullname || curUser.Fullname || curUser.name || 'Admin',
+                        email: curUser.email || '',
+                        phone: curUser.phone || '',
+                        role: (curUser.role || 'ADMIN').toLowerCase(),
+                        status: 'active',
+                        points: curUser.points || 0,
+                        createdAt: new Date().toISOString()
+                    });
+                }
+            } catch(_) {}
+        }
+    } catch(e) {
+        console.error('Error combining local users:', e);
     }
 
     db.users = usersList;
