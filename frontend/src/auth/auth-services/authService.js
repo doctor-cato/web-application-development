@@ -197,6 +197,85 @@ export async function logout() {
     window.location.href = '/auth/user-login/login.html';
 }
 
+export function showLogoutModal(onConfirmCallback) {
+    let modalOverlay = document.getElementById('3hd2k-logout-modal');
+    if (!modalOverlay) {
+        modalOverlay = document.createElement('div');
+        modalOverlay.id = '3hd2k-logout-modal';
+        modalOverlay.className = 'logout-modal-backdrop';
+        modalOverlay.innerHTML = `
+            <div class="logout-modal-card" role="dialog" aria-modal="true" aria-labelledby="logoutModalTitle">
+                <button class="logout-modal-close-btn" id="logout-modal-close-x" aria-label="Đóng"><i class="fas fa-times"></i></button>
+                <div class="logout-modal-icon-box">
+                    <i class="fas fa-sign-out-alt"></i>
+                </div>
+                <h3 class="logout-modal-title" id="logoutModalTitle">Xác Nhận Đăng Xuất</h3>
+                <p class="logout-modal-desc">
+                    Bạn có chắc chắn muốn đăng xuất khỏi tài khoản <strong>3HD2K</strong>?
+                    <span>Các suất chiếu hấp dẫn & ưu đãi VIP đang chờ đón bạn quay lại!</span>
+                </p>
+                <div class="logout-modal-actions">
+                    <button id="logout-cancel-btn" class="logout-btn-cancel">
+                        <i class="fas fa-arrow-left"></i> Ở lại
+                    </button>
+                    <button id="logout-confirm-btn" class="logout-btn-confirm">
+                        <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                    </button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modalOverlay);
+    }
+
+    const cancelBtn = modalOverlay.querySelector('#logout-cancel-btn');
+    const confirmBtn = modalOverlay.querySelector('#logout-confirm-btn');
+    const closeXBtn = modalOverlay.querySelector('#logout-modal-close-x');
+
+    const closeModal = () => {
+        modalOverlay.classList.remove('active');
+        document.removeEventListener('keydown', handleKeydown);
+    };
+
+    const handleKeydown = (e) => {
+        if (e.key === 'Escape') closeModal();
+    };
+
+    confirmBtn.disabled = false;
+    confirmBtn.innerHTML = `<i class="fas fa-sign-out-alt"></i> Đăng xuất`;
+    cancelBtn.disabled = false;
+
+    requestAnimationFrame(() => {
+        modalOverlay.classList.add('active');
+        document.addEventListener('keydown', handleKeydown);
+    });
+
+    cancelBtn.onclick = closeModal;
+    if (closeXBtn) closeXBtn.onclick = closeModal;
+    modalOverlay.onclick = (e) => {
+        if (e.target === modalOverlay) closeModal();
+    };
+
+    confirmBtn.onclick = async () => {
+        confirmBtn.disabled = true;
+        cancelBtn.disabled = true;
+        confirmBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Đang đăng xuất...`;
+        
+        await new Promise(r => setTimeout(r, 350));
+
+        try {
+            if (onConfirmCallback) {
+                await onConfirmCallback();
+            } else {
+                await logout();
+            }
+        } catch (err) {
+            console.error('Logout error:', err);
+            closeModal();
+        }
+    };
+}
+
+
 export async function refreshJwtToken() {
     try {
         const token = localStorage.getItem('jwt_token');

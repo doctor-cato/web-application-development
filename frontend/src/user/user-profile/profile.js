@@ -1,6 +1,6 @@
 import { getBookings, saveBookings } from '/shared/utils/storage.js';
 import { getCurrentUser, clearCurrentUser, setCurrentUser } from '/auth/auth-services/storage.js';
-import { updateProfile, logout } from '/auth/auth-services/authService.js';
+import { updateProfile, logout, showLogoutModal } from '/auth/auth-services/authService.js';
 import { setupProfileUI } from './profile-ui.js';
 import { API_BASE_URL } from '/shared/utils/apiConfig.js';
 
@@ -295,9 +295,7 @@ function initLogout() {
     if (logoutBtn) {
         logoutBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            if (confirm('Bạn có chắc chắn muốn đăng xuất?')) {
-                logout();
-            }
+            showLogoutModal();
         });
     }
 }

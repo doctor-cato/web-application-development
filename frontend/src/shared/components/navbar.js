@@ -1,5 +1,5 @@
 
-import { logout, getSession } from '../../auth/auth-services/authService.js';
+import { logout, getSession, showLogoutModal } from '../../auth/auth-services/authService.js';
 
 export function renderNavbar() {
 
@@ -1598,7 +1598,7 @@ export function renderNavbar() {
                 if (logoutBtn) {
                     logoutBtn.addEventListener('click', (e) => {
                         e.preventDefault();
-                        logout();
+                        showLogoutModal();
                     });
                 }
             }
