@@ -1179,6 +1179,10 @@
                 <p>Thao tác bán hàng trực tiếp và xử lý đơn đặt trước</p>
             </div>
             <div class="header-right">
+                <button class="time-widget glass-panel" onclick="window.open('customer-display.html', '_blank', 'width=1280,height=720')" style="color: var(--btn-green-color); border-color: rgba(0, 255, 102, 0.4); cursor: pointer; background: rgba(0, 255, 102, 0.1);" title="Mở Màn Hình Phụ Dành Cho Khách Hàng (CFD)">
+                    <i class="fas fa-desktop"></i>
+                    <span>Màn Hình Khách (CFD)</span>
+                </button>
                 <div id="signalr-status-badge" class="time-widget glass-panel" style="color: var(--btn-green-color); border-color: rgba(13, 242, 134, 0.4);" title="Trạng thái kết nối máy chủ real-time">
                     <i class="fas fa-signal"></i>
                     <span id="signalr-status-text">Realtime Online</span>
@@ -1603,6 +1607,18 @@
         let activePrintTab = "movie";
         let lastTransactionPrintData = null;
 
+        // CFD Broadcast Channel Sync
+        const kenhTruyenCFD = new BroadcastChannel('3hd2k_kenh_cfd');
+
+        function phatSuKienCFD(type, data = null) {
+            try {
+                kenhTruyenCFD.postMessage({ type: type, data: data });
+            } catch (e) {}
+            try {
+                localStorage.setItem("3hd2k_cfd_event", JSON.stringify({ type: type, data: data, time: Date.now() }));
+            } catch (e) {}
+        }
+
         // Sample Movies & Showtimes Database for POS Counter
         const DEFAULT_MOVIES = [];
         const DEFAULT_SHOWTIMES = [];
@@ -1634,6 +1650,66 @@
                 return all.filter(s => String(s.movieId) === String(movieId));
             }
             return all;
+        }
+
+        // TÍNH TOÁN SUẤT CHIẾU THỰC TẠI THỜI ĐIỂM BÁN VÉ TẠI QUẦY
+        function getPOSRealtimeShowtimes(m, showtimes) {
+            const now = new Date();
+            const currentHours = now.getHours();
+            const currentMinutes = now.getMinutes();
+            const currentTotalMinutes = currentHours * 60 + currentMinutes;
+
+            let movieSts = (showtimes || []).filter(s => String(s.movieId) === String(m.id) || (s.movieTitle && s.movieTitle.toLowerCase() === m.title.toLowerCase()));
+
+            // Nếu không có lịch chiếu tùy chỉnh trong DB, tự tạo các suất chiếu thực tế xoay quanh giờ hiện tại
+            if (movieSts.length === 0) {
+                let baseHour = currentHours;
+                let baseMin = currentMinutes < 30 ? 30 : 0;
+                if (baseMin === 0) baseHour = (baseHour + 1) % 24;
+
+                const time1Str = `${String(baseHour).padStart(2, '0')}:${String(baseMin).padStart(2, '0')}`;
+                
+                let nextHour1 = (baseHour + 2) % 24;
+                const time2Str = `${String(nextHour1).padStart(2, '0')}:00`;
+
+                let nextHour2 = (baseHour + 4) % 24;
+                const time3Str = `${String(nextHour2).padStart(2, '0')}:30`;
+
+                movieSts = [
+                    { id: "ST-" + m.id + "-1", movieId: m.id, movieTitle: m.title, cinemaName: "3HD2K HÀ ĐÔNG", roomName: "Phòng chiếu 1", time: time1Str, date: "Hôm nay", price: 80000 },
+                    { id: "ST-" + m.id + "-2", movieId: m.id, movieTitle: m.title, cinemaName: "3HD2K HÀ ĐÔNG", roomName: "Phòng chiếu IMAX", time: time2Str, date: "Hôm nay", price: 100000 },
+                    { id: "ST-" + m.id + "-3", movieId: m.id, movieTitle: m.title, cinemaName: "3HD2K VIP", roomName: "Phòng chiếu VIP", time: time3Str, date: "Hôm nay", price: 120000 }
+                ];
+            }
+
+            return movieSts.map(st => {
+                let isPast = false;
+                let isCurrentActive = false;
+
+                if (st.time) {
+                    const parts = st.time.split(':');
+                    if (parts.length >= 2) {
+                        const stHours = parseInt(parts[0]);
+                        const stMins = parseInt(parts[1]);
+                        const stTotalMinutes = stHours * 60 + stMins;
+
+                        // Suất chiếu đã qua quá 20 phút -> Khóa không cho chọn bán vé
+                        if (stTotalMinutes < currentTotalMinutes - 20) {
+                            isPast = true;
+                        }
+                        // Suất chiếu nằm trong khung giờ hiện tại [-20min đến +60min] -> Nổi bật suất chiếu thực tại thời điểm này
+                        else if (stTotalMinutes >= currentTotalMinutes - 20 && stTotalMinutes <= currentTotalMinutes + 60) {
+                            isCurrentActive = true;
+                        }
+                    }
+                }
+
+                return {
+                    ...st,
+                    isPast: isPast,
+                    isCurrentActive: isCurrentActive
+                };
+            });
         }
 
         // Initialize LocalStorage Database if empty
@@ -1970,6 +2046,22 @@
             return maxAvailable;
         }
 
+        window.selectMovieForPOS = function(movieId) {
+            const allShowtimes = getPOSShowtimes();
+            const movieObj = getPOSMovies().find(m => String(m.id) === String(movieId)) || { id: movieId, title: "Phim Chiếu Rạp" };
+            const processedSts = getPOSRealtimeShowtimes(movieObj, allShowtimes);
+
+            // Tự động chọn suất chiếu đang hoạt động/khả dụng ở thời điểm hiện tại
+            const activeSt = processedSts.find(s => s.isCurrentActive) || processedSts.find(s => !s.isPast) || processedSts[0];
+
+            if (activeSt && activeSt.isPast) {
+                showToast("⚠️ Phim này không có suất chiếu khả dụng ở thời điểm hiện tại!");
+                return;
+            }
+
+            openPOSSeatModal(activeSt.id, movieId);
+        };
+
         function renderPOSTicketFlow() {
             const grid = document.getElementById("pos-products-grid");
             if (!grid) return;
@@ -1981,20 +2073,18 @@
                 <div style="grid-column: 1 / -1; margin-bottom: 5px;">
                     <div style="background: rgba(229, 9, 20, 0.12); border: 1px solid var(--primary-red); padding: 12px 18px; border-radius: 8px; display: flex; align-items: center; justify-content: space-between;">
                         <div>
-                            <h3 style="color: #fff; font-size: 1rem;"><i class="fas fa-film" style="color: var(--primary-red);"></i> BÁN VÉ XEM PHIM TẠI QUẦY</h3>
-                            <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 2px;">Vui lòng chọn Phim ➔ Chọn Suất Chiếu ➔ Sơ Đồ Ghế để đặt vé cho khách hàng</p>
+                            <h3 style="color: #fff; font-size: 1rem;"><i class="fas fa-film" style="color: var(--primary-red);"></i> BÁN VÉ XEM PHIM TẠI QUẦY (KHUNG GIỜ HIỆN TẠI TỰ ĐỘNG)</h3>
+                            <p style="color: var(--btn-green-color); font-size: 0.8rem; margin-top: 2px; font-weight: 700;">
+                                🎬 1. Chọn Phim Suất Thực ➔ 💺 2. Chọn Ghế Trực Tiếp ➔ 💳 3. Thanh Toán ➔ 🖨️ 4. In Vé Vật Lý
+                            </p>
                         </div>
                     </div>
                 </div>
             ` + movies.map(m => {
-                const movieSts = showtimes.filter(s => s.movieId === m.id || s.movieId === parseInt(m.id) || (s.movieTitle && s.movieTitle.toLowerCase() === m.title.toLowerCase()));
-                const showtimesList = movieSts.length > 0 ? movieSts : [
-                    { id: "ST-" + m.id + "-1", movieId: m.id, movieTitle: m.title, cinemaName: "3HD2K HÀ ĐÔNG", roomName: "Phòng chiếu 1", time: "14:30", date: "Hôm nay", price: 80000 },
-                    { id: "ST-" + m.id + "-2", movieId: m.id, movieTitle: m.title, cinemaName: "3HD2K HÀ ĐÔNG", roomName: "Phòng chiếu IMAX", time: "19:00", date: "Hôm nay", price: 100000 }
-                ];
+                const showtimesList = getPOSRealtimeShowtimes(m, showtimes);
 
                 return `
-                    <div class="pos-item-card" style="border-color: rgba(229,9,20,0.3);">
+                    <div class="pos-item-card" onclick="selectMovieForPOS('${m.id}')" style="border-color: rgba(229,9,20,0.4); cursor: pointer;" title="Nhấp vào đây để chọn ghế phim này theo suất chiếu thực tế">
                         <img src="${m.poster}" alt="${m.title}" loading="lazy" class="pos-item-img" style="height: 140px;">
                         <div class="pos-item-info">
                             <div class="pos-item-name" style="font-size: 0.9rem; font-weight: 800;">${m.title}</div>
@@ -2002,13 +2092,29 @@
                                 ⏱️ ${m.duration} phút | <span class="badge badge-red" style="padding: 1px 4px; font-size: 0.65rem;">${m.age}</span>
                             </div>
                             <div style="border-top: 1px dashed var(--glass-border); padding-top: 8px; margin-top: 4px;">
-                                <span style="font-size: 0.7rem; color: var(--btn-cyan-color); font-weight: 700; display: block; margin-bottom: 6px;">CHỌN SUẤT CHIẾU:</span>
+                                <span style="font-size: 0.7rem; color: var(--btn-green-color); font-weight: 800; display: block; margin-bottom: 6px;">SUẤT CHIẾU THỰC TẠI THỜI ĐIỂM NÀY:</span>
                                 <div style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center;">
-                                    ${showtimesList.map(st => `
-                                        <button class="btn-mini" onclick="event.stopPropagation(); openPOSSeatModal('${st.id}', '${m.id}')">
-                                            ⏱️ ${st.time}
-                                        </button>
-                                    `).join("")}
+                                    ${showtimesList.map(st => {
+                                        if (st.isPast) {
+                                            return `
+                                                <button class="btn-mini disabled" disabled style="background: rgba(255,255,255,0.03); color: #555; border: 1px solid rgba(255,255,255,0.08); cursor: not-allowed; text-decoration: line-through; opacity: 0.5;" title="Suất chiếu này đã qua - Không thể bán vé tại quầy">
+                                                    ⏱️ ${st.time} (Đã qua)
+                                                </button>
+                                            `;
+                                        } else if (st.isCurrentActive) {
+                                            return `
+                                                <button class="btn-mini" onclick="event.stopPropagation(); openPOSSeatModal('${st.id}', '${m.id}')" style="background: var(--btn-green-color); color: #000; font-weight: 900; border: 1px solid var(--btn-green-color); box-shadow: var(--btn-green-glow);" title="Suất chiếu thực tại thời điểm này - Click để chọn ghế ngay">
+                                                    🔥 ${st.time} (ĐANG CHIẾU)
+                                                </button>
+                                            `;
+                                        } else {
+                                            return `
+                                                <button class="btn-mini" onclick="event.stopPropagation(); openPOSSeatModal('${st.id}', '${m.id}')" style="background: rgba(0,240,255,0.1); color: var(--btn-cyan-color); border: 1px solid var(--btn-cyan-color);">
+                                                    ⏱️ ${st.time}
+                                                </button>
+                                            `;
+                                        }
+                                    }).join("")}
                                 </div>
                             </div>
                         </div>
@@ -2134,6 +2240,7 @@
                 container.innerHTML = `<div style="color: rgba(255, 255, 255, 0.6); text-align: center; font-style: italic; font-size: 0.85rem; padding-top: 20px;">🛒 Giỏ hàng trống. Click chọn sản phẩm phía trên để bán.</div>`;
                 totalValEl.textContent = "0đ";
                 submitBtn.disabled = true;
+                phatSuKienCFD('EVENT_UPDATE_CART', { cart: [], totalAmount: 0 });
                 return;
             }
 
@@ -2162,6 +2269,10 @@
 
             totalValEl.textContent = total.toLocaleString('vi-VN') + "đ";
             submitBtn.disabled = false;
+
+            // Broadcast real-time cart update to CFD screen
+            const cfdCart = cart.map(i => ({ name: i.product.name, qty: i.qty, price: i.product.price }));
+            phatSuKienCFD('EVENT_UPDATE_CART', { cart: cfdCart, totalAmount: total });
         }
 
         // --- Payment Method Selector ---
@@ -2215,6 +2326,13 @@
                         <div class="loyalty-status-points"><i class="fas fa-coins"></i> Tích lũy: ${pts} điểm</div>
                     </div>
                 `;
+                // Broadcast VIP customer info to CFD screen
+                phatSuKienCFD('EVENT_SET_LOYALTY', {
+                    customerName: name,
+                    phone: phone,
+                    tier: 'THÀNH VIÊN VIP',
+                    points: pts
+                });
             } else {
                 vipCustomer = null;
                 container.innerHTML = `
@@ -2377,6 +2495,7 @@
                 modal.classList.remove("active");
                 modal.style.display = "none";
             }
+            phatSuKienCFD('EVENT_IDLE');
         };
 
         function renderPOSSeatingGrid() {
@@ -2459,6 +2578,13 @@
 
             document.getElementById("seat-modal-selected-list").textContent = selectedTicketSeats.length > 0 ? selectedTicketSeats.join(", ") : "Chưa chọn ghế nào";
             document.getElementById("seat-modal-total-price").textContent = totalSeatPrice.toLocaleString('vi-VN') + "đ";
+
+            // Broadcast real-time seat selection state to CFD screen
+            phatSuKienCFD('EVENT_SELECT_SEAT', {
+                rows: rows,
+                cols: cols,
+                selectedSeats: [...selectedTicketSeats]
+            });
         }
 
         window.confirmAddTicketsToCart = function() {
@@ -2508,7 +2634,7 @@
             cart.push({ product: ticketProd, qty: 1 });
             renderCart();
             closePOSSeatModal();
-            showToast(`Đã thêm ${selectedTicketSeats.length} vé phim vào giỏ hàng!`);
+            showToast(`Đã chọn ${selectedTicketSeats.length} ghế! Chọn PTTT (Tiền mặt, ATM, QR) để thanh toán.`);
         };
 
         // --- Physical Print Modal Functions ---
@@ -2659,12 +2785,23 @@
         window.submitPOSSale = function(skipMethodCheck = false) {
             if (cart.length === 0) return;
 
+            const totalCalc = cart.reduce((s, i) => s + (i.product.price * i.qty), 0);
+
             if (activePaymentMethod === 'qr' && !skipMethodCheck) {
                 document.getElementById('qr-total-amount').innerText = document.getElementById('cart-total-value').innerText;
                 document.getElementById('qr-modal').style.display = 'flex';
+                phatSuKienCFD('EVENT_PAYMENT_INIT', {
+                    paymentMethod: 'qr',
+                    totalAmount: totalCalc,
+                    qrUrl: `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=PAY_3HD2K_${totalCalc}`
+                });
                 return;
             }
             if (activePaymentMethod === 'card' && !skipMethodCheck) {
+                phatSuKienCFD('EVENT_PAYMENT_INIT', {
+                    paymentMethod: 'card',
+                    totalAmount: totalCalc
+                });
                 confirmPOSPayment();
                 return;
             }
@@ -2847,6 +2984,18 @@
             }
 
             document.getElementById("success-modal").classList.add("active");
+
+            // Broadcast order success to CFD screen
+            phatSuKienCFD('EVENT_ORDER_SUCCESS', {
+                receiptId: receiptId,
+                customerName: customerName,
+                totalAmount: totalAmount
+            });
+
+            // Tự động mở modal In vé vật lý ngay cho nhân viên
+            setTimeout(() => {
+                openPhysicalPrintModal();
+            }, 600);
 
             // 6. Reset POS checkout panel
             cart = [];

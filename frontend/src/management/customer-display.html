@@ -1,0 +1,1528 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3HD2K - Màn Hình Khách Hàng (CFD)</title>
+    <link rel="icon" type="image/jpeg" href="/assets/favicon.jpg?v=2">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-chinh: #0c0c0c;
+            --bg-card: #141414;
+            --xanh-luc-highlight: #00FF66;
+            --do-thuong-hieu: #E50914;
+            --mau-chu-chinh: #FFFFFF;
+            --mau-chu-phu: #888888;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --ghe-trong-bg: #1a1a1a;
+            --ghe-trong-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-chinh);
+            color: var(--mau-chu-chinh);
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .thanh-tieu-de {
+            height: 60px;
+            background: rgba(12, 12, 12, 0.95);
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            backdrop-filter: blur(10px);
+            z-index: 10;
+        }
+
+        .logo-thuong-hieu {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .ten-thuong-hieu {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--do-thuong-hieu);
+            letter-spacing: 1.5px;
+        }
+
+        .tag-cfd {
+            background: rgba(0, 255, 102, 0.1);
+            color: var(--xanh-luc-highlight);
+            border: 1px solid rgba(0, 255, 102, 0.3);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .cham-online {
+            width: 8px;
+            height: 8px;
+            background-color: var(--xanh-luc-highlight);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--xanh-luc-highlight);
+            animation: nhapNhay 2s infinite;
+        }
+
+        @keyframes nhapNhay {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .dong-ho-realtime {
+            font-size: 0.95rem;
+            color: var(--mau-chu-phu);
+            font-weight: 600;
+        }
+
+        .khung-giao-dien-chinh {
+            flex: 1;
+            display: flex;
+            height: calc(100vh - 60px);
+            overflow: hidden;
+        }
+
+        /* Vùng bên trái 65% width */
+        .vung-hien-thi-dong {
+            width: 65%;
+            height: 100%;
+            border-right: 1px solid var(--glass-border);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background: var(--bg-chinh);
+            overflow: hidden;
+        }
+
+        /* Vùng bên phải 35% width */
+        .vung-gio-hang-realtime {
+            width: 35%;
+            height: 100%;
+            background: #111111;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            border-left: 1px solid var(--glass-border);
+        }
+
+        .tieu-de-gio-hang {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--mau-chu-chinh);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .danh-sach-mon-gio-hang {
+            flex: 1;
+            overflow-y: auto;
+            margin: 15px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding-right: 4px;
+        }
+
+        .danh-sach-mon-gio-hang::-webkit-scrollbar {
+            width: 5px;
+        }
+        .danh-sach-mon-gio-hang::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+        }
+
+        .the-mon-gio-hang {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            padding: 12px 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: hieuUngXuatHien 0.3s ease-out;
+        }
+
+        @keyframes hieuUngXuatHien {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .thong-tin-mon {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1;
+            padding-right: 10px;
+        }
+
+        .ten-mon {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--mau-chu-chinh);
+            line-height: 1.3;
+        }
+
+        .so-luong-mon {
+            font-size: 0.8rem;
+            color: var(--mau-chu-phu);
+            font-weight: 600;
+        }
+
+        .gia-mon {
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--xanh-luc-highlight);
+            white-space: nowrap;
+        }
+
+        .tong-ket-gio-hang {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: auto;
+        }
+
+        .hang-tong-tien {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nhan-tong-tien {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--mau-chu-phu);
+        }
+
+        .gia-tri-tong-tien {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--xanh-luc-highlight);
+            text-shadow: 0 0 12px rgba(0, 255, 102, 0.3);
+        }
+
+        .gio-hang-trong {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--mau-chu-phu);
+            gap: 12px;
+            font-style: italic;
+        }
+
+        .gio-hang-trong i {
+            font-size: 3rem;
+            opacity: 0.3;
+        }
+
+        /* ----- TRẠNG THÁI 1: LƯỚI PHIM CÓ SUẤT CHIẾU HÔM NAY / KHUNG GIỜ NÀY ----- */
+        .man-hinh-danh-sach-phim {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        .tieu-de-khung-phim {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .mo-ta-khung-phim {
+            font-size: 0.85rem;
+            color: var(--mau-chu-phu);
+            margin-bottom: 20px;
+        }
+
+        .luoi-phim-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px;
+            padding-bottom: 20px;
+        }
+
+        .the-phim-card {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .the-phim-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--do-thuong-hieu);
+            box-shadow: 0 8px 25px rgba(229, 9, 20, 0.3);
+        }
+
+        .the-phim-poster {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            background: #1a1a1a;
+        }
+
+        .the-phim-noi-dung {
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+            justify-content: space-between;
+        }
+
+        .the-phim-tieu-de {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: #ffffff;
+            line-height: 1.35;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            min-height: 2.7em;
+        }
+
+        .the-phim-thong-tin {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.75rem;
+            color: var(--mau-chu-phu);
+        }
+
+        .badge-do-do-tuoi {
+            background: var(--do-thuong-hieu);
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .danh-sach-the-loai {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-top: 4px;
+        }
+
+        .pill-the-loai {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #cccccc;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 2px 7px;
+            border-radius: 4px;
+        }
+
+        /* ----- TRẠNG THÁI 2: CHỌN GHẾ ----- */
+        .man-hinh-chon-ghe {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+        }
+
+        .thong-tin-phim-da-chon-header {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--glass-border);
+            padding: 10px 16px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .khung-man-chieu {
+            width: 85%;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .man-chieu-cong {
+            height: 6px;
+            width: 100%;
+            background: linear-gradient(90deg, rgba(0,255,102,0.1) 0%, var(--xanh-luc-highlight) 50%, rgba(0,255,102,0.1) 100%);
+            border-radius: 50%;
+            box-shadow: 0 4px 20px var(--xanh-luc-highlight);
+            margin-bottom: 6px;
+        }
+
+        .chu-man-chieu {
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: var(--mau-chu-phu);
+            letter-spacing: 4px;
+        }
+
+        .luoi-ghe-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            overflow: auto;
+        }
+
+        .luoi-ghe-grid {
+            display: grid;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .o-ghe-cfd {
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 800;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .o-ghe-cfd.ghe-trong {
+            background-color: var(--ghe-trong-bg);
+            border: 1px solid var(--ghe-trong-border);
+            color: transparent;
+        }
+        .o-ghe-cfd.ghe-trong:hover {
+            border-color: var(--xanh-luc-highlight);
+            transform: scale(1.1);
+        }
+
+        .o-ghe-cfd.ghe-dang-chon {
+            background-color: var(--xanh-luc-highlight);
+            color: #000000;
+            border: 1px solid var(--xanh-luc-highlight);
+            box-shadow: 0 0 15px rgba(0, 255, 102, 0.6);
+            transform: scale(1.08);
+            animation: nhapNhayGhe 1.5s infinite alternate;
+        }
+
+        .o-ghe-cfd.ghe-da-dat {
+            background-color: #1e1e1e;
+            border: 1px solid #2d2d2d;
+            color: #444444;
+            cursor: not-allowed;
+            opacity: 0.4;
+        }
+
+        @keyframes nhapNhayGhe {
+            from { box-shadow: 0 0 10px rgba(0, 255, 102, 0.5); }
+            to { box-shadow: 0 0 22px rgba(0, 255, 102, 0.9); }
+        }
+
+        .chu-thich-ghe-container {
+            height: 46px;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--glass-border);
+            padding: 0 24px;
+            border-radius: 30px;
+            margin-bottom: 12px;
+        }
+
+        .muc-chu-thich {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .mau-chu-thich-chon {
+            width: 18px;
+            height: 18px;
+            background-color: var(--xanh-luc-highlight);
+            border-radius: 4px;
+            box-shadow: 0 0 8px var(--xanh-luc-highlight);
+        }
+
+        .mau-chu-thich-trong {
+            width: 18px;
+            height: 18px;
+            background-color: var(--ghe-trong-bg);
+            border: 1px solid var(--ghe-trong-border);
+            border-radius: 4px;
+        }
+
+        .nut-xac-nhan-thanh-toan-cfd {
+            width: 100%;
+            max-width: 460px;
+            height: 48px;
+            background: var(--xanh-luc-highlight);
+            color: #000;
+            font-weight: 900;
+            font-size: 1.05rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 0 20px rgba(0, 255, 102, 0.4);
+            transition: all 0.2s ease;
+        }
+
+        .nut-xac-nhan-thanh-toan-cfd:hover {
+            transform: scale(1.02);
+        }
+
+        /* ----- TRẠNG THÁI 4: THANH TOÁN ----- */
+        .man-hinh-thanh-toan {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 24px;
+        }
+
+        .tabs-phuong-thuc-thanh-toan {
+            display: flex;
+            gap: 12px;
+            width: 100%;
+            max-width: 580px;
+            justify-content: center;
+        }
+
+        .the-pttt-tab {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            padding: 12px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--mau-chu-phu);
+        }
+
+        .the-pttt-tab i {
+            font-size: 1.4rem;
+        }
+
+        .the-pttt-tab span {
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .the-pttt-tab:hover {
+            border-color: var(--xanh-luc-highlight);
+            color: #fff;
+        }
+
+        .the-pttt-tab.active {
+            background: rgba(0, 255, 102, 0.1);
+            border-color: var(--xanh-luc-highlight);
+            color: var(--xanh-luc-highlight);
+            box-shadow: 0 0 15px rgba(0, 255, 102, 0.2);
+        }
+
+        .vung-noi-dung-thanh-toan-chi-tiet {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            gap: 16px;
+            margin: 10px 0;
+        }
+
+        .khung-qr-thanh-toan {
+            background: #ffffff;
+            padding: 16px;
+            border-radius: 16px;
+            box-shadow: 0 0 35px rgba(0, 255, 102, 0.25);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .img-qr-code {
+            width: 200px;
+            height: 200px;
+            object-fit: contain;
+        }
+
+        .nhan-phu-qr {
+            margin-top: 6px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: #333;
+        }
+
+        .khung-card-atm-pos {
+            background: rgba(255, 255, 255, 0.02);
+            border: 2px dashed var(--xanh-luc-highlight);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            width: 100%;
+            max-width: 420px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .icon-pos-card {
+            font-size: 3.5rem;
+            color: var(--xanh-luc-highlight);
+            animation: nhapNhay 1.5s infinite;
+        }
+
+        .khung-tien-mat {
+            background: rgba(255, 255, 255, 0.02);
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            width: 100%;
+            max-width: 420px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .icon-tien-mat {
+            font-size: 3.5rem;
+            color: #00f0ff;
+        }
+
+        .dem-nguoc-thanh-toan {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--do-thuong-hieu);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(229, 9, 20, 0.1);
+            border: 1px solid rgba(229, 9, 20, 0.3);
+            padding: 6px 16px;
+            border-radius: 20px;
+        }
+
+        .nut-khach-xac-nhan-da-quet {
+            background: var(--xanh-luc-highlight);
+            color: #000;
+            border: none;
+            padding: 14px 30px;
+            border-radius: 10px;
+            font-weight: 900;
+            font-size: 1.05rem;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(0, 255, 102, 0.4);
+            width: 100%;
+            max-width: 460px;
+        }
+
+        /* ----- TRẠNG THÁI 5: SUCCESS STATE ----- */
+        .man-hinh-hoan-tat {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            text-align: center;
+            gap: 20px;
+        }
+
+        .bieu-tuong-thanh-cong {
+            width: 100px;
+            height: 100px;
+            background: rgba(0, 255, 102, 0.15);
+            border: 3px solid var(--xanh-luc-highlight);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: var(--xanh-luc-highlight);
+            box-shadow: 0 0 30px rgba(0, 255, 102, 0.4);
+            animation: phongTo 0.5s ease-out;
+        }
+
+        @keyframes phongTo {
+            from { transform: scale(0.3); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .tieu-de-thanh-cong {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: #fff;
+        }
+
+        .loi-chuc-cam-on {
+            font-size: 1.1rem;
+            color: var(--mau-chu-phu);
+            max-width: 480px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Thanh Tiêu Đề Top -->
+    <header class="thanh-tieu-de">
+        <div class="logo-thuong-hieu">
+            <span class="ten-thuong-hieu">3HD2K</span>
+            <div class="tag-cfd">
+                <span class="cham-online"></span>
+                <span>MÀN HÌNH KHÁCH HÀNG & KIOSK</span>
+            </div>
+        </div>
+        <div class="dong-ho-realtime" id="dong-ho-he-thong">00:00:00</div>
+    </header>
+
+    <!-- Khung Giao Diện Chính -->
+    <main class="khung-giao-dien-chinh">
+        <!-- Vùng Bên Trái (65% Width) - Dynamic View -->
+        <section class="vung-hien-thi-dong" id="vung-hien-thi-dong">
+            <!-- Render động bằng JS dựa trên state -->
+        </section>
+
+        <!-- Vùng Bên Phải (35% Width) - Live Cart -->
+        <aside class="vung-gio-hang-realtime">
+            <div class="tieu-de-gio-hang">
+                <i class="fas fa-shopping-cart" style="color: var(--xanh-luc-highlight);"></i>
+                <span>GIỎ HÀNG THỜI GIAN THỰC</span>
+            </div>
+
+            <div class="danh-sach-mon-gio-hang" id="danh-sach-mon-cfd">
+                <div class="gio-hang-trong">
+                    <i class="fas fa-receipt"></i>
+                    <span>Chưa có sản phẩm nào được chọn</span>
+                </div>
+            </div>
+
+            <div class="tong-ket-gio-hang">
+                <div class="hang-tong-tien">
+                    <span class="nhan-tong-tien">TỔNG TẠM TÍNH</span>
+                    <span class="gia-tri-tong-tien" id="tong-tien-cfd">0đ</span>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <script>
+        const KenhDongBoData = new BroadcastChannel('3hd2k_kenh_cfd');
+
+        let TrangThaiHienTai = 'EVENT_IDLE';
+        let DuLieuGioHang = [];
+        let TongTienGioHang = 0;
+        let ThongTinKhachVIP = null;
+        let DuLieuSoDoGhe = { rows: 8, cols: 12, selectedSeats: [], bookedSeats: [] };
+        let DuLieuThanhToan = { totalAmount: 0, paymentMethod: 'qr' };
+        let PhuongThucThanhToanHienTai = 'qr';
+        let BoDemThanhToanTimer = null;
+        let TimerAutoResetIdle = null;
+        let PhimDangChonTen = 'Phim Chiếu Rạp';
+        let PhimDangChonId = null;
+
+        let API_MOVIES = [];
+        let API_SHOWTIMES = [];
+
+        /* Mặc định danh sách phim dự phòng */
+        const MAC_DINH_DANH_SACH_PHIM = [
+            { id: "MV-001", tieuDe: "Núi Tế Vong", poster: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=800", thoiLuong: "2h", doTuoi: "T16", theLoai: ["Kinh Dị"] },
+            { id: "MV-002", tieuDe: "Thanh gươm diệt quỷ: Vô hạn...", poster: "https://images.unsplash.com/photo-1578632767115-351597cf2477?w=800", thoiLuong: "2h", doTuoi: "T16", theLoai: ["Hành Động", "Hoạt Hình"] },
+            { id: "MV-003", tieuDe: "Spider Man: Across the Spider-Verse", poster: "https://images.unsplash.com/photo-1635805737707-575885ab0820?w=800", thoiLuong: "2h", doTuoi: "P", theLoai: ["Hành Động", "Siêu anh hùng"] },
+            { id: "MV-004", tieuDe: "Trò Chơi Ảo Giác: Ares", poster: "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800", thoiLuong: "2h", doTuoi: "T16", theLoai: ["Hành động", "Khoa học viễn tưởng"] },
+            { id: "MV-005", tieuDe: "BACKROOMS - Thực Tại...", poster: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800", thoiLuong: "2h", doTuoi: "T16", theLoai: ["Horror", "Science Fiction"] }
+        ];
+
+        /* CHỈ LỌC CÁC PHIM CÓ SUẤT CHIẾU Ở KHUNG GIỜ NÀY TẠI QUẦY */
+        function LocPhimTheoGioChieuHienTai(danhSachPhim, danhSachSuatChieu) {
+            let listShowtimes = (danhSachSuatChieu && danhSachSuatChieu.length > 0) ? danhSachSuatChieu : (JSON.parse(localStorage.getItem("3hd2k_showtimes")) || []);
+
+            if (listShowtimes.length === 0) {
+                return danhSachPhim;
+            }
+
+            const bayGio = new Date();
+            const homNayStr = bayGio.toISOString().split('T')[0];
+            const gioHienTaiMinutes = bayGio.getHours() * 60 + bayGio.getMinutes();
+
+            const suatChieuHienTai = listShowtimes.filter(st => {
+                if (st.date && st.date !== homNayStr) return false;
+                if (st.time) {
+                    const parts = st.time.split(':');
+                    if (parts.length >= 2) {
+                        const stMinutes = parseInt(parts[0]) * 60 + parseInt(parts[1]);
+                        if (stMinutes < gioHienTaiMinutes - 30) return false;
+                    }
+                }
+                return true;
+            });
+
+            if (suatChieuHienTai.length === 0) {
+                const activeIds = new Set(listShowtimes.map(st => String(st.movieId || st.MovieId || '')));
+                const activeTitles = new Set(listShowtimes.map(st => String(st.movieTitle || st.MovieTitle || '').toLowerCase()));
+
+                const phimFilter = danhSachPhim.filter(p => {
+                    const pId = String(p.id || '');
+                    const pTitle = String(p.tieuDe || p.title || '').toLowerCase();
+                    return activeIds.has(pId) || activeTitles.has(pTitle);
+                });
+
+                return phimFilter.length > 0 ? phimFilter : danhSachPhim;
+            }
+
+            const setMovieIds = new Set(suatChieuHienTai.map(st => String(st.movieId || st.MovieId || '')));
+            const setMovieTitles = new Set(suatChieuHienTai.map(st => String(st.movieTitle || st.MovieTitle || '').toLowerCase()));
+
+            const phimChoQuay = danhSachPhim.filter(p => {
+                const pId = String(p.id || '');
+                const pTitle = String(p.tieuDe || p.title || '').toLowerCase();
+                return setMovieIds.has(pId) || setMovieTitles.has(pTitle);
+            });
+
+            return phimChoQuay.length > 0 ? phimChoQuay : danhSachPhim;
+        }
+
+        /* LẤY SUẤT CHIẾU THỰC TẾ CỦA TỪNG PHIM TRÙNG KHỚP VỚI MÀN HÌNH STAFF */
+        function LaySuatChieuThucTeTheoPhim(p) {
+            const bayGio = new Date();
+            const currentHours = bayGio.getHours();
+            const currentMinutes = bayGio.getMinutes();
+            const currentTotalMinutes = currentHours * 60 + currentMinutes;
+
+            let suatChieuPhim = (API_SHOWTIMES || []).filter(s => String(s.movieId) === String(p.id) || (s.movieTitle && s.movieTitle.toLowerCase() === (p.tieuDe || p.title || '').toLowerCase()));
+
+            if (suatChieuPhim.length === 0) {
+                let baseHour = currentHours;
+                let baseMin = currentMinutes < 30 ? 30 : 0;
+                if (baseMin === 0) baseHour = (baseHour + 1) % 24;
+
+                const time1Str = `${String(baseHour).padStart(2, '0')}:${String(baseMin).padStart(2, '0')}`;
+                
+                let nextHour1 = (baseHour + 2) % 24;
+                const time2Str = `${String(nextHour1).padStart(2, '0')}:00`;
+
+                let nextHour2 = (baseHour + 4) % 24;
+                const time3Str = `${String(nextHour2).padStart(2, '0')}:30`;
+
+                suatChieuPhim = [
+                    { id: "ST-" + p.id + "-1", movieId: p.id, movieTitle: p.tieuDe, time: time1Str, price: 80000 },
+                    { id: "ST-" + p.id + "-2", movieId: p.id, movieTitle: p.tieuDe, time: time2Str, price: 100000 },
+                    { id: "ST-" + p.id + "-3", movieId: p.id, movieTitle: p.tieuDe, time: time3Str, price: 120000 }
+                ];
+            }
+
+            return suatChieuPhim.map(st => {
+                let isPast = false;
+                let isCurrentActive = false;
+
+                if (st.time) {
+                    const parts = st.time.split(':');
+                    if (parts.length >= 2) {
+                        const stHours = parseInt(parts[0]);
+                        const stMins = parseInt(parts[1]);
+                        const stTotalMinutes = stHours * 60 + stMins;
+
+                        if (stTotalMinutes < currentTotalMinutes - 20) {
+                            isPast = true;
+                        } else if (stTotalMinutes >= currentTotalMinutes - 20 && stTotalMinutes <= currentTotalMinutes + 60) {
+                            isCurrentActive = true;
+                        }
+                    }
+                }
+
+                return {
+                    ...st,
+                    isPast,
+                    isCurrentActive
+                };
+            });
+        }
+
+        async function TaiDuLieuTuBackendVaStorage() {
+            let danhSachPhimCoSan = [];
+
+            try {
+                const res = await fetch('/api/movies');
+                if (res.ok) {
+                    const apiMovies = await res.json();
+                    if (Array.isArray(apiMovies) && apiMovies.length > 0) {
+                        const nowShowing = apiMovies.filter(m => m.status === 'NOW_SHOWING' || m.status === 'now-showing' || !m.status);
+                        if (nowShowing.length > 0) {
+                            danhSachPhimCoSan = nowShowing.map(m => {
+                                let img = m.posterUrl || m.PosterUrl || m.poster || m.bg;
+                                if (img && img.includes('3hd2k-api.somee.com')) {
+                                    img = img.replace(/^https?:\/\/3hd2k-api\.somee\.com/, '');
+                                }
+                                if (img && !img.startsWith('http') && !img.startsWith('/')) {
+                                    img = '/' + img;
+                                }
+                                return {
+                                    id: String(m.id || m.movieId || m.Id || ''),
+                                    tieuDe: m.title || m.Title || 'Phim Chiếu Rạp',
+                                    thoiLuong: (m.duration || m.Duration || 120) + 'm',
+                                    doTuoi: m.ageRating || m.AgeRating || m.age || 'T16',
+                                    theLoai: Array.isArray(m.genre) ? m.genre : [(m.genre || m.Genre || 'Hành Động')],
+                                    poster: img || 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=800'
+                                };
+                            });
+                        }
+                    }
+                }
+            } catch (e) {
+                console.warn("API movies fetch warning:", e);
+            }
+
+            if (danhSachPhimCoSan.length === 0) {
+                const localMovies = JSON.parse(localStorage.getItem("3hd2k_movies")) || [];
+                if (localMovies.length > 0) {
+                    danhSachPhimCoSan = localMovies.map(m => ({
+                        id: String(m.id || ''),
+                        tieuDe: m.title || 'Phim Chiếu Rạp',
+                        thoiLuong: (m.duration || 120) + 'm',
+                        doTuoi: m.age || m.ageRating || 'T16',
+                        theLoai: Array.isArray(m.genre) ? m.genre : [m.genre || 'Hành Động'],
+                        poster: m.poster || m.bg || 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=800'
+                    }));
+                }
+            }
+
+            if (danhSachPhimCoSan.length === 0) {
+                danhSachPhimCoSan = MAC_DINH_DANH_SACH_PHIM;
+            }
+
+            API_MOVIES = danhSachPhimCoSan;
+
+            try {
+                const resSt = await fetch('/api/showtimes');
+                if (resSt.ok) {
+                    API_SHOWTIMES = await resSt.json();
+                }
+            } catch (e) {}
+
+            if (TrangThaiHienTai === 'EVENT_IDLE') {
+                HienThiDanhSachPhim();
+            }
+        }
+
+        function LayDanhSachGheDaDat(showtimeId) {
+            const bookedSeatsStore = JSON.parse(localStorage.getItem("cinema_booked_seats")) || {};
+            if (showtimeId && bookedSeatsStore[showtimeId]) {
+                return bookedSeatsStore[showtimeId];
+            }
+            const allKeys = Object.keys(bookedSeatsStore);
+            if (allKeys.length > 0) return bookedSeatsStore[allKeys[0]] || [];
+            return ['B04', 'B05', 'D07', 'D08'];
+        }
+
+        function CapNhatDongHo() {
+            const bayGio = new Date();
+            document.getElementById('dong-ho-he-thong').textContent = bayGio.toLocaleTimeString('vi-VN');
+        }
+        setInterval(CapNhatDongHo, 1000);
+        CapNhatDongHo();
+
+        function PhatSuKienDongBo(type, data) {
+            try {
+                KenhDongBoData.postMessage({ type, data });
+            } catch (e) {}
+            try {
+                localStorage.setItem("3hd2k_cfd_event", JSON.stringify({ type, data, timestamp: Date.now() }));
+            } catch (e) {}
+        }
+
+        function ChuyenTrangThai(trangThaiMoi, duLieu = null) {
+            TrangThaiHienTai = trangThaiMoi;
+            if (TimerAutoResetIdle) {
+                clearTimeout(TimerAutoResetIdle);
+                TimerAutoResetIdle = null;
+            }
+            if (BoDemThanhToanTimer) {
+                clearInterval(BoDemThanhToanTimer);
+                BoDemThanhToanTimer = null;
+            }
+
+            switch (trangThaiMoi) {
+                case 'EVENT_SELECT_SEAT':
+                    if (duLieu) DuLieuSoDoGhe = { ...DuLieuSoDoGhe, ...duLieu };
+                    HienThiSoDoGhe();
+                    break;
+                case 'EVENT_SET_LOYALTY':
+                    ThongTinKhachVIP = duLieu;
+                    HienThiTichDiemVIP();
+                    break;
+                case 'EVENT_PAYMENT_INIT':
+                    if (duLieu) {
+                        DuLieuThanhToan = duLieu;
+                        if (duLieu.paymentMethod) PhuongThucThanhToanHienTai = duLieu.paymentMethod;
+                    }
+                    HienThiThanhToan();
+                    break;
+                case 'EVENT_ORDER_SUCCESS':
+                    HienThiHoanTatThanhToan(duLieu);
+                    break;
+                case 'EVENT_IDLE':
+                default:
+                    HienThiDanhSachPhim();
+                    break;
+            }
+        }
+
+        /* KHÁCH HÀNG CHỌN PHIM TRỰC TIẾP TỪ LƯỚI */
+        function KhachHangTuChonPhim(phimObj) {
+            PhimDangChonTen = phimObj ? (phimObj.tieuDe || phimObj.title) : 'Phim Chiếu Rạp';
+            PhimDangChonId = phimObj ? phimObj.id : null;
+            DuLieuSoDoGhe.selectedSeats = [];
+            DuLieuSoDoGhe.bookedSeats = LayDanhSachGheDaDat(PhimDangChonId);
+            ChuyenTrangThai('EVENT_SELECT_SEAT');
+            PhatSuKienDongBo('EVENT_SELECT_SEAT', {
+                movieId: PhimDangChonId,
+                movieTitle: PhimDangChonTen,
+                rows: DuLieuSoDoGhe.rows,
+                cols: DuLieuSoDoGhe.cols,
+                selectedSeats: []
+            });
+        }
+
+        function KhachHangClickChonGhe(maGhe) {
+            const index = DuLieuSoDoGhe.selectedSeats.indexOf(maGhe);
+            if (index > -1) {
+                DuLieuSoDoGhe.selectedSeats.splice(index, 1);
+            } else {
+                DuLieuSoDoGhe.selectedSeats.push(maGhe);
+            }
+
+            HienThiSoDoGhe();
+
+            const itemsVe = DuLieuSoDoGhe.selectedSeats.length > 0 ? [{
+                name: `Vé xem phim ${PhimDangChonTen}: ${DuLieuSoDoGhe.selectedSeats.join(', ')}`,
+                qty: DuLieuSoDoGhe.selectedSeats.length,
+                price: 80000
+            }] : [];
+            const tongTien = DuLieuSoDoGhe.selectedSeats.length * 80000;
+
+            CapNhatGioHang(itemsVe, tongTien);
+
+            PhatSuKienDongBo('EVENT_SELECT_SEAT', {
+                movieId: PhimDangChonId,
+                movieTitle: PhimDangChonTen,
+                rows: DuLieuSoDoGhe.rows,
+                cols: DuLieuSoDoGhe.cols,
+                selectedSeats: [...DuLieuSoDoGhe.selectedSeats]
+            });
+            PhatSuKienDongBo('EVENT_UPDATE_CART', {
+                cart: itemsVe,
+                totalAmount: tongTien
+            });
+        }
+
+        function KhachHangChonPhuongThucThanhToan(phuongThuc) {
+            PhuongThucThanhToanHienTai = phuongThuc;
+            DuLieuThanhToan.paymentMethod = phuongThuc;
+            HienThiThanhToan();
+            PhatSuKienDongBo('EVENT_PAYMENT_INIT', {
+                paymentMethod: phuongThuc,
+                totalAmount: TongTienGioHang
+            });
+        }
+
+        function KhachHangXacNhanDoiSangThanhToan() {
+            if (DuLieuSoDoGhe.selectedSeats.length === 0) {
+                alert("Vui lòng chạm chọn ít nhất 1 ghế xem phim!");
+                return;
+            }
+            const tongTien = DuLieuSoDoGhe.selectedSeats.length * 80000;
+            const dataPay = {
+                paymentMethod: PhuongThucThanhToanHienTai || 'qr',
+                totalAmount: tongTien,
+                qrUrl: `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=PAY_3HD2K_${tongTien}`
+            };
+            ChuyenTrangThai('EVENT_PAYMENT_INIT', dataPay);
+            PhatSuKienDongBo('EVENT_PAYMENT_INIT', dataPay);
+        }
+
+        function KhachHangXacNhanDaThanhToan() {
+            const dataSuccess = {
+                receiptId: "POS-" + Math.floor(10000 + Math.random() * 90000),
+                customerName: "Khách chọn tại quầy (CFD)",
+                paymentMethod: PhuongThucThanhToanHienTai,
+                totalAmount: TongTienGioHang
+            };
+            ChuyenTrangThai('EVENT_ORDER_SUCCESS', dataSuccess);
+            PhatSuKienDongBo('EVENT_ORDER_SUCCESS', dataSuccess);
+        }
+
+        /* 1. TRANG ĐẦU: LƯỚI PHIM CÓ SUẤT CHIẾU HÔM NAY / KHUNG GIỜ NÀY TẠI QUẦY */
+        function HienThiDanhSachPhim() {
+            const vungChinh = document.getElementById('vung-hien-thi-dong');
+            const danhSachGoc = API_MOVIES.length > 0 ? API_MOVIES : MAC_DINH_DANH_SACH_PHIM;
+            const danhSachHienThi = LocPhimTheoGioChieuHienTai(danhSachGoc, API_SHOWTIMES);
+
+            vungChinh.innerHTML = `
+                <div class="man-hinh-danh-sach-phim">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                        <div class="tieu-de-khung-phim">
+                            <i class="fas fa-film" style="color: var(--do-thuong-hieu);"></i>
+                            <span>PHIM CÓ SUẤT CHIẾU TẠI QUẦY (ĐỒNG BỘ VỚI STAFF)</span>
+                        </div>
+                        <span class="tag-cfd" style="font-size: 0.7rem;">
+                            <i class="fas fa-calendar-check"></i> ${new Date().toLocaleDateString('vi-VN')}
+                        </span>
+                    </div>
+                    <p class="mo-ta-khung-phim">Vui lòng chạm chọn Phim để mở Sơ Đồ Ghế trực tiếp</p>
+
+                    <div class="luoi-phim-container">
+                        ${danhSachHienThi.map(p => {
+                            const suatChieuList = LaySuatChieuThucTeTheoPhim(p);
+
+                            return `
+                                <div class="the-phim-card" onclick='KhachHangTuChonPhim(${JSON.stringify(p)})'>
+                                    <img src="${p.poster}" alt="${p.tieuDe}" class="the-phim-poster" loading="lazy">
+                                    <div class="the-phim-noi-dung">
+                                        <div class="the-phim-tieu-de">${p.tieuDe}</div>
+                                        <div class="the-phim-thong-tin">
+                                            <span><i class="far fa-clock"></i> ${p.thoiLuong}</span>
+                                            <span class="badge-do-do-tuoi">${p.doTuoi}</span>
+                                        </div>
+                                        <div class="danh-sach-the-loai">
+                                            ${(p.theLoai || []).map(tl => `<span class="pill-the-loai">${tl}</span>`).join('')}
+                                        </div>
+
+                                        <div style="margin-top: 10px; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 8px;">
+                                            <span style="font-size: 0.68rem; color: var(--xanh-luc-highlight); font-weight: 800; display: block; margin-bottom: 4px;">SUẤT CHIẾU THỰC TẠI QUẦY:</span>
+                                            <div style="display: flex; flex-wrap: wrap; gap: 4px;">
+                                                ${suatChieuList.map(st => {
+                                                    if (st.isPast) {
+                                                        return `<span style="font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; background: rgba(255,255,255,0.05); color: #555; text-decoration: line-through;">⏱️ ${st.time}</span>`;
+                                                    } else if (st.isCurrentActive) {
+                                                        return `<span style="font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; background: var(--xanh-luc-highlight); color: #000; font-weight: 900; box-shadow: 0 0 8px rgba(0,255,102,0.4);">🔥 ${st.time}</span>`;
+                                                    } else {
+                                                        return `<span style="font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; background: rgba(0,240,255,0.12); color: var(--xanh-lam-highlight); border: 1px solid rgba(0,240,255,0.3);">⏱️ ${st.time}</span>`;
+                                                    }
+                                                }).join('')}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        /* 2. SEAT SELECTION STATE */
+        function HienThiSoDoGhe() {
+            const vungChinh = document.getElementById('vung-hien-thi-dong');
+            const rows = DuLieuSoDoGhe.rows || 8;
+            const cols = DuLieuSoDoGhe.cols || 12;
+            const selectedSeats = DuLieuSoDoGhe.selectedSeats || [];
+            const bookedSeats = DuLieuSoDoGhe.bookedSeats || LayDanhSachGheDaDat(PhimDangChonId);
+
+            let htmlSoDo = '';
+            for (let r = 0; r < rows; r++) {
+                const hangChar = String.fromCharCode(65 + r);
+                for (let c = 1; c <= cols; c++) {
+                    const maGhe = `${hangChar}${c.toString().padStart(2, '0')}`;
+                    const dangChon = selectedSeats.includes(maGhe);
+                    const daDat = bookedSeats.includes(maGhe);
+
+                    if (daDat) {
+                        htmlSoDo += `<div class="o-ghe-cfd ghe-da-dat">${maGhe}</div>`;
+                    } else if (dangChon) {
+                        htmlSoDo += `<div class="o-ghe-cfd ghe-dang-chon" onclick="KhachHangClickChonGhe('${maGhe}')">${maGhe}</div>`;
+                    } else {
+                        htmlSoDo += `<div class="o-ghe-cfd ghe-trong" onclick="KhachHangClickChonGhe('${maGhe}')"></div>`;
+                    }
+                }
+            }
+
+            vungChinh.innerHTML = `
+                <div class="man-hinh-chon-ghe">
+                    <div class="thong-tin-phim-da-chon-header">
+                        <button style="background: transparent; border: 1px solid var(--glass-border); color: #ccc; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8rem;" onclick="ChuyenTrangThai('EVENT_IDLE')">
+                            <i class="fas fa-arrow-left"></i> Chọn Phim Khác
+                        </button>
+                        <span style="font-weight: 800; font-size: 1rem; color: #fff;">🎬 ${PhimDangChonTen}</span>
+                        <span style="font-size: 0.8rem; color: var(--xanh-luc-highlight); font-weight: 700;">80.000đ/vé</span>
+                    </div>
+
+                    <div class="khung-man-chieu">
+                        <div class="man-chieu-cong"></div>
+                        <div class="chu-man-chieu">MÀN CHIẾU (CHẠM GHẾ ĐỂ CHỌN)</div>
+                    </div>
+
+                    <div class="luoi-ghe-container">
+                        <div class="luoi-ghe-grid" style="grid-template-columns: repeat(${cols}, 40px);">
+                            ${htmlSoDo}
+                        </div>
+                    </div>
+
+                    <div class="chu-thich-ghe-container">
+                        <div class="muc-chu-thich">
+                            <div class="mau-chu-thich-chon"></div>
+                            <span>Ghế bạn chọn</span>
+                        </div>
+                        <div class="muc-chu-thich">
+                            <div class="mau-chu-thich-trong"></div>
+                            <span>Ghế trống</span>
+                        </div>
+                    </div>
+
+                    <button class="nut-xac-nhan-thanh-toan-cfd" onclick="KhachHangXacNhanDoiSangThanhToan()">
+                        <i class="fas fa-credit-card"></i> XÁC NHẬN CHỌN GHẾ (${selectedSeats.length} GHẾ) ➔ THANH TOÁN
+                    </button>
+                </div>
+            `;
+        }
+
+        /* 3. LOYALTY STATE */
+        function HienThiTichDiemVIP() {
+            const vungChinh = document.getElementById('vung-hien-thi-dong');
+            const vip = ThongTinKhachVIP || { customerName: 'Khách VIP', phone: '', tier: 'VIP MEMBER', points: 0, pointsEarned: 0 };
+
+            vungChinh.innerHTML = `
+                <div class="man-hinh-tich-diem">
+                    <div class="the-vip-khach-hang">
+                        <div class="vip-header">
+                            <div class="vip-title"><i class="fas fa-crown"></i> 3HD2K VIP</div>
+                            <div class="vip-badge-tier">${vip.tier || 'THÀNH VIÊN VIP'}</div>
+                        </div>
+                        <div>
+                            <div class="ten-khach-vip">${vip.customerName || 'Khách Hàng VIP'}</div>
+                            <div class="sdt-khach-vip">${vip.phone ? 'SĐT: ' + vip.phone : ''}</div>
+                        </div>
+                        <div class="khung-diem-vip">
+                            <div>
+                                <div style="font-size: 0.85rem; color: var(--mau-chu-phu);">ĐIỂM TÍCH LŨY HIỆN CÓ</div>
+                                <div class="so-diem-tich-luy">${(vip.points || 0).toLocaleString('vi-VN')} P</div>
+                            </div>
+                            ${vip.pointsEarned ? `
+                                <div style="text-align: right;">
+                                    <div style="font-size: 0.8rem; color: var(--xanh-luc-highlight); font-weight: 700;">+${vip.pointsEarned} ĐIỂM ĐƠN NÀY</div>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        /* 4. PAYMENT STATE (ĐẾM NGƯỢC CHUẨN 5 PHÚT = 300S, KHÔNG TÍNH ÂM, HẾT 5P HỦY GIAO DỊCH) */
+        function HienThiThanhToan() {
+            const vungChinh = document.getElementById('vung-hien-thi-dong');
+            const payment = DuLieuThanhToan || { totalAmount: TongTienGioHang, qrUrl: '', paymentMethod: PhuongThucThanhToanHienTai };
+            const tongTien = payment.totalAmount || TongTienGioHang || 0;
+            
+            // Đếm ngược 5 phút = 300 giây
+            let giayConLai = 300;
+
+            const qrUrl = payment.qrUrl || `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=PAY_3HD2K_${tongTien}`;
+
+            let noiDungChiTietPTTT = '';
+
+            if (PhuongThucThanhToanHienTai === 'qr') {
+                noiDungChiTietPTTT = `
+                    <div class="khung-qr-thanh-toan">
+                        <img src="${qrUrl}" alt="QR Payment" class="img-qr-code">
+                        <div class="nhan-phu-qr">VIETQR / MOMO AUTO CHECK</div>
+                    </div>
+                    <div class="dem-nguoc-thanh-toan">
+                        <i class="fas fa-clock"></i>
+                        <span id="dem-nguoc-timer">Mã hết hạn trong: 05:00</span>
+                    </div>
+                `;
+            } else if (PhuongThucThanhToanHienTai === 'card') {
+                noiDungChiTietPTTT = `
+                    <div class="khung-card-atm-pos">
+                        <i class="fas fa-credit-card icon-pos-card"></i>
+                        <h4 style="color: #fff; font-size: 1.1rem;">QUẸT THẺ ATM / THẺ TÍN DỤNG</h4>
+                        <p style="color: var(--mau-chu-phu); font-size: 0.85rem;">Vui lòng chạm hoặc quẹt thẻ trên thiết bị đọc thẻ POS tại quầy</p>
+                    </div>
+                    <div class="dem-nguoc-thanh-toan">
+                        <i class="fas fa-clock"></i>
+                        <span id="dem-nguoc-timer">Thời gian giữ chỗ: 05:00</span>
+                    </div>
+                `;
+            } else {
+                noiDungChiTietPTTT = `
+                    <div class="khung-tien-mat">
+                        <i class="fas fa-money-bill-wave icon-tien-mat"></i>
+                        <h4 style="color: #fff; font-size: 1.2rem;">THANH TOÁN TIỀN MẶT</h4>
+                        <p style="color: var(--mau-chu-phu); font-size: 0.95rem; line-height: 1.5; margin-top: 6px;">Vui lòng thanh toán tiền mặt trực tiếp cho nhân viên thu ngân tại quầy để nhận vé vật lý</p>
+                    </div>
+                `;
+            }
+
+            const thongBaoBottomHTML = PhuongThucThanhToanHienTai === 'cash' ? `
+                <div style="width: 100%; max-width: 460px; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); border-radius: 10px; padding: 14px; text-align: center; color: #ccc; font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                    <i class="fas fa-cash-register" style="color: var(--xanh-luc-highlight);"></i>
+                    <span>Vui lòng thanh toán tiền mặt trực tiếp tại quầy thu ngân</span>
+                </div>
+            ` : `
+                <div style="width: 100%; max-width: 460px; background: rgba(0, 255, 102, 0.08); border: 1px solid rgba(0, 255, 102, 0.3); border-radius: 10px; padding: 14px; text-align: center; color: var(--xanh-luc-highlight); font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                    <i class="fas fa-circle-notch fa-spin"></i>
+                    <span>Đang chờ hệ thống / ngân hàng tự động xác nhận giao dịch...</span>
+                </div>
+            `;
+
+            vungChinh.innerHTML = `
+                <div class="man-hinh-thanh-toan">
+                    <div style="text-align: center;">
+                        <span style="font-size: 0.85rem; color: var(--mau-chu-phu); font-weight: 700; display: block; margin-bottom: 4px;">TỔNG TIỀN THANH TOÁN</span>
+                        <h2 style="font-size: 2.2rem; font-weight: 900; color: var(--xanh-luc-highlight); text-shadow: 0 0 15px rgba(0,255,102,0.4);">${tongTien.toLocaleString('vi-VN')}đ</h2>
+                    </div>
+
+                    <div class="tabs-phuong-thuc-thanh-toan">
+                        <div class="the-pttt-tab ${PhuongThucThanhToanHienTai === 'qr' ? 'active' : ''}" onclick="KhachHangChonPhuongThucThanhToan('qr')">
+                            <i class="fas fa-qrcode"></i>
+                            <span>MÃ QR (VIETQR)</span>
+                        </div>
+                        <div class="the-pttt-tab ${PhuongThucThanhToanHienTai === 'card' ? 'active' : ''}" onclick="KhachHangChonPhuongThucThanhToan('card')">
+                            <i class="fas fa-credit-card"></i>
+                            <span>THẺ ATM / CARD</span>
+                        </div>
+                        <div class="the-pttt-tab ${PhuongThucThanhToanHienTai === 'cash' ? 'active' : ''}" onclick="KhachHangChonPhuongThucThanhToan('cash')">
+                            <i class="fas fa-money-bill-wave"></i>
+                            <span>TIỀN MẶT</span>
+                        </div>
+                    </div>
+
+                    <div class="vung-noi-dung-thanh-toan-chi-tiet">
+                        ${noiDungChiTietPTTT}
+                    </div>
+
+                    ${thongBaoBottomHTML}
+                </div>
+            `;
+
+            if (BoDemThanhToanTimer) {
+                clearInterval(BoDemThanhToanTimer);
+                BoDemThanhToanTimer = null;
+            }
+
+            if (PhuongThucThanhToanHienTai !== 'cash') {
+                BoDemThanhToanTimer = setInterval(() => {
+                    giayConLai--;
+
+                    if (giayConLai < 0) {
+                        giayConLai = 0;
+                    }
+
+                    const phut = Math.floor(giayConLai / 60).toString().padStart(2, '0');
+                    const giay = (giayConLai % 60).toString().padStart(2, '0');
+                    const timerEl = document.getElementById('dem-nguoc-timer');
+
+                    if (timerEl) {
+                        timerEl.textContent = PhuongThucThanhToanHienTai === 'qr' ? `Mã hết hạn trong: ${phut}:${giay}` : `Thời gian giữ chỗ: ${phut}:${giay}`;
+                    }
+
+                    if (giayConLai <= 0) {
+                        clearInterval(BoDemThanhToanTimer);
+                        BoDemThanhToanTimer = null;
+                        HuyGiaoDichDoHetHan5Phut();
+                    }
+                }, 1000);
+            }
+        }
+
+        /* HỦY GIAO DỊCH KHI HẾT 5 PHÚT THANH TOÁN */
+        function HuyGiaoDichDoHetHan5Phut() {
+            alert("⚠️ GIAO DỊCH ĐÃ BỊ HỦY DO HẾT HẠN THANH TOÁN (5 PHÚT)!\nHệ thống sẽ giải phóng ghế và quay lại màn hình chọn phim.");
+            
+            DuLieuSoDoGhe.selectedSeats = [];
+            CapNhatGioHang([], 0);
+
+            ChuyenTrangThai('EVENT_IDLE');
+
+            PhatSuKienDongBo('EVENT_IDLE', { reason: 'PAYMENT_EXPIRED_5MIN' });
+            PhatSuKienDongBo('EVENT_UPDATE_CART', { cart: [], totalAmount: 0 });
+        }
+
+        /* 5. SUCCESS STATE */
+        function HienThiHoanTatThanhToan(duLieu) {
+            const vungChinh = document.getElementById('vung-hien-thi-dong');
+            const res = duLieu || { receiptId: 'POS-00000', customerName: 'Khách hàng' };
+
+            vungChinh.innerHTML = `
+                <div class="man-hinh-hoan-tat">
+                    <div class="bieu-tuong-thanh-cong">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <h2 class="tieu-de-thanh-cong">THANH TOÁN THÀNH CÔNG!</h2>
+                    <p class="loi-chuc-cam-on">
+                        Cảm ơn quý khách <strong>${res.customerName || 'Khách hàng'}</strong> đã lựa chọn 3HD2K. Chúc quý khách có những phút giây xem phim vui vẻ!
+                    </p>
+                </div>
+            `;
+
+            TimerAutoResetIdle = setTimeout(() => {
+                ChuyenTrangThai('EVENT_IDLE');
+                CapNhatGioHang([], 0);
+            }, 5000);
+        }
+
+        /* Cập nhật Giỏ Hàng Realtime */
+        function CapNhatGioHang(items, totalAmount) {
+            DuLieuGioHang = items || [];
+            TongTienGioHang = totalAmount || 0;
+
+            const danhSachEl = document.getElementById('danh-sach-mon-cfd');
+            const tongTienEl = document.getElementById('tong-tien-cfd');
+
+            if (tongTienEl) {
+                tongTienEl.textContent = TongTienGioHang.toLocaleString('vi-VN') + 'đ';
+            }
+
+            if (!danhSachEl) return;
+
+            if (DuLieuGioHang.length === 0) {
+                danhSachEl.innerHTML = `
+                    <div class="gio-hang-trong">
+                        <i class="fas fa-receipt"></i>
+                        <span>Chưa có sản phẩm nào được chọn</span>
+                    </div>
+                `;
+                return;
+            }
+
+            danhSachEl.innerHTML = DuLieuGioHang.map(item => `
+                <div class="the-mon-gio-hang">
+                    <div class="thong-tin-mon">
+                        <span class="ten-mon">${item.name}</span>
+                        <span class="so-luong-mon">Số lượng: x${item.qty}</span>
+                    </div>
+                    <span class="gia-mon">${(item.price * item.qty).toLocaleString('vi-VN')}đ</span>
+                </div>
+            `).join('');
+        }
+
+        /* Lắng nghe sự kiện Broadcast Channel từ Staff */
+        KenhDongBoData.onmessage = function(event) {
+            const { type, data } = event.data || {};
+
+            switch (type) {
+                case 'EVENT_IDLE':
+                    ChuyenTrangThai('EVENT_IDLE');
+                    break;
+
+                case 'EVENT_SELECT_SEAT':
+                    if (data && data.movieTitle) PhimDangChonTen = data.movieTitle;
+                    ChuyenTrangThai('EVENT_SELECT_SEAT', data);
+                    break;
+
+                case 'EVENT_UPDATE_CART':
+                    CapNhatGioHang(data ? data.cart : [], data ? data.totalAmount : 0);
+                    break;
+
+                case 'EVENT_SET_LOYALTY':
+                    ChuyenTrangThai('EVENT_SET_LOYALTY', data);
+                    break;
+
+                case 'EVENT_PAYMENT_INIT':
+                    if (data && data.paymentMethod) PhuongThucThanhToanHienTai = data.paymentMethod;
+                    ChuyenTrangThai('EVENT_PAYMENT_INIT', data);
+                    break;
+
+                case 'EVENT_ORDER_SUCCESS':
+                    ChuyenTrangThai('EVENT_ORDER_SUCCESS', data);
+                    break;
+            }
+        };
+
+        /* Lắng nghe Storage Fallback từ Staff Portal & Backend Admin */
+        window.addEventListener('storage', (e) => {
+            if (e.key === '3hd2k_movies' || e.key === '3hd2k_showtimes' || e.key === 'cinema_booked_seats' || e.key === '3hd2k_rooms_layouts') {
+                TaiDuLieuTuBackendVaStorage();
+            }
+            if (e.key === '3hd2k_cfd_event') {
+                try {
+                    const eventData = JSON.parse(e.newValue);
+                    if (eventData && eventData.type) {
+                        KenhDongBoData.onmessage({ data: eventData });
+                    }
+                } catch (err) {}
+            }
+        });
+
+        /* Khởi tạo dữ liệu thực tế từ Backend / Storage */
+        TaiDuLieuTuBackendVaStorage();
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+    <script>
+        try {
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl("/notificationHub")
+                .withAutomaticReconnect()
+                .build();
+
+            connection.on("DataUpdated", (type) => {
+                TaiDuLieuTuBackendVaStorage();
+            });
+
+            connection.start().catch(err => console.warn("SignalR warning:", err?.message || err));
+        } catch (e) {}
+    </script>
+</body>
+</html>
