@@ -40,6 +40,53 @@ let activeSeatType = 'standard';
 let revenueChartInstance = null;
 let moviePieChartInstance = null;
 
+let matrixPollingInterval = null;
+const adminSyncChannel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('3hd2k_admin_sync') : null;
+
+if (adminSyncChannel) {
+    adminSyncChannel.onmessage = (event) => {
+        if (event.data && (event.data.type === 'SHOWTIMES_UPDATED' || event.data.type === 'REFETCH_ALL')) {
+            fetchShowtimes().then(() => {
+                if (activeTab === 'showtimes') {
+                    renderShowtimesTable();
+                    renderAvailabilityMatrix();
+                }
+            });
+        }
+    };
+}
+
+if (typeof window !== 'undefined') {
+    window.addEventListener('storage', (e) => {
+        if (e.key === '3hd2k_showtimes') {
+            fetchShowtimes().then(() => {
+                if (activeTab === 'showtimes') {
+                    renderShowtimesTable();
+                    renderAvailabilityMatrix();
+                }
+            });
+        }
+    });
+
+    window.addEventListener('focus', () => {
+        if (activeTab === 'showtimes') {
+            fetchShowtimes().then(() => {
+                renderShowtimesTable();
+                renderAvailabilityMatrix();
+            });
+        }
+    });
+
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden && activeTab === 'showtimes') {
+            fetchShowtimes().then(() => {
+                renderShowtimesTable();
+                renderAvailabilityMatrix();
+            });
+        }
+    });
+}
+
 let currentRoomRows = 8;
 let currentRoomCols = 12;
 let currentVipRows = [4, 5];
@@ -214,7 +261,7 @@ async function fetchShowtimes() {
         const res = await fetch(getApiUrl('/showtimes'), { headers: getApiHeaders() });
         if (res.ok) {
             const data = await res.json();
-            if (Array.isArray(data) && data.length > 0) {
+            if (Array.isArray(data)) {
                 db.showtimes = data.map(s => {
                     const movie = db.movies.find(m => m.id === (s.movieId ? s.movieId.toString() : '')) || {};
                     const rawStart = s.startTime || s.date || '';
@@ -225,7 +272,7 @@ async function fetchShowtimes() {
                         datePart = parts[0];
                         timePart = parts[1].substring(0, 5);
                     } else if (rawStart) {
-                        datePart = rawStart;
+                        datePart = rawStart.substring(0, 10);
                     }
                     return {
                         id: s.id ? s.id.toString() : '',
@@ -570,10 +617,25 @@ function switchTab(tabId) {
 }
 
 function triggerTabRenders(tabId) {
+    if (matrixPollingInterval) {
+        clearInterval(matrixPollingInterval);
+        matrixPollingInterval = null;
+    }
+
     switch (tabId) {
         case 'dashboard': renderDashboard(); break;
         case 'movies': renderMoviesTable(); break;
-        case 'showtimes': renderShowtimesTable(); renderAvailabilityMatrix(); break;
+        case 'showtimes':
+            renderShowtimesTable();
+            renderAvailabilityMatrix();
+            matrixPollingInterval = setInterval(async () => {
+                await fetchShowtimes();
+                if (activeTab === 'showtimes') {
+                    renderShowtimesTable();
+                    renderAvailabilityMatrix();
+                }
+            }, 10000);
+            break;
         case 'rooms': populateRoomDropdown(); loadBrokenSeats(); break;
         case 'bookings': renderBookingsTable(); break;
         case 'combos': renderCombosTable(); break;
@@ -1303,14 +1365,20 @@ function renderAvailabilityMatrix() {
     container.innerHTML = html;
 }
 
-function changeMatrixDate(offset) {
+async function changeMatrixDate(offset) {
     const datePicker = document.getElementById('matrix-date-picker');
     if (datePicker) {
         let currentDate = new Date(datePicker.value || new Date());
         currentDate.setDate(currentDate.getDate() + offset);
         datePicker.value = currentDate.toISOString().split('T')[0];
+        await fetchShowtimes();
         renderAvailabilityMatrix();
     }
+}
+
+async function onMatrixFilterChange() {
+    await fetchShowtimes();
+    renderAvailabilityMatrix();
 }
 
 function openQuickShowtimeModal(cinemaId, roomName, timeSlot, dateStr) {
@@ -1469,6 +1537,10 @@ async function handleShowtimeSubmit(e) {
     db.showtimes.push(newShowtime);
     localStorage.setItem('3hd2k_showtimes', JSON.stringify(db.showtimes));
 
+    if (typeof adminSyncChannel !== 'undefined' && adminSyncChannel) {
+        adminSyncChannel.postMessage({ type: 'SHOWTIMES_UPDATED' });
+    }
+
     closeShowtimeModal();
     renderShowtimesTable();
     renderAvailabilityMatrix();
@@ -1485,6 +1557,10 @@ async function deleteShowtime(id) {
                 headers: getApiHeaders()
             });
         } catch (_) {}
+
+        if (typeof adminSyncChannel !== 'undefined' && adminSyncChannel) {
+            adminSyncChannel.postMessage({ type: 'SHOWTIMES_UPDATED' });
+        }
 
         showToast('Đã xóa suất chiếu!', 'success');
         renderShowtimesTable();
@@ -2679,6 +2755,7 @@ window.closeUserHistoryModal = closeUserHistoryModal;
 window.purgeAllMovieData = purgeAllMovieData;
 window.openQuickShowtimeModal = openQuickShowtimeModal;
 window.changeMatrixDate = changeMatrixDate;
+window.onMatrixFilterChange = onMatrixFilterChange;
 window.filterAdminInventoryTable = filterAdminInventoryTable;
 window.openAdminRestockModal = openAdminRestockModal;
 window.closeAdminRestockModal = closeAdminRestockModal;
