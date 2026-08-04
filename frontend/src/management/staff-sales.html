@@ -83,6 +83,7 @@
             border-right: 1px solid rgba(255,255,255,0.05);
         }
         .cfd-content {
+            line-height: 1.2;
             padding: 16px 20px;
             display: flex;
             flex-direction: column;
@@ -129,11 +130,11 @@
             });
             
             for (let cName in groups) {
-                btnsHTML += `<div style="margin-bottom:8px;">`;
-                btnsHTML += `<div style="font-size:0.75rem;color:#00ffff;font-weight:800;margin-bottom:6px;text-transform:uppercase; text-align: left;">| ${cName}</div>`;
-                btnsHTML += `<div style="display:flex;flex-direction:row;flex-wrap:wrap;gap:8px;">`;
+                btnsHTML += `<div style="margin-bottom:6px;">`;
+                btnsHTML += `<div style="font-size:0.75rem;color:#00ffff;font-weight:800;margin-bottom:4px;text-transform:uppercase; text-align: left;">| ${cName}</div>`;
+                btnsHTML += `<div style="display:flex;flex-direction:row;flex-wrap:wrap;gap:6px;">`;
                 btnsHTML += groups[cName].map(st => {
-                    let base = "padding:8px 12px;border-radius:6px;font-size:0.85rem;font-weight:800;border:none;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;transition:all 0.2s;";
+                    let base = "padding:6px 10px;border-radius:6px;font-size:0.85rem;font-weight:800;border:none;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;transition:all 0.2s;";
                     let oc = `event.stopPropagation(); openPOSSeatModal('${st.id}', '${m.id}')`;
                     if (st.isPast) {
                         return `<button disabled style="${base}opacity:0.3;text-decoration:line-through;background:#111;color:#555;cursor:not-allowed;" title="${st.roomName || 'Phòng chiếu'} - Suất chiếu này đã qua">⏱️ ${st.time} (Đã qua)</button>`;
