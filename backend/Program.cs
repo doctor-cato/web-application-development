@@ -116,8 +116,14 @@ try {
     // UPGRADE PATH: Once the DB schema is properly reverse-engineered or migration history is fixed, 
     // move this into a proper EF migration and remove this raw SQL.
     context.Database.ExecuteSqlRaw("IF COL_LENGTH('users', 'is_two_factor_enabled') IS NULL ALTER TABLE users ADD is_two_factor_enabled BIT NOT NULL DEFAULT 0;");
+    context.Database.ExecuteSqlRaw(@"
+        IF COL_LENGTH('Showtimes', 'cinema_id') IS NULL ALTER TABLE Showtimes ADD cinema_id nvarchar(100) NULL;
+        IF COL_LENGTH('Showtimes', 'cinema_name') IS NULL ALTER TABLE Showtimes ADD cinema_name nvarchar(255) NULL;
+        IF COL_LENGTH('Showtimes', 'room_name') IS NULL ALTER TABLE Showtimes ADD room_name nvarchar(100) NULL;
+        IF COL_LENGTH('Showtimes', 'movie_title') IS NULL ALTER TABLE Showtimes ADD movie_title nvarchar(255) NULL;
+    ");
 } catch (Exception ex) {
-    app.Logger.LogWarning(ex, "Failed to run alter table for 2FA column.");
+    app.Logger.LogWarning(ex, "Failed to run alter table for new columns.");
 }
 if (builder.Configuration.GetValue<bool>("Database:InitializeOnStartup"))
 {
