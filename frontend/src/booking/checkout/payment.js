@@ -30,28 +30,26 @@ async function handleSuccess(txId) {
         const checkoutData = getCheckout();
         checkoutData.transactionId = txId;
         checkoutData.createdAt = new Date().toISOString();
-        let booking = await confirmBooking(checkoutData);
+        let backendBooking = await confirmBooking(checkoutData);
 
-        if (!booking) {
-            const seatsArr = Array.isArray(checkoutData.seats) ? checkoutData.seats : (checkoutData.seats ? [checkoutData.seats] : []);
-            booking = {
-                id: txId,
-                movieTitle: checkoutData.movieTitle || 'Unknown Movie',
-                showtimeId: checkoutData.showtimeId || null,
-                showtimeText: checkoutData.showtimeText || '',
-                room: checkoutData.room || '',
-                seats: seatsArr,
-                tickets: seatsArr.map(s => ({
-                    seat: s,
-                    ticketCode: 'TK-' + s + '-' + Math.floor(100000 + Math.random() * 900000)
-                })),
-                combo: checkoutData.combo || 'none',
-                total: checkoutData.total || 0,
-                poster: checkoutData.poster || '',
-                transactionId: txId,
-                createdAt: checkoutData.createdAt
-            };
-        }
+        const seatsArr = Array.isArray(checkoutData.seats) ? checkoutData.seats : (checkoutData.seats ? [checkoutData.seats] : []);
+        let booking = {
+            id: (backendBooking && backendBooking.bookingId) ? backendBooking.bookingId : txId,
+            movieTitle: checkoutData.movieTitle || 'Unknown Movie',
+            showtimeId: checkoutData.showtimeId || null,
+            showtimeText: checkoutData.showtimeText || '',
+            room: checkoutData.room || '',
+            seats: seatsArr,
+            tickets: seatsArr.map(s => ({
+                seat: s,
+                ticketCode: 'TK-' + s + '-' + Math.floor(100000 + Math.random() * 900000)
+            })),
+            combo: checkoutData.combo || 'none',
+            total: checkoutData.total || 0,
+            poster: checkoutData.poster || '',
+            transactionId: txId,
+            createdAt: checkoutData.createdAt
+        };
 
         lsSet(KEYS.LAST_BOOKING, booking);
         localStorage.removeItem('cinematch_active');
