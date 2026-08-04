@@ -25,9 +25,11 @@
             let futureShows = mapped.filter(s => !s.isPast && !s.isCurrentActive);
             if (futureShows.length > 0) {
                 futureShows.sort((a,b) => a._stTotal - b._stTotal);
-                let closestId = futureShows[0].id;
+                let closestTime = futureShows[0]._stTotal;
                 mapped = mapped.map(s => {
-                    if (s.id === closestId) s.isNext = true;
+                    if (!s.isPast && !s.isCurrentActive && s._stTotal === closestTime) {
+                        s.isNext = true;
+                    }
                     return s;
                 });
             }
