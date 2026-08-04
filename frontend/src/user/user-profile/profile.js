@@ -655,7 +655,7 @@ async function loadRealOffers() {
 
 async function fetchMe() {
     try {
-        const token = localStorage.getItem('jwt_token') || sessionStorage.getItem('token');
+        const token = localStorage.getItem('jwt_token') || localStorage.getItem('auth_token') || sessionStorage.getItem('token');
         if (!token) return;
         const res = await fetch(`${API_BASE_URL}/auth/me`, {
             headers: { 'Authorization': `Bearer ${token}` }
@@ -663,12 +663,23 @@ async function fetchMe() {
         if (res.ok) {
             const data = await res.json();
             const session = getCurrentUser() || {};
+
+            Object.keys(data).forEach(key => {
+                if (data[key] === null || data[key] === undefined) {
+                    delete data[key];
+                }
+            });
+
             const updated = { ...session, ...data };
+            if (data.dateOfBirth) updated.dob = data.dateOfBirth;
+
             setCurrentUser(updated);
             
-            localStorage.setItem('userName', data.fullname || '');
-            localStorage.setItem('userEmail', data.email || '');
-            localStorage.setItem('userPhone', data.phone || '');
+            if (data.fullname || data.name) localStorage.setItem('userName', data.fullname || data.name);
+            if (data.email) localStorage.setItem('userEmail', data.email);
+            if (data.phone) localStorage.setItem('userPhone', data.phone);
+            if (data.dateOfBirth) localStorage.setItem('userDob', data.dateOfBirth);
+            if (data.gender) localStorage.setItem('userGender', data.gender);
             if (data.avatar) localStorage.setItem('userAvatar', data.avatar);
             if (data.role) localStorage.setItem('user_role', data.role);
             if (data.vipPlan) localStorage.setItem('vip_plan', data.vipPlan);
