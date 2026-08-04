@@ -1515,7 +1515,7 @@ export function renderNavbar() {
                         <a href="${srcPrefix}/management/admin.html" class="portal-icon-btn admin-portal-icon" data-tooltip="Admin Portal" title="Admin Portal">
                             <i class="fas fa-user-shield"></i>
                         </a>
-                        <a href="${srcPrefix}/management/staff-sales.html" class="portal-icon-btn staff-portal-icon" data-tooltip="Staff POS" title="Staff POS Portal">
+                        <a href="${srcPrefix}/management/staff-sales.html?v=1785856471480" class="portal-icon-btn staff-portal-icon" data-tooltip="Staff POS" title="Staff POS Portal">
                             <i class="fas fa-cash-register"></i>
                         </a>
                     `;
@@ -1526,20 +1526,20 @@ export function renderNavbar() {
                             </a>
                         </li>
                         <li>
-                            <a href="${srcPrefix}/management/staff-sales.html" style="color: #00f0ff; font-weight: 700;">
+                            <a href="${srcPrefix}/management/staff-sales.html?v=1785856471480" style="color: #00f0ff; font-weight: 700;">
                                 <i class="fas fa-cash-register" style="color: #00f0ff;"></i> Staff POS Portal
                             </a>
                         </li>
                     `;
                 } else if (userRole === 'STAFF') {
                     portalNavButtonsHtml = `
-                        <a href="${srcPrefix}/management/staff-sales.html" class="portal-icon-btn staff-portal-icon" data-tooltip="Staff POS" title="Staff POS Portal">
+                        <a href="${srcPrefix}/management/staff-sales.html?v=1785856471480" class="portal-icon-btn staff-portal-icon" data-tooltip="Staff POS" title="Staff POS Portal">
                             <i class="fas fa-cash-register"></i>
                         </a>
                     `;
                     portalMenuItemsHtml = `
                         <li style="border-top: 1px dashed rgba(0, 240, 255, 0.4); margin-top: 6px; padding-top: 6px;">
-                            <a href="${srcPrefix}/management/staff-sales.html" style="color: #00f0ff; font-weight: 700;">
+                            <a href="${srcPrefix}/management/staff-sales.html?v=1785856471480" style="color: #00f0ff; font-weight: 700;">
                                 <i class="fas fa-cash-register" style="color: #00f0ff;"></i> Staff POS Portal
                             </a>
                         </li>
