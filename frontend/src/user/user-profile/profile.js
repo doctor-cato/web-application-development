@@ -220,74 +220,83 @@ function initTabs() {
     }
 }
 
-function loadUserInfo() {
-    let session = null;
-    try {
-        session = getCurrentUser();
-    } catch(e) {
-        console.error("getCurrentUser error", e);
-    }
-
-    const hasToken = Boolean(localStorage.getItem('jwt_token') || localStorage.getItem('auth_token'));
-    const isLogged = localStorage.getItem('isLoggedIn') === 'true' || hasToken;
-    
-    if (!isLogged) {
+async function loadUserInfo() {
+    const token = localStorage.getItem('jwt_token') || localStorage.getItem('auth_token');
+    if (!token) {
         window.location.href = '/auth/user-login/login.html?returnUrl=' + encodeURIComponent(window.location.pathname + window.location.search);
         return;
     }
 
-    // Read directly from localStorage (most reliable after login/fetchMe)
-    let email = localStorage.getItem('userEmail') || (session && session.email) || '';
-    let name = localStorage.getItem('userName') || (session && (session.fullname || session.fullName || session.name)) || '';
-    let phone = localStorage.getItem('userPhone') || (session && (session.phone || session.phoneNumber)) || '';
-    let avatar = localStorage.getItem('userAvatar') || (session && session.avatar) || '';
-    let dob = localStorage.getItem('userDob') || (session && (session.dob || session.dateOfBirth)) || '';
-    let gender = localStorage.getItem('userGender') || (session && session.gender) || 'male';
-
-    // Filter out placeholder/corrupt names
-    if (name === 'Khách' || !name) name = '';
-
-    if (email) {
-        try {
-            const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
-            const found = users.find(u => u.email && u.email.toLowerCase() === email.toLowerCase());
-            if (found) {
-                if (!name || name === 'Khách') name = found.fullname || found.name || name;
-                if (!phone) phone = found.phone || phone;
-                if (!avatar) avatar = found.avatar || avatar;
-                if (!dob) dob = found.dob || found.dateOfBirth || found.date_of_birth || dob;
-                if (!gender) gender = found.gender || gender;
+    let user = null;
+    try {
+        const res = await fetch(`${API_BASE_URL}/auth/me`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.ok) {
+            user = await res.json();
+            if (user.email) localStorage.setItem('userEmail', user.email);
+            if (user.fullname || user.name) localStorage.setItem('userName', user.fullname || user.name);
+            if (user.phone) localStorage.setItem('userPhone', user.phone);
+            if (user.dateOfBirth) localStorage.setItem('userDob', user.dateOfBirth);
+            if (user.gender) localStorage.setItem('userGender', user.gender);
+            if (user.avatar) localStorage.setItem('userAvatar', user.avatar);
+            if (user.role) localStorage.setItem('user_role', user.role.toUpperCase());
+            if (user.vipPlan) localStorage.setItem('vip_plan', user.vipPlan);
+            if (user.points !== undefined) {
+                const rewards = JSON.parse(localStorage.getItem('3hd2k_rewards') || '{}');
+                rewards.points = user.points;
+                localStorage.setItem('3hd2k_rewards', JSON.stringify(rewards));
             }
-        } catch(e) {
-            console.error('[Profile] registeredUsers read error', e);
+        } else if (res.status === 401) {
+            localStorage.removeItem('jwt_token');
+            localStorage.removeItem('auth_token');
+            window.location.href = '/auth/user-login/login.html?returnUrl=' + encodeURIComponent(window.location.pathname + window.location.search);
+            return;
         }
+    } catch (e) {
+        console.warn('fetchMe API failed, falling back to localStorage:', e);
     }
 
-    if (!name && email) {
-        name = email.split('@')[0];
+    if (!user) {
+        const session = getCurrentUser();
+        user = {
+            email: localStorage.getItem('userEmail') || (session && session.email) || '',
+            fullname: localStorage.getItem('userName') || (session && (session.fullname || session.name)) || '',
+            phone: localStorage.getItem('userPhone') || (session && session.phone) || '',
+            dateOfBirth: localStorage.getItem('userDob') || (session && session.dob) || '',
+            gender: localStorage.getItem('userGender') || (session && session.gender) || 'male',
+            avatar: localStorage.getItem('userAvatar') || (session && session.avatar) || '',
+            role: localStorage.getItem('user_role') || (session && session.role) || 'CUSTOMER',
+            vipPlan: localStorage.getItem('vip_plan') || '',
+        };
     }
+
+    if (!user.email && !user.fullname) {
+        window.location.href = '/auth/user-login/login.html?returnUrl=' + encodeURIComponent(window.location.pathname + window.location.search);
+        return;
+    }
+
+    const name = (user.fullname || user.name || '').trim() || (user.email ? user.email.split('@')[0] : '');
+    const dob = user.dateOfBirth ? user.dateOfBirth.split('T')[0] : '';
+    const role = (user.role || 'CUSTOMER').toUpperCase();
+    const isAdmin = role === 'ADMIN' || (user.email || '').toLowerCase().includes('admin');
+    const isVip = localStorage.getItem('is_vip') === 'true' || !!user.vipPlan;
 
     const nameEl = document.getElementById('sidebar-name');
     if (nameEl) nameEl.innerText = name || 'Khách';
 
     const avatarEl = document.getElementById('sidebar-avatar');
-    if (avatarEl && avatar) avatarEl.src = avatar;
+    if (avatarEl && user.avatar) avatarEl.src = user.avatar;
 
     let rewardsPoints = 0;
-    try {
-        const rewardsData = JSON.parse(localStorage.getItem('3hd2k_rewards') || '{}');
-        rewardsPoints = rewardsData.points || 0;
-    } catch(_) {}
+    try { rewardsPoints = JSON.parse(localStorage.getItem('3hd2k_rewards') || '{}').points || 0; } catch(_) {}
 
     const vipEl = document.querySelector('.sidebar-vip');
     if (vipEl) {
-        const isAdmin = checkIsAdminUser(session);
-        const isVip = localStorage.getItem('is_vip') === 'true' || isAdmin;
-        const vipPlan = (session && session.vip_plan) ? session.vip_plan : (localStorage.getItem('vip_plan') || '');
         if (isAdmin) {
             vipEl.innerHTML = `<i class="fas fa-user-shield" style="color: #ff4b4b;"></i> QUẢN TRỊ VIÊN - <span id="sidebar-points">${rewardsPoints}</span> điểm (Mọi khung & Quyền lợi)`;
-        } else if (isVip || vipPlan) {
-            const planLabel = vipPlan ? vipPlan.charAt(0).toUpperCase() + vipPlan.slice(1) : '';
+        } else if (isVip && user.vipPlan) {
+            const planLabel = user.vipPlan.charAt(0).toUpperCase() + user.vipPlan.slice(1);
             vipEl.innerHTML = `<i class="fas fa-crown"></i> VIP ${planLabel} - <span id="sidebar-points">${rewardsPoints}</span> điểm`;
         } else {
             vipEl.innerHTML = `Hạng thường - <span id="sidebar-points">${rewardsPoints}</span> điểm`;
@@ -295,55 +304,42 @@ function loadUserInfo() {
     }
 
     const fullnameInput = document.getElementById('fullname');
-    if (fullnameInput) fullnameInput.value = name || '';
+    if (fullnameInput) fullnameInput.value = name;
 
     const emailInput = document.getElementById('email');
-    if (emailInput) emailInput.value = email || '';
+    if (emailInput) emailInput.value = user.email || '';
 
     const phoneInput = document.getElementById('phone');
-    if (phoneInput) phoneInput.value = phone || '';
+    if (phoneInput) phoneInput.value = user.phone || '';
 
     const dobInput = document.getElementById('dob');
-    if (dobInput) {
-        if (dob && typeof dob === 'string' && dob.includes('T')) {
-            dob = dob.split('T')[0];
-        }
-        dobInput.value = dob || '';
-    }
+    if (dobInput) dobInput.value = dob;
 
-    const genderInput = document.querySelector(`input[name="gender"][value="${gender || 'male'}"]`);
+    const genderInput = document.querySelector(`input[name="gender"][value="${user.gender || 'male'}"]`);
     if (genderInput) genderInput.checked = true;
 
     let customerCode = localStorage.getItem('userCustomerCode');
-    if (!customerCode && email) {
+    if (!customerCode && user.email) {
         let hash = 0;
-        for (let i = 0; i < email.length; i++) hash = (hash << 5) - hash + email.charCodeAt(i);
-        const codeStr = Math.abs(hash).toString(36).toUpperCase().padStart(6, 'X').slice(0, 6);
-        customerCode = '3HD2K-' + codeStr;
-        localStorage.setItem('userCustomerCode', customerCode);
-    } else if (!customerCode) {
-        customerCode = '3HD2K-' + Math.random().toString(36).slice(2, 8).toUpperCase();
+        for (let i = 0; i < user.email.length; i++) hash = (hash << 5) - hash + user.email.charCodeAt(i);
+        customerCode = '3HD2K-' + Math.abs(hash).toString(36).toUpperCase().padStart(6, 'X').slice(0, 6);
         localStorage.setItem('userCustomerCode', customerCode);
     }
-
     const customerCodeInput = document.getElementById('customerCode');
     if (customerCodeInput) customerCodeInput.value = customerCode || '';
 
     const membershipInput = document.getElementById('membership');
     if (membershipInput) {
-        const isAdmin = checkIsAdminUser(session);
-        const isVip = localStorage.getItem('is_vip') === 'true' || isAdmin;
-        const vipPlan = (session && session.vip_plan) ? session.vip_plan : (localStorage.getItem('vip_plan') || '');
         if (isAdmin) {
             membershipInput.value = 'Quản trị viên (Toàn quyền & Tất cả khung viền)';
-        } else if (isVip || vipPlan) {
-            const planLabel = vipPlan ? vipPlan.charAt(0).toUpperCase() + vipPlan.slice(1) : '';
-            membershipInput.value = `VIP ${planLabel}`;
+        } else if (isVip && user.vipPlan) {
+            membershipInput.value = `VIP ${user.vipPlan.charAt(0).toUpperCase() + user.vipPlan.slice(1)}`;
         } else {
             membershipInput.value = 'Thành viên thường';
         }
     }
 }
+
 
 function initLogout() {
     const logoutBtn = document.getElementById('sidebar-logout');
@@ -705,7 +701,7 @@ async function fetchMe() {
 
 async function initProfile() {
     try { initTabs(); } catch(e) { console.error('initTabs error:', e); }
-    try { loadUserInfo(); } catch(e) { console.error('loadUserInfo error:', e); }
+    try { await loadUserInfo(); } catch(e) { console.error('loadUserInfo error:', e); }
     try { setupProfileForm(); } catch(e) { console.error('setupProfileForm error:', e); }
     try { setupProfileUI(); } catch(e) { console.error('setupProfileUI error:', e); }
     try { renderRealHistory(); } catch(e) { console.error('renderRealHistory error:', e); }
@@ -715,13 +711,7 @@ async function initProfile() {
     try { setup2FA(); } catch(e) { console.error('setup2FA error:', e); }
     try { loadRealOffers(); } catch(e) { console.error('loadRealOffers error:', e); }
 
-    try {
-        await fetchMe();
-        loadUserInfo();
-    } catch(e) { console.error('fetchMe failed:', e); }
-    
     window.addEventListener('vouchersUpdated', () => {
-        console.log('Reloading offers due to SignalR update...');
         try { loadRealOffers(); } catch(e) { console.error('loadRealOffers error:', e); }
     });
 }
