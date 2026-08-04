@@ -131,7 +131,12 @@ export function parseJwtPayload(token) {
     }
     const decoded = safeAtob(token);
     const parsed = JSON.parse(decoded);
-    if (parsed && typeof parsed === 'object') return parsed;
+    if (parsed && typeof parsed === 'object') {
+      if (parsed.alg && !parsed.email && !parsed.fullname && !parsed.role && !parsed.name && !parsed['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress']) {
+        return null; // Reject corrupt old header-only tokens
+      }
+      return parsed;
+    }
   } catch (e) {}
   return null;
 }
@@ -179,6 +184,12 @@ export function getCurrentUser() {
       if (!payload.role) {
         payload.role = payload.Role || payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] || localStorage.getItem('user_role') || 'CUSTOMER';
       }
+      
+      // Strict corruption check
+      if (!payload.email && !payload.fullname && !payload.role && !payload.name) {
+        return null;
+      }
+
       if (!payload.phone) payload.phone = localStorage.getItem('userPhone') || '';
       if (!payload.dob) payload.dob = payload.dateOfBirth || localStorage.getItem('userDob') || '';
       if (!payload.avatar) payload.avatar = localStorage.getItem('userAvatar') || '';
