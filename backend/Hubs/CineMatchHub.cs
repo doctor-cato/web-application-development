@@ -45,7 +45,7 @@ namespace appweb.Hubs
             lock (_queue)
             {
                 partner = _queue.FirstOrDefault(x =>
-                    x.UserId != userId &&
+                    x.ConnectionId != req.ConnectionId &&
                     (x.Genre == genre || genre == "all" || x.Genre == "all"));
 
                 if (partner != null)
