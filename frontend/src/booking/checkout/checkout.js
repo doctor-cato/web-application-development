@@ -2,6 +2,7 @@ import { getCheckout, saveCheckout } from '/shared/utils/storage.js';
 import { createTransaction } from '/shared/utils/paymentService.js';
 import { formatPrice } from '/explore/home-page/movieService.js';
 import { requireAuth } from '/shared/utils/authGuard.js';
+import { confirmBooking } from '/booking/seat-booking/bookingService.js';
 
 if (!requireAuth('Bạn cần đăng nhập để thanh toán vé. Hãy đăng nhập hoặc tạo tài khoản để tiếp tục.')) {
     document.addEventListener('DOMContentLoaded', () => {
@@ -516,7 +517,7 @@ async function init() {
 let expireTime = 0;
 let isExpired = false;
 
-function handlePayClick(e) {
+async function handlePayClick(e) {
   e.preventDefault();
 
   if (isExpired || (expireTime > 0 && Date.now() >= expireTime)) {
@@ -541,9 +542,7 @@ function handlePayClick(e) {
   let customFood = customFoodStr ? JSON.parse(customFoodStr) : [];
 
   const checkoutData = {
-
     ...co,
-
     movieTitle: document.querySelector('#order-summary-movie')?.innerText || co?.movieTitle || 'Unknown',
     showtimeText: document.querySelector('#order-summary-showtime')?.innerText || co?.showtimeText || '',
     room: document.querySelector('#order-summary-room')?.innerText || co?.room || '',
@@ -552,16 +551,40 @@ function handlePayClick(e) {
     customFood: customFood,
     total,
     provider: getSelectedPayment(),
+    paymentMethod: getSelectedPayment(),
     createdAt: new Date().toISOString()
   };
 
-  saveCheckout(checkoutData);
+  const payBtn = document.getElementById('pay-btn');
+  if (payBtn) {
+    payBtn.disabled = true;
+    payBtn.innerText = 'Đang xử lý đặt vé...';
+  }
 
-  const transaction = createTransaction(total, getSelectedPayment());
-  const txId = transaction.transactionId;
-  const provider = transaction.method;
+  try {
+    const backendBooking = await confirmBooking(checkoutData);
+    if (!backendBooking || !backendBooking.bookingId) {
+      alert('Không thể tạo đơn đặt vé. Vui lòng thử lại.');
+      if (payBtn) {
+        payBtn.disabled = false;
+        payBtn.innerText = 'Thanh toán';
+      }
+      return;
+    }
 
-  window.location.href = `payment_simulation.html?provider=${encodeURIComponent(provider)}&txId=${encodeURIComponent(txId)}`;
+    checkoutData.bookingId = backendBooking.bookingId;
+    saveCheckout(checkoutData);
+
+    const provider = getSelectedPayment();
+    window.location.href = `payment_simulation.html?provider=${encodeURIComponent(provider)}&bookingId=${encodeURIComponent(backendBooking.bookingId)}&amount=${total}`;
+  } catch (error) {
+    console.error('Lỗi khi thanh toán:', error);
+    alert('Có lỗi xảy ra trong quá trình đặt vé. Vui lòng thử lại.');
+    if (payBtn) {
+      payBtn.disabled = false;
+      payBtn.innerText = 'Thanh toán';
+    }
+  }
 }
 
 function startCountdown(seconds) {
