@@ -54,8 +54,27 @@ function formatMovieDuration(rawDuration) {
 
 function mapMovieObj(m) {
     // Tách biệt hoàn toàn: poster (ảnh dọc cho card) và backdrop (ảnh ngang cho hero banner)
-    const rawPoster = m.posterUrl || m.poster;
-    const rawBg = m.bgUrl || m.backdropUrl || m.bg || m.backdrop;
+    const localPosters = {
+        'ready player one': '/shared/images/Ready_Player_One.jpg',
+        'gran turismo - tay đua cự phách': '/shared/images/Gran_Turismo.jpg',
+        'iron man 2': '/shared/images/iron_man2.jpg',
+        'f1: the movie': '/shared/images/f1_movie.jpg',
+        'kẻ kiến tạo': '/shared/images/Ke_Kien_Tao_2.jpg',
+        'battle: los angeles': '/shared/images/battle_la.jpg',
+        'war machine': '/shared/images/war_machine.jpg',
+        'world war z - thế chiến z': '/shared/images/World_war_Z.jpg',
+        'moon fall - trăng rơi': '/shared/images/Moon_Fall.jpg',
+        'your name - tên cậu là gì?': '/shared/images/Kimi-no-Na-wa.-Visual.jpg',
+        'battleship - chiến hạm': '/shared/images/obsession.jpg'
+    };
+
+    let mappedPoster = '';
+    if (m.title && localPosters[m.title.toLowerCase().trim()]) {
+        mappedPoster = localPosters[m.title.toLowerCase().trim()];
+    }
+
+    const rawPoster = m.posterUrl || m.poster || mappedPoster;
+    const rawBg = m.bgUrl || m.backdropUrl || m.bg || m.backdrop || mappedPoster;
 
     let posterImg = rawPoster ? normalizeImagePath(rawPoster) : '/shared/images/avatar.jpg';
     let bgImg = rawBg ? normalizeImagePath(rawBg) : '';
