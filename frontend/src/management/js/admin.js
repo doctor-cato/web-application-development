@@ -1541,7 +1541,7 @@ async function handleShowtimeSubmit(e) {
         price: price
     };
 
-    const isGuid = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(movieId);
+    const isGuid = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/i.test(movieId);
 
     const payload = {
         movieId: isGuid ? movieId : null,
@@ -1566,27 +1566,54 @@ async function handleShowtimeSubmit(e) {
             const saved = await res.json();
             if (saved && saved.id) {
                 newShowtime.id = saved.id.toString();
+                if (saved.movieId) {
+                    newShowtime.movieId = saved.movieId.toString();
+                }
             }
             showToast('Tạo suất chiếu mới thành công và đã lưu vào Database!', 'success');
+            
+            // Only add to local state if the API was successful
+            db.showtimes.push(newShowtime);
+            localStorage.setItem('3hd2k_showtimes', JSON.stringify(db.showtimes));
+
+            if (typeof adminSyncChannel !== 'undefined' && adminSyncChannel) {
+                adminSyncChannel.postMessage({ type: 'SHOWTIMES_UPDATED' });
+            }
+
+            closeShowtimeModal();
+            renderShowtimesTable();
+            renderAvailabilityMatrix();
+
+            // Refresh matrix polling to avoid immediate override and allow time to sync
+            if (matrixPollingInterval) {
+                clearInterval(matrixPollingInterval);
+                matrixPollingInterval = setInterval(async () => {
+                    await fetchShowtimes();
+                    if (activeTab === 'showtimes') {
+                        renderShowtimesTable();
+                        renderAvailabilityMatrix();
+                    }
+                }, 10000);
+            }
+            
+            // Refetch immediately to ensure sync with backend
+            setTimeout(async () => {
+                await fetchShowtimes();
+                if (activeTab === 'showtimes') {
+                    renderShowtimesTable();
+                    renderAvailabilityMatrix();
+                }
+            }, 1000);
+
         } else {
-            console.warn('API create showtime status:', res.status);
-            showToast('Tạo suất chiếu mới thành công!', 'success');
+            const errText = await res.text();
+            console.warn('API create showtime status:', res.status, errText);
+            showToast(`Lỗi tạo lịch chiếu: ${res.status} - Không thể lưu vào hệ thống.`, 'error');
         }
     } catch (err) {
         console.error('API create showtime error:', err);
-        showToast('Tạo suất chiếu thành công (lưu cục bộ)', 'info');
+        showToast('Lỗi mạng: Không thể kết nối tới máy chủ!', 'error');
     }
-
-    db.showtimes.push(newShowtime);
-    localStorage.setItem('3hd2k_showtimes', JSON.stringify(db.showtimes));
-
-    if (typeof adminSyncChannel !== 'undefined' && adminSyncChannel) {
-        adminSyncChannel.postMessage({ type: 'SHOWTIMES_UPDATED' });
-    }
-
-    closeShowtimeModal();
-    renderShowtimesTable();
-    renderAvailabilityMatrix();
 }
 
 async function deleteShowtime(id) {

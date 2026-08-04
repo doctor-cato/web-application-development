@@ -423,7 +423,7 @@ function getFallbackShowtimes(movieId) {
                     cinemaName: cinema.name,
                     roomName: 'Phòng chiếu 1',
                     room: { cinemaId: cinema.id, name: 'Phòng chiếu 1' },
-                    date: st.toISOString().split('T')[0],
+                    date: `${st.getFullYear()}-${String(st.getMonth()+1).padStart(2,'0')}-${String(st.getDate()).padStart(2,'0')}`,
                     time: st.toTimeString().substring(0,5),
                     startTime: st.toISOString(),
                     price: 80000
