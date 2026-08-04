@@ -16,7 +16,7 @@ function normalizeImagePath(path) {
     if (path.includes('3hd2k-api.somee.com')) {
         path = path.replace(/^https?:\/\/3hd2k-api\.somee\.com/, '');
     }
-    if (path.startsWith('http:
+    if (path.startsWith('http://') || path.startsWith('https://')) {
         return path;
     }
     if (path.startsWith('/shared/') || path.startsWith('../') || path.startsWith('assets/')) {
