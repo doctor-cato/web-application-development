@@ -224,9 +224,30 @@ function renderMovieInfo() {
   const roomEl = document.getElementById('showtime-room');
   const posterEl = document.getElementById('movie-poster');
 
+  let showtimeStr = `19:30 | ${currentShowtimeId}`;
+  let roomStr = 'Phòng 3';
+
+  try {
+      const showtimesList = JSON.parse(localStorage.getItem('3hd2k_showtimes') || '[]');
+      const st = showtimesList.find(s => s.id === currentShowtimeId);
+      if (st) {
+          if (st.time && st.date) {
+              showtimeStr = `${st.time} | ${st.date}`;
+          } else if (st.startTime) {
+              const d = new Date(st.startTime);
+              showtimeStr = `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')} | ${d.toLocaleDateString('vi-VN')}`;
+          }
+          if (st.roomName) {
+              roomStr = st.roomName;
+          }
+      }
+  } catch (e) {
+      console.warn("Lỗi khi load thông tin suất chiếu:", e);
+  }
+
   if (titleEl) titleEl.innerText = movieData.title;
-  if (showtimeEl) showtimeEl.innerText = `19:30 | ${currentShowtimeId}`;
-  if (roomEl) roomEl.innerText = 'Phòng 3';
+  if (showtimeEl) showtimeEl.innerText = showtimeStr;
+  if (roomEl) roomEl.innerText = roomStr;
   if (posterEl) posterEl.src = movieData.poster;
 }
 
