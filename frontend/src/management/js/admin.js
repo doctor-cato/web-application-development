@@ -34,30 +34,50 @@ window.openEditShowtimeFromMatrix = function(id) {
     document.getElementById('showtime-modal').style.display = 'flex';
 };
 
-window.deleteShowtime = async function() {
-    const id = document.getElementById('st-id-input').value;
-    if (!id) return;
+window.deleteShowtime = async function(paramId) {
+    let id = paramId;
+    let btn = null;
+    let originalText = '';
     
-    if (!confirm("Bạn có chắc chắn muốn xóa suất chiếu này? Việc xóa có thể gây lỗi nếu đã có khách đặt vé.")) return;
+    if (typeof id === 'object' || !id) {
+        // If called without string ID (e.g. from modal)
+        id = document.getElementById('st-id-input')?.value;
+        if (!id) return;
+        btn = document.getElementById('st-delete-btn');
+        if (btn) {
+            originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xóa...';
+            btn.disabled = true;
+        }
+    }
     
-    const btn = document.getElementById('st-delete-btn');
-    const originalText = btn.innerHTML;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xóa...';
-    btn.disabled = true;
-
+    if (!confirm("Bạn có chắc chắn muốn xóa suất chiếu này? Việc xóa có thể gây lỗi nếu đã có khách đặt vé.")) {
+        if (btn) {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
+        return;
+    }
+    
     try {
         const res = await fetch(getApiUrl(`/showtimes/${id}`), {
             method: 'DELETE',
             headers: getApiHeaders()
         });
 
-        if (res.ok) {
-            closeShowtimeModal();
+        if (res.ok || res.status === 404) {
+            // Update local DB to be safe
+            db.showtimes = db.showtimes.filter(s => String(s.id) !== String(id));
+            localStorage.setItem('3hd2k_showtimes', JSON.stringify(db.showtimes));
+            
+            if (typeof closeShowtimeModal === 'function') closeShowtimeModal();
             showNotification('Xóa suất chiếu thành công!');
-            await fetchShowtimes();
-            renderShowtimesTable();
-            renderAvailabilityMatrix();
-            if (adminSyncChannel) adminSyncChannel.postMessage({ type: 'SHOWTIMES_UPDATED' });
+            if (typeof fetchShowtimes === 'function') await fetchShowtimes();
+            if (typeof renderShowtimesTable === 'function') renderShowtimesTable();
+            if (typeof renderAvailabilityMatrix === 'function') renderAvailabilityMatrix();
+            if (typeof adminSyncChannel !== 'undefined' && adminSyncChannel) {
+                adminSyncChannel.postMessage({ type: 'SHOWTIMES_UPDATED' });
+            }
         } else {
             const err = await res.json();
             showNotification(err.message || 'Lỗi khi xóa suất chiếu', 'error');
@@ -66,8 +86,9 @@ window.deleteShowtime = async function() {
         console.error(error);
         showNotification('Lỗi kết nối máy chủ', 'error');
     } finally {
-        btn.innerHTML = originalText;
-        btn.disabled = false;
+        if (btn) {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
     }
 };
-
