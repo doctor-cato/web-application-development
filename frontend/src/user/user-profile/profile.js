@@ -254,24 +254,11 @@ async function loadUserInfo() {
             return;
         }
     } catch (e) {
-        console.warn('fetchMe API failed, falling back to localStorage:', e);
+        console.error('Lỗi khi gọi API /auth/me:', e);
+        alert('Không thể kết nối đến máy chủ để tải thông tin (Lỗi mạng hoặc API).');
     }
 
-    if (!user) {
-        const session = getCurrentUser();
-        user = {
-            email: localStorage.getItem('userEmail') || (session && session.email) || '',
-            fullname: localStorage.getItem('userName') || (session && (session.fullname || session.name)) || '',
-            phone: localStorage.getItem('userPhone') || (session && session.phone) || '',
-            dateOfBirth: localStorage.getItem('userDob') || (session && session.dob) || '',
-            gender: localStorage.getItem('userGender') || (session && session.gender) || 'male',
-            avatar: localStorage.getItem('userAvatar') || (session && session.avatar) || '',
-            role: localStorage.getItem('user_role') || (session && session.role) || 'CUSTOMER',
-            vipPlan: localStorage.getItem('vip_plan') || '',
-        };
-    }
-
-    if (!user.email && !user.fullname) {
+    if (!user || (!user.email && !user.fullname)) {
         window.location.href = '/auth/user-login/login.html?returnUrl=' + encodeURIComponent(window.location.pathname + window.location.search);
         return;
     }
