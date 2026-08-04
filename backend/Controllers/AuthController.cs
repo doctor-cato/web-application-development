@@ -437,6 +437,33 @@ namespace appweb.Controllers
             return Ok(new { message = "Đăng xuất thành công" });
         }
 
+        [Authorize]
+        [HttpGet("me")]
+        public async Task<IActionResult> GetCurrentUserProfile()
+        {
+            var emailClaim = User.FindFirst(ClaimTypes.Email)?.Value ?? User.FindFirst("email")?.Value;
+            if (string.IsNullOrEmpty(emailClaim)) return Unauthorized(new { message = "Không tìm thấy thông tin đăng nhập." });
+
+            var user = await _userRepository.GetByEmailAsync(emailClaim);
+            if (user == null) return NotFound(new { message = "Không tìm thấy tài khoản." });
+
+            return Ok(new
+            {
+                id = user.UserId,
+                email = user.Email,
+                fullname = user.Fullname,
+                name = user.Fullname,
+                phone = user.Phone,
+                dateOfBirth = user.DateOfBirth,
+                gender = user.Gender,
+                role = user.Role,
+                vipPlan = user.VipPlan,
+                avatar = user.AvatarUrl,
+                points = user.Points,
+                isTwoFactorEnabled = user.IsTwoFactorEnabled
+            });
+        }
+
         private string GenerateJwtToken(User user, string jwtId)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));

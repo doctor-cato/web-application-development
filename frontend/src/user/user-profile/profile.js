@@ -637,7 +637,38 @@ async function loadRealOffers() {
     }
 }
 
-function initProfile() {
+async function fetchMe() {
+    try {
+        const token = localStorage.getItem('jwt_token') || sessionStorage.getItem('token');
+        if (!token) return;
+        const res = await fetch(`${API_BASE_URL}/auth/me`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.ok) {
+            const data = await res.json();
+            const session = getCurrentUser() || {};
+            const updated = { ...session, ...data };
+            setCurrentUser(updated);
+            
+            localStorage.setItem('userName', data.fullname || '');
+            localStorage.setItem('userEmail', data.email || '');
+            localStorage.setItem('userPhone', data.phone || '');
+            if (data.avatar) localStorage.setItem('userAvatar', data.avatar);
+            if (data.role) localStorage.setItem('user_role', data.role);
+            if (data.vipPlan) localStorage.setItem('vip_plan', data.vipPlan);
+            
+            let rewards = {};
+            try { rewards = JSON.parse(localStorage.getItem('3hd2k_rewards') || '{}'); } catch(e){}
+            rewards.points = data.points || 0;
+            localStorage.setItem('3hd2k_rewards', JSON.stringify(rewards));
+        }
+    } catch (e) {
+        console.error('fetchMe error:', e);
+    }
+}
+
+async function initProfile() {
+    try { await fetchMe(); } catch(e) { console.error('fetchMe failed:', e); }
     try { initTabs(); } catch(e) { console.error('initTabs error:', e); }
     try { loadUserInfo(); } catch(e) { console.error('loadUserInfo error:', e); }
     try { setupProfileForm(); } catch(e) { console.error('setupProfileForm error:', e); }
