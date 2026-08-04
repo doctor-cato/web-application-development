@@ -229,26 +229,19 @@ function loadUserInfo() {
         console.error("getCurrentUser error", e);
     }
 
-    let name  = (session && (session.fullname || session.fullName || session.name) && (session.fullname || session.fullName || session.name) !== 'Khách') ? (session.fullname || session.fullName || session.name) : '';
-    let email = (session && session.email) ? session.email : '';
-    let phone = (session && session.phone) ? session.phone : '';
-    let avatar = (session && session.avatar) ? session.avatar : '';
-    let dob = (session && (session.dob || session.dateOfBirth || session.date_of_birth)) ? (session.dob || session.dateOfBirth || session.date_of_birth) : '';
-    let gender = (session && session.gender) ? session.gender : '';
-
-    if (!session) {
-        if (!name)   name   = localStorage.getItem('userName')  || '';
-        if (!email)  email  = localStorage.getItem('userEmail') || '';
-        if (!avatar) avatar = localStorage.getItem('userAvatar') || '';
-        if (!phone)  phone  = localStorage.getItem('userPhone') || '';
-        if (!dob)    dob    = localStorage.getItem('userDob') || '';
-        if (!gender) gender = localStorage.getItem('userGender') || 'male';
-    }
+    let email = (session && session.email) || localStorage.getItem('userEmail') || '';
+    let name  = (session && (session.fullname || session.fullName || session.name) && (session.fullname || session.fullName || session.name) !== 'Khách')
+        ? (session.fullname || session.fullName || session.name)
+        : (localStorage.getItem('userName') || '');
+    let phone = (session && (session.phone || session.phoneNumber)) || localStorage.getItem('userPhone') || '';
+    let avatar = (session && session.avatar) || localStorage.getItem('userAvatar') || '';
+    let dob = (session && (session.dob || session.dateOfBirth || session.date_of_birth)) || localStorage.getItem('userDob') || '';
+    let gender = (session && session.gender) || localStorage.getItem('userGender') || 'male';
 
     if (email) {
         try {
             const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
-            const found = users.find(u => u.email === email);
+            const found = users.find(u => u.email && u.email.toLowerCase() === email.toLowerCase());
             if (found) {
                 if (!name || name === 'Khách') name = found.fullname || found.name || name;
                 if (!phone) phone = found.phone || phone;
@@ -261,8 +254,12 @@ function loadUserInfo() {
         }
     }
 
+    if (!name && email) {
+        name = email.split('@')[0];
+    }
+
     const nameEl = document.getElementById('sidebar-name');
-    if (nameEl) nameEl.innerText = name || (email ? email.split('@')[0] : 'Khách');
+    if (nameEl) nameEl.innerText = name || 'Khách';
 
     const avatarEl = document.getElementById('sidebar-avatar');
     if (avatarEl && avatar) avatarEl.src = avatar;
@@ -309,10 +306,17 @@ function loadUserInfo() {
     if (genderInput) genderInput.checked = true;
 
     let customerCode = localStorage.getItem('userCustomerCode');
-    if (!customerCode) {
+    if (!customerCode && email) {
+        let hash = 0;
+        for (let i = 0; i < email.length; i++) hash = (hash << 5) - hash + email.charCodeAt(i);
+        const codeStr = Math.abs(hash).toString(36).toUpperCase().padStart(6, 'X').slice(0, 6);
+        customerCode = '3HD2K-' + codeStr;
+        localStorage.setItem('userCustomerCode', customerCode);
+    } else if (!customerCode) {
         customerCode = '3HD2K-' + Math.random().toString(36).slice(2, 8).toUpperCase();
         localStorage.setItem('userCustomerCode', customerCode);
     }
+
     const customerCodeInput = document.getElementById('customerCode');
     if (customerCodeInput) customerCodeInput.value = customerCode || '';
 
@@ -384,6 +388,18 @@ function setupProfileForm() {
         }
 
         try {
+            setCurrentUser(updates);
+            
+            const email = (getCurrentUser() || {}).email || localStorage.getItem('userEmail');
+            if (email) {
+                const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+                const idx = users.findIndex(u => u.email && u.email.toLowerCase() === email.toLowerCase());
+                if (idx !== -1) {
+                    users[idx] = { ...users[idx], ...updates };
+                    localStorage.setItem('registeredUsers', JSON.stringify(users));
+                }
+            }
+
             updateProfile(updates);
         } catch (error) {
             console.error('[Profile] updateProfile error', error);
@@ -527,7 +543,7 @@ function setupAvatarUpload() {
         const file = e.target.files[0];
         if (!file) return;
 
-        // Visual feedback
+        
         const originalSrc = avatarImg.src;
         avatarImg.style.opacity = '0.5';
 
@@ -553,16 +569,16 @@ function setupAvatarUpload() {
 
             const data = await response.json();
             
-            // The backend returns avatarUrl like "/uploads/images/xxx.png"
-            // We prepend the API_BASE_URL (removing /api) to make it absolute if needed, 
-            // or just let the backend handle it. Let's use the exact path from backend:
+            
+            
+            
             const avatarUrl = API_BASE_URL.replace('/api', '') + data.avatarUrl;
 
             // Update DOM
             avatarImg.src = avatarUrl;
             avatarImg.style.opacity = '1';
 
-            // Update session
+            
             let session = null;
             try { session = getCurrentUser(); } catch(e) {}
             if (session) {
@@ -570,14 +586,14 @@ function setupAvatarUpload() {
                 setCurrentUser(session);
             }
 
-            // Sync with old localStorage logic if needed
+            
             localStorage.setItem('userAvatar', avatarUrl);
             
             const toast = window.toast || { success: alert, error: alert };
             if(window.toast) toast.success('Đã cập nhật ảnh đại diện thành công!');
             else alert('Đã cập nhật ảnh đại diện thành công!');
             
-            // Reload to update navbar
+            
             setTimeout(() => window.location.reload(), 1000);
 
         } catch (error) {

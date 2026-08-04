@@ -15,7 +15,7 @@ export const KEYS = {
   USER_AVATAR: 'userAvatar'
 };
 
-// Safe UTF-8 Base64 Helpers replacing deprecated escape/unescape
+
 export function safeBtoa(str) {
   try {
     return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (_, p1) => String.fromCharCode('0x' + p1)));
@@ -119,9 +119,34 @@ export function saveUsers(users) {
 export function getCurrentUser() {
   try {
     const token = localStorage.getItem(KEYS.AUTH_TOKEN);
-    if (!token) return ssGet(KEYS.CURRENT_USER, null);
-    const payload = JSON.parse(safeAtob(token));
-    if (payload.exp && Date.now() > payload.exp) {
+    let payload = null;
+
+    if (token) {
+      try {
+        payload = JSON.parse(safeAtob(token));
+      } catch (_) {}
+    }
+
+    if (!payload) {
+      payload = ssGet(KEYS.CURRENT_USER, null);
+    }
+
+    if (!payload && localStorage.getItem(KEYS.IS_LOGGED_IN) === 'true') {
+      const email = localStorage.getItem(KEYS.USER_EMAIL);
+      if (email) {
+        payload = {
+          email: email,
+          fullname: localStorage.getItem(KEYS.USER_NAME) || email.split('@')[0],
+          avatar: localStorage.getItem(KEYS.USER_AVATAR) || '',
+          phone: localStorage.getItem('userPhone') || '',
+          dob: localStorage.getItem('userDob') || '',
+          gender: localStorage.getItem('userGender') || 'male',
+          role: localStorage.getItem('user_role') || localStorage.getItem('role') || 'CUSTOMER'
+        };
+      }
+    }
+
+    if (payload && payload.exp && Date.now() > payload.exp) {
       clearCurrentUser();
       return null;
     }
@@ -133,28 +158,47 @@ export function getCurrentUser() {
 
 export function setCurrentUser(userPayload) {
   if (!userPayload) return;
-  const token = safeBtoa(JSON.stringify(userPayload));
+
+  const existing = ssGet(KEYS.CURRENT_USER, {}) || {};
+  const merged = { ...existing, ...userPayload };
+
+  const token = safeBtoa(JSON.stringify(merged));
   localStorage.setItem(KEYS.AUTH_TOKEN, token);
   localStorage.setItem(KEYS.IS_LOGGED_IN, 'true');
-  localStorage.setItem(KEYS.USER_NAME, userPayload.fullname || userPayload.fullName || userPayload.name || '');
-  localStorage.setItem(KEYS.USER_EMAIL, userPayload.email || '');
-  localStorage.setItem(KEYS.USER_AVATAR, userPayload.avatar || '');
 
-  const role = (userPayload.role || '').toUpperCase();
-  const email = (userPayload.email || '').toLowerCase();
-  const finalRole = (role === 'ADMIN' || email.includes('admin')) ? 'ADMIN' : ((role === 'STAFF' || email.includes('staff')) ? 'STAFF' : (role || 'CUSTOMER'));
+  const name = merged.fullname || merged.fullName || merged.name || '';
+  if (name) localStorage.setItem(KEYS.USER_NAME, name);
+
+  const email = merged.email || '';
+  if (email) localStorage.setItem(KEYS.USER_EMAIL, email);
+
+  const avatar = merged.avatar || '';
+  if (avatar) localStorage.setItem(KEYS.USER_AVATAR, avatar);
+
+  const phone = merged.phone || merged.phoneNumber || '';
+  if (phone) localStorage.setItem('userPhone', phone);
+
+  const dob = merged.dob || merged.dateOfBirth || merged.date_of_birth || '';
+  if (dob) localStorage.setItem('userDob', dob);
+
+  const gender = merged.gender || '';
+  if (gender) localStorage.setItem('userGender', gender);
+
+  const role = (merged.role || '').toUpperCase();
+  const lowerEmail = email.toLowerCase();
+  const finalRole = (role === 'ADMIN' || lowerEmail.includes('admin')) ? 'ADMIN' : ((role === 'STAFF' || lowerEmail.includes('staff')) ? 'STAFF' : (role || 'CUSTOMER'));
   localStorage.setItem('user_role', finalRole);
   localStorage.setItem('role', finalRole);
 
-  // ponytail: Admin automatically owns all frames and all VIP privileges without needing purchase. ceiling: client-side storage role check. upgrade path: RBAC claims from backend JWT.
-  if (finalRole === 'ADMIN' || role === 'VIP' || email.includes('admin')) {
+  if (finalRole === 'ADMIN' || role === 'VIP' || lowerEmail.includes('admin')) {
     localStorage.setItem('is_vip', 'true');
-    localStorage.setItem('vip_plan', finalRole === 'ADMIN' || email.includes('admin') ? 'diamond' : (userPayload.vipPlan || userPayload.vip_plan || ''));
+    localStorage.setItem('vip_plan', finalRole === 'ADMIN' || lowerEmail.includes('admin') ? 'diamond' : (merged.vipPlan || merged.vip_plan || ''));
   } else {
     localStorage.removeItem('is_vip');
     localStorage.removeItem('vip_plan');
   }
-  ssSet(KEYS.CURRENT_USER, userPayload);
+
+  ssSet(KEYS.CURRENT_USER, merged);
 }
 
 export function clearCurrentUser() {
