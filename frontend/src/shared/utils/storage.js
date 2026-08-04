@@ -116,37 +116,75 @@ export function saveUsers(users) {
   lsSet(KEYS.USERS, users);
 }
 
-export function getCurrentUser() {
+export function parseJwtPayload(token) {
+  if (!token || typeof token !== 'string') return null;
   try {
-    const token = localStorage.getItem(KEYS.AUTH_TOKEN);
-    let payload = null;
-
-    if (token) {
-      try {
-        payload = JSON.parse(safeAtob(token));
-      } catch (_) {}
-    }
-
-    if (!payload) {
-      payload = ssGet(KEYS.CURRENT_USER, null);
-    }
-
-    if (!payload && localStorage.getItem(KEYS.IS_LOGGED_IN) === 'true') {
-      const email = localStorage.getItem(KEYS.USER_EMAIL);
-      if (email) {
-        payload = {
-          email: email,
-          fullname: localStorage.getItem(KEYS.USER_NAME) || email.split('@')[0],
-          avatar: localStorage.getItem(KEYS.USER_AVATAR) || '',
-          phone: localStorage.getItem('userPhone') || '',
-          dob: localStorage.getItem('userDob') || '',
-          gender: localStorage.getItem('userGender') || 'male',
-          role: localStorage.getItem('user_role') || localStorage.getItem('role') || 'CUSTOMER'
-        };
+    if (token.includes('.')) {
+      const parts = token.split('.');
+      if (parts.length >= 2) {
+        const base64Url = parts[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = safeAtob(base64);
+        const parsed = JSON.parse(jsonPayload);
+        if (parsed && typeof parsed === 'object') return parsed;
       }
     }
+    const decoded = safeAtob(token);
+    const parsed = JSON.parse(decoded);
+    if (parsed && typeof parsed === 'object') return parsed;
+  } catch (e) {}
+  return null;
+}
 
-    if (payload && payload.exp && Date.now() > payload.exp) {
+export function getCurrentUser() {
+  try {
+    let payload = null;
+
+    const authToken = localStorage.getItem(KEYS.AUTH_TOKEN);
+    const jwtToken = localStorage.getItem('jwt_token');
+
+    if (authToken) payload = parseJwtPayload(authToken);
+    if ((!payload || !payload.email) && jwtToken) {
+      const p = parseJwtPayload(jwtToken);
+      if (p) payload = { ...p, ...payload };
+    }
+
+    if (!payload || !payload.email) {
+      const ssUser = ssGet(KEYS.CURRENT_USER, null);
+      if (ssUser && ssUser.email) payload = { ...payload, ...ssUser };
+    }
+
+    const isLoggedIn = localStorage.getItem(KEYS.IS_LOGGED_IN) === 'true' || Boolean(jwtToken || authToken);
+    const storedEmail = localStorage.getItem(KEYS.USER_EMAIL);
+
+    if ((!payload || !payload.email) && isLoggedIn && storedEmail) {
+      payload = {
+        email: storedEmail,
+        fullname: localStorage.getItem(KEYS.USER_NAME) || storedEmail.split('@')[0],
+        avatar: localStorage.getItem(KEYS.USER_AVATAR) || '',
+        phone: localStorage.getItem('userPhone') || '',
+        dob: localStorage.getItem('userDob') || '',
+        gender: localStorage.getItem('userGender') || 'male',
+        role: localStorage.getItem('user_role') || localStorage.getItem('role') || 'CUSTOMER'
+      };
+    }
+
+    if (payload) {
+      if (!payload.email && payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress']) {
+        payload.email = payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'];
+      }
+      if (!payload.fullname) {
+        payload.fullname = payload.fullName || payload.name || payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] || (payload.email ? payload.email.split('@')[0] : '');
+      }
+      if (!payload.role) {
+        payload.role = payload.Role || payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] || localStorage.getItem('user_role') || 'CUSTOMER';
+      }
+      if (!payload.phone) payload.phone = localStorage.getItem('userPhone') || '';
+      if (!payload.dob) payload.dob = payload.dateOfBirth || localStorage.getItem('userDob') || '';
+      if (!payload.avatar) payload.avatar = localStorage.getItem('userAvatar') || '';
+    }
+
+    if (payload && payload.exp && Date.now() > payload.exp * 1000) {
       clearCurrentUser();
       return null;
     }
@@ -164,6 +202,9 @@ export function setCurrentUser(userPayload) {
 
   const token = safeBtoa(JSON.stringify(merged));
   localStorage.setItem(KEYS.AUTH_TOKEN, token);
+  if (!localStorage.getItem('jwt_token')) {
+    localStorage.setItem('jwt_token', token);
+  }
   localStorage.setItem(KEYS.IS_LOGGED_IN, 'true');
 
   const name = merged.fullname || merged.fullName || merged.name || '';

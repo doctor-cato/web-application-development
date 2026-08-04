@@ -285,8 +285,8 @@ export function getSession() {
 
 export function isLoggedIn() {
     const session = getSession();
-    const jwtToken = localStorage.getItem('jwt_token');
-    return Boolean(session && jwtToken);
+    const jwtToken = localStorage.getItem('jwt_token') || localStorage.getItem('auth_token');
+    return Boolean(session && (jwtToken || localStorage.getItem('isLoggedIn') === 'true'));
 }
 
 export async function updateProfile(updates) {
