@@ -3,11 +3,6 @@
             const currentTotalMinutes = now.getHours() * 60 + now.getMinutes();
             let suatChieuPhim = (API_SHOWTIMES || []).filter(s => String(s.movieId) === String(p.id) || (s.movieTitle && s.movieTitle.toLowerCase() === (p.tieuDe || p.title || '').toLowerCase()));
             
-            if (suatChieuPhim.length === 0) {
-                const localShowtimes = JSON.parse(localStorage.getItem("3hd2k_showtimes")) || [];
-                suatChieuPhim = localShowtimes.filter(s => String(s.movieId) === String(p.id) || (s.movieTitle && s.movieTitle.toLowerCase() === (p.tieuDe || p.title || '').toLowerCase()));
-            }
-
             let duration = parseInt(p.thoiLuong || p.duration || 120);
             let mapped = suatChieuPhim.map(st => {
                 let isPast = false;
@@ -36,6 +31,17 @@
                     return s;
                 });
             }
+            
+            mapped.sort((a,b) => {
+                if(a.isCurrentActive && !b.isCurrentActive) return -1;
+                if(!a.isCurrentActive && b.isCurrentActive) return 1;
+                if(a.isNext && !b.isNext) return -1;
+                if(!a.isNext && b.isNext) return 1;
+                if(!a.isPast && b.isPast) return -1;
+                if(a.isPast && !b.isPast) return 1;
+                return a._stTotal - b._stTotal;
+            });
+
             return mapped;
         }
         async function TaiDuLieuTuBackendVaStorage() {            let danhSachPhimCoSan = [];            try {                const res = await fetch('/api/movies');                if (res.ok) {                    const apiMovies = await res.json();                    if (Array.isArray(apiMovies) && apiMovies.length > 0) {                        const nowShowing = apiMovies.filter(m => m.status === 'NOW_SHOWING' || m.status === 'now-showing' || !m.status);                        if (nowShowing.length > 0) {                            danhSachPhimCoSan = nowShowing.map(m => {                                let img = m.posterUrl || m.PosterUrl || m.poster || m.bg;                                if (img && img.includes('3hd2k-api.somee.com')) {                                    img = img.replace(/^https?:\/\/3hd2k-api\.somee\.com/, '');                                }                                if (img && !img.startsWith('http') && !img.startsWith('/')) {                                    img = '/' + img;                                }                                return {                                    id: String(m.id || m.movieId || m.Id || ''),                                    tieuDe: m.title || m.Title || 'Phim Chiếu Rạp',                                    thoiLuong: (m.duration || m.Duration || 120) + 'm',                                    doTuoi: m.ageRating || m.AgeRating || m.age || 'T16',                                    theLoai: Array.isArray(m.genre) ? m.genre : [(m.genre || m.Genre || 'Hành Động')],                                    poster: img || 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=800'                                };                            });                        }                    }                }            } catch (e) {                console.warn("API movies fetch warning:", e);            }            if (danhSachPhimCoSan.length === 0) {                const localMovies = JSON.parse(localStorage.getItem("3hd2k_movies")) || [];                if (localMovies.length > 0) {                    danhSachPhimCoSan = localMovies.map(m => ({                        id: String(m.id || ''),                        tieuDe: m.title || 'Phim Chiếu Rạp',                        thoiLuong: (m.duration || 120) + 'm',                        doTuoi: m.age || m.ageRating || 'T16',                        theLoai: Array.isArray(m.genre) ? m.genre : [m.genre || 'Hành Động'],                        poster: m.poster || m.bg || 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=800'                    }));                }            }            if (danhSachPhimCoSan.length === 0) {                danhSachPhimCoSan = MAC_DINH_DANH_SACH_PHIM;            }            API_MOVIES = danhSachPhimCoSan;            try {                const resSt = await fetch('/api/showtimes');                if (resSt.ok) {                    
