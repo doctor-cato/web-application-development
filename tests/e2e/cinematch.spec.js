@@ -13,6 +13,7 @@ test.describe('Cine-Match Feature E2E Verification', () => {
       try {
         const token = btoa(encodeURIComponent(JSON.stringify(user)));
         localStorage.setItem('auth_token', token);
+        localStorage.setItem('jwt_token', token);
       } catch (e) {}
     });
 
@@ -64,6 +65,7 @@ test.describe('Cine-Match Feature E2E Verification', () => {
       const user = { id: 1, fullname: 'Mobile User', email: 'mobile@example.com' };
       localStorage.setItem('isLoggedIn', 'true');
       sessionStorage.setItem('cinema_current_user', JSON.stringify(user));
+      localStorage.setItem('jwt_token', 'fake_token');
     });
 
     await page.goto('/engagement/cinematch/index.html');
@@ -84,6 +86,7 @@ test.describe('Cine-Match Feature E2E Verification', () => {
       const user = { id: 1, fullname: 'Rescan User', email: 'rescan@example.com' };
       localStorage.setItem('isLoggedIn', 'true');
       sessionStorage.setItem('cinema_current_user', JSON.stringify(user));
+      localStorage.setItem('jwt_token', 'fake_token');
     });
 
     await page.goto('/engagement/cinematch/index.html');
