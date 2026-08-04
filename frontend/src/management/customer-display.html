@@ -96,34 +96,46 @@ function HienThiDanhSachPhim() {
     function buildShowtimeBtn(st, phim) {
         var mk = "ck" + (keyCounter++);
         window._CFD_SUAT_MAP[mk] = { st: st, phim: phim };
-        var label = st.roomName || st.cinemaName || "3HD2K";
         var base = "padding:8px 12px;border-radius:6px;font-size:0.85rem;font-weight:800;border:none;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;width:100%;transition:all 0.2s;";
         var oc = "KhachHangChonSuatChieu('" + mk + "')";
         if (st.isPast) {
-            return "<div style=\"margin-bottom:2px;\"><div style=\"font-size:0.7rem;color:var(--xanh-luc-highlight);font-weight:700;margin-bottom:4px;\">| " + label + "</div>"
-                 + "<button disabled style=\"" + base + "opacity:0.3;text-decoration:line-through;background:#111;color:#555;cursor:not-allowed;\">"
-                 + "<i class=\"fas fa-clock\"></i> " + st.time + " (Đã qua)</button></div>";
+            return "<button disabled style=\"" + base + "opacity:0.3;text-decoration:line-through;background:#111;color:#555;cursor:not-allowed;\">"
+                 + "<i class=\"fas fa-clock\"></i> " + st.time + " (Đã qua)</button>";
         }
         if (st.isCurrentActive) {
-            return "<div style=\"margin-bottom:2px;\"><div style=\"font-size:0.7rem;color:var(--xanh-luc-highlight);font-weight:700;margin-bottom:4px;\">| " + label + "</div>"
-                 + "<button onclick=\"" + oc + "\" style=\"" + base + "background:#00FF66;color:#000;box-shadow:0 0 12px rgba(0,255,102,0.4);animation:nhapNhayBtn 1.5s infinite alternate;\">"
-                 + "<i class=\"fas fa-fire\"></i> " + st.time + " (ĐANG CHIẾU)</button></div>";
+            return "<button onclick=\"" + oc + "\" style=\"" + base + "background:#00FF66;color:#000;box-shadow:0 0 12px rgba(0,255,102,0.4);animation:nhapNhayBtn 1.5s infinite alternate;\">"
+                 + "<i class=\"fas fa-fire\"></i> " + st.time + " (ĐANG CHIẾU)</button>";
         }
         if (st.isNext) {
-            return "<div style=\"margin-bottom:2px;\"><div style=\"font-size:0.7rem;color:var(--xanh-luc-highlight);font-weight:700;margin-bottom:4px;\">| " + label + "</div>"
-                 + "<button onclick=\"" + oc + "\" style=\"" + base + "background:rgba(0,255,255,0.1);color:#0ff;border:1px solid #0ff;\">"
-                 + "<i class=\"fas fa-clock\"></i> " + st.time + " (SẮP CHIẾU)</button></div>";
+            return "<button onclick=\"" + oc + "\" style=\"" + base + "background:rgba(0,255,255,0.1);color:#0ff;border:1px solid #0ff;\">"
+                 + "<i class=\"fas fa-clock\"></i> " + st.time + " (SẮP CHIẾU)</button>";
         }
-        return "<div style=\"margin-bottom:2px;\"><div style=\"font-size:0.7rem;color:var(--xanh-luc-highlight);font-weight:700;margin-bottom:4px;\">| " + label + "</div>"
-             + "<button onclick=\"" + oc + "\" style=\"" + base + "background:rgba(255,255,255,0.04);color:#ccc;border:1px solid rgba(255,255,255,0.2);\">"
-             + "<i class=\"fas fa-clock\"></i> " + st.time + "</button></div>";
+        return "<button onclick=\"" + oc + "\" style=\"" + base + "background:rgba(255,255,255,0.04);color:#ccc;border:1px solid rgba(255,255,255,0.2);\">"
+             + "<i class=\"fas fa-clock\"></i> " + st.time + "</button>";
     }
     
     var moviesHTML = "<div class=\"luoi-phim-container\">" + displayRows.map(function(row) {
         var phim = row.phim;
-        var btns = row.suatList.length > 0
-            ? row.suatList.map(function(st) { return buildShowtimeBtn(st, phim); }).join("")
-            : "<em style=\"font-size:0.75rem;color:#555;\">Chưa có suất chiếu</em>";
+        
+        var btnsHTML = "";
+        if (row.suatList.length > 0) {
+            var groups = {};
+            row.suatList.forEach(function(st) {
+                var cName = st.cinemaName || "3HD2K";
+                if(!groups[cName]) groups[cName] = [];
+                groups[cName].push(st);
+            });
+            
+            for (var cName in groups) {
+                btnsHTML += "<div style=\"margin-bottom:8px;\">";
+                btnsHTML += "<div style=\"font-size:0.75rem;color:var(--xanh-luc-highlight);font-weight:800;margin-bottom:6px;text-transform:uppercase;\">| " + cName + "</div>";
+                btnsHTML += "<div style=\"display:flex;flex-direction:column;gap:6px;\">";
+                btnsHTML += groups[cName].map(function(st) { return buildShowtimeBtn(st, phim); }).join("");
+                btnsHTML += "</div></div>";
+            }
+        } else {
+            btnsHTML = "<em style=\"font-size:0.75rem;color:#555;\">Chưa có suất chiếu</em>";
+        }
         
         return "<div class=\"the-phim-card\">"
             + "<img class=\"the-phim-poster\" src=\"" + phim.poster + "\" alt=\"" + phim.tieuDe + "\" onerror=\"this.src='https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=800'\">"
@@ -136,7 +148,7 @@ function HienThiDanhSachPhim() {
             + "</div>"
             + "<div style=\"display:flex;flex-direction:column;gap:8px;margin-top:12px;\">"
             + "<div style=\"font-size:0.75rem;font-weight:800;color:var(--xanh-luc-highlight);text-transform:uppercase;\">SUẤT CHIẾU GẦN NHẤT:</div>"
-            + "<div style=\"display:flex;flex-direction:column;gap:8px;\">" + btns + "</div>"
+            + btnsHTML
             + "</div>"
             + "</div></div>";
     }).join("") + "</div>";
