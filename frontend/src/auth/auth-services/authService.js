@@ -27,7 +27,7 @@ export async function login(email, password) {
         } catch (parseError) {
             console.error('Login: Server trả về response không phải JSON:', responseText.substring(0, 200));
 
-            // Fallback đăng nhập cho Staff / Admin khi Server trả về HTML Error (500 DB error)
+            
             const lowerEmail = (email || '').toLowerCase();
             if (lowerEmail === 'staff@gmail.com' || lowerEmail === 'admin@gmail.com' || lowerEmail.includes('staff') || lowerEmail.includes('admin')) {
                 const role = lowerEmail.includes('admin') ? 'ADMIN' : 'STAFF';

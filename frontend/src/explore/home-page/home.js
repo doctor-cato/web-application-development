@@ -73,7 +73,7 @@ function renderHeroMovie(movie) {
     }
 
     if (heroSection && (movie.bg || movie.poster)) {
-        // Desktop uses horizontal banner (bg), mobile uses vertical poster (poster)
+        
         let desktopBg = movie.bg || movie.poster || '';
         let mobileBg = movie.poster || movie.bg || '';
 

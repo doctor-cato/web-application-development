@@ -6,7 +6,7 @@ if (isLoggedIn()) {
     window.location.href = '/explore/home-page/index.html';
 }
 
-// ========== DOM Elements ==========
+
 const registerForm      = document.getElementById('registerForm');
 const errorBanner       = document.getElementById('form-error-banner');
 const emailInput        = document.getElementById('email');
@@ -18,7 +18,7 @@ const pwdError          = document.getElementById('pwd-error');
 const confirmPwdError   = document.getElementById('confirm-pwd-error');
 const phoneError        = document.getElementById('phone-error');
 
-// OTP elements
+
 const otpSection        = document.getElementById('otpSection');
 const otpEmailDisplay   = document.getElementById('otpEmailDisplay');
 const otpInputs         = document.querySelectorAll('.otp-digit');
@@ -43,7 +43,7 @@ document.querySelectorAll('.togglePasswordBtn').forEach(btn => {
     });
 });
 
-// ========== Clear Error on Input ==========
+
 [emailInput, pwdInput, confirmPwdInput, phoneInput].forEach(input => {
     if (!input) return;
     input.addEventListener('input', function () {
@@ -56,9 +56,9 @@ document.querySelectorAll('.togglePasswordBtn').forEach(btn => {
     });
 });
 
-// ========== OTP Input Handling ==========
+
 otpInputs.forEach((input, index) => {
-    // Only allow numeric input
+    
     input.addEventListener('input', function (e) {
         const val = this.value.replace(/\D/g, '');
         this.value = val;
@@ -66,7 +66,7 @@ otpInputs.forEach((input, index) => {
         if (val) {
             this.classList.add('filled');
             this.classList.remove('error');
-            // Auto-focus next
+            
             if (index < otpInputs.length - 1) {
                 otpInputs[index + 1].focus();
             }
@@ -74,7 +74,7 @@ otpInputs.forEach((input, index) => {
             this.classList.remove('filled');
         }
 
-        // Clear error/success messages
+        
         otpErrorEl.textContent = '';
         otpSuccessEl.textContent = '';
 
@@ -94,7 +94,7 @@ otpInputs.forEach((input, index) => {
         }
     });
 
-    // Paste handling (paste full 6-digit code)
+    
     input.addEventListener('paste', function (e) {
         e.preventDefault();
         const pasteData = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '');
@@ -104,7 +104,7 @@ otpInputs.forEach((input, index) => {
                 if (inp.value) inp.classList.add('filled');
             });
             otpInputs[5].focus();
-            // Auto-submit
+            
             setTimeout(() => verifyOtp(), 200);
         }
     });
@@ -125,7 +125,7 @@ function showOtpSection(email) {
     startResendCountdown();
 }
 
-// ========== Resend Countdown ==========
+
 function startResendCountdown() {
     let seconds = 60;
     resendOtpBtn.disabled = true;
@@ -147,7 +147,7 @@ function startResendCountdown() {
     }, 1000);
 }
 
-// ========== Resend OTP ==========
+
 resendOtpBtn.addEventListener('click', async function () {
     if (this.disabled || !registeredEmail) return;
 
@@ -165,7 +165,7 @@ resendOtpBtn.addEventListener('click', async function () {
 
         if (response.ok) {
             otpSuccessEl.textContent = 'Đã gửi lại mã OTP thành công!';
-            // Clear old inputs
+            
             otpInputs.forEach(inp => {
                 inp.value = '';
                 inp.classList.remove('filled', 'error', 'success');
@@ -182,7 +182,7 @@ resendOtpBtn.addEventListener('click', async function () {
     }
 });
 
-// ========== Verify OTP ==========
+
 verifyOtpBtn.addEventListener('click', verifyOtp);
 
 async function verifyOtp() {
@@ -208,7 +208,7 @@ async function verifyOtp() {
         const data = await response.json();
 
         if (response.ok) {
-            // Success - show green state
+            
             otpInputs.forEach(inp => {
                 inp.classList.remove('error');
                 inp.classList.add('success');
@@ -218,7 +218,7 @@ async function verifyOtp() {
             verifyOtpBtn.style.display = 'none';
             if (resendOtpBtn) resendOtpBtn.closest('.otp-footer').style.display = 'none';
 
-            // Countdown redirect
+            
             let redirectSeconds = 3;
             const redirectMsg = document.createElement('div');
             redirectMsg.className = 'otp-redirect-msg';
@@ -238,7 +238,7 @@ async function verifyOtp() {
             otpErrorEl.textContent = data.message || 'Mã OTP không chính xác.';
             otpInputs.forEach(inp => inp.classList.add('error'));
 
-            // Clear and refocus
+            
             setTimeout(() => {
                 otpInputs.forEach(inp => {
                     inp.value = '';
@@ -257,7 +257,7 @@ async function verifyOtp() {
     }
 }
 
-// ========== Register Form Submit ==========
+
 registerForm.addEventListener('submit', async function (e) {
     e.preventDefault();
 
@@ -299,7 +299,7 @@ registerForm.addEventListener('submit', async function (e) {
 
     if (!isValid) return;
 
-    // Disable button while processing
+    
     const submitBtn = document.getElementById('registerSubmitBtn');
     if (submitBtn) {
         submitBtn.disabled = true;
@@ -310,10 +310,10 @@ registerForm.addEventListener('submit', async function (e) {
 
     if (result.ok) {
         if (result.requireOtp) {
-            // SMTP configured: Show OTP verification section
+            
             showOtpSection(email);
         } else {
-            // SMTP not configured: Auto-verified, redirect to login
+            
             alert(result.message);
             window.location.href = '/auth/user-login/login.html';
         }
@@ -329,7 +329,7 @@ registerForm.addEventListener('submit', async function (e) {
         }
     }
 
-    // Re-enable button
+    
     if (submitBtn) {
         submitBtn.disabled = false;
         submitBtn.textContent = 'Tạo Tài Khoản';

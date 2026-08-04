@@ -61,7 +61,7 @@ html, body {
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* Custom Scrollbar */
+
 ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
@@ -81,7 +81,7 @@ html, body {
     background: var(--primary-red);
 }
 
-/* Headings & Brand Typography */
+
 h1, h2, h3, h4 {
     font-family: var(--font-primary);
     font-weight: 700;
@@ -116,7 +116,7 @@ a:hover {
     color: var(--primary-red);
 }
 
-/* UI Components */
+
 .glass-panel {
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);
@@ -173,7 +173,7 @@ a:hover {
     color: var(--bg-color);
 }
 
-/* --- NAVBAR --- */
+
 .navbar {
     position: fixed;
     top: 0;
@@ -310,7 +310,7 @@ a:hover {
     color: rgba(255, 255, 255, 0.6);
 }
 
-/* Hidden input field by default */
+
 #search-input {
     background: transparent;
     border: none;
@@ -323,7 +323,7 @@ a:hover {
     outline: none;
 }
 
-/* Active state for search pill */
+
 .search-pill.active {
     background: rgba(255, 255, 255, 0.12);
     border-color: rgba(255, 255, 255, 0.2);
@@ -359,7 +359,7 @@ a:hover {
     transform: scale(1.15);
 }
 
-/* Notification Button & Dropdown */
+
 .notif-btn {
     position: relative;
     cursor: pointer;
@@ -395,7 +395,7 @@ a:hover {
 .notif-dropdown {
     position: absolute;
     top: calc(100% + 15px);
-    right: -10px; /* Align near the edge but a bit shifted */
+    right: -10px; 
     width: 360px;
     background: rgba(15, 15, 15, 0.95);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -408,10 +408,10 @@ a:hover {
     transform: translateY(-10px);
     transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.25s;
     z-index: 1000;
-    cursor: default; /* Reset cursor for dropdown content */
+    cursor: default; 
 }
 
-/* Caret for dropdown */
+
 .notif-dropdown::before {
     content: '';
     position: absolute;
@@ -575,7 +575,7 @@ a:hover {
     margin-left: 4px;
 }
 
-/* User Avatar & Dropdown */
+
 .user-btn {
     position: relative;
     cursor: pointer;
@@ -617,7 +617,7 @@ a:hover {
     cursor: default;
 }
 
-/* Caret for user dropdown */
+
 .user-dropdown::before {
     content: '';
     position: absolute;
@@ -724,7 +724,7 @@ a:hover {
     color: var(--primary-red);
 }
 
-/* Custom Luxury Logout Confirmation Modal */
+
 .logout-modal-backdrop {
     position: fixed;
     top: 0;
@@ -986,16 +986,16 @@ footer {
     font-family: 'Inter', sans-serif;
 }
 
-/* --- TRAILER MODAL --- */
+
 .modal {
-    display: none; /* Hidden by default */
+    display: none; 
     position: fixed;
     z-index: 999;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.85); /* Black w/ opacity */
+    background-color: rgba(0, 0, 0, 0.85); 
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
     justify-content: center;
@@ -1035,7 +1035,7 @@ footer {
 
 .video-container {
     position: relative;
-    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    padding-bottom: 56.25%; 
     height: 0;
     overflow: hidden;
     border-radius: 8px;
@@ -1049,7 +1049,7 @@ footer {
     height: 100%;
 }
 
-/* --- RESPONSIVE DESIGN --- */
+
 @media (max-width: 992px) {
     .movie-title { font-size: 3.5rem; }
     .features-section { grid-template-columns: 1fr; }
@@ -1108,7 +1108,7 @@ footer {
     color: var(--primary-red);
 }
 
-/* --- PREMIUM CUSTOM DROPDOWNS (GLOBAL) --- */
+
 .custom-select-wrapper {
     position: relative;
     width: 100%;
@@ -1161,13 +1161,13 @@ footer {
     white-space: nowrap;
 }
 
-/* Home page specific offset since .filter-item has large padding */
+
 .filter-item .custom-select-options {
     left: -35px;
-    margin-top: 5px; /* Adjust top space */
+    margin-top: 5px; 
 }
 
-/* Movies page specific offset */
+
 .filter-pill .custom-select-options,
 .sort-pill .custom-select-options,
 .showtime-filter-select .custom-select-options {
@@ -1197,7 +1197,7 @@ footer {
 .custom-select-option:hover {
     background: rgba(255, 255, 255, 0.05);
     color: white;
-    padding-left: 26px; /* Slick indent effect on hover */
+    padding-left: 26px; 
 }
 
 .custom-select-option.selected {
@@ -1206,7 +1206,7 @@ footer {
     font-weight: 600;
 }
 
-/* ── FLOATING SUPPORT BUTTON ──────────────────────────────── */
+
 .float-support {
     position: fixed;
     bottom: 30px;
@@ -1285,7 +1285,7 @@ footer {
 }
 .float-support-item i { color: var(--primary-red); width: 16px; text-align: center; }
 
-/* ── TOAST NOTIFICATION ───────────────────────────────────── */
+
 .toast {
     position: fixed;
     bottom: 100px;
@@ -1314,7 +1314,7 @@ footer {
     .float-support { bottom: 20px; right: 16px; }
 }
 
-/* ■■ AVATAR GLOBAL BORDER STYLES ■■■■■■■■■■■■■■■■■■■■■■■■■■ */
+
 
 @property --angle {
     syntax: '<angle>';
@@ -1326,7 +1326,7 @@ footer {
     border: 3px solid var(--primary-red) !important;
 }
 
-/* GAMING STYLE: SILVER (TITANIUM SWEEP) */
+
 .avatar-border-silver {
     border: 4px solid transparent !important;
     border-radius: 50%;
@@ -1342,7 +1342,7 @@ footer {
     100% { background-position: 0% 0%, 100% 50%; }
 }
 
-/* GAMING STYLE: GOLD (MYTHIC FIRE ROTATION) */
+
 .avatar-border-gold {
     border: 5px solid transparent !important;
     border-radius: 50%;
@@ -1362,7 +1362,7 @@ footer {
     animation: spin-conic 2s linear infinite;
 }
 
-/* GAMING STYLE: PLATINUM (CHALLENGER RGB/COSMIC) */
+
 .avatar-border-diamond {
     border: 6px solid transparent !important;
     border-radius: 50%;
@@ -1378,7 +1378,7 @@ footer {
     to { --angle: 360deg; }
 }
 
-/* ■■ AVATAR HOVER EFFECTS ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ */
+
 [class*="avatar-border-"] {
     transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.3s ease, box-shadow 0.3s ease !important;
 }
@@ -1412,7 +1412,7 @@ footer {
     filter: brightness(1.3);
 }
 
-/* Minimal Skeleton Loader (Ponytail Mode) - Global */
+
 @keyframes pulse-opacity {
     0%, 100% { opacity: 0.5; }
     50% { opacity: 1; }

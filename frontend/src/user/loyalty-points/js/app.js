@@ -128,7 +128,7 @@
   }
 
   function getTier(pts) {
-    // ponytail: Admin accounts automatically possess all frames & maximum privileges (Diamond). ceiling: client-side role check. upgrade path: RBAC claims token.
+    
     if (checkIsAdmin()) {
       return TIERS[TIERS.length - 1];
     }

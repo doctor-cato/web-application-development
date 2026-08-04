@@ -16,7 +16,7 @@ function normalizeImagePath(path) {
     if (path.includes('3hd2k-api.somee.com')) {
         path = path.replace(/^https?:\/\/3hd2k-api\.somee\.com/, '');
     }
-    if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) {
+    if (path.startsWith('http:
         return path;
     }
     if (path.startsWith('/shared/') || path.startsWith('../') || path.startsWith('assets/')) {
@@ -53,7 +53,7 @@ function formatMovieDuration(rawDuration) {
 }
 
 function mapMovieObj(m) {
-    // Tách biệt hoàn toàn: poster (ảnh dọc cho card) và backdrop (ảnh ngang cho hero banner)
+    
     const localPosters = {
         'ready player one': '/shared/images/Ready_Player_One.jpg',
         'gran turismo - tay đua cự phách': '/shared/images/Gran_Turismo.jpg',
@@ -473,7 +473,7 @@ async function fetchShowtimesByMovie(movieId) {
         console.error("Failed to fetch showtimes from API:", e);
     }
 
-    // 2. Read from LocalStorage cache ('3hd2k_showtimes') created in Admin
+    
     try {
         const localStr = localStorage.getItem('3hd2k_showtimes');
         if (localStr) {
@@ -486,7 +486,7 @@ async function fetchShowtimesByMovie(movieId) {
         console.error("Failed to read local showtimes cache:", e);
     }
 
-    // 3. Deduplicate showtimes by ID & normalize
+    
     const showtimeMap = new Map();
     allShowtimes.forEach(s => {
         const norm = normalizeShowtime(s);
@@ -497,7 +497,7 @@ async function fetchShowtimesByMovie(movieId) {
 
     const uniqueList = Array.from(showtimeMap.values());
 
-    // 4. Filter for target movie ID or title
+    
     const movieShowtimes = uniqueList.filter(s => {
         const stMovieId = String(s.movieId || '').toLowerCase().trim();
         if (stMovieId && stMovieId === targetIdStr) return true;
@@ -557,9 +557,9 @@ window.normalizeImagePath = normalizeImagePath;
                 } else if (type === "Combos") {
                     window.dispatchEvent(new Event('combosUpdated'));
                     console.log("Combos data updated via SignalR");
-                    // If on booking-food page, force a reload to get new combos (simple approach)
+                    
                     if (window.location.pathname.includes('booking-food') || window.location.pathname.includes('checkout')) {
-                        // Optional: a toast notification could be shown before reloading
+                        
                         setTimeout(() => window.location.reload(), 1500);
                     }
                 } else if (type === "Showtimes") {

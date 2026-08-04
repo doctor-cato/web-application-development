@@ -33,7 +33,7 @@ public class SeatHub : Hub
     {
         if (!Guid.TryParse(seatIdStr, out var seatId)) return;
 
-        // Use authenticated user identity instead of trusting client-sent userId
+        
         var authenticatedUser = Context.User?.FindFirst(ClaimTypes.Email)?.Value ?? userId;
 
         var seat = await _dbContext.Seats.FindAsync(seatId);
@@ -83,7 +83,7 @@ public class SeatHub : Hub
         var seat = await _dbContext.Seats.FindAsync(seatId);
         var currentUser = Context.User?.FindFirst(ClaimTypes.Email)?.Value;
 
-        // Only the user who held the seat can confirm it
+        
         if (seat != null && seat.HeldByUserId == currentUser)
         {
             seat.Status = "Booked";

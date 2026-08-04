@@ -67,7 +67,7 @@ builder.Services.AddAuthentication(options =>
         ValidAudience = builder.Configuration["Jwt:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
     };
-    // Allow SignalR to receive JWT from query string
+    
     options.Events = new JwtBearerEvents
     {
         OnMessageReceived = context =>
@@ -104,17 +104,17 @@ builder.Services.AddHostedService<appweb.Services.SeatCleanupService>();
 
 var app = builder.Build();
 
-// PONYTAIL: Force Developer Exception Page to see why Somee is crashing with 500
+
 app.UseDeveloperExceptionPage();
 
 using var scope = app.Services.CreateScope();
 var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 try {
-    // 👱‍♀️ PONYTAIL: Bypassing EF Migrations for the 2FA column because the migration history 
-    // is currently out of sync (Table 'Cinemas' already exists). 
-    // CEILING: This raw SQL won't be tracked in EF migrations history.
-    // UPGRADE PATH: Once the DB schema is properly reverse-engineered or migration history is fixed, 
-    // move this into a proper EF migration and remove this raw SQL.
+    
+    
+    
+    
+    
     context.Database.ExecuteSqlRaw("IF COL_LENGTH('users', 'is_two_factor_enabled') IS NULL ALTER TABLE users ADD is_two_factor_enabled BIT NOT NULL DEFAULT 0;");
     context.Database.ExecuteSqlRaw(@"
         IF COL_LENGTH('Showtimes', 'cinema_id') IS NULL ALTER TABLE Showtimes ADD cinema_id nvarchar(100) NULL;

@@ -1,4 +1,4 @@
-// Dynamically detect HTTPS environment (Vercel) to avoid Mixed Content (HTTPS -> HTTP) errors
+
 const isLocalhost = typeof window !== 'undefined' && (
     window.location.hostname === 'localhost' || 
     window.location.hostname === '127.0.0.1' || 
@@ -6,7 +6,7 @@ const isLocalhost = typeof window !== 'undefined' && (
     window.location.hostname.startsWith('10.')
 );
 
-// Trỏ về origin proxy (/api) để Vercel/Web proxy tự động chuyển tiếp tới HTTP Backend (tránh ERR_CONNECTION_RESET)
+
 export const API_BASE_URL = typeof window !== 'undefined'
     ? `${window.location.origin}/api`
     : 'http://3hd2k-api.somee.com/api';
@@ -26,7 +26,7 @@ export function getHeaders() {
 const originalFetch = window.fetch;
 window.fetch = async (...args) => {
     let res = await originalFetch(...args);
-    // ponytail: global fetch patch for auto-login on 401. ceiling: basic retry logic, might fail on complex headers. upgrade path: proper axios/fetch interceptor library.
+    
     if (res.status === 401 && !args[0]?.toString().includes('refresh-token') && localStorage.getItem('refresh_token')) {
         const refreshRes = await originalFetch(`${API_BASE_URL}/auth/refresh-token`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token: localStorage.getItem('jwt_token'), refreshToken: localStorage.getItem('refresh_token') }) });
         if (refreshRes.ok) {

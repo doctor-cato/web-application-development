@@ -12,7 +12,7 @@ function redirectAfterLogin(userRole) {
     if (lowerEmail.includes('admin') || lowerName.includes('admin') || role === 'ADMIN') role = 'ADMIN';
     else if (lowerEmail.includes('staff') || lowerName.includes('staff') || role === 'STAFF') role = 'STAFF';
 
-    // Sanitize returnUrl to prevent infinite redirect loops to login/auth pages
+    
     if (returnUrl) {
         const lowerUrl = returnUrl.toLowerCase();
         if (lowerUrl.includes('login') || lowerUrl.includes('register') || lowerUrl.includes('auth')) {
@@ -29,7 +29,7 @@ function redirectAfterLogin(userRole) {
         targetUrl = returnUrl;
     }
 
-    // Do not redirect if already at targetUrl
+    
     if (window.location.pathname !== targetUrl && !window.location.href.endsWith(targetUrl)) {
         window.location.href = targetUrl;
     }
@@ -39,7 +39,7 @@ if (isLoggedIn()) {
     const referrer = document.referrer || '';
     const isFromProtectedPage = referrer.includes('admin.html') || referrer.includes('staff-sales.html');
     
-    // Only auto-redirect if not coming back from a protected page rejection
+    
     if (!isFromProtectedPage) {
         const session = getSession();
         redirectAfterLogin(session?.role);

@@ -1264,7 +1264,7 @@ input:checked + .slider:before {
     color: rgba(255, 255, 255, 0.8);
 }
 
-/* Minimal Skeleton Loader (Ponytail Mode) */
+
 @keyframes pulse-opacity {
     0%, 100% { opacity: 0.5; }
     50% { opacity: 1; }

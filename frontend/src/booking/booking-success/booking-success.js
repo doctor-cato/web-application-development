@@ -119,7 +119,7 @@ async function init() {
                         matchPreference: booking.cineMatchPreference || 'any'
                     })
                 }).then(res => res.json()).then(data => {
-                    // Cine-Match room created successfully
+                    
                     cmProcessed.push(booking.id);
                     localStorage.setItem(CINE_MATCH_PROCESSED_KEY, JSON.stringify(cmProcessed));
                 }).catch(err => console.error('Error creating Cine-Match:', err));

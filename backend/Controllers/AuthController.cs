@@ -59,7 +59,7 @@ namespace appweb.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            // Check if SMTP or Resend is configured
+            
             var smtpSettings = _configuration.GetSection("SmtpSettings");
             var senderEmail = smtpSettings["SenderEmail"];
             var resendApiKey = smtpSettings["ResendApiKey"];
@@ -74,7 +74,7 @@ namespace appweb.Controllers
                 Gender = model.Gender,
                 Password = BCrypt.Net.BCrypt.HashPassword(model.Password),
                 Role = "CUSTOMER",
-                IsVerifiedOtp = !isSmtpConfigured // Auto-verify when SMTP is not configured
+                IsVerifiedOtp = !isSmtpConfigured 
             };
 
             if (isSmtpConfigured)
@@ -219,7 +219,7 @@ namespace appweb.Controllers
                 else if (user.Password == model.Password)
                 {
                     isPasswordValid = true;
-                    // Migrate plaintext to hash
+                    
                     user.Password = BCrypt.Net.BCrypt.HashPassword(model.Password);
                     await _userRepository.UpdateAsync(user);
                 }
@@ -690,7 +690,7 @@ namespace appweb.Controllers
                         using var httpClient = new HttpClient();
                         httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", resendApiKey);
                         
-                        // Resend default sandbox sender
+                        
                         var fromEmail = "onboarding@resend.dev";
                         
                         var payload = new

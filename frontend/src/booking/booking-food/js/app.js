@@ -14,7 +14,7 @@
     if (path.includes('3hd2k-api.somee.com')) {
         path = path.replace(/^https?:\/\/3hd2k-api\.somee\.com/, '');
     }
-    if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) return path;
+    if (path.startsWith('http:
     if (path.startsWith('/shared/') || path.startsWith('../')) return path;
     if (path.startsWith('/')) return path;
     return `/${path}`;

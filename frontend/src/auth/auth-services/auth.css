@@ -484,7 +484,7 @@ body {
     }
 }
 
-/* ========== OTP Verification Section ========== */
+
 .otp-section {
     animation: otpSlideIn 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -639,7 +639,7 @@ body {
     cursor: not-allowed;
 }
 
-/* Redirect countdown overlay */
+
 .otp-redirect-msg {
     margin-top: 1rem;
     text-align: center;

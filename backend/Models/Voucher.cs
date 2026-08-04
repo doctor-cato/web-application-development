@@ -15,10 +15,7 @@ namespace appweb.Models
         [MaxLength(200)]
         public string Description { get; set; } = string.Empty;
         
-        /// <summary>
-        /// "PERCENTAGE" or "FIXED_AMOUNT"
-        /// </summary>
-        [Required]
+                [Required]
         [MaxLength(20)]
         public string DiscountType { get; set; } = "PERCENTAGE";
         

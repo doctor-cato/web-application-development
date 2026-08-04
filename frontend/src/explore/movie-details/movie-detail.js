@@ -850,7 +850,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const dates = generateDates(7);
     renderDateTabs(dates);
 
-    window.currentMovie = currentMovie; // Ensure title matching fallback works
+    window.currentMovie = currentMovie; 
     if (window.fetchShowtimesByMovie && currentMovie) {
         window.currentMovieShowtimes = await window.fetchShowtimesByMovie(currentMovie.id);
     }

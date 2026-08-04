@@ -23,7 +23,7 @@ function formatCurrency(amount) {
   return Number(amount).toLocaleString('vi-VN') + 'đ';
 }
 
-// ---------- Lấy danh sách phim/suất chiếu từ storage ----------
+
 function getAvailableShowtimes() {
   const movies = lsGet(KEYS.MOVIES, null) || window.allMoviesData;
   if (movies && Array.isArray(movies)) {
@@ -45,13 +45,13 @@ function getAvailableShowtimes() {
   return [];
 }
 
-// ---------- Render danh sách vé ----------
+
 
 function renderTickets() {
   const container = document.getElementById('ticketContainer');
   const bookings = getBookings();
 
-  // Chỉ hiển thị vé đã confirmed
+  
   const confirmedBookings = bookings.filter(b => !b.status || b.status === 'confirmed');
 
   if (confirmedBookings.length === 0) {
@@ -101,7 +101,7 @@ function renderTickets() {
   });
 }
 
-// ---------- Hủy vé ----------
+
 
 function handleCancelTicket(e) {
   const bookingId = e.currentTarget.getAttribute('data-id');
@@ -128,7 +128,7 @@ function handleCancelTicket(e) {
   }
 }
 
-// ---------- Modal đổi suất chiếu ----------
+
 
 let currentEditingBookingId = null;
 let selectedShowtimeId = null;
@@ -180,7 +180,7 @@ function renderShowtimeOptions(currentShowtimeId) {
     opt.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') select(); });
   });
 
-  // Tự chọn suất hiện tại
+  
   const currentOpt = document.querySelector(`.showtime-option[data-showtime-id="${currentShowtimeId}"]`);
   if (currentOpt) {
     currentOpt.classList.add('selected');
@@ -244,10 +244,10 @@ function handleConfirmChange() {
   showToast(`✅ Đã đổi sang suất "${newSt.movie}" lúc ${newSt.time} ngày ${formatDate(newSt.date)}.`, 'success');
 }
 
-// ---------- Toast notification ----------
+
 
 function showToast(message, type = 'info') {
-  // Dùng toast component của project nếu có, fallback alert
+  
   const existing = document.getElementById('cb-toast');
   if (existing) existing.remove();
 
@@ -264,7 +264,7 @@ function showToast(message, type = 'info') {
   }, 3000);
 }
 
-// ---------- Event listeners & init ----------
+
 
 cancelChangeBtn.addEventListener('click', closeChangeModal);
 confirmChangeBtn.addEventListener('click', handleConfirmChange);
@@ -275,7 +275,7 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') closeChangeModal();
 });
 
-// ---------- Lịch sử giao dịch ----------
+
 
 function formatCurrencyHistory(amount) {
   if (!amount) return '';

@@ -11,7 +11,7 @@ const getSignalRUrl = () => {
         const url = new URL(API_BASE_URL);
         return `${url.protocol}//${url.host}/seatHub`;
     } catch (e) {
-        return 'https://localhost:7198/seatHub'; // Fallback
+        return 'https://localhost:7198/seatHub'; 
     }
 };
 
@@ -49,7 +49,7 @@ export async function initSignalR(roomId) {
     currentRoomId = roomId;
     initBroadcastChannel(roomId);
 
-    // Auto cleanup on window unload/pagehide
+    
     const handleUnload = () => {
         closeSeatSyncChannel();
     };
@@ -118,7 +118,7 @@ export function closeSeatSyncChannel() {
 }
 
 export function getSeatMap(showtimeId) {
-    return {}; // Rely on SignalR or separate API fetch for initial state
+    return {}; 
 }
 
 export function lockSeat(showtimeId, seatId, userId) {
@@ -126,7 +126,7 @@ export function lockSeat(showtimeId, seatId, userId) {
     if (connection && connection.state === signalR.HubConnectionState.Connected) {
         connection.invoke("SelectSeat", showtimeId, seatId, userId).catch(err => console.error(err));
     }
-    return true; // Optimistic UI update
+    return true; 
 }
 
 export function unlockSeat(showtimeId, seatId, userId) {
@@ -138,7 +138,7 @@ export function unlockSeat(showtimeId, seatId, userId) {
 }
 
 export function releaseExpiredLocks() {
-    // Handled by backend SeatCleanupService
+    
 }
 
 export async function confirmBooking(checkoutData) {

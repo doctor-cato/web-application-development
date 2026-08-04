@@ -1,4 +1,4 @@
-// Live Support Chat for 3HD2K Cinema
+
 
 let chatHistory = [];
 let connection = null;
@@ -7,7 +7,7 @@ let isReconnecting = false;
 function renderChatWidget() {
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
     
-    // Prevent duplicate rendering
+    
     if (document.getElementById('chat-widget')) return;
 
     const chatHTML = `
@@ -344,7 +344,7 @@ function renderChatWidget() {
         chatWidget.classList.remove('active');
     });
 
-    // Handle Quick Action Chips
+    
     if (quickChips) {
         quickChips.addEventListener('click', (e) => {
             const btn = e.target.closest('.chip-btn');
@@ -366,7 +366,7 @@ function renderChatWidget() {
         messageDiv.className = `chat-message ${isUser ? 'user' : 'bot'}`;
         
         let avatarIcon = isUser ? 'fa-user' : (iconClass || 'fa-robot');
-        // Simple line break to BR formatting
+        
         const formattedText = text.replace(/\n/g, '<br/>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
         
         messageDiv.innerHTML = `
@@ -485,7 +485,7 @@ function renderChatWidget() {
         const message = chatInput.value.trim();
         if (!message) return;
         
-        // Show user's message
+        
         addMessage(message, true);
         chatInput.value = '';
 
@@ -500,10 +500,10 @@ function renderChatWidget() {
                 setTimeout(() => addMessage(aiReply, false, 'fa-robot'), 400);
             }
         } else {
-            // Try quiet reconnection in background
+            
             initSignalR(false);
 
-            // Respond immediately with AI Bot Assistant instead of repetitive error spam!
+            
             setTimeout(() => {
                 const aiReply = generateAIBotResponse(message);
                 addMessage(aiReply, false, 'fa-robot');
@@ -516,7 +516,7 @@ function renderChatWidget() {
         if (e.key === 'Enter') handleSendMessage();
     });
 
-    // Load SignalR script dynamically if not present
+    
     if (!window.signalR) {
         const script = document.createElement('script');
         script.src = "https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js";

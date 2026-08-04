@@ -62,14 +62,14 @@ namespace appweb.Controllers
             {
                 booking.PaymentStatus = "Paid";
                 
-                // Add points to User
+                
                 if (booking.UserId.HasValue)
                 {
                     var user = await _context.Users.FindAsync(booking.UserId.Value);
                     if (user != null)
                     {
                         var ticketRateStr = await _context.Settings.Where(s => s.Key == "TicketPointRate").Select(s => s.Value).FirstOrDefaultAsync();
-                        decimal rate = 0.001m; // Default 1 point per 1000 VND
+                        decimal rate = 0.001m; 
                         if (decimal.TryParse(ticketRateStr, out var parsedRate)) {
                             rate = parsedRate;
                         }
@@ -113,7 +113,7 @@ namespace appweb.Controllers
             var accountName = _configuration["Payment:AccountName"] ?? "RAP PHIM 3HD2K";
             var addInfo = string.IsNullOrEmpty(description) ? $"TT DON HANG 3HD2K {(long)amount}D" : description;
             
-            // Standard Dynamic VietQR / MoMo QuickPay Image URL
+            
             var qrUrl = $"https://img.vietqr.io/image/{targetBank}-{targetAccount}-compact2.png?amount={(long)amount}&addInfo={Uri.EscapeDataString(addInfo)}&accountName={Uri.EscapeDataString(accountName)}";
 
             return Ok(new {

@@ -5,29 +5,29 @@ import { API_BASE_URL } from '../../shared/utils/apiConfig.js?v=4';
 
 
 
-// ============================================================
-// CineMatch Premium - SignalR Real-time Matching
-// ============================================================
+
+
+
 
 const getSignalRUrl = () => {
     try {
         const url = new URL(API_BASE_URL);
         return `${url.protocol}//${url.host}/cinematchHub`;
     } catch (e) {
-        return 'https://localhost:7198/cinematchHub'; // Fallback
+        return 'https://localhost:7198/cinematchHub'; 
     }
 };
 
-// Set to true for local testing (simulates matching without SignalR)
-// Set to false when SignalR is configured for real cross-device matching
+
+
 const DEMO_MODE = false;
 
-// SignalR connection
+
 let connection = null;
 
-// ============================================================
-// STATE
-// ============================================================
+
+
+
 const state = {
     userId: null,
     userName: null,
@@ -40,9 +40,9 @@ const state = {
     timers: { radar: null, status: null, demoMatch: null, matchTimer: null, searchTimeout: null }
 };
 
-// ============================================================
-// DOM ELEMENTS (populated after DOMContentLoaded)
-// ============================================================
+
+
+
 let DOM = {};
 
 function cacheDom() {
@@ -84,23 +84,23 @@ function cacheDom() {
     };
 }
 
-// ============================================================
-// INITIALIZATION
-// ============================================================
+
+
+
 document.addEventListener('DOMContentLoaded', async () => {
-    // Render navbar & footer
+    
     const navEl = document.getElementById('navbar-placeholder');
     if (navEl) navEl.innerHTML = renderNavbar();
     const footEl = document.getElementById('footer-placeholder');
     if (footEl) footEl.innerHTML = renderFooter();
 
-    // Cache DOM refs
+    
     cacheDom();
 
-    // Load Cinemas
+    
     loadCinemas();
 
-    // Session check
+    
     const session = getSession();
     const jwtToken = localStorage.getItem('jwt_token');
     if ((!session || !jwtToken) && !DEMO_MODE) {
@@ -114,14 +114,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     state.userId = session?.email || 'demo_' + Math.random().toString(36).slice(2, 8);
     state.userName = session?.fullname || session?.name || session?.username || "Người dùng";
 
-    // Init SignalR if not demo
+    
     if (!DEMO_MODE) initSignalR();
 
-    // Setup interactions
+    
     setupFormSelection();
     setupEventHandlers();
 
-    // Set defaults for pre-selected cards
+    
     document.querySelectorAll('.pref-card.selected').forEach(card => {
         const group = card.dataset.group;
         const value = card.dataset.value;
@@ -129,9 +129,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 });
 
-// ============================================================
-// SIGNALR
-// ============================================================
+
+
+
 async function initSignalR() {
     if (!window.signalR) {
         console.warn("SignalR SDK not loaded");
@@ -197,9 +197,9 @@ async function initSignalR() {
     }
 }
 
-// ============================================================
-// API
-// ============================================================
+
+
+
 async function loadCinemas() {
     try {
         const res = await fetch('/api/cinemas');
@@ -210,7 +210,7 @@ async function loadCinemas() {
             
             data.forEach(cinema => {
                 const cId = cinema.id || cinema.Id;
-                // Avoid duplicating hardcoded cinemas
+                
                 if (container.querySelector(`.pref-card[data-value="${cId}"]`)) return;
                 
                 const card = document.createElement('div');
@@ -263,9 +263,9 @@ function setupFormSelection() {
     });
 }
 
-// ============================================================
-// EVENT HANDLERS
-// ============================================================
+
+
+
 function setupEventHandlers() {
     DOM.buttons.start?.addEventListener('click', startMatching);
     DOM.buttons.cancelSearch?.addEventListener('click', cancelSearch);
@@ -279,7 +279,7 @@ function setupEventHandlers() {
         if (e.key === 'Enter') sendChatMessage();
     });
 
-    // Emoji buttons
+    
     DOM.room.emojiBar?.querySelectorAll('.emoji-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             sendChatMessage(btn.textContent.trim());
@@ -289,9 +289,9 @@ function setupEventHandlers() {
     window.addEventListener('beforeunload', cleanup);
 }
 
-// ============================================================
-// STEP SWITCHING
-// ============================================================
+
+
+
 function switchStep(stepName) {
     Object.values(DOM.steps).forEach(step => {
         if (step) step.style.display = 'none';
@@ -303,13 +303,13 @@ function switchStep(stepName) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ============================================================
-// MATCHING
-// ============================================================
+
+
+
 window.startMatching = function startMatching() {
     clearTimers();
 
-    // Reset previous states to prevent stuck match
+    
     state.roomId = null;
     state.bothAccepted = false;
     state.currentMatch = null;
@@ -323,7 +323,7 @@ window.startMatching = function startMatching() {
 
     switchStep('radar');
 
-    // Radar animation & 15s countdown
+    
     state.timers.radar = setInterval(spawnRadarNode, 800);
 
     let searchTimeLeft = 15;
@@ -371,9 +371,9 @@ window.cancelSearch = function cancelSearch() {
     switchStep('form');
 };
 
-// ============================================================
-// RADAR ANIMATION
-// ============================================================
+
+
+
 function spawnRadarNode() {
     if (!DOM.radar.circle) return;
 
@@ -403,9 +403,9 @@ function spawnRadarNode() {
     }, 2000 + Math.random() * 1000);
 }
 
-// ============================================================
-// LOBBY & MATCHING LOGIC
-// ============================================================
+
+
+
 window.renderLobby = function(candidates) {
     if (!DOM.candidates.container) return;
 
@@ -462,9 +462,9 @@ function onBothAccepted() {
     startRoomTimer();
 }
 
-// ============================================================
-// SHARED MOVIES
-// ============================================================
+
+
+
 async function loadSharedMovies() {
     let movies = [];
 
@@ -472,13 +472,13 @@ async function loadSharedMovies() {
         DOM.room.moviesContainer.innerHTML = '<div style="color: white; text-align: center; grid-column: 1 / -1; padding: 20px;"><i class="fas fa-spinner fa-spin" style="margin-right: 8px;"></i>Đang tải danh sách phim từ hệ thống...</div>';
     }
 
-    // 1. Lấy dữ liệu phim thật từ API
+    
     try {
         const response = await fetch('/api/movies');
         if (response.ok) {
             const data = await response.json();
             if (data && data.length > 0) {
-                // Trộn ngẫu nhiên danh sách phim để mỗi lần match có phim khác nhau (tùy chọn)
+                
                 const shuffled = data.sort(() => 0.5 - Math.random());
                 movies = shuffled.slice(0, 8).map(m => ({
                     id: m.id || m.Id || m.movieId,
@@ -492,7 +492,7 @@ async function loadSharedMovies() {
         console.error('Lỗi khi tải phim từ API:', e);
     }
 
-    // 2. Dự phòng lấy từ localStorage nếu API lỗi
+    
     if (!movies || movies.length === 0) {
         try {
             const localData = localStorage.getItem('3hd2k_movies');
@@ -593,9 +593,9 @@ function executeAgreeMovie(movieId) {
     }, 1500);
 };
 
-// ============================================================
-// CHAT
-// ============================================================
+
+
+
 function sendChatMessage(textOverride) {
     const text = textOverride || (DOM.room.chatInput ? DOM.room.chatInput.value.trim() : '');
     if (!text) return;
@@ -645,11 +645,11 @@ function appendChat(sender, message, type) {
     DOM.room.chatLog.scrollTop = DOM.room.chatLog.scrollHeight;
 }
 
-// ============================================================
-// ROOM TIMER
-// ============================================================
+
+
+
 function startRoomTimer() {
-    let timeLeft = 3 * 60; // 3 minutes
+    let timeLeft = 3 * 60; 
 
     clearInterval(state.timers.matchTimer);
 
@@ -672,9 +672,9 @@ function startRoomTimer() {
     }, 1000);
 }
 
-// ============================================================
-// CLEANUP
-// ============================================================
+
+
+
 function clearTimers() {
     Object.keys(state.timers).forEach(key => {
         if (state.timers[key]) {

@@ -32,7 +32,7 @@ public class SeatCleanupService : BackgroundService
             }
             catch (Exception)
             {
-                // Prevent DB connection errors from crashing the entire ASP.NET Core host process
+                
             }
             await Task.Delay(TimeSpan.FromSeconds(30), stoppingToken);
         }

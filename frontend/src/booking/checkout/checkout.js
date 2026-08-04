@@ -800,7 +800,7 @@ init();
                 body: JSON.stringify(orderData)
             }).then(res => res.json())
               .then(data => {
-                  // Group order saved successfully
+                  
 
                   checkoutSessionData.seats = [checkoutSessionData.seats[0]];
                   checkoutSessionData.total = hostTotalCost;

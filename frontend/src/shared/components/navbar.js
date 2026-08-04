@@ -72,7 +72,7 @@ export function renderNavbar() {
     </header>
     <div class="mobile-modal-overlay" id="mobile-modal-overlay"></div>
     <style>
-/* --- NAVBAR --- */
+
 .navbar {
     position: fixed;
     top: 0;
@@ -332,7 +332,7 @@ export function renderNavbar() {
     color: #fff;
 }
 
-/* Custom Select Dropdown UI */
+
 .qb-custom-select {
     position: relative;
     width: 100%;
@@ -481,7 +481,7 @@ export function renderNavbar() {
     flex-shrink: 0;
 }
 
-/* Pill-shaped search */
+
 .search-pill {
     display: flex;
     align-items: center;
@@ -526,7 +526,7 @@ export function renderNavbar() {
     color: rgba(255, 255, 255, 0.6);
 }
 
-/* Hidden input field by default */
+
 #search-input {
     background: transparent;
     border: none;
@@ -539,7 +539,7 @@ export function renderNavbar() {
     outline: none;
 }
 
-/* Active state for search pill */
+
 .search-pill.active {
     background: rgba(255, 255, 255, 0.12);
     border-color: rgba(255, 255, 255, 0.2);
@@ -575,7 +575,7 @@ export function renderNavbar() {
     transform: scale(1.15);
 }
 
-/* Portal Shortcut Icon Buttons for Admin & Staff */
+
 .portal-icon-btn {
     position: relative;
     display: inline-flex !important;
@@ -655,7 +655,7 @@ export function renderNavbar() {
     transform: scale(1.08);
 }
 
-/* Notification Button & Dropdown */
+
 .notif-btn {
     position: relative;
     cursor: pointer;
@@ -691,7 +691,7 @@ export function renderNavbar() {
 .notif-dropdown {
     position: absolute;
     top: calc(100% + 15px);
-    right: -10px; /* Align near the edge but a bit shifted */
+    right: -10px; 
     width: 360px;
     background: rgba(15, 15, 15, 0.95);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -704,10 +704,10 @@ export function renderNavbar() {
     transform: translateY(-10px);
     transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.25s;
     z-index: 1000;
-    cursor: default; /* Reset cursor for dropdown content */
+    cursor: default; 
 }
 
-/* Caret for dropdown */
+
 .notif-dropdown::before {
     content: '';
     position: absolute;
@@ -871,7 +871,7 @@ export function renderNavbar() {
     margin-left: 4px;
 }
 
-/* User Avatar & Dropdown */
+
 .user-btn {
     position: relative;
     cursor: pointer;
@@ -913,7 +913,7 @@ export function renderNavbar() {
     cursor: default;
 }
 
-/* Caret for user dropdown */
+
 .user-dropdown::before {
     content: '';
     position: absolute;
@@ -1039,7 +1039,7 @@ export function renderNavbar() {
     }
     .quick-book-dropdown::before { display: none !important; }
 
-    /* Add a dark overlay behind modal on mobile */
+    
     .mobile-modal-overlay {
         position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
         background: rgba(0,0,0,0.8);
@@ -1054,12 +1054,12 @@ export function renderNavbar() {
     .search-pill { padding: 8px 12px; }
 }
 @media (max-width: 600px) {
-    /* ponytail: navbar dropdowns use fixed viewport positioning on mobile; ceiling: max screen height under 400px may cause vertical scrolling inside dropdowns; upgrade path: convert dropdowns to bottom-sheet drawers */
+    
     .navbar { height: 64px; padding: 0 16px; }
     .logo { font-size: 1.5rem; }
     .nav-actions { gap: 8px; }
 
-    /* Hide portal icon buttons from top bar on small screens to prevent action bar overflow; accessible via Hamburger menu */
+    
     .portal-icon-btn { display: none !important; }
 
     .search-pill.active #search-input { width: 90px; }
@@ -1481,7 +1481,7 @@ export function renderNavbar() {
                     userRole = 'STAFF';
                 }
 
-                // ponytail: Admin owns all frames & full privileges by default. ceiling: client-side session role check. upgrade path: JWT claim verification.
+                
                 const isAdmin = userRole === 'ADMIN';
 
                 const userPointsHtml = isAdmin
@@ -1498,7 +1498,7 @@ export function renderNavbar() {
                     }
                 } else if (isVip && vipPlan) {
                     const planLower = vipPlan.toLowerCase();
-                    // Auto-upgrade border if they haven't explicitly set one or if it's lower than their plan
+                    
                     if (userBorder === 'member') {
                         if (planLower === 'platinum') userBorder = 'diamond';
                         else if (planLower === 'gold') userBorder = 'gold';

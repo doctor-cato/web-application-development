@@ -90,7 +90,7 @@ namespace appweb.Controllers
                 showtime.EndTime = showtime.StartTime.AddHours(2);
             }
 
-            // Auto-resolve MovieId from MovieTitle if MovieId is missing
+            
             if ((showtime.MovieId == null || showtime.MovieId == Guid.Empty) && !string.IsNullOrEmpty(showtime.MovieTitle))
             {
                 var matchedMovie = await _context.Movies.FirstOrDefaultAsync(m => m.Title == showtime.MovieTitle || m.Title.Contains(showtime.MovieTitle));

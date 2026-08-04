@@ -40,7 +40,7 @@ window.deleteShowtime = async function(paramId) {
     let originalText = '';
     
     if (typeof id === 'object' || !id) {
-        // If called without string ID (e.g. from modal)
+        
         id = document.getElementById('st-id-input')?.value;
         if (!id) return;
         btn = document.getElementById('st-delete-btn');
@@ -66,7 +66,7 @@ window.deleteShowtime = async function(paramId) {
         });
 
         if (res.ok || res.status === 404) {
-            // Update local DB to be safe
+            
             db.showtimes = db.showtimes.filter(s => String(s.id) !== String(id));
             localStorage.setItem('3hd2k_showtimes', JSON.stringify(db.showtimes));
             

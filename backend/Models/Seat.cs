@@ -15,7 +15,7 @@ public partial class Seat
 
     public string? SeatType { get; set; }
 
-    public string Status { get; set; } = "Available"; // Available, Held, Booked
+    public string Status { get; set; } = "Available"; 
     
     public string? HeldByUserId { get; set; }
     

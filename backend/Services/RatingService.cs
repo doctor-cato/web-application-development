@@ -54,7 +54,7 @@ public class RatingService : IRatingService
 
     private async Task<MovieRatingDto> FetchZeroConfigRatingsAsync(string title, string? imdbId)
     {
-        // 1. Try public OMDB demo endpoint or public search
+        
         try
         {
             var targetId = !string.IsNullOrEmpty(imdbId) ? imdbId : null;
@@ -100,10 +100,10 @@ public class RatingService : IRatingService
             _logger.LogWarning(ex, "Open OMDb lookup failed for title: {Title}, switching to Zero-Config Fallback", title);
         }
 
-        // 2. Zero-Config Bayesian Rating Generator (fallback ensuring deterministic high quality ratings based on title hash)
+        
         int hash = Math.Abs(title.GetHashCode());
-        double baseImdb = 7.5 + (hash % 20) / 10.0; // 7.5 to 9.4 ⭐
-        int baseRt = 75 + (hash % 23); // 75% to 97% 🍅
+        double baseImdb = 7.5 + (hash % 20) / 10.0; 
+        int baseRt = 75 + (hash % 23); 
 
         return new MovieRatingDto
         {
