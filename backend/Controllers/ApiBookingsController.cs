@@ -81,6 +81,8 @@ namespace appweb.Controllers
 
             total = Math.Max(0, total - discountAmount - vipDiscountAmount - loyaltyComboDiscountAmount);
 
+            var isPaidImmediately = (request.PaymentMethod?.ToLower() == "cash");
+
             var booking = new Booking
             {
                 Id = Guid.NewGuid(),
@@ -90,12 +92,15 @@ namespace appweb.Controllers
                 Seats = request.Seats,
                 TotalPrice = total,
                 PaymentMethod = request.PaymentMethod ?? "Cash",
-                PaymentStatus = "Paid",
+                PaymentStatus = isPaidImmediately ? "Paid" : "Pending",
                 CreatedAt = DateTime.Now
             };
 
-            user.Points += (int)Math.Floor(total / 1000);
-            await _userRepository.UpdateAsync(user);
+            if (isPaidImmediately)
+            {
+                user.Points += (int)Math.Floor(total / 1000);
+                await _userRepository.UpdateAsync(user);
+            }
 
             await _bookingRepository.AddAsync(booking);
 
