@@ -221,7 +221,13 @@ function initTabs() {
 }
 
 function loadUserInfo() {
-    const isLogged = localStorage.getItem('isLoggedIn') === 'true';
+    const isLogged = localStorage.getItem('isLoggedIn') === 'true' || Boolean(localStorage.getItem('jwt_token') || localStorage.getItem('auth_token'));
+    
+    if (!isLogged) {
+        window.location.href = '/auth/user-login/login.html?returnUrl=' + encodeURIComponent(window.location.pathname + window.location.search);
+        return;
+    }
+
     let session = null;
     try {
         session = getCurrentUser();
