@@ -514,17 +514,6 @@ function initAvatarBorders() {
     }
 }
 
-    function applyBorder(borderType) {
-        avatarImg.className = '';
-        avatarImg.classList.add(`avatar-border-${borderType}`);
-
-        borderOptions.forEach(opt => opt.classList.remove('active'));
-        const activeOpt = document.querySelector(`.border-option[data-border="${borderType}"]`);
-        if (activeOpt) activeOpt.classList.add('active');
-    }
-
-}
-
 function setupAvatarUpload() {
     const avatarInput = document.getElementById('avatar-input');
     const avatarImg = document.getElementById('sidebar-avatar');
