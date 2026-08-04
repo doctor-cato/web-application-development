@@ -83,7 +83,7 @@ API_SHOWTIMES = rawST.map(s => {
                                                                 if (st.isNext) {
                                                                     sStyle = `background: rgba(0,255,255,0.1); color: #0ff; border: 1px solid #0ff; width: 100%; text-align: center; justify-content: center; box-sizing: border-box; padding: 6px; border-radius: 4px; font-size: 0.75rem;`;
                                                                 }
-                                                                return `<button class="btn-mini" style="${sStyle}" title="${st.roomName || 'Phòng chiếu'}">⏱️ ${st.time}</button>`;
+                                                                return `<button class="btn-mini" style="${sStyle}" title="${st.roomName || 'Phòng chiếu'}">⏱️ ${st.time}${st.isNext ? " (SẮP CHIẾU)" : ""}</button>`;
                                                             }
                                                         }).join('');
                                                         htmlGroup += `</div>`;
