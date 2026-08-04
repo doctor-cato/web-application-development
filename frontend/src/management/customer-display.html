@@ -95,7 +95,7 @@ function HienThiDanhSachPhim() {
         window._CFD_SUAT_MAP[mk] = { st: st, phim: phim };
         var label = st.roomName || st.cinemaName || "3HD2K";
         var base = "padding:6px 14px;border-radius:6px;font-size:0.74rem;font-weight:700;line-height:1.5;border:none;display:inline-block;text-align:center;cursor:pointer;";
-        var oc = "KhachHangChonSuatChieu(\"" + mk + "\")";
+        var oc = "KhachHangChonSuatChieu('" + mk + "')";
         if (st.isPast) {
             return "<button disabled style=\"" + base + "opacity:0.3;text-decoration:line-through;background:#111;color:#555;cursor:not-allowed;\">"
                 + "<i class=\"fas fa-clock\"></i> " + st.time + "<br><small style=\"font-size:0.62rem;color:#444;\">" + label + " · Đã qua</small></button>";
