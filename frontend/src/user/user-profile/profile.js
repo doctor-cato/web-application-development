@@ -221,18 +221,19 @@ function initTabs() {
 }
 
 function loadUserInfo() {
-    const isLogged = localStorage.getItem('isLoggedIn') === 'true' || Boolean(localStorage.getItem('jwt_token') || localStorage.getItem('auth_token'));
-    
-    if (!isLogged) {
-        window.location.href = '/auth/user-login/login.html?returnUrl=' + encodeURIComponent(window.location.pathname + window.location.search);
-        return;
-    }
-
     let session = null;
     try {
         session = getCurrentUser();
     } catch(e) {
         console.error("getCurrentUser error", e);
+    }
+
+    const isLogged = localStorage.getItem('isLoggedIn') === 'true' || Boolean(localStorage.getItem('jwt_token') || localStorage.getItem('auth_token'));
+    
+    if (!isLogged || !session || (!session.email && !session.phone && !session.fullname)) {
+        if (typeof clearCurrentUser === 'function') clearCurrentUser();
+        window.location.href = '/auth/user-login/login.html?returnUrl=' + encodeURIComponent(window.location.pathname + window.location.search);
+        return;
     }
 
     let email = (session && session.email) || localStorage.getItem('userEmail') || '';

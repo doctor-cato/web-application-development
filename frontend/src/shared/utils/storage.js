@@ -123,7 +123,10 @@ export function parseJwtPayload(token) {
       const parts = token.split('.');
       if (parts.length >= 2) {
         const base64Url = parts[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        while (base64.length % 4 !== 0) {
+            base64 += '=';
+        }
         const jsonPayload = safeAtob(base64);
         const parsed = JSON.parse(jsonPayload);
         if (parsed && typeof parsed === 'object') return parsed;
