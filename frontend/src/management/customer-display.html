@@ -128,7 +128,7 @@ function HienThiDanhSachPhim() {
             
             for (var cName in groups) {
                 btnsHTML += "<div style=\"margin-bottom:8px;\">";
-                btnsHTML += "<div style=\"font-size:0.75rem;color:var(--xanh-luc-highlight);font-weight:800;margin-bottom:6px;text-transform:uppercase;\">| " + cName + "</div>";
+                btnsHTML += "<div style=\"font-size:0.75rem;color:#00ffff;font-weight:800;margin-bottom:6px;text-transform:uppercase;\">| " + cName + "</div>";
                 btnsHTML += "<div style=\"display:flex;flex-direction:column;gap:6px;\">";
                 btnsHTML += groups[cName].map(function(st) { return buildShowtimeBtn(st, phim); }).join("");
                 btnsHTML += "</div></div>";
