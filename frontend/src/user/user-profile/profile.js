@@ -228,22 +228,24 @@ function loadUserInfo() {
         console.error("getCurrentUser error", e);
     }
 
-    const isLogged = localStorage.getItem('isLoggedIn') === 'true' || Boolean(localStorage.getItem('jwt_token') || localStorage.getItem('auth_token'));
+    const hasToken = Boolean(localStorage.getItem('jwt_token') || localStorage.getItem('auth_token'));
+    const isLogged = localStorage.getItem('isLoggedIn') === 'true' || hasToken;
     
-    if (!isLogged || !session || (!session.email && !session.phone && !session.fullname)) {
-        if (typeof clearCurrentUser === 'function') clearCurrentUser();
+    if (!isLogged) {
         window.location.href = '/auth/user-login/login.html?returnUrl=' + encodeURIComponent(window.location.pathname + window.location.search);
         return;
     }
 
-    let email = (session && session.email) || localStorage.getItem('userEmail') || '';
-    let name  = (session && (session.fullname || session.fullName || session.name) && (session.fullname || session.fullName || session.name) !== 'Khách')
-        ? (session.fullname || session.fullName || session.name)
-        : (localStorage.getItem('userName') || '');
-    let phone = (session && (session.phone || session.phoneNumber)) || localStorage.getItem('userPhone') || '';
-    let avatar = (session && session.avatar) || localStorage.getItem('userAvatar') || '';
-    let dob = (session && (session.dob || session.dateOfBirth || session.date_of_birth)) || localStorage.getItem('userDob') || '';
-    let gender = (session && session.gender) || localStorage.getItem('userGender') || 'male';
+    // Read directly from localStorage (most reliable after login/fetchMe)
+    let email = localStorage.getItem('userEmail') || (session && session.email) || '';
+    let name = localStorage.getItem('userName') || (session && (session.fullname || session.fullName || session.name)) || '';
+    let phone = localStorage.getItem('userPhone') || (session && (session.phone || session.phoneNumber)) || '';
+    let avatar = localStorage.getItem('userAvatar') || (session && session.avatar) || '';
+    let dob = localStorage.getItem('userDob') || (session && (session.dob || session.dateOfBirth)) || '';
+    let gender = localStorage.getItem('userGender') || (session && session.gender) || 'male';
+
+    // Filter out placeholder/corrupt names
+    if (name === 'Khách' || !name) name = '';
 
     if (email) {
         try {
@@ -702,7 +704,6 @@ async function fetchMe() {
 }
 
 async function initProfile() {
-    try { await fetchMe(); } catch(e) { console.error('fetchMe failed:', e); }
     try { initTabs(); } catch(e) { console.error('initTabs error:', e); }
     try { loadUserInfo(); } catch(e) { console.error('loadUserInfo error:', e); }
     try { setupProfileForm(); } catch(e) { console.error('setupProfileForm error:', e); }
@@ -713,6 +714,11 @@ async function initProfile() {
     try { setupAvatarUpload(); } catch(e) { console.error('setupAvatarUpload error:', e); }
     try { setup2FA(); } catch(e) { console.error('setup2FA error:', e); }
     try { loadRealOffers(); } catch(e) { console.error('loadRealOffers error:', e); }
+
+    try {
+        await fetchMe();
+        loadUserInfo();
+    } catch(e) { console.error('fetchMe failed:', e); }
     
     window.addEventListener('vouchersUpdated', () => {
         console.log('Reloading offers due to SignalR update...');
