@@ -135,7 +135,7 @@
             for (let cName in groups) {
                 btnsHTML += `<div style="margin-bottom:6px;">`;
                 btnsHTML += `<div style="font-size:0.75rem;color:#00ffff;font-weight:800;margin-bottom:4px;text-transform:uppercase; text-align: left;">| ${cName}</div>`;
-                btnsHTML += `<div style="display:flex;flex-direction:row;flex-wrap:wrap;gap:6px;align-content:flex-start;">`;
+                btnsHTML += `<div style="display:flex;flex-direction:row;flex-wrap:wrap;gap:6px;align-items:flex-start;align-content:flex-start;">`;
                 btnsHTML += groups[cName].map(st => {
                     let base = "padding:6px 10px;border-radius:6px;font-size:0.85rem;font-weight:800;border:none;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;transition:all 0.2s;";
                     let oc = `event.stopPropagation(); openPOSSeatModal('${st.id}', '${m.id}')`;
