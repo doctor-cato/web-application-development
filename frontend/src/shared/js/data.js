@@ -57,7 +57,7 @@ function mapMovieObj(m) {
     const rawPoster = m.posterUrl || m.poster;
     const rawBg = m.bgUrl || m.backdropUrl || m.bg || m.backdrop;
 
-    let posterImg = rawPoster ? normalizeImagePath(rawPoster) : '';
+    let posterImg = rawPoster ? normalizeImagePath(rawPoster) : '/shared/images/avatar.jpg';
     let bgImg = rawBg ? normalizeImagePath(rawBg) : '';
 
     if (!posterImg || posterImg.includes('avatar.jpg')) {

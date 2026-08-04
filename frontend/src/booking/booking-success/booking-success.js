@@ -87,7 +87,11 @@ function awardLoyaltyPoints(booking) {
     }
 }
 
-function init() {
+async function init() {
+    if (window.fetchMoviesPromise) {
+        await window.fetchMoviesPromise;
+    }
+
     const booking = getLastBooking();
 
     if (!booking) {
@@ -142,6 +146,10 @@ function init() {
     let bgImage = backdrop || poster;
     if (!backdrop && poster && (poster.startsWith('images/') || poster.startsWith('assets/'))) {
         bgImage = '/shared/' + poster;
+    }
+
+    if (!bgImage || bgImage.includes('placeholder.jpg')) {
+        bgImage = '/shared/images/avatar.jpg';
     }
 
     if (heroImage && bgImage) {

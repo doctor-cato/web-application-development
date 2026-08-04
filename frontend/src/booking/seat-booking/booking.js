@@ -132,7 +132,7 @@ async function init() {
     }
 
     if (foundMovie) {
-      const imgUrl = foundMovie.posterUrl || foundMovie.poster || `/images/movies/placeholder.jpg`;
+      const imgUrl = foundMovie.posterUrl || foundMovie.poster || `/shared/images/avatar.jpg`;
       movieData = {
         id: foundMovie.id,
         title: foundMovie.title,
@@ -147,7 +147,7 @@ async function init() {
       movieData = {
           id: movieId || 'unknown',
           title: 'Phim Đang Cập Nhật',
-          poster: '/images/movies/placeholder.jpg',
+          poster: '/shared/images/avatar.jpg',
           genre: 'N/A',
           tags: []
       };
