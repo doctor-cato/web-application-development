@@ -187,6 +187,25 @@ async function initSignalR() {
         appendChat('Hệ thống', 'Đối tác đã ngắt kết nối. Vui lòng tải lại trang để tìm người mới.', 'system');
     });
 
+    connection.onreconnecting(error => {
+        console.warn("SignalR reconnecting due to Vercel proxy timeout...", error);
+    });
+
+    connection.onreconnected(async (connectionId) => {
+        console.log("SignalR reconnected automatically:", connectionId);
+        try {
+            if (state.roomId) {
+                console.log("Rejoining active room:", state.roomId);
+                await connection.invoke("RejoinRoom", state.roomId, state.userId);
+            } else if (DOM.steps.radar && DOM.steps.radar.style.display !== 'none') {
+                console.log("Rejoining matchmaking queue...");
+                await joinSignalRQueue();
+            }
+        } catch (err) {
+            console.error("Error during reconnect recovery:", err);
+        }
+    });
+
     try {
         await connection.start();
         console.log("SignalR initialized for CineMatch");

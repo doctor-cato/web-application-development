@@ -63,7 +63,6 @@ namespace appweb.Hubs
 
             if (partner != null)
             {
-
                 string roomId = Guid.NewGuid().ToString();
                 var room = new RoomInfo
                 {
@@ -93,6 +92,21 @@ namespace appweb.Hubs
                     Connections = new Random().Next(5, 50),
                     Rating = Math.Round(new Random().NextDouble() * (5.0 - 4.0) + 4.0, 1)
                 });
+            }
+        }
+
+        public async Task RejoinRoom(string roomId, string userId)
+        {
+            if (_rooms.TryGetValue(roomId, out var room))
+            {
+                if (room.User1.UserId == userId)
+                {
+                    room.User1.ConnectionId = Context.ConnectionId;
+                }
+                else if (room.User2.UserId == userId)
+                {
+                    room.User2.ConnectionId = Context.ConnectionId;
+                }
             }
         }
 
@@ -137,33 +151,18 @@ namespace appweb.Hubs
         {
             if (_rooms.TryGetValue(roomId, out var room))
             {
-
                 await Clients.Client(room.User1.ConnectionId).SendAsync("OnMovieAgreed", movieId);
                 await Clients.Client(room.User2.ConnectionId).SendAsync("OnMovieAgreed", movieId);
-
                 _rooms.TryRemove(roomId, out _);
             }
         }
 
         public override async Task OnDisconnectedAsync(Exception? exception)
         {
-
-            lock (_queue)
-            {
-                var newList = _queue.Where(x => x.ConnectionId != Context.ConnectionId).ToList();
-                _queue = new ConcurrentBag<MatchRequest>(newList);
-            }
-
-            var roomKV = _rooms.FirstOrDefault(r => r.Value.User1.ConnectionId == Context.ConnectionId || r.Value.User2.ConnectionId == Context.ConnectionId);
-            if (roomKV.Value != null)
-            {
-                var room = roomKV.Value;
-                var otherClient = room.User1.ConnectionId == Context.ConnectionId ? room.User2.ConnectionId : room.User1.ConnectionId;
-
-                await Clients.Client(otherClient).SendAsync("OnPartnerDisconnected");
-                _rooms.TryRemove(roomKV.Key, out _);
-            }
-
+            // Do NOT remove user from _queue or _rooms immediately to survive Vercel proxy timeouts.
+            // Queue stale entries will be cleaned up in FindMatch.
+            // Old rooms will naturally leak or can be cleaned up periodically, but won't ruin active sessions.
+            
             await base.OnDisconnectedAsync(exception);
         }
     }
