@@ -150,13 +150,12 @@ export async function confirmBooking(checkoutData) {
     }));
 
     const payload = {
-        Email: checkoutData.userId || 'guest@example.com',
-        ShowtimeId: checkoutData.showtimeId || 1,
-        MovieId: checkoutData.movieId || 1,
+        ShowtimeId: checkoutData.showtimeId,
+        MovieId: checkoutData.movieId,
         Seats: seatsArr.join(','),
-        Tickets: perSeatTickets,
-        TotalPrice: checkoutData.total || checkoutData.amount || 0,
-        PaymentMethod: checkoutData.paymentMethod || 'Credit Card'
+        ComboId: checkoutData.combo === 'none' ? '' : checkoutData.combo,
+        PromoCode: checkoutData.promoCode || '',
+        PaymentMethod: checkoutData.paymentMethod || 'payos'
     };
 
     const response = await fetch(`${API_BASE_URL}/bookings`, {

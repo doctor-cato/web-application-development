@@ -549,6 +549,7 @@ async function handlePayClick(e) {
     seats: Array.from(document.querySelectorAll('#order-summary-seats .seat-badge')).map(s => s.innerText) || co?.seats || [],
     combo: combo.id,
     customFood: customFood,
+    promoCode: currentPromoCode,
     total,
     provider: getSelectedPayment(),
     paymentMethod: getSelectedPayment(),
@@ -578,8 +579,11 @@ async function handlePayClick(e) {
     if (backendBooking.checkoutUrl) {
       window.location.href = backendBooking.checkoutUrl;
     } else {
-      const provider = getSelectedPayment();
-      window.location.href = `payment_simulation.html?provider=${encodeURIComponent(provider)}&bookingId=${encodeURIComponent(backendBooking.bookingId)}&amount=${total}`;
+      alert('Không thể kết nối với cổng thanh toán. Vui lòng thử lại.');
+      if (payBtn) {
+        payBtn.disabled = false;
+        payBtn.innerText = 'Thanh toán';
+      }
     }
   } catch (error) {
     console.error('Lỗi khi thanh toán:', error);
