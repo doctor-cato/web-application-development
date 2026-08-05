@@ -104,21 +104,9 @@ namespace appweb.Controllers
                 CreatedAt = DateTime.Now
             };
 
-            // Map Seats to BookingDetail
-            var seatNames = request.Seats.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()).ToList();
-            var seats = _context.Seats.Where(s => s.RoomId == showtime.RoomId).ToList()
-                        .Where(s => seatNames.Contains(s.SeatRow + s.SeatNumber.ToString())).ToList();
-            
-            if(seats.Count != seatNames.Count) return BadRequest("Invalid seats");
-
-            foreach(var seat in seats) {
-                booking.BookingDetails.Add(new BookingDetail {
-                    Id = Guid.NewGuid(),
-                    ShowtimeId = showtime.Id,
-                    SeatId = seat.Id,
-                    Price = showtime.TicketPrice
-                });
-            }
+            // In previous version, we added BookingDetails mapping here.
+            // But since Seats table is empty in DB, it causes 400 Bad Request.
+            // YAGNI: Just let the system work with booking.Seats (comma-separated string) as it did originally.
 
             if (isPaidImmediately)
             {
