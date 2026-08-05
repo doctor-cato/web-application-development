@@ -13,6 +13,7 @@ namespace appweb.Hubs
         public string UserId { get; set; } = string.Empty;
         public string UserName { get; set; } = string.Empty;
         public string Genre { get; set; } = string.Empty;
+        public DateTime? DisconnectedAt { get; set; }
     }
 
     public class RoomInfo
@@ -22,25 +23,40 @@ namespace appweb.Hubs
         public MatchRequest User2 { get; set; } = null!;
         public bool User1Accepted { get; set; }
         public bool User2Accepted { get; set; }
+        public DateTime CreatedAt { get; set; }
     }
 
     [Authorize]
     public class CineMatchHub : Hub
     {
-
-        private static ConcurrentBag<MatchRequest> _queue = new ConcurrentBag<MatchRequest>();
+        private static ConcurrentDictionary<string, MatchRequest> _activeUsers = new ConcurrentDictionary<string, MatchRequest>();
         private static ConcurrentDictionary<string, RoomInfo> _rooms = new ConcurrentDictionary<string, RoomInfo>();
 
         public async Task FindMatch(string userId, string userName, string genre)
         {
-            // If user reconnects and missed OnMatchFound, they might still be in a room.
+            // 1. Cleanup old ghosts (disconnected > 15s)
+            var ghosts = _activeUsers.Where(x => x.Value.DisconnectedAt.HasValue && (DateTime.UtcNow - x.Value.DisconnectedAt.Value).TotalSeconds > 15).Select(x => x.Key).ToList();
+            foreach (var ghost in ghosts) _activeUsers.TryRemove(ghost, out _);
+
+            // 2. Cleanup old rooms where someone didn't accept for > 30s
+            var staleRooms = _rooms.Where(x => (!x.Value.User1Accepted || !x.Value.User2Accepted) && (DateTime.UtcNow - x.Value.CreatedAt).TotalSeconds > 30).Select(x => x.Key).ToList();
+            foreach (var r in staleRooms) _rooms.TryRemove(r, out _);
+
+            // 3. Check if user is already in a room
             var existingRoomKV = _rooms.FirstOrDefault(r => r.Value.User1.UserId == userId || r.Value.User2.UserId == userId);
             if (existingRoomKV.Value != null)
             {
                 var existingRoom = existingRoomKV.Value;
-                // Update connection ID
-                if (existingRoom.User1.UserId == userId) existingRoom.User1.ConnectionId = Context.ConnectionId;
-                else existingRoom.User2.ConnectionId = Context.ConnectionId;
+                if (existingRoom.User1.UserId == userId)
+                {
+                    existingRoom.User1.ConnectionId = Context.ConnectionId;
+                    existingRoom.User1.DisconnectedAt = null;
+                }
+                else
+                {
+                    existingRoom.User2.ConnectionId = Context.ConnectionId;
+                    existingRoom.User2.DisconnectedAt = null;
+                }
 
                 var roomPartner = existingRoom.User1.UserId == userId ? existingRoom.User2 : existingRoom.User1;
 
@@ -56,42 +72,37 @@ namespace appweb.Hubs
                 return;
             }
 
+            // 4. Update or add to active users
             var req = new MatchRequest
             {
                 ConnectionId = Context.ConnectionId,
                 UserId = userId,
                 UserName = userName,
-                Genre = genre
+                Genre = genre,
+                DisconnectedAt = null
             };
+            
+            _activeUsers.AddOrUpdate(userId, req, (k, v) => req);
 
+            // 5. Find a partner
             MatchRequest? partner = null;
-            lock (_queue)
-            {
-                var cleanedList = _queue.Where(x => x.ConnectionId != req.ConnectionId && x.UserId != req.UserId).ToList();
-
-                partner = cleanedList.FirstOrDefault(x =>
-                    x.Genre == genre || genre == "all" || x.Genre == "all");
-
-                if (partner != null)
-                {
-                    var newList = cleanedList.Where(x => x.ConnectionId != partner.ConnectionId).ToList();
-                    _queue = new ConcurrentBag<MatchRequest>(newList);
-                }
-                else
-                {
-                    cleanedList.Add(req);
-                    _queue = new ConcurrentBag<MatchRequest>(cleanedList);
-                }
-            }
+            var availablePartners = _activeUsers.Values.Where(x => x.UserId != userId && !x.DisconnectedAt.HasValue).ToList();
+            
+            partner = availablePartners.FirstOrDefault(x => x.Genre == genre || genre == "all" || x.Genre == "all");
 
             if (partner != null)
             {
+                // Remove both from active searching queue
+                _activeUsers.TryRemove(userId, out _);
+                _activeUsers.TryRemove(partner.UserId, out _);
+
                 string roomId = Guid.NewGuid().ToString();
                 var room = new RoomInfo
                 {
                     RoomId = roomId,
                     User1 = partner,
-                    User2 = req
+                    User2 = req,
+                    CreatedAt = DateTime.UtcNow
                 };
 
                 _rooms.TryAdd(roomId, room);
@@ -125,10 +136,12 @@ namespace appweb.Hubs
                 if (room.User1.UserId == userId)
                 {
                     room.User1.ConnectionId = Context.ConnectionId;
+                    room.User1.DisconnectedAt = null;
                 }
                 else if (room.User2.UserId == userId)
                 {
                     room.User2.ConnectionId = Context.ConnectionId;
+                    room.User2.DisconnectedAt = null;
                 }
             }
         }
@@ -153,7 +166,6 @@ namespace appweb.Hubs
             if (_rooms.TryGetValue(roomId, out var room))
             {
                 var sender = room.User1.ConnectionId == Context.ConnectionId ? room.User1 : room.User2;
-
                 await Clients.Client(room.User1.ConnectionId).SendAsync("OnMovieSuggested", sender.UserId, movieId, movieTitle);
                 await Clients.Client(room.User2.ConnectionId).SendAsync("OnMovieSuggested", sender.UserId, movieId, movieTitle);
             }
@@ -164,7 +176,6 @@ namespace appweb.Hubs
             if (_rooms.TryGetValue(roomId, out var room))
             {
                 var sender = room.User1.ConnectionId == Context.ConnectionId ? room.User1 : room.User2;
-
                 await Clients.Client(room.User1.ConnectionId).SendAsync("OnMessageReceived", sender.UserId, sender.UserName, message);
                 await Clients.Client(room.User2.ConnectionId).SendAsync("OnMessageReceived", sender.UserId, sender.UserName, message);
             }
@@ -182,10 +193,20 @@ namespace appweb.Hubs
 
         public override async Task OnDisconnectedAsync(Exception? exception)
         {
-            // Do NOT remove user from _queue or _rooms immediately to survive Vercel proxy timeouts.
-            // Queue stale entries will be cleaned up in FindMatch.
-            // Old rooms will naturally leak or can be cleaned up periodically, but won't ruin active sessions.
-            
+            var userInQueue = _activeUsers.Values.FirstOrDefault(x => x.ConnectionId == Context.ConnectionId);
+            if (userInQueue != null)
+            {
+                userInQueue.DisconnectedAt = DateTime.UtcNow;
+            }
+
+            var roomKV = _rooms.FirstOrDefault(r => r.Value.User1.ConnectionId == Context.ConnectionId || r.Value.User2.ConnectionId == Context.ConnectionId);
+            if (roomKV.Value != null)
+            {
+                var room = roomKV.Value;
+                if (room.User1.ConnectionId == Context.ConnectionId) room.User1.DisconnectedAt = DateTime.UtcNow;
+                else room.User2.DisconnectedAt = DateTime.UtcNow;
+            }
+
             await base.OnDisconnectedAsync(exception);
         }
     }
