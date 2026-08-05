@@ -508,70 +508,38 @@ await _hubContext.Clients.All.SendAsync("ReceiveNewBooking", bookingData);
 
 ### 5.2. Luồng Thanh toán (Payment Workflow)
 
-Hệ thống hỗ trợ thanh toán chuyển khoản qua mã QR (VietQR API).
+Hệ thống tích hợp cổng thanh toán **PayOS** (`Net.payOS`) để tạo mã QR thanh toán động và xử lý webhook.
 
-#### Bước 1: Tạo mã QR (`GET /api/payment/generate-qr`)
+#### Bước 1: Tạo mã thanh toán QR (`POST /api/payment/create-payment-link`)
 
-**Query params**: `amount` (decimal), `description` (string, tùy chọn).
-
-```csharp
-var targetBank = _configuration["Payment:BankId"] ?? "MB";
-var targetAccount = _configuration["Payment:AccountNo"] ?? "0345678999";
-var accountName = _configuration["Payment:AccountName"] ?? "RAP PHIM 3HD2K";
-var addInfo = string.IsNullOrEmpty(description)
-    ? $"TT DON HANG 3HD2K {(long)amount}D"
-    : description;
-
-var qrUrl = $"https://img.vietqr.io/image/{targetBank}-{targetAccount}-compact2.png"
-          + $"?amount={(long)amount}&addInfo={Uri.EscapeDataString(addInfo)}&accountName={Uri.EscapeDataString(accountName)}";
-```
+**Request**: Frontend gửi `bookingId` và các thông tin đơn hàng.
+**Xử lý tại Backend**:
+- Khởi tạo `PayOSService` với các credentials (`ClientId`, `ApiKey`, `ChecksumKey`) từ `appsettings.json`.
+- Giao tiếp với API PayOS để tạo `PaymentData` (bao gồm `orderCode`, `amount`, `description`, `returnUrl`, `cancelUrl`, `expiredAt`).
+- Gọi `await _payOS.createPaymentLink(paymentData)`.
 
 **Response**:
 ```json
 {
-  "qrUrl": "https://img.vietqr.io/image/MB-0345678999-compact2.png?amount=...",
-  "bank": "MB",
-  "accountNo": "0345678999",
-  "accountName": "RAP PHIM 3HD2K",
-  "amount": 150000,
-  "addInfo": "TT DON HANG 3HD2K 150000D"
+  "checkoutUrl": "https://pay.payos.vn/web/...",
+  "qrCode": "string-qr",
+  "orderCode": 123456
 }
 ```
 
 #### Bước 2: Người dùng thanh toán
-Quét mã QR bằng App Ngân hàng, chuyển khoản với số tiền và nội dung chính xác.
+Người dùng quét mã QR bằng App Ngân hàng hoặc thanh toán trên trang checkout của PayOS.
 
-#### Bước 3: Webhook xác nhận (`POST /api/payment/webhook`)
+#### Bước 3: Webhook xác nhận (`POST /api/payment/payos-webhook`)
 
-**Request body** (`WebhookPayload`):
-```json
-{
-  "transactionId": "txn_123",
-  "orderId": "booking-guid",
-  "amount": 150000,
-  "status": "success|failed",
-  "provider": "vietqr",
-  "signature": "hmac-sha256-hex"
-}
-```
-
-**Xác thực Signature** (HMACSHA256):
-```csharp
-var rawData = $"{payload.TransactionId}|{payload.OrderId}|{payload.Amount}|{payload.Status}|{payload.Provider}";
-using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(secret));
-var hashBytes = hmac.ComputeHash(Encoding.UTF8.GetBytes(rawData));
-var expectedSignature = BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
-
-if (!string.Equals(payload.Signature, expectedSignature, StringComparison.OrdinalIgnoreCase))
-    return BadRequest("Invalid signature");
-```
-
-- **Định dạng raw data**: `TransactionId|OrderId|Amount|Status|Provider` (phân tách bằng `|`).
-- **Secret**: Lấy từ `appsettings.json` → `Payment:WebhookSecret`.
+PayOS gửi webhook (HTTP POST) về server khi thanh toán thành công.
+**Xác thực Signature**:
+- Controller gọi `_payOSService.VerifyWebhookData(webhookBody)` để kiểm tra tính hợp lệ của chữ ký điện tử.
 
 **Xử lý**:
-- `status == "success"` → `PaymentStatus = "Paid"`, cộng điểm thưởng.
-- `status == "failed"` → `PaymentStatus = "Failed"`.
+- Nếu thành công, tìm kiếm `Booking` tương ứng dựa vào `orderCode`.
+- Cập nhật `PaymentStatus = "Paid"`.
+- Thực hiện cộng điểm thưởng (Loyalty Points) cho người dùng.
 
 **Tính điểm thưởng**:
 ```csharp
@@ -587,13 +555,11 @@ int pointsEarned = (int)(payload.Amount * rate);  // VD: 150000 * 0.001 = 150 đ
 user.Points += pointsEarned;
 ```
 
-- `TicketPointRate` lấy từ bảng `Settings` (có thể thay đổi qua `POST /api/settings` mà không cần deploy lại).
+- `TicketPointRate` lấy từ bảng `Settings` (có thể thay đổi qua API mà không cần deploy lại).
 
-#### Bước 4: Kiểm tra trạng thái (`GET /api/payment/status/{bookingId}`)
+#### Bước 4: Kiểm tra trạng thái (`GET /api/payment/{orderCode}`)
 
-```json
-{ "status": "Paid" }
-```
+Frontend poll endpoint này để kiểm tra xem webhook đã xử lý xong chưa, hoặc lấy trạng thái trực tiếp từ PayOS. Mặc dù thông thường dùng SignalR để push trạng thái, nhưng hiện tại backend cung cấp endpoint REST để query.
 
 ---
 

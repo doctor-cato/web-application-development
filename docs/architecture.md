@@ -93,9 +93,18 @@ backend/
 │   ├── ApiMoviesController.cs  # CRUD Phim, danh sách phim
 │   ├── ApiShowtimesController.cs# API quản lý suất chiếu
 │   ├── ApiUsersController.cs   # API thông tin người dùng
+│   ├── ApiPaymentController.cs # Xử lý thanh toán QR (PayOS webhook & create payment)
+│   ├── ApiCineMatchController.cs# API hỗ trợ Minigame CineMatch
 │   └── UploadsController.cs    # Quản lý file ảnh poster upload
+├── Hubs/
+│   ├── SeatHub.cs              # SignalR realtime lock/unlock ghế
+│   ├── CineMatchHub.cs         # SignalR realtime cho minigame
+│   ├── NotificationHub.cs      # SignalR thông báo (ví dụ POS)
+│   └── SupportChatHub.cs       # SignalR chat hỗ trợ khách hàng
 ├── Services/
 │   ├── BookingService.cs       # Logic tính tiền, giảm giá, khóa ghế DB
+│   ├── PayOSService.cs         # Tích hợp PayOS tạo link thanh toán QR
+│   ├── SeatCleanupService.cs   # Job dọn dẹp ghế quá hạn giữ chỗ
 │   └── FileService.cs          # Lưu trữ file tải lên máy chủ
 ├── Repositories/
 │   ├── GenericRepository.cs    # Thao tác CRUD tổng quát với EF Core

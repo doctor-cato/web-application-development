@@ -71,6 +71,8 @@ backend/
 │   ├── FileService.cs              # Lưu ảnh vào wwwroot/uploads/images/ (5MB, GUID+Ticks)
 │   ├── IRatingService.cs           # Interface lấy rating phim
 │   ├── RatingService.cs            # Gọi OMDb API + cache 24h + hash fallback
+│   ├── IPayOSService.cs            # Interface thanh toán PayOS
+│   ├── PayOSService.cs             # Logic gọi API PayOS tạo mã QR
 │   └── SeatCleanupService.cs       # BackgroundService dọn ghế hết hạn (30s, Held → Available)
 ├── Infrastructure/
 │   ├── ApplicationDbContext.cs     # EF Core DbContext (13 DbSet, indexes, FK config)
@@ -186,6 +188,7 @@ builder.Services.AddScoped<BookingRepository>();
 // Services
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<IRatingService, RatingService>();
+builder.Services.AddScoped<IPayOSService, PayOSService>();
 builder.Services.AddHttpClient();      // Cho OMDb API
 builder.Services.AddMemoryCache();     // Cho RatingService cache 24h
 

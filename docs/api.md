@@ -81,6 +81,25 @@ Toàn bộ các RESTful API của hệ thống hỗ trợ định dạng dữ li
 
 ---
 
+### Phân hệ Thanh toán QR PayOS (`/api/payment`)
+
+| HTTP Method | Endpoint | Mô tả | Quyền hạn |
+|---|---|---|---|
+| `POST` | `/api/payment/create-payment-link` | Tạo link thanh toán PayOS (QR Code) cho đơn hàng | Authenticated |
+| `POST` | `/api/payment/payos-webhook` | Webhook nhận callback từ PayOS khi thanh toán thành công | Public |
+| `GET` | `/api/payment/{orderCode}` | Kiểm tra trạng thái đơn hàng | Authenticated |
+
+---
+
+### Phân hệ Minigame CineMatch (`/api/cinematch`)
+
+| HTTP Method | Endpoint | Mô tả | Quyền hạn |
+|---|---|---|---|
+| `GET` | `/api/cinematch/leaderboard` | Lấy bảng xếp hạng điểm số người chơi | Public |
+| `POST` | `/api/cinematch/score` | Cập nhật điểm số sau khi kết thúc game | Authenticated |
+
+---
+
 ## 💻 2. Client-Side Mock Services (Frontend Running Track)
 
 Trong luồng chạy Frontend chính thức, các dịch vụ Javascript module sau đây đóng vai trò là "Virtual APIs":

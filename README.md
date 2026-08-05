@@ -89,7 +89,37 @@ python -m http.server 3000 -d src
 
 > Truy cập ứng dụng tại: `http://localhost:3000`
 
-### 2. Chạy Bộ Kiểm Thử (Testing Suite)
+### 2. Khởi chạy Backend (ASP.NET Core & SQL Server)
+
+Hệ thống Backend yêu cầu cài đặt [.NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) và SQL Server.
+
+1. **Cấu hình môi trường (`appsettings.json`)**:
+   Mở file `backend/appsettings.json` (hoặc tạo `appsettings.Development.json`) và cấu hình chuỗi kết nối Database cũng như API Keys của cổng thanh toán PayOS:
+   ```json
+   {
+     "ConnectionStrings": {
+       "DefaultConnection": "Server=localhost;Database=movie_booking_db;Trusted_Connection=True;MultipleActiveResultSets=true;Encrypt=False"
+     },
+     "PayOS": {
+       "ClientId": "YOUR_PAYOS_CLIENT_ID",
+       "ApiKey": "YOUR_PAYOS_API_KEY",
+       "ChecksumKey": "YOUR_PAYOS_CHECKSUM_KEY"
+     }
+   }
+   ```
+2. **Cập nhật Database**:
+   Mở terminal tại thư mục `backend`:
+   ```bash
+   dotnet ef database update
+   ```
+3. **Chạy Server**:
+   ```bash
+   dotnet run
+   ```
+   > Backend API sẽ chạy tại: `http://localhost:5000` hoặc `https://localhost:5001`.
+   > Xem danh sách chi tiết các API endpoints tại: [docs/api.md](./docs/api.md)
+
+### 3. Chạy Bộ Kiểm Thử (Testing Suite)
 
 ```bash
 # Chạy toàn bộ Playwright E2E tests
