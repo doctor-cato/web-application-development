@@ -33,6 +33,29 @@ namespace appweb.Hubs
 
         public async Task FindMatch(string userId, string userName, string genre)
         {
+            // If user reconnects and missed OnMatchFound, they might still be in a room.
+            var existingRoomKV = _rooms.FirstOrDefault(r => r.Value.User1.UserId == userId || r.Value.User2.UserId == userId);
+            if (existingRoomKV.Value != null)
+            {
+                var existingRoom = existingRoomKV.Value;
+                // Update connection ID
+                if (existingRoom.User1.UserId == userId) existingRoom.User1.ConnectionId = Context.ConnectionId;
+                else existingRoom.User2.ConnectionId = Context.ConnectionId;
+
+                var roomPartner = existingRoom.User1.UserId == userId ? existingRoom.User2 : existingRoom.User1;
+
+                await Clients.Client(Context.ConnectionId).SendAsync("OnMatchFound", new
+                {
+                    RoomId = existingRoom.RoomId,
+                    PartnerId = roomPartner.UserId,
+                    PartnerName = roomPartner.UserName,
+                    MatchPercent = new Random().Next(85, 100),
+                    Connections = new Random().Next(5, 50),
+                    Rating = Math.Round(new Random().NextDouble() * (5.0 - 4.0) + 4.0, 1)
+                });
+                return;
+            }
+
             var req = new MatchRequest
             {
                 ConnectionId = Context.ConnectionId,
