@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.SignalR;
 using appweb.Hubs;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
 
 namespace appweb.Controllers
 {
@@ -16,13 +17,19 @@ namespace appweb.Controllers
         private readonly UserRepository _userRepository;
         private readonly ShowtimeRepository _showtimeRepository;
         private readonly IHubContext<NotificationHub> _hubContext;
+        private readonly appweb.Infrastructure.ApplicationDbContext _context;
+        private readonly appweb.Services.IPayOSService _payOSService;
+        private readonly Microsoft.Extensions.Options.IOptions<PayOSConfig> _payOSConfig;
 
-        public ApiBookingsController(BookingRepository bookingRepository, UserRepository userRepository, ShowtimeRepository showtimeRepository, IHubContext<NotificationHub> hubContext)
+        public ApiBookingsController(BookingRepository bookingRepository, UserRepository userRepository, ShowtimeRepository showtimeRepository, IHubContext<NotificationHub> hubContext, appweb.Infrastructure.ApplicationDbContext context, appweb.Services.IPayOSService payOSService, Microsoft.Extensions.Options.IOptions<PayOSConfig> payOSConfig)
         {
             _bookingRepository = bookingRepository;
             _userRepository = userRepository;
             _showtimeRepository = showtimeRepository;
             _hubContext = hubContext;
+            _context = context;
+            _payOSService = payOSService;
+            _payOSConfig = payOSConfig;
         }
 
         [Authorize]
@@ -82,6 +89,7 @@ namespace appweb.Controllers
             total = Math.Max(0, total - discountAmount - vipDiscountAmount - loyaltyComboDiscountAmount);
 
             var isPaidImmediately = (request.PaymentMethod?.ToLower() == "cash");
+            var isPayOS = (request.PaymentMethod?.ToLower() == "payos");
 
             var booking = new Booking
             {
@@ -96,13 +104,74 @@ namespace appweb.Controllers
                 CreatedAt = DateTime.Now
             };
 
+            // Map Seats to BookingDetail
+            var seatNames = request.Seats.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()).ToList();
+            var seats = _context.Seats.Where(s => s.RoomId == showtime.RoomId).ToList()
+                        .Where(s => seatNames.Contains(s.SeatRow + s.SeatNumber.ToString())).ToList();
+            
+            if(seats.Count != seatNames.Count) return BadRequest("Invalid seats");
+
+            foreach(var seat in seats) {
+                booking.BookingDetails.Add(new BookingDetail {
+                    Id = Guid.NewGuid(),
+                    ShowtimeId = showtime.Id,
+                    SeatId = seat.Id,
+                    Price = showtime.TicketPrice
+                });
+            }
+
             if (isPaidImmediately)
             {
                 user.Points += (int)Math.Floor(total / 1000);
                 await _userRepository.UpdateAsync(user);
             }
 
-            await _bookingRepository.AddAsync(booking);
+            if (isPayOS)
+            {
+                bool isSaved = false;
+                int retryCount = 0;
+                while(!isSaved && retryCount < 3) {
+                    try {
+                        booking.OrderCode = long.Parse(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString() + Random.Shared.Next(10, 99).ToString());
+                        await _context.Bookings.AddAsync(booking);
+                        await _context.SaveChangesAsync();
+                        isSaved = true;
+                    } catch(Microsoft.EntityFrameworkCore.DbUpdateException) {
+                        retryCount++;
+                        _context.ChangeTracker.Clear(); // clear tracked entities to retry
+                    }
+                }
+                if(!isSaved) return StatusCode(500, "Failed to generate unique order code");
+
+                // Call PayOS
+                try {
+                    var expiredAt = DateTimeOffset.UtcNow.AddMinutes(5).ToUnixTimeSeconds();
+                    booking.ExpiredAt = DateTimeOffset.FromUnixTimeSeconds(expiredAt).DateTime.ToLocalTime();
+                    
+                    var cancelUrl = _payOSConfig.Value.CancelUrl;
+                    if (cancelUrl.Contains("?")) cancelUrl += $"&orderCode={booking.OrderCode}";
+                    else cancelUrl += $"?cancel=true&orderCode={booking.OrderCode}";
+
+                    var returnUrl = _payOSConfig.Value.ReturnUrl;
+
+                    var paymentResult = await _payOSService.CreatePaymentLink(booking.OrderCode.Value, (int)booking.TotalPrice, "Thanh toan ve xem phim", returnUrl, cancelUrl, expiredAt);
+                    
+                    booking.CheckoutUrl = paymentResult.checkoutUrl;
+                    _context.Bookings.Update(booking);
+                    await _context.SaveChangesAsync();
+
+                    return Ok(new { message = "Booking successful", bookingId = booking.Id, checkoutUrl = paymentResult.checkoutUrl });
+                } catch (Exception) {
+                    // Rollback manually
+                    _context.Bookings.Remove(booking);
+                    await _context.SaveChangesAsync();
+                    return StatusCode(500, "Lỗi tạo link thanh toán");
+                }
+            }
+            else 
+            {
+                await _bookingRepository.AddAsync(booking);
+            }
 
             var bookingData = new {
                 customerEmail = user.Email,
@@ -134,6 +203,35 @@ namespace appweb.Controllers
             }
             var bookings = await _bookingRepository.GetByUserIdAsync(user.UserId);
             return Ok(bookings);
+        }
+
+        [HttpPost("{orderCode}/cancel")]
+        public async Task<IActionResult> CancelBooking(long orderCode)
+        {
+            try
+            {
+                // Call PayOS to cancel link
+                try {
+                    await _payOSService.CancelPaymentLink(orderCode, "Người dùng huỷ thanh toán");
+                } catch {
+                    // Ignore PayOS cancellation error (link might already be expired or cancelled)
+                }
+
+                // Atomic DB update to prevent race conditions
+                var sql = "UPDATE bookings SET payment_status = 'Cancelled' WHERE OrderCode = @p0 AND payment_status = 'Pending'";
+                var rowsAffected = await _context.Database.ExecuteSqlRawAsync(sql, orderCode);
+
+                if (rowsAffected == 0)
+                {
+                    return BadRequest(new { message = "Giao dịch đã được xử lý hoặc không tồn tại." });
+                }
+
+                return Ok(new { message = "Huỷ giao dịch thành công." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Lỗi khi huỷ giao dịch: " + ex.Message });
+            }
         }
     }
 

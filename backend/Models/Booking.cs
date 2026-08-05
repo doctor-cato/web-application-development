@@ -13,6 +13,9 @@ namespace appweb.Models
         public decimal TotalPrice { get; set; }
         public string? PaymentMethod { get; set; }
         public string PaymentStatus { get; set; } = "Pending";
+        public long? OrderCode { get; set; }
+        public string? CheckoutUrl { get; set; }
+        public DateTime? ExpiredAt { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         public virtual User? User { get; set; }

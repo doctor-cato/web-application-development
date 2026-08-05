@@ -83,3 +83,4 @@ desktop.ini
 # Deployment State
 .vercel
 appsettings.Production.json
+appsettings.Development.json

@@ -13,6 +13,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using Microsoft.AspNetCore.SignalR;
 using appweb.Hubs;
+using Net.payOS.Types;
+using appweb.Services;
 
 namespace appweb.Controllers
 {
@@ -24,124 +26,114 @@ namespace appweb.Controllers
         private readonly IConfiguration _configuration;
         private readonly ApplicationDbContext _context;
         private readonly IHubContext<SeatHub> _seatHubContext;
+        private readonly IHubContext<NotificationHub> _notificationHub;
+        private readonly IPayOSService _payOSService;
 
-        public ApiPaymentController(BookingRepository bookingRepository, IConfiguration configuration, ApplicationDbContext context, IHubContext<SeatHub> seatHubContext)
+        public ApiPaymentController(BookingRepository bookingRepository, IConfiguration configuration, ApplicationDbContext context, IHubContext<SeatHub> seatHubContext, IHubContext<NotificationHub> notificationHub, IPayOSService payOSService)
         {
             _bookingRepository = bookingRepository;
             _configuration = configuration;
             _context = context;
             _seatHubContext = seatHubContext;
+            _notificationHub = notificationHub;
+            _payOSService = payOSService;
         }
 
         [HttpPost("webhook")]
-        public async Task<IActionResult> Webhook([FromBody] WebhookPayload payload)
+        public async Task<IActionResult> Webhook([FromBody] WebhookType payload)
         {
-            var secret = _configuration["Payment:WebhookSecret"];
-            if (string.IsNullOrEmpty(secret))
-                return StatusCode(500, "Webhook secret not configured");
+            try {
+                WebhookData data = _payOSService.VerifyWebhookData(payload);
+                if (data == null || data.orderCode == 0) return Ok();
 
-            bool isSandbox = (payload.Signature == "sandbox" || secret == "bypass" || secret == "sandbox");
+                long orderCode = data.orderCode;
 
-            if (!isSandbox)
-            {
-                var rawData = $"{payload.TransactionId}|{payload.OrderId}|{payload.Amount}|{payload.Status}|{payload.Provider}";
-                
-                using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(secret));
-                var hashBytes = hmac.ComputeHash(Encoding.UTF8.GetBytes(rawData));
-                var expectedSignature = BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
-
-                if (!string.Equals(payload.Signature, expectedSignature, StringComparison.OrdinalIgnoreCase))
+                if (data.code == "00" && (data.desc == "success" || data.desc == "Thanh cong"))
                 {
-                    return BadRequest("Invalid signature");
-                }
-            }
+                    // Atomic update to Paid
+                    var sql = "UPDATE bookings SET payment_status = 'Paid' WHERE OrderCode = @p0 AND payment_status = 'Pending'";
+                    var rowsAffected = await _context.Database.ExecuteSqlRawAsync(sql, orderCode);
 
-            if (!Guid.TryParse(payload.OrderId, out Guid bookingId))
-            {
-                return BadRequest("Invalid OrderId format");
-            }
-
-            var booking = await _bookingRepository.GetByIdAsync(bookingId);
-            if (booking == null)
-            {
-                return NotFound("Booking not found");
-            }
-
-            if (payload.Status?.ToLower() == "success")
-            {
-                booking.PaymentStatus = "Paid";
-                
-                // Update Seat status in DB to "Booked" and broadcast via SignalR
-                if (!string.IsNullOrEmpty(booking.Seats))
-                {
-                    var seatsList = booking.Seats.Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    var showtime = await _context.Showtimes.FindAsync(booking.ShowtimeId);
-                    if (showtime != null && showtime.RoomId.HasValue)
+                    if (rowsAffected == 0)
                     {
-                        foreach (var seatStr in seatsList)
-                        {
-                            var trimmed = seatStr.Trim();
-                            if (trimmed.Length >= 2)
-                            {
-                                string row = trimmed.Substring(0, 1);
-                                if (int.TryParse(trimmed.Substring(1), out int number))
-                                {
-                                    var seat = await _context.Seats.FirstOrDefaultAsync(s => 
-                                        s.RoomId == showtime.RoomId && 
-                                        s.SeatRow == row && 
-                                        s.SeatNumber == number);
-                                    if (seat != null)
-                                    {
-                                        seat.Status = "Booked";
-                                        seat.HeldByUserId = null;
-                                        seat.HeldUntil = null;
-                                        _context.Seats.Update(seat);
+                        var booking = await _context.Bookings.FirstOrDefaultAsync(b => b.OrderCode == orderCode);
+                        if (booking == null) {
+                            return Ok(); // webhook for a deleted order
+                        }
 
-                                        // Broadcast real-time seat update to all clients in the room
-                                        await _seatHubContext.Clients.Group(showtime.RoomId.Value.ToString()).SendAsync("SeatBooked", trimmed);
+                        if (booking.PaymentStatus == "Cancelled" || booking.PaymentStatus == "Expired")
+                        {
+                            // Late webhook or Paid after cancelled -> needs manual refund
+                            booking.PaymentStatus = "RefundRequired";
+                            _context.Bookings.Update(booking);
+                            await _context.SaveChangesAsync();
+                        }
+                    }
+                    else 
+                    {
+                        var booking = await _context.Bookings.FirstOrDefaultAsync(b => b.OrderCode == orderCode);
+                        if (booking != null) {
+                            // Update Seat status in DB to "Booked"
+                            if (!string.IsNullOrEmpty(booking.Seats))
+                            {
+                                var seatsList = booking.Seats.Split(',', StringSplitOptions.RemoveEmptyEntries);
+                                var showtime = await _context.Showtimes.FindAsync(booking.ShowtimeId);
+                                if (showtime != null && showtime.RoomId.HasValue)
+                                {
+                                    foreach (var seatStr in seatsList)
+                                    {
+                                        var trimmed = seatStr.Trim();
+                                        if (trimmed.Length >= 2)
+                                        {
+                                            string row = trimmed.Substring(0, 1);
+                                            if (int.TryParse(trimmed.Substring(1), out int number))
+                                            {
+                                                var seat = await _context.Seats.FirstOrDefaultAsync(s => 
+                                                    s.RoomId == showtime.RoomId && 
+                                                    s.SeatRow == row && 
+                                                    s.SeatNumber == number);
+                                                if (seat != null)
+                                                {
+                                                    seat.Status = "Booked";
+                                                    seat.HeldByUserId = null;
+                                                    seat.HeldUntil = null;
+                                                    _context.Seats.Update(seat);
+                                                    await _seatHubContext.Clients.Group(showtime.RoomId.Value.ToString()).SendAsync("SeatBooked", trimmed);
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }
-                        }
-                    }
-                }
-                
-                if (booking.UserId.HasValue)
-                {
-                    var user = await _context.Users.FindAsync(booking.UserId.Value);
-                    if (user != null)
-                    {
-                        var ticketRateStr = await _context.Settings.Where(s => s.Key == "TicketPointRate").Select(s => s.Value).FirstOrDefaultAsync();
-                        decimal rate = 0.001m; 
-                        if (decimal.TryParse(ticketRateStr, out var parsedRate)) {
-                            rate = parsedRate;
+                            
+                            // Update points
+                            if (booking.UserId.HasValue)
+                            {
+                                var user = await _context.Users.FindAsync(booking.UserId.Value);
+                                if (user != null)
+                                {
+                                    int pointsEarned = (int)(data.amount / 1000);
+                                    user.Points += pointsEarned;
+                                    _context.Users.Update(user);
+                                }
+                            }
+                            await _context.SaveChangesAsync();
                         }
                         
-                        int pointsEarned = (int)(payload.Amount * rate);
-                        user.Points += pointsEarned;
-                        _context.Users.Update(user);
+                        // Successfully moved from Pending to Paid. Broadcast via SignalR to specific group!
+                        await _notificationHub.Clients.Group(orderCode.ToString()).SendAsync("PaymentConfirmed", new { orderCode = orderCode, status = "Paid" });
                     }
                 }
+                return Ok(new { success = true });
+            } catch (Exception ex) {
+                return Ok(new { success = false, message = ex.Message }); // return 200 so PayOS stops retrying on verification fail
             }
-            else if (payload.Status?.ToLower() == "failed")
-            {
-                booking.PaymentStatus = "Failed";
-            }
-
-            await _bookingRepository.UpdateAsync(booking);
-            await _context.SaveChangesAsync();
-
-            return Ok(new { message = "Webhook processed successfully" });
         }
 
-        [Authorize]
-        [HttpGet("status/{bookingId}")]
-        public async Task<IActionResult> GetPaymentStatus(string bookingId)
+        [HttpGet("status/{orderCode}")]
+        public async Task<IActionResult> GetPaymentStatus(long orderCode)
         {
-            if (!Guid.TryParse(bookingId, out Guid bId))
-                return BadRequest("Invalid bookingId format");
-
-            var booking = await _bookingRepository.GetByIdAsync(bId);
+            var booking = await _context.Bookings.FirstOrDefaultAsync(b => b.OrderCode == orderCode);
             if (booking == null)
                 return NotFound("Booking not found");
 

@@ -73,6 +73,10 @@ namespace appweb.Infrastructure
                     .HasDefaultValue("pending")
                     .HasColumnName("payment_status");
 
+                entity.Property(e => e.OrderCode).HasColumnName("OrderCode");
+                entity.Property(e => e.CheckoutUrl).HasColumnName("CheckoutUrl").HasMaxLength(2000);
+                entity.Property(e => e.ExpiredAt).HasColumnName("ExpiredAt").HasColumnType("datetime");
+
                 entity.Property(e => e.ShowtimeId).HasColumnName("showtime_id");
 
                 entity.Property(e => e.TotalPrice)

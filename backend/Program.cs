@@ -92,6 +92,9 @@ builder.Services.AddHttpClient();
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<IRatingService, RatingService>();
 
+builder.Services.Configure<PayOSConfig>(builder.Configuration.GetSection("PayOS"));
+builder.Services.AddScoped<IPayOSService, PayOSService>();
+
 builder.Services.AddScoped<appweb.Repositories.UserRepository>();
 builder.Services.AddScoped<appweb.Repositories.MovieRepository>();
 builder.Services.AddScoped<appweb.Repositories.BookingRepository>();

@@ -401,7 +401,7 @@ async function init() {
       if (card) {
         if (selectedRadio.value === 'momo') card.classList.add('selected-momo');
         if (selectedRadio.value === 'vnpay') card.classList.add('selected-vnpay');
-        if (selectedRadio.value === 'bank') card.classList.add('selected-bank');
+        if (selectedRadio.value === 'payos') card.classList.add('selected-bank');
         if (selectedRadio.value === 'zalopay') card.classList.add('selected-zalopay');
         const icon = card.querySelector('i');
         if (icon) icon.style.display = 'block';
@@ -555,7 +555,7 @@ async function handlePayClick(e) {
     createdAt: new Date().toISOString()
   };
 
-  const payBtn = document.getElementById('pay-btn');
+  const payBtn = document.getElementById('btn-pay');
   if (payBtn) {
     payBtn.disabled = true;
     payBtn.innerText = 'Đang xử lý đặt vé...';
@@ -575,8 +575,12 @@ async function handlePayClick(e) {
     checkoutData.bookingId = backendBooking.bookingId;
     saveCheckout(checkoutData);
 
-    const provider = getSelectedPayment();
-    window.location.href = `payment_simulation.html?provider=${encodeURIComponent(provider)}&bookingId=${encodeURIComponent(backendBooking.bookingId)}&amount=${total}`;
+    if (backendBooking.checkoutUrl) {
+      window.location.href = backendBooking.checkoutUrl;
+    } else {
+      const provider = getSelectedPayment();
+      window.location.href = `payment_simulation.html?provider=${encodeURIComponent(provider)}&bookingId=${encodeURIComponent(backendBooking.bookingId)}&amount=${total}`;
+    }
   } catch (error) {
     console.error('Lỗi khi thanh toán:', error);
     alert('Có lỗi xảy ra trong quá trình đặt vé. Vui lòng thử lại.');

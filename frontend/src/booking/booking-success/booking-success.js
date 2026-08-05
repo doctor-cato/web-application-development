@@ -88,6 +88,26 @@ function awardLoyaltyPoints(booking) {
 }
 
 async function init() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const orderCode = urlParams.get('orderCode');
+    const cancel = urlParams.get('cancel');
+
+    if (cancel === 'true') {
+        if (orderCode) {
+            fetch(`/api/bookings/${orderCode}/cancel`, { method: 'POST' }).catch(() => {});
+        }
+        alert('Bạn đã huỷ thanh toán. Vui lòng đặt lại ghế.');
+        const co = getLastBooking();
+        localStorage.removeItem('3hd2k_last_booking');
+        let redirectUrl = '../seat-booking/booking.html';
+        if (co && co.movieId) {
+            redirectUrl += `?id=${co.movieId}`;
+            if (co.showtimeId) redirectUrl += `&showtimeId=${co.showtimeId}`;
+        }
+        window.location.href = redirectUrl;
+        return;
+    }
+
     if (window.fetchMoviesPromise) {
         await window.fetchMoviesPromise;
     }
@@ -99,6 +119,94 @@ async function init() {
         return;
     }
 
+    if (orderCode) {
+        // Show loading state
+        document.querySelector('.booking-grid').style.display = 'none';
+        const heroContent = document.querySelector('.hero-content-overlay');
+        const originalHeroHTML = heroContent.innerHTML;
+        heroContent.innerHTML = `
+            <div style="text-align: center; padding: 3rem;">
+                <i class="fas fa-circle-notch fa-spin" style="font-size: 3rem; color: var(--primary-red); margin-bottom: 1rem;"></i>
+                <h2 style="font-family: var(--font-display); font-size: 2rem;">Đang xác nhận thanh toán...</h2>
+                <p id="polling-status-text" style="color: var(--text-muted); margin-top: 1rem;">Vui lòng không đóng trang này.</p>
+                <button id="btn-manual-check" class="btn btn-outline" style="display: none; margin: 1.5rem auto 0; border-color: var(--primary-red); color: white;">Kiểm tra lại</button>
+            </div>
+        `;
+
+        let pollCount = 0;
+        let maxPolls = 6;
+        let isSuccess = false;
+
+        const checkStatus = async () => {
+            try {
+                const res = await fetch(`/api/payment/status/${orderCode}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.status === 'Paid') {
+                        isSuccess = true;
+                        document.querySelector('.booking-grid').style.display = 'flex';
+                        heroContent.innerHTML = originalHeroHTML;
+                        renderSuccess(booking);
+                        return true;
+                    }
+                }
+            } catch (e) {}
+            return false;
+        };
+
+        const startPolling = async () => {
+            if (await checkStatus()) return;
+            const interval = setInterval(async () => {
+                pollCount++;
+                if (await checkStatus()) {
+                    clearInterval(interval);
+                } else if (pollCount >= maxPolls) {
+                    clearInterval(interval);
+                    document.getElementById('polling-status-text').innerText = 'Chưa nhận được phản hồi từ ngân hàng. Vui lòng kiểm tra lại sau.';
+                    document.getElementById('btn-manual-check').style.display = 'block';
+                    document.getElementById('btn-manual-check').onclick = async () => {
+                        const btn = document.getElementById('btn-manual-check');
+                        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang kiểm tra...';
+                        btn.disabled = true;
+                        if (await checkStatus()) {
+                            // success handled
+                        } else {
+                            btn.innerHTML = 'Kiểm tra lại';
+                            btn.disabled = false;
+                        }
+                    };
+                }
+            }, 2000);
+        };
+        
+        // Use SignalR as primary, polling as fallback
+        if (window.signalR) {
+            try {
+                const connection = new signalR.HubConnectionBuilder()
+                    .withUrl("/notificationHub")
+                    .build();
+                
+                connection.on("PaymentConfirmed", (data) => {
+                    if (data && data.orderCode == orderCode && data.status === 'Paid') {
+                        isSuccess = true;
+                        document.querySelector('.booking-grid').style.display = 'flex';
+                        heroContent.innerHTML = originalHeroHTML;
+                        renderSuccess(booking);
+                    }
+                });
+
+                await connection.start();
+                await connection.invoke("JoinGroup", orderCode.toString());
+            } catch(e) {}
+        }
+        
+        startPolling();
+    } else {
+        renderSuccess(booking);
+    }
+}
+
+function renderSuccess(booking) {
     if (booking.isCineMatch) {
         const CINE_MATCH_PROCESSED_KEY = '3hd2k_cinematch_processed';
         let cmProcessed = [];
