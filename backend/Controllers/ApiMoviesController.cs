@@ -28,23 +28,12 @@ namespace appweb.Controllers
             try
             {
                 var movies = await _movieRepository.GetAllAsync();
-                if (movies != null && movies.Count > 0) return Ok(movies);
+                return Ok(movies);
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Movie fetch DB fallback: " + ex.Message);
+                return StatusCode(500, new { message = "Lỗi kết nối cơ sở dữ liệu", details = ex.Message });
             }
-
-            var fallbackMovies = new List<Movie>
-            {
-                new Movie { Id = Guid.Parse("11111111-1111-1111-1111-111111111111"), Title = "Thanh Gươm Diệt Quỷ: Vô Han", Duration = 125, AgeRating = "T16", Genre = "Hành Động", Status = "NOW_SHOWING", PosterUrl = "https://images.unsplash.com/photo-1578632767115-351597cf2477?w=800" },
-                new Movie { Id = Guid.Parse("22222222-2222-2222-2222-222222222222"), Title = "Spider Man: Across the Spider-Verse", Duration = 140, AgeRating = "P", Genre = "Hành Động", Status = "NOW_SHOWING", PosterUrl = "https://images.unsplash.com/photo-1635805737707-575885ab0820?w=800" },
-                new Movie { Id = Guid.Parse("33333333-3333-3333-3333-333333333333"), Title = "Núi Tế Vong", Duration = 120, AgeRating = "T16", Genre = "Kinh Dị", Status = "NOW_SHOWING", PosterUrl = "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=800" },
-                new Movie { Id = Guid.Parse("44444444-4444-4444-4444-444444444444"), Title = "Trò Chơi Ảo Giác: Ares", Duration = 115, AgeRating = "T16", Genre = "Khoa học viễn tưởng", Status = "NOW_SHOWING", PosterUrl = "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800" },
-                new Movie { Id = Guid.Parse("55555555-5555-5555-5555-555555555555"), Title = "BACKROOMS - Thực Tại U Tối", Duration = 110, AgeRating = "T16", Genre = "Kinh dị", Status = "NOW_SHOWING", PosterUrl = "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800" }
-            };
-
-            return Ok(fallbackMovies);
         }
 
         [HttpGet("{id}")]
