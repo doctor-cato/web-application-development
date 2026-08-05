@@ -43,6 +43,118 @@ namespace appweb.Infrastructure
                 context.Users.AddRange(users);
                 context.SaveChanges();
             }
+
+            if (!context.Combos.Any())
+            {
+                var combos = new List<Combo>
+                {
+                    new Combo { Id = "cb_1", Name = "Combo Solo", Desc = "1 Bắp ngọt lớn + 1 Nước ngọt 22oz tự chọn", Price = 75000, Stock = 120, Image = "/images/F&B/combo_single.png", Category = "Combo" },
+                    new Combo { Id = "cb_2", Name = "Combo Couple", Desc = "1 Bắp ngọt khổng lồ + 2 Nước ngọt 22oz", Price = 99000, Stock = 85, Image = "/images/F&B/combo_couple.png", Category = "Combo" },
+                    new Combo { Id = "cb_3", Name = "Combo Gia Đình (Party)", Desc = "2 Bắp lớn + 3 Nước ngọt tùy chọn + 1 Snack", Price = 155000, Stock = 40, Image = "/images/F&B/combo_family.png", Category = "Combo" },
+                    new Combo { Id = "fb_1", Name = "Bắp Ngọt (Lớn)", Desc = "Bắp rang bơ vị ngọt thơm nức", Price = 45000, Stock = 200, Image = "/shared/images/food_popcorn.png", Category = "Đồ ăn" },
+                    new Combo { Id = "fb_2", Name = "Pepsi Lon 330ml", Desc = "Nước ngọt có ga sảng khoái", Price = 25000, Stock = 150, Image = "/shared/images/food_pepsi.png", Category = "Nước uống" },
+                    new Combo { Id = "fb_3", Name = "Coca-Cola Chai 390ml", Desc = "Nước ngọt có ga ướp lạnh", Price = 25000, Stock = 150, Image = "/shared/images/food_coca.png", Category = "Nước uống" }
+                };
+                context.Combos.AddRange(combos);
+                context.SaveChanges();
+            }
+
+            if (!context.Cinemas.Any())
+            {
+                var cinema1 = new Cinema
+                {
+                    Id = Guid.Parse("c1111111-1111-1111-1111-111111111111"),
+                    Name = "3HD2K HÀ ĐÔNG",
+                    Address = "Tầng 4, MAC Plaza, 10 Trần Phú, Hà Đông, Hà Nội",
+                    City = "Hà Nội"
+                };
+                var cinema2 = new Cinema
+                {
+                    Id = Guid.Parse("c2222222-2222-2222-2222-222222222222"),
+                    Name = "3HD2K CẦU GIẤY",
+                    Address = "241 Xuân Thủy, Cầu Giấy, Hà Nội",
+                    City = "Hà Nội"
+                };
+                context.Cinemas.AddRange(cinema1, cinema2);
+                context.SaveChanges();
+
+                if (!context.Rooms.Any())
+                {
+                    var room1 = new Room
+                    {
+                        Id = Guid.Parse("01111111-1111-1111-1111-111111111111"),
+                        CinemaId = cinema1.Id,
+                        Name = "Phòng chiếu 1",
+                        TotalSeats = 96
+                    };
+                    var room2 = new Room
+                    {
+                        Id = Guid.Parse("02222222-2222-2222-2222-222222222222"),
+                        CinemaId = cinema1.Id,
+                        Name = "Phòng chiếu 2 (IMAX)",
+                        TotalSeats = 120
+                    };
+                    context.Rooms.AddRange(room1, room2);
+                    context.SaveChanges();
+                }
+            }
+
+            if (!context.Showtimes.Any())
+            {
+                var movies = context.Movies.ToList();
+                var room = context.Rooms.FirstOrDefault();
+                var cinema = context.Cinemas.FirstOrDefault();
+
+                if (movies.Any())
+                {
+                    var showtimes = new List<Showtime>();
+                    var now = DateTime.Today;
+
+                    foreach (var movie in movies.Where(m => m.Status == "now-showing"))
+                    {
+                        showtimes.Add(new Showtime
+                        {
+                            Id = Guid.NewGuid(),
+                            MovieId = movie.MovieId,
+                            RoomId = room?.Id,
+                            CinemaId = cinema != null ? cinema.Id.ToString() : "c1111111-1111-1111-1111-111111111111",
+                            CinemaName = cinema != null ? cinema.Name : "3HD2K HÀ ĐÔNG",
+                            RoomName = room != null ? room.Name : "Phòng chiếu 1",
+                            MovieTitle = movie.Title,
+                            StartTime = now.AddHours(14),
+                            EndTime = now.AddHours(16),
+                            TicketPrice = 85000
+                        });
+                        showtimes.Add(new Showtime
+                        {
+                            Id = Guid.NewGuid(),
+                            MovieId = movie.MovieId,
+                            RoomId = room?.Id,
+                            CinemaId = cinema != null ? cinema.Id.ToString() : "c1111111-1111-1111-1111-111111111111",
+                            CinemaName = cinema != null ? cinema.Name : "3HD2K HÀ ĐÔNG",
+                            RoomName = room != null ? room.Name : "Phòng chiếu 1",
+                            MovieTitle = movie.Title,
+                            StartTime = now.AddHours(19),
+                            EndTime = now.AddHours(21),
+                            TicketPrice = 95000
+                        });
+                    }
+                    context.Showtimes.AddRange(showtimes);
+                    context.SaveChanges();
+                }
+            }
+
+            if (!context.Vouchers.Any())
+            {
+                var vouchers = new List<Voucher>
+                {
+                    new Voucher { Id = Guid.NewGuid(), Code = "GIAM10K", Description = "Giảm 10.000đ trực tiếp cho đơn đặt vé", DiscountType = "FIXED_AMOUNT", DiscountValue = 10000, MinOrderAmount = 0, ExpiryDate = DateTime.Now.AddDays(180), IsActive = true },
+                    new Voucher { Id = Guid.NewGuid(), Code = "GIAM20K", Description = "Giảm 20.000đ cho đơn hàng từ 100.000đ", DiscountType = "FIXED_AMOUNT", DiscountValue = 20000, MinOrderAmount = 100000, ExpiryDate = DateTime.Now.AddDays(180), IsActive = true },
+                    new Voucher { Id = Guid.NewGuid(), Code = "VIP3HD2K", Description = "Giảm 15% cho thành viên VIP", DiscountType = "PERCENTAGE", DiscountValue = 15, MinOrderAmount = 50000, MaxDiscountAmount = 50000, ExpiryDate = DateTime.Now.AddDays(180), IsActive = true }
+                };
+                context.Vouchers.AddRange(vouchers);
+                context.SaveChanges();
+            }
         }
     }
 }
