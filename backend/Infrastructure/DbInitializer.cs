@@ -30,6 +30,19 @@ namespace appweb.Infrastructure
                 context.Movies.AddRange(movies);
                 context.SaveChanges();
             }
+
+            if (!context.Users.Any())
+            {
+                var users = new List<User>
+                {
+                    new User { UserId = Guid.NewGuid(), Fullname = "Admin", Email = "admin@gmail.com", Phone = "0123456789", Password = "123456", Role = "ADMIN", IsVerifiedOtp = true, IsTwoFactorEnabled = false },
+                    new User { UserId = Guid.NewGuid(), Fullname = "Staff Member", Email = "staff@gmail.com", Phone = "0987654321", Password = "123456", Role = "STAFF", IsVerifiedOtp = true, IsTwoFactorEnabled = false },
+                    new User { UserId = Guid.NewGuid(), Fullname = "Nguyễn Văn A", Email = "a@gmail.com", Phone = "0111222333", Password = "123456", Role = "CUSTOMER", IsVerifiedOtp = true, IsTwoFactorEnabled = false }
+                };
+
+                context.Users.AddRange(users);
+                context.SaveChanges();
+            }
         }
     }
 }
