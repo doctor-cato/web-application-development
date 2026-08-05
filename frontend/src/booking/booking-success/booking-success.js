@@ -98,7 +98,7 @@ async function init() {
         }
         alert('Bạn đã huỷ thanh toán. Vui lòng đặt lại ghế.');
         const co = getLastBooking();
-        localStorage.removeItem('3hd2k_last_booking');
+        localStorage.removeItem('cinema_last_booking');
         let redirectUrl = '../seat-booking/booking.html';
         if (co && co.movieId) {
             redirectUrl += `?id=${co.movieId}`;
@@ -409,7 +409,7 @@ function renderSuccess(booking) {
                 ticketCode: 'TK-' + seat + '-' + Math.floor(100000 + Math.random() * 900000)
             }));
             try {
-                localStorage.setItem('3hd2k_last_booking', JSON.stringify(booking));
+                localStorage.setItem('cinema_last_booking', JSON.stringify(booking));
             } catch (_) {}
         }
 

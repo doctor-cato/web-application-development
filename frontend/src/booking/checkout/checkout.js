@@ -1,4 +1,4 @@
-import { getCheckout, saveCheckout } from '/shared/utils/storage.js';
+import { getCheckout, saveCheckout, saveLastBooking } from '/shared/utils/storage.js';
 import { createTransaction } from '/shared/utils/paymentService.js';
 import { formatPrice } from '/explore/home-page/movieService.js';
 import { requireAuth } from '/shared/utils/authGuard.js';
@@ -575,6 +575,7 @@ async function handlePayClick(e) {
 
     checkoutData.bookingId = backendBooking.bookingId;
     saveCheckout(checkoutData);
+    saveLastBooking(checkoutData);
 
     if (backendBooking.checkoutUrl) {
       window.location.href = backendBooking.checkoutUrl;
