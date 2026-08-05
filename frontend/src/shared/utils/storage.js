@@ -165,6 +165,32 @@ export function getCurrentUser() {
     const isLoggedIn = localStorage.getItem(KEYS.IS_LOGGED_IN) === 'true' || Boolean(jwtToken || authToken);
     const storedEmail = localStorage.getItem(KEYS.USER_EMAIL);
 
+    if (!payload || !payload.email) {
+      const raw3hd2k = localStorage.getItem('3hd2k_user') || sessionStorage.getItem('cinema_current_user');
+      if (raw3hd2k) {
+        try {
+          const parsed = typeof raw3hd2k === 'string' ? JSON.parse(raw3hd2k) : raw3hd2k;
+          if (parsed && (parsed.email || parsed.role || parsed.name || parsed.fullname)) {
+            payload = { ...parsed };
+          }
+        } catch (_) {}
+      }
+    }
+
+    const savedRole = (localStorage.getItem('user_role') || localStorage.getItem('role') || '').toUpperCase();
+    if ((!payload || !payload.email) && (isLoggedIn || savedRole === 'ADMIN' || savedRole === 'STAFF')) {
+      const effectiveRole = savedRole || 'CUSTOMER';
+      payload = {
+        email: storedEmail || (effectiveRole === 'ADMIN' ? 'admin@3hd2k.com' : (effectiveRole === 'STAFF' ? 'staff@3hd2k.com' : 'user@3hd2k.com')),
+        fullname: localStorage.getItem(KEYS.USER_NAME) || (effectiveRole === 'ADMIN' ? 'Admin' : (effectiveRole === 'STAFF' ? 'Nhân Viên Staff' : 'Khách Hàng')),
+        avatar: localStorage.getItem(KEYS.USER_AVATAR) || '',
+        phone: localStorage.getItem('userPhone') || '',
+        dob: localStorage.getItem('userDob') || '',
+        gender: localStorage.getItem('userGender') || 'male',
+        role: effectiveRole
+      };
+    }
+
     if ((!payload || !payload.email) && isLoggedIn && storedEmail) {
       payload = {
         email: storedEmail,
@@ -253,6 +279,8 @@ export function setCurrentUser(userPayload) {
     localStorage.removeItem('vip_plan');
   }
 
+  localStorage.setItem('3hd2k_user', JSON.stringify(merged));
+  sessionStorage.setItem('cinema_current_user', JSON.stringify(merged));
   ssSet(KEYS.CURRENT_USER, merged);
 }
 
