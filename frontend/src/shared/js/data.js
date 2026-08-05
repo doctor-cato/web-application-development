@@ -196,31 +196,17 @@ async function fetchMovies() {
         console.warn("Failed to fetch movies from API:", e);
     }
 
-    let localMovies = [];
-    try {
-        localMovies = JSON.parse(localStorage.getItem('3hd2k_movies') || '[]');
-    } catch (_) {}
-
-    const combinedMap = new Map();
-
-    if (Array.isArray(apiMovies)) {
-        apiMovies.forEach(m => {
-            const key = String(m.id || m.movieId || m.title || '').toLowerCase().trim();
-            if (key) combinedMap.set(key, m);
-        });
+    let rawList = [];
+    if (Array.isArray(apiMovies) && apiMovies.length > 0) {
+        rawList = apiMovies;
+    } else {
+        let localMovies = [];
+        try {
+            localMovies = JSON.parse(localStorage.getItem('3hd2k_movies') || '[]');
+        } catch (_) {}
+        rawList = Array.isArray(localMovies) ? localMovies : [];
     }
 
-    if (Array.isArray(localMovies)) {
-        localMovies.forEach(lm => {
-            const key = String(lm.id || lm.movieId || lm.title || '').toLowerCase().trim();
-            if (key) {
-                const existing = combinedMap.get(key) || {};
-                combinedMap.set(key, { ...existing, ...lm });
-            }
-        });
-    }
-
-    const rawList = Array.from(combinedMap.values());
     allMoviesData = rawList.map(m => mapMovieObj(m));
 
     allMoviesData = allMoviesData.filter(m => {
