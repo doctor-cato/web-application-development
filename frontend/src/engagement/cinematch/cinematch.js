@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     
     const session = getSession();
-    const jwtToken = localStorage.getItem('jwt_token');
+    const jwtToken = localStorage.getItem('jwt_token') || localStorage.getItem('auth_token');
     if ((!session || !jwtToken) && !DEMO_MODE) {
         alert("Phiên đăng nhập đã hết hạn hoặc không hợp lệ. Vui lòng đăng nhập lại để tham gia Cine-Match!");
         localStorage.removeItem('isLoggedIn');
@@ -111,17 +111,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
-    state.userId = session?.email || 'demo_' + Math.random().toString(36).slice(2, 8);
+    state.userId = session?.email || session?.id || 'demo_' + Math.random().toString(36).slice(2, 8);
     state.userName = session?.fullname || session?.name || session?.username || "Người dùng";
 
-    
     if (!DEMO_MODE) initSignalR();
 
-    
     setupFormSelection();
     setupEventHandlers();
 
-    
     document.querySelectorAll('.pref-card.selected').forEach(card => {
         const group = card.dataset.group;
         const value = card.dataset.value;
@@ -129,18 +126,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 });
 
-
-
-
 async function initSignalR() {
     if (!window.signalR) {
         console.warn("SignalR SDK not loaded");
         return;
     }
 
+    if (connection && connection.state !== signalR.HubConnectionState.Disconnected) {
+        return;
+    }
+
     connection = new signalR.HubConnectionBuilder()
         .withUrl(getSignalRUrl(), {
-            accessTokenFactory: () => localStorage.getItem('jwt_token') || ''
+            accessTokenFactory: () => localStorage.getItem('jwt_token') || localStorage.getItem('auth_token') || ''
         })
         .withAutomaticReconnect()
         .build();
@@ -177,7 +175,7 @@ async function initSignalR() {
     connection.on("OnMovieSuggested", (senderId, movieId, movieTitle) => {
         highlightSuggestedMovie(movieId);
         if (senderId !== state.userId) {
-            appendChat(state.currentMatch.name, `Đã đề xuất phim: <b>${movieTitle}</b>`, 'partner');
+            appendChat(state.currentMatch?.name || 'Đối tác', `Đã đề xuất phim: <b>${movieTitle}</b>`, 'partner');
         }
     });
 
@@ -197,9 +195,6 @@ async function initSignalR() {
     }
 }
 
-
-
-
 async function loadCinemas() {
     try {
         const res = await fetch('/api/cinemas');
@@ -210,7 +205,6 @@ async function loadCinemas() {
             
             data.forEach(cinema => {
                 const cId = cinema.id || cinema.Id;
-                
                 if (container.querySelector(`.pref-card[data-value="${cId}"]`)) return;
                 
                 const card = document.createElement('div');
@@ -233,17 +227,29 @@ async function loadCinemas() {
     }
 }
 
-function joinSignalRQueue() {
-    if (connection && connection.state === signalR.HubConnectionState.Connected) {
-        connection.invoke("FindMatch", state.userId, state.userName, state.preferences.genre)
-            .catch(err => console.error(err));
+async function joinSignalRQueue() {
+    try {
+        if (!connection || connection.state === signalR.HubConnectionState.Disconnected) {
+            await initSignalR();
+        }
+        let attempts = 0;
+        while (connection && connection.state === signalR.HubConnectionState.Connecting && attempts < 15) {
+            await new Promise(r => setTimeout(r, 200));
+            attempts++;
+        }
+        if (connection && connection.state === signalR.HubConnectionState.Connected) {
+            console.log("Joined CineMatch queue:", state.userId, state.userName, state.preferences.genre);
+            await connection.invoke("FindMatch", state.userId, state.userName, state.preferences.genre);
+        } else {
+            console.error("SignalR connection not ready, state:", connection?.state);
+        }
+    } catch (err) {
+        console.error("Error joining SignalR queue:", err);
     }
 }
 
 function leaveSignalRQueue() {
-    if (connection && connection.state === signalR.HubConnectionState.Connected) {
-        connection.stop().then(() => connection.start()).catch(err => console.error(err)); // Hacky way to leave queue by resetting connection
-    }
+    // Keep connection alive
 }
 
 // ============================================================
@@ -306,34 +312,29 @@ function switchStep(stepName) {
 
 
 
-window.startMatching = function startMatching() {
+window.startMatching = async function startMatching() {
     clearTimers();
 
-    
     state.roomId = null;
     state.bothAccepted = false;
     state.currentMatch = null;
     state.isUser1 = false;
     window.currentInviteData = null;
     window.currentInviteKey = null;
-    
-    if (connection && connection.state === signalR.HubConnectionState.Connected) {
-        connection.stop().then(() => connection.start()).catch(err => console.error(err));
-    }
 
     switchStep('radar');
 
-    
     state.timers.radar = setInterval(spawnRadarNode, 800);
 
-    let searchTimeLeft = 15;
+    let searchTimeLeft = 45;
     if (DOM.radar.timer) DOM.radar.timer.innerText = `00:${searchTimeLeft < 10 ? '0' : ''}${searchTimeLeft}`;
-    if (DOM.radar.statusText) DOM.radar.statusText.innerText = "Đang tìm kiếm sảnh chờ phù hợp (15s)...";
+    if (DOM.radar.statusText) DOM.radar.statusText.innerText = "Đang tìm kiếm sảnh chờ phù hợp (45s)...";
 
     state.timers.status = setInterval(() => {
         searchTimeLeft--;
         if (searchTimeLeft >= 0) {
-            if (DOM.radar.timer) DOM.radar.timer.innerText = `00:${searchTimeLeft < 10 ? '0' : ''}${searchTimeLeft}`;
+            const secs = searchTimeLeft;
+            if (DOM.radar.timer) DOM.radar.timer.innerText = `00:${secs < 10 ? '0' : ''}${secs}`;
         } else {
             if (state.timers.status) {
                 clearInterval(state.timers.status);
@@ -360,8 +361,8 @@ window.startMatching = function startMatching() {
             ]);
         }, 15000);
     } else {
-        state.timers.searchTimeout = setTimeout(onTimeoutComplete, 15000);
-        joinSignalRQueue();
+        state.timers.searchTimeout = setTimeout(onTimeoutComplete, 45000);
+        await joinSignalRQueue();
     }
 };
 

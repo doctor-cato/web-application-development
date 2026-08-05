@@ -44,19 +44,20 @@ namespace appweb.Hubs
             MatchRequest? partner = null;
             lock (_queue)
             {
-                partner = _queue.FirstOrDefault(x =>
-                    x.ConnectionId != req.ConnectionId &&
-                    (x.Genre == genre || genre == "all" || x.Genre == "all"));
+                var cleanedList = _queue.Where(x => x.ConnectionId != req.ConnectionId && x.UserId != req.UserId).ToList();
+
+                partner = cleanedList.FirstOrDefault(x =>
+                    x.Genre == genre || genre == "all" || x.Genre == "all");
 
                 if (partner != null)
                 {
-
-                    var newList = _queue.Where(x => x.ConnectionId != partner.ConnectionId).ToList();
+                    var newList = cleanedList.Where(x => x.ConnectionId != partner.ConnectionId).ToList();
                     _queue = new ConcurrentBag<MatchRequest>(newList);
                 }
                 else
                 {
-                    _queue.Add(req);
+                    cleanedList.Add(req);
+                    _queue = new ConcurrentBag<MatchRequest>(cleanedList);
                 }
             }
 
