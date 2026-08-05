@@ -2,8 +2,8 @@
 
 Ứng dụng web mô phỏng toàn bộ luồng đặt vé rạp chiếu phim chuyên nghiệp: xem phim, chọn ghế real-time, combo đồ ăn, thanh toán QR code, mini-game Cine-Match, chương trình VIP & Đổi thưởng, và quản lý tài khoản.
 
-![3HD2Kcinema Banner](https://img.shields.io/badge/3HD2Kcinema-v3.6.7-red?style=for-the-badge)
-![Git Commits](https://img.shields.io/badge/Commits-594-blue?style=for-the-badge)
+![3HD2Kcinema Banner](https://img.shields.io/badge/3HD2Kcinema-v3.7.0-red?style=for-the-badge)
+![Git Commits](https://img.shields.io/badge/Commits-760-blue?style=for-the-badge)
 ![Vercel Deployment](https://img.shields.io/badge/Vercel-32dk--web--app--project.vercel.app-000000?style=for-the-badge&logo=vercel&logoColor=white)
 ![Playwright Tests](https://img.shields.io/badge/Playwright-11%2F11%20Passed-brightgreen?style=for-the-badge&logo=playwright)
 ![MkDocs](https://img.shields.io/badge/Docs-MkDocs--Material-009688?style=for-the-badge)
@@ -21,19 +21,21 @@
 
 ## 🚀 Trạng thái Hiện tại của Dự án (Current Status & Version)
 
-- **Tổng số commits**: **594 commits** (được kiểm tra tự động qua Git history).
-- **Phiên bản hiện tại**: **`v3.6.7`** (Tuân thủ Semantic Versioning).
+- **Tổng số commits**: **760 commits** (được kiểm tra tự động qua Git history).
+- **Phiên bản hiện tại**: **`v3.7.0`** (Tuân thủ Semantic Versioning).
 - **Kiểm thử E2E (Playwright)**: **11/11 test suites PASS 100%** (bao gồm Responsive layout, Visual regression, Booking flow, Minigame, và Profile).
 
 ---
 
-## 📋 Cập nhật v3.6.7 | [Full ChangeLog](CHANGELOG.md)
+## 📋 Cập nhật v3.7.0 | [Full ChangeLog](CHANGELOG.md)
 
-Các thay đổi chính tập trung vào tích hợp API thực và sửa lỗi:
+Các thay đổi mới nhất tập trung vào tích hợp cổng thanh toán, quản lý vé và tối ưu hóa hệ thống:
 
-- **Đồng bộ**: Sửa lỗi khóa ghế đa tab (dọn dẹp `BroadcastChannel`). Cải thiện kết nối SignalR cho POS Staff.
-- **Tích hợp Backend**: Admin Portal và Staff POS sử dụng API thực thay vì dữ liệu mock. Hardcode nạp dữ liệu phim trực tiếp qua C# EF Core (bỏ đọc file json).
-- **Giao diện**: Chuẩn hóa responsive layout, làm lại UI CineMatch và bổ sung QR code thanh toán động (Bank, ZaloPay, MoMo).
+- **Thanh toán PayOS**: Tích hợp trực tiếp cổng thanh toán trực tuyến PayOS vào Backend ASP.NET Core (`PayOSService`, `ApiPaymentController`), tự động tạo QR Code thanh toán, xử lý callback webhook và duy trì luồng tạm ứng/hủy vé.
+- **Quản lý Vé (My Tickets)**: Nâng cấp và chuyển đổi module `cancel-booking` thành `my-tickets`, tối ưu giao diện theo chuẩn YAGNI cho phép xem danh sách vé đã mua và lịch sử đặt vé.
+- **Dữ liệu & Seeding**: Tự động seed dữ liệu mẫu hoàn chỉnh (Phim, Suất chiếu, Phòng chiếu, Combo đồ ăn, Voucher) trực tiếp trên SQL Server database.
+- **Tối ưu Real-time SignalR**: Khắc phục lỗi timeout kết nối WebSocket SignalR trên Vercel proxy (`/supportChatHub`), tự động dọn dẹp ghost users và hỗ trợ tự động kết nối lại (reconnect/rejoin) cho minigame CineMatch.
+- **Giao diện POS Staff**: Tối ưu hóa UI thông báo đơn hàng Staff POS với kiểu hiển thị collapsible chi tiết theo phong cách CFD.
 
 ---
 
@@ -121,7 +123,7 @@ npm run storybook
 │   │   ├── about/             # Trang giới thiệu dự án
 │   │   ├── assets/            # CSS chung, fonts, icons tĩnh
 │   │   ├── auth/              # Đăng nhập, Đăng ký, Quên mật khẩu & Auth Services
-│   │   ├── booking/           # Chọn ghế, Đồ ăn combo, Checkout, Hóa đơn & Hủy vé
+│   │   ├── booking/           # Chọn ghế, Đồ ăn combo, Checkout, PayOS flow, Hóa đơn & Vé của tôi (my-tickets)
 │   │   ├── engagement/        # Minigame CinePredict & CineMatch
 │   │   ├── explore/           # Trang chủ, Tìm kiếm phim, Chi tiết phim, Cụm rạp
 │   │   ├── footer/            # Component Footer
@@ -134,17 +136,17 @@ npm run storybook
 │   └── package.json           # Tailwind CSS build scripts & serve
 └── backend/                   # Khung mã nguồn Backend (ASP.NET Core 8.0 C#)
     ├── bin/                   # Thư mục chứa binaries đã biên dịch
-    ├── Controllers/           # Controllers Web API & MVC (Movies, Bookings, Auth, Showtimes, Users)
+    ├── Controllers/           # Controllers Web API & MVC (Movies, Bookings, Auth, Showtimes, Users, ApiPayment)
     ├── DTOs/                  # Data Transfer Objects cho API Request/Response
     ├── Hubs/                  # SignalR WebSockets Hubs (Real-time Booking & POS Notification)
     ├── Infrastructure/        # Cấu hình nạp dữ liệu ban đầu (DbInitializer / EF Seeding)
     ├── Migrations/            # EF Core Database Migrations
-    ├── Models/                # Entity Framework Database Entities & DbContext
+    ├── Models/                # Entity Framework Database Entities, DbContext & PayOSConfig
     ├── obj/                   # Thư mục tạm biên dịch C#
     ├── Properties/            # Launch settings & cấu hình ứng dụng
     ├── publish-latest/        # Bản đóng gói artifact sẵn sàng deploy production
     ├── Repositories/          # Data Access Layer (Repository Pattern)
-    ├── Services/              # Business Logic Services (BookingService, FileService, Auth)
+    ├── Services/              # Business Logic Services (BookingService, FileService, Auth, PayOSService)
     ├── Views/                 # Giao diện MVC Views
     ├── wwwroot/               # Static assets backend (Uploads, Images)
     ├── appsettings.json       # Cấu hình hệ thống & chuỗi kết nối Database SQL Server
