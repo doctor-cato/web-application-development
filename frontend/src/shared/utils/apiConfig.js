@@ -7,9 +7,9 @@ const isLocalhost = typeof window !== 'undefined' && (
 );
 
 
-export const API_BASE_URL = typeof window !== 'undefined'
-    ? `${window.location.origin}/api`
-    : 'http://3hd2k-api.somee.com/api';
+export const API_BASE_URL = isLocalhost
+    ? 'http://localhost:5111/api'
+    : 'https://3hd2k-api.somee.com/api';
 
 export function getHeaders() {
     const headers = {

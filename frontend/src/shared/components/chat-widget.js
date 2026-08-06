@@ -412,7 +412,7 @@ function renderChatWidget() {
                  signalRUrl = `http://localhost:5111/supportChatHub`;
              }
         } else {
-             signalRUrl = `/supportChatHub`;
+             signalRUrl = `https://3hd2k-api.somee.com/supportChatHub`;
         }
 
 
