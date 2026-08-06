@@ -238,6 +238,12 @@ namespace appweb.Controllers
 
             user.AccessFailedCount = 0;
             user.LockoutEnd = null;
+
+            if (user.Role == "ADMIN" && user.IsTwoFactorEnabled)
+            {
+                user.IsTwoFactorEnabled = false;
+            }
+
             await _userRepository.UpdateAsync(user);
 
             if (user.IsTwoFactorEnabled)
