@@ -392,7 +392,7 @@ async function init() {
     radio.addEventListener('change', (e) => {
       document.querySelectorAll('label.payment-card').forEach(x => {
         x.classList.remove('selected-momo', 'selected-vnpay', 'selected-bank', 'selected-zalopay');
-        const icon = x.querySelector('i');
+        const icon = x.querySelector('.fa-check-circle');
         if (icon) icon.style.display = 'none';
       });
 
@@ -403,7 +403,7 @@ async function init() {
         if (selectedRadio.value === 'vnpay') card.classList.add('selected-vnpay');
         if (selectedRadio.value === 'payos') card.classList.add('selected-bank');
         if (selectedRadio.value === 'zalopay') card.classList.add('selected-zalopay');
-        const icon = card.querySelector('i');
+        const icon = card.querySelector('.fa-check-circle');
         if (icon) icon.style.display = 'block';
       }
     });
