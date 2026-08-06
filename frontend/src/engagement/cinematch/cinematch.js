@@ -190,27 +190,30 @@ function joinFirebaseQueue() {
         if (genreMatch) {
             queueRef.off('child_added'); // Stop searching
             
-            const roomId = 'room_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
-            
-            database.ref('cinematch-rooms/' + roomId).set({
-                user1: { userId: state.userId, userName: state.userName },
-                user2: { userId: partner.userId, userName: partner.userName },
-                user1Accepted: true,
-                user2Accepted: true,
-                createdAt: firebase.database.ServerValue.TIMESTAMP
-            });
+            // Fix race condition: Only the user with smaller ID creates the room
+            if (state.userId < partner.userId) {
+                const roomId = 'room_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+                
+                database.ref('cinematch-rooms/' + roomId).set({
+                    user1: { userId: state.userId, userName: state.userName },
+                    user2: { userId: partner.userId, userName: partner.userName },
+                    user1Accepted: true,
+                    user2Accepted: true,
+                    createdAt: firebase.database.ServerValue.TIMESTAMP
+                });
 
-            // Notify partner
-            queueRef.child(partner.userId.replace(/[.#$\[\]]/g, '_')).update({
-                matchRoomId: roomId,
-                partnerData: myData
-            });
+                // Notify partner
+                queueRef.child(partner.userId.replace(/[.#$\[\]]/g, '_')).update({
+                    matchRoomId: roomId,
+                    partnerData: myData
+                });
 
-            // Notify self
-            myQueueRef.update({
-                matchRoomId: roomId,
-                partnerData: partner
-            });
+                // Notify self
+                myQueueRef.update({
+                    matchRoomId: roomId,
+                    partnerData: partner
+                });
+            }
         }
     });
 }
