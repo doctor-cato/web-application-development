@@ -107,32 +107,37 @@ namespace appweb.Hubs
 
                 _rooms.TryAdd(roomId, room);
 
-                await Clients.Client(room.User1.ConnectionId).SendAsync("OnMatchFound", new
+                // Auto-accept server-side
+                room.User1Accepted = true;
+                room.User2Accepted = true;
+
+                var rng = new Random();
+                // Gop OnMatchFound + OnBothAccepted thanh 1 event "OnMatchReady"
+                // Giam 4 await SendAsync -> 2 await, giam RTT va do tre
+                var matchPayloadUser1 = new
                 {
                     RoomId = roomId,
                     PartnerId = room.User2.UserId,
                     PartnerName = room.User2.UserName,
-                    MatchPercent = new Random().Next(85, 100),
-                    Connections = new Random().Next(5, 50),
-                    Rating = Math.Round(new Random().NextDouble() * (5.0 - 4.0) + 4.0, 1)
-                });
-
-                await Clients.Client(room.User2.ConnectionId).SendAsync("OnMatchFound", new
+                    MatchPercent = rng.Next(85, 100),
+                    Connections = rng.Next(5, 50),
+                    Rating = Math.Round(rng.NextDouble() * (5.0 - 4.0) + 4.0, 1)
+                };
+                var matchPayloadUser2 = new
                 {
                     RoomId = roomId,
                     PartnerId = room.User1.UserId,
                     PartnerName = room.User1.UserName,
-                    MatchPercent = new Random().Next(85, 100),
-                    Connections = new Random().Next(5, 50),
-                    Rating = Math.Round(new Random().NextDouble() * (5.0 - 4.0) + 4.0, 1)
-                });
+                    MatchPercent = rng.Next(85, 100),
+                    Connections = rng.Next(5, 50),
+                    Rating = Math.Round(rng.NextDouble() * (5.0 - 4.0) + 4.0, 1)
+                };
 
-                // Auto-accept both sides to avoid race condition
-                room.User1Accepted = true;
-                room.User2Accepted = true;
-
-                await Clients.Client(room.User1.ConnectionId).SendAsync("OnBothAccepted");
-                await Clients.Client(room.User2.ConnectionId).SendAsync("OnBothAccepted");
+                // Gui song song de giam tong thoi gian cho
+                await Task.WhenAll(
+                    Clients.Client(room.User1.ConnectionId).SendAsync("OnMatchReady", matchPayloadUser1),
+                    Clients.Client(room.User2.ConnectionId).SendAsync("OnMatchReady", matchPayloadUser2)
+                );
             }
         }
 

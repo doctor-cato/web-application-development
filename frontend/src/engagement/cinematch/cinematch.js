@@ -191,11 +191,30 @@ async function initSignalR() {
 
     connection = new signalR.HubConnectionBuilder()
         .withUrl(getSignalRUrl(), {
-            accessTokenFactory: () => localStorage.getItem('jwt_token') || localStorage.getItem('auth_token') || ''
+            accessTokenFactory: () => localStorage.getItem('jwt_token') || localStorage.getItem('auth_token') || '',
+            // Force WebSocket only - bỏ negotiate overhead (Long-Polling → SSE → WS)
+            transport: signalR.HttpTransportType.WebSockets,
+            skipNegotiation: true
         })
-        .withAutomaticReconnect([0, 2000, 5000, 10000, 30000])
+        .withAutomaticReconnect([0, 1000, 3000, 8000, 20000])
         .build();
 
+    // OnMatchReady: gộp OnMatchFound + OnBothAccepted thành 1 event, giảm RTT
+    connection.on("OnMatchReady", (data) => {
+        clearTimers();
+        matchFoundAt = Date.now();
+        state.roomId = data.roomId;
+        state.currentMatch = { name: data.partnerName };
+        state.bothAccepted = true;
+
+        switchStep('sync');
+        if (DOM.sync.partnerName) DOM.sync.partnerName.innerText = data.partnerName;
+
+        // Vào phòng sau 1s thây vì 2.5s
+        setTimeout(() => onBothAccepted(), 1000);
+    });
+
+    // Giữ OnMatchFound cho trường hợp existing room (rejoin)
     connection.on("OnMatchFound", (data) => {
         clearTimers();
         matchFoundAt = Date.now();
@@ -209,7 +228,8 @@ async function initSignalR() {
     connection.on("OnBothAccepted", () => {
         state.bothAccepted = true;
         const elapsed = Date.now() - matchFoundAt;
-        const minSyncTime = 2500;
+        // Giảm sync delay 2500ms → 1000ms cho UX nhanh hơn
+        const minSyncTime = 1000;
         const delay = Math.max(0, minSyncTime - elapsed);
         setTimeout(() => onBothAccepted(), delay);
     });
@@ -234,15 +254,8 @@ async function initSignalR() {
     });
 
     connection.on("OnPartnerDisconnected", () => {
-        appendChat('Hệ thống', 'Đối tác đã ngắt kết nối. Nhấn nút bên dưới để tìm người mới.', 'system');
-        if (DOM.room.chatLog) {
-            const retryDiv = document.createElement('div');
-            retryDiv.style.textAlign = 'center';
-            retryDiv.style.marginTop = '10px';
-            retryDiv.innerHTML = `<button onclick="window.startMatching()" style="padding:10px 24px;border-radius:20px;border:2px solid #ff2a5f;background:rgba(255,42,95,0.15);color:#ff2a5f;cursor:pointer;font-family:inherit;font-size:0.9rem;"><i class="fas fa-rotate-right"></i> Tìm người mới</button>`;
-            DOM.room.chatLog.appendChild(retryDiv);
-            DOM.room.chatLog.scrollTop = DOM.room.chatLog.scrollHeight;
-        }
+        alert('Đối tác đã rời khỏi phòng. Đang tự động quay lại sảnh chính...');
+        window.cancelSearch();
     });
 
     connection.onreconnecting(error => {
@@ -336,15 +349,10 @@ async function loadCinemas() {
 async function joinSignalRQueue() {
     try {
         if (!connection || connection.state === signalR.HubConnectionState.Disconnected) {
-            await initSignalR();
-        }
-        
-        let retries = 0;
-        while ((!connection || connection.state !== signalR.HubConnectionState.Connected) && retries < 5) {
-            await new Promise(r => setTimeout(r, 1000));
-            retries++;
+            await initSignalR(); // initSignalR đã await connection.start() → connected ngay
         }
 
+        // Không cần poll: nếu initSignalR() thành công thì state đã là Connected
         if (connection && connection.state === signalR.HubConnectionState.Connected) {
             await connection.invoke("FindMatch", state.userId, state.userName, state.preferences.genre);
         } else {
