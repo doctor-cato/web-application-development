@@ -191,10 +191,7 @@ async function initSignalR() {
 
     connection = new signalR.HubConnectionBuilder()
         .withUrl(getSignalRUrl(), {
-            accessTokenFactory: () => localStorage.getItem('jwt_token') || localStorage.getItem('auth_token') || '',
-            // Force WebSocket only - bỏ negotiate overhead (Long-Polling → SSE → WS)
-            transport: signalR.HttpTransportType.WebSockets,
-            skipNegotiation: true
+            accessTokenFactory: () => localStorage.getItem('jwt_token') || localStorage.getItem('auth_token') || ''
         })
         .withAutomaticReconnect([0, 1000, 3000, 8000, 20000])
         .build();
