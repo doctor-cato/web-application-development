@@ -2,7 +2,7 @@
   const isHTTPS = typeof window !== 'undefined' && window.location.protocol === 'https:';
   const isVercelHost = typeof window !== 'undefined' && (window.location.hostname.includes('vercel.app') || window.location.hostname.includes('vercel'));
   const isLocalhost = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname.startsWith('192.168.') || window.location.hostname.startsWith('10.'));
-  const API_BASE_URL = (typeof window !== 'undefined' && window.API_BASE_URL) || (isLocalhost ? 'http://localhost:5111/api' : 'https://3hd2k-api.somee.com/api');
+  const API_BASE_URL = (typeof window !== 'undefined' && window.API_BASE_URL) || (isLocalhost ? 'http://localhost:5111/api' : '/api');
 
   function getApiUrl(path) {
       const base = API_BASE_URL.replace(/\/+$/, '');

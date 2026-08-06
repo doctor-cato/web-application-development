@@ -10,12 +10,7 @@ import { API_BASE_URL } from '../../shared/utils/apiConfig.js?v=4';
 
 
 const getSignalRUrl = () => {
-    try {
-        const url = new URL(API_BASE_URL);
-        return `${url.protocol}//${url.host}/cinematchHub`;
-    } catch (e) {
-        return 'https://localhost:7198/cinematchHub'; 
-    }
+    return API_BASE_URL === '/api' ? '/cinematchHub' : 'http://localhost:5111/cinematchHub';
 };
 
 

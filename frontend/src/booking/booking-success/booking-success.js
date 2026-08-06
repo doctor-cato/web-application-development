@@ -183,7 +183,7 @@ async function init() {
         if (window.signalR) {
             try {
                 const connection = new signalR.HubConnectionBuilder()
-                    .withUrl(window.API_BASE_URL ? window.API_BASE_URL.replace('/api', '/notificationHub') : "https://3hd2k-api.somee.com/notificationHub")
+                    .withUrl("/notificationHub")
                     .build();
                 
                 connection.on("PaymentConfirmed", (data) => {

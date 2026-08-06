@@ -13,7 +13,7 @@ const isLocalhost =
 
 const API_BASE_URL =
   (typeof window !== "undefined" && window.API_BASE_URL) ||
-  (isLocalhost ? "http://localhost:5111/api" : "https://3hd2k-api.somee.com/api");
+  (isLocalhost ? "http://localhost:5111/api" : "/api");
 function getApiUrl(path) {
   const base = API_BASE_URL.replace(/\/+$/, "");
   const p = path.startsWith("/") ? path : "/" + path;

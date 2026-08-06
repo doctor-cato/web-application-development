@@ -9,7 +9,7 @@ const isLocalhost = typeof window !== 'undefined' && (
 
 export const API_BASE_URL = isLocalhost
     ? 'http://localhost:5111/api'
-    : 'https://3hd2k-api.somee.com/api';
+    : '/api';
 
 export function getHeaders() {
     const headers = {
