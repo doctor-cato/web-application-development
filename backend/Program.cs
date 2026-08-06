@@ -77,7 +77,6 @@ builder.Services.AddAuthentication(options =>
             if (!string.IsNullOrEmpty(accessToken) &&
                 (path.StartsWithSegments("/seatHub") ||
                  path.StartsWithSegments("/notificationHub") ||
-                 path.StartsWithSegments("/cinematchHub") ||
                  path.StartsWithSegments("/supportChatHub")))
             {
                 context.Token = accessToken;
@@ -189,7 +188,6 @@ app.MapControllerRoute(
 app.MapControllers();
 
 app.MapHub<appweb.Hubs.NotificationHub>("/notificationHub");
-app.MapHub<appweb.Hubs.CineMatchHub>("/cinematchHub");
 app.MapHub<appweb.Hubs.SeatHub>("/seatHub");
 app.MapHub<appweb.Hubs.SupportChatHub>("/supportChatHub");
 
