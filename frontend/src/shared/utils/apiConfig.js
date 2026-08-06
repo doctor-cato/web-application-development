@@ -39,7 +39,7 @@ window.fetch = async (...args) => {
             }
             return originalFetch(...args);
         }
-        localStorage.removeItem('jwt_token'); localStorage.removeItem('refresh_token'); window.location.href = '/auth/user-login/login.html';
+        localStorage.removeItem('jwt_token'); localStorage.removeItem('refresh_token'); window.location.href = '/src/auth/user-login/login.html';
     }
     return res;
 };
