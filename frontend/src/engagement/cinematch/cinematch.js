@@ -21,6 +21,7 @@ const FIREBASE_CONFIG = {
 };
 
 let database, queueRef, roomRef, myQueueRef;
+const DEMO_MODE = false;
 
 
 
