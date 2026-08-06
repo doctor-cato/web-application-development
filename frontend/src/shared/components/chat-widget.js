@@ -346,6 +346,11 @@ function renderChatWidget() {
     
     chatClose.addEventListener('click', () => {
         chatWidget.classList.remove('active');
+        sessionStorage.removeItem('supportChatSessionId');
+        if (messagesRef) {
+            messagesRef.off();
+            messagesRef = null;
+        }
     });
 
     
@@ -432,8 +437,18 @@ function renderChatWidget() {
                 } catch(e){}
             }
             
-            // Use sanitized email as chatId
-            currentChatId = userEmail.replace(/[\.\#\$\[\]]/g, ',');
+            // Use sanitized email + session suffix as chatId
+            let sessionSuffix = sessionStorage.getItem('supportChatSessionId');
+            if (!sessionSuffix) {
+                sessionSuffix = Date.now().toString();
+                sessionStorage.setItem('supportChatSessionId', sessionSuffix);
+            }
+            
+            if (messagesRef) {
+                messagesRef.off();
+            }
+
+            currentChatId = userEmail.replace(/[\.\#\$\[\]]/g, ',') + '_' + sessionSuffix;
             
             messagesRef = database.ref(`support_chats/${currentChatId}/messages`);
             
@@ -569,12 +584,17 @@ function renderChatWidget() {
     } else {
         initFirebaseChat();
     }
+    window.reinitFirebaseChat = initFirebaseChat;
 }
 
 window.openChatWidget = function() {
     const chatWidget = document.getElementById('chat-widget');
     if (!chatWidget) {
         renderChatWidget();
+    } else {
+        if (!sessionStorage.getItem('supportChatSessionId') && window.reinitFirebaseChat) {
+            window.reinitFirebaseChat();
+        }
     }
     setTimeout(() => {
         document.getElementById('chat-widget')?.classList.add('active');
