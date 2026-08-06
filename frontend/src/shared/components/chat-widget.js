@@ -1,4 +1,5 @@
-
+import { FIREBASE_CONFIG } from '../utils/firebase-config.js';
+window.FIREBASE_CONFIG = FIREBASE_CONFIG;
 
 let chatHistory = [];
 let database = null;
@@ -557,19 +558,9 @@ function renderChatWidget() {
             document.head.appendChild(script);
         });
 
-        const loadModule = (src) => new Promise((resolve, reject) => {
-            const script = document.createElement('script');
-            script.type = 'module';
-            script.innerHTML = `import { FIREBASE_CONFIG } from '${src}'; window.FIREBASE_CONFIG = FIREBASE_CONFIG; window.firebaseConfigLoaded = true;`;
-            document.head.appendChild(script);
-            // wait slightly for module to execute
-            setTimeout(resolve, 100);
-        });
-
         Promise.all([
             loadScript("https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"),
-            loadScript("https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"),
-            loadModule('/src/shared/utils/firebase-config.js')
+            loadScript("https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js")
         ]).then(() => {
             initFirebaseChat();
         }).catch(err => {
