@@ -257,6 +257,38 @@ function setupRoomListeners() {
 // ============================================================
 // FORM SELECTION (Card-based UI)
 // ============================================================
+async function loadCinemas() {
+    try {
+        const res = await fetch('/api/cinemas');
+        if (res.ok) {
+            const data = await res.json();
+            const container = document.getElementById('pref-cinema');
+            if (!container) return;
+            
+            data.forEach(cinema => {
+                const cId = cinema.id || cinema.Id;
+                if (container.querySelector(`.pref-card[data-value="${cId}"]`)) return;
+                
+                const card = document.createElement('div');
+                card.className = 'pref-card';
+                card.dataset.group = 'cinema';
+                card.dataset.value = cId;
+                const address = cinema.address || cinema.Address || '';
+                card.innerHTML = `
+                    <i class="fa-solid fa-building"></i>
+                    <span class="label">${cinema.name || cinema.Name}</span>
+                    <span class="sublabel" style="font-size:0.7rem; text-align:center;">${address.split(',')[0]}</span>
+                `;
+                container.appendChild(card);
+            });
+            
+            setupFormSelection();
+        }
+    } catch (e) {
+        console.error("Error loading cinemas (fallback will be used):", e);
+    }
+}
+
 function setupFormSelection() {
     const groups = ['mood', 'genre', 'time', 'gender', 'cinema'];
     groups.forEach(group => {
