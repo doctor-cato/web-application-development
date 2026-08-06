@@ -123,8 +123,7 @@ options.Events = new JwtBearerEvents
         if (!string.IsNullOrEmpty(accessToken) &&
             (path.StartsWithSegments("/seatHub") ||
              path.StartsWithSegments("/notificationHub") ||
-             path.StartsWithSegments("/cinematchHub") ||
-             path.StartsWithSegments("/supportChatHub")))
+             path.StartsWithSegments("/cinematchHub")))
         {
             context.Token = accessToken;
         }

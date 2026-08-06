@@ -1,8 +1,11 @@
 
 
 let chatHistory = [];
-let connection = null;
+let database = null;
+let currentChatId = null;
+let messagesRef = null;
 let isReconnecting = false;
+
 
 function renderChatWidget() {
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
@@ -357,7 +360,7 @@ function renderChatWidget() {
 
     if (chatReconnectBtn) {
         chatReconnectBtn.addEventListener('click', () => {
-            initSignalR(true);
+            initFirebaseChat(true);
         });
     }
     
@@ -387,68 +390,72 @@ function renderChatWidget() {
         }
     }
     
-    async function initSignalR(isManualRetry = false) {
+    async function initFirebaseChat(isManualRetry = false) {
         if (!isLoggedIn) {
             setStatus('offline', 'Chưa đăng nhập');
             chatReconnectBtn.style.display = 'none';
             return;
         }
 
-        if (!window.signalR) {
-            console.error("SignalR library not found!");
+        if (isManualRetry) {
+            setStatus('reconnecting', 'Đang kết nối...');
+        }
+
+        if (!window.firebase) {
+            console.error("Firebase library not found!");
             setStatus('offline', 'Thiếu thư viện');
             return;
         }
 
-        if (isManualRetry) {
-            setStatus('reconnecting', 'Đang thử lại...');
-        }
-
-        let signalRUrl = '';
-        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-             if (window.location.port === '5111' || window.location.port === '5282') {
-                 signalRUrl = `${window.location.origin}/supportChatHub`;
-             } else {
-                 signalRUrl = `http://localhost:5111/supportChatHub`;
-             }
-        } else {
-             signalRUrl = `/supportChatHub`;
-        }
-
-
-        if (!connection) {
-            connection = new signalR.HubConnectionBuilder()
-                .withUrl(signalRUrl, {
-                    accessTokenFactory: () => localStorage.getItem('jwt_token') || '',
-                    transport: signalR.HttpTransportType.LongPolling
-                })
-                .withAutomaticReconnect()
-                .build();
-
-            connection.on("ReceiveMessage", (adminEmail, message, timestamp) => {
-                addMessage(message, false, 'fa-headset');
-            });
-
-            connection.onreconnecting(() => {
-                setStatus('reconnecting', 'Đang kết nối lại...');
-            });
-
-            connection.onreconnected(() => {
-                setStatus('online', 'Trực tuyến 24/7');
-            });
-
-            connection.onclose(() => {
-                setStatus('offline', 'Chế độ AI (Offline)');
-            });
-        }
-
         try {
-            if (connection.state === signalR.HubConnectionState.Disconnected) {
-                await connection.start();
+            if (firebase.apps.length === 0) {
+                // Config should be loaded from firebase-config.js
+                if (window.FIREBASE_CONFIG) {
+                    firebase.initializeApp(window.FIREBASE_CONFIG);
+                } else {
+                    console.error("FIREBASE_CONFIG not found");
+                    setStatus('offline', 'Lỗi cấu hình');
+                    return;
+                }
             }
+
+            database = firebase.database();
+            
+            // Get user info
+            const token = localStorage.getItem('jwt_token');
+            let userEmail = 'Guest';
+            if (token) {
+                try {
+                    const payload = JSON.parse(atob(token.split('.')[1]));
+                    userEmail = payload.email || payload.sub || 'User';
+                } catch(e){}
+            }
+            
+            // Use sanitized email as chatId
+            currentChatId = userEmail.replace(/[\.\#\$\[\]]/g, ',');
+            
+            messagesRef = database.ref(`support_chats/${currentChatId}/messages`);
+            
+            // Listen for all messages
+
+            
+            // To properly load history without duplicating user messages:
+            // We'll clear the chat messages div and render from Firebase.
+            const chatMessagesContainer = document.getElementById('chat-messages');
+            chatMessagesContainer.innerHTML = '';
+            
+            messagesRef.on('child_added', (snapshot) => {
+                const msg = snapshot.val();
+                if (msg.sender === 'admin') {
+                    addMessage(msg.text, false, 'fa-headset');
+                } else {
+                    addMessage(msg.text, true);
+                }
+            });
+            
             setStatus('online', 'Trực tuyến 24/7');
         } catch (err) {
-            console.warn("SignalR Connection warning (falling back to AI Assistant):", err);
+            console.warn("Firebase Connection warning (falling back to AI Assistant):", err);
             setStatus('offline', 'Chế độ AI (Offline)');
         }
     }
@@ -486,13 +493,37 @@ function renderChatWidget() {
         if (!message) return;
         
         
-        addMessage(message, true);
         chatInput.value = '';
 
-        // If connected to SignalR live admin, send to admin
-        if (connection && connection.state === signalR.HubConnectionState.Connected) {
+        // If connected to Firebase live admin, send to admin
+        if (database && currentChatId) {
             try {
-                await connection.invoke("SendMessageToAdmin", message);
+                const timestamp = firebase.database.ServerValue.TIMESTAMP;
+                const now = new Date();
+                const timeStr = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+                
+                // Get email from token
+                let userEmail = 'User';
+                const token = localStorage.getItem('jwt_token');
+                if (token) {
+                    try {
+                        const payload = JSON.parse(atob(token.split('.')[1]));
+                        userEmail = payload.email || payload.sub || 'User';
+                    } catch(e){}
+                }
+
+                await database.ref(`support_chats/${currentChatId}/messages`).push({
+                    sender: 'user',
+                    text: message,
+                    time: timeStr,
+                    timestamp: timestamp
+                });
+                
+                await database.ref(`support_chats/${currentChatId}`).update({
+                    userEmail: userEmail,
+                    lastActivity: timestamp,
+                    unreadByAdmin: true
+                });
             } catch (err) {
                 console.error("Lỗi gửi tin nhắn admin:", err);
                 // Fallback to AI bot
@@ -501,7 +532,7 @@ function renderChatWidget() {
             }
         } else {
             
-            initSignalR(false);
+            initFirebaseChat(false);
 
             
             setTimeout(() => {
@@ -517,15 +548,35 @@ function renderChatWidget() {
     });
 
     
-    if (!window.signalR) {
-        const script = document.createElement('script');
-        script.src = "https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js";
-        script.onload = () => {
-            initSignalR();
-        };
-        document.head.appendChild(script);
+    if (!window.firebase) {
+        const loadScript = (src) => new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = src;
+            script.onload = resolve;
+            script.onerror = reject;
+            document.head.appendChild(script);
+        });
+
+        const loadModule = (src) => new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.type = 'module';
+            script.innerHTML = `import { FIREBASE_CONFIG } from '${src}'; window.FIREBASE_CONFIG = FIREBASE_CONFIG; window.firebaseConfigLoaded = true;`;
+            document.head.appendChild(script);
+            // wait slightly for module to execute
+            setTimeout(resolve, 100);
+        });
+
+        Promise.all([
+            loadScript("https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"),
+            loadScript("https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"),
+            loadModule('/src/shared/utils/firebase-config.js')
+        ]).then(() => {
+            initFirebaseChat();
+        }).catch(err => {
+            console.error("Failed to load Firebase scripts", err);
+        });
     } else {
-        initSignalR();
+        initFirebaseChat();
     }
 }
 

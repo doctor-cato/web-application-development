@@ -19,10 +19,6 @@
     {
       "source": "/uploads/:path*",
       "destination": "http://3hd2k-api.somee.com/uploads/:path*"
-    },
-    {
-      "source": "/supportChatHub/:path*",
-      "destination": "http://3hd2k-api.somee.com/supportChatHub/:path*"
     }
   ]
 }

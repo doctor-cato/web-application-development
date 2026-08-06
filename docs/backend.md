@@ -57,7 +57,6 @@ backend/
 │   ├── SeatHub.cs                  # Chọn/giữ/giải phóng ghế real-time (optimistic concurrency)
 │   ├── NotificationHub.cs          # Thông báo hệ thống (ReceiveNewBooking, DataUpdated)
 │   ├── CineMatchHub.cs             # Mini-game ghép đôi (in-memory queue + rooms)
-│   └── SupportChatHub.cs           # Live chat hỗ trợ (guest + admin)
 ├── Repositories/
 │   ├── BookingRepository.cs        # CRUD Booking
 │   ├── MovieRepository.cs          # CRUD Movie
@@ -222,7 +221,6 @@ builder.Services.AddCors(options => {
 | `SeatHub` | `/seatHub` | [Authorize] | Chọn/giữ/giải phóng ghế real-time |
 | `NotificationHub` | `/notificationHub` | — | Thông báo hệ thống (qua IHubContext từ Controllers) |
 | `CineMatchHub` | `/cinematchHub` | [Authorize] | Mini-game ghép đôi (in-memory) |
-| `SupportChatHub` | `/supportChatHub` | — | Live chat hỗ trợ (guest + admin) |
 
 ---
 

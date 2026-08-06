@@ -97,10 +97,8 @@ backend/
 │   ├── ApiCineMatchController.cs# API hỗ trợ Minigame CineMatch
 │   └── UploadsController.cs    # Quản lý file ảnh poster upload
 ├── Hubs/
-│   ├── SeatHub.cs              # SignalR realtime lock/unlock ghế
-│   ├── CineMatchHub.cs         # SignalR realtime cho minigame
-│   ├── NotificationHub.cs      # SignalR thông báo (ví dụ POS)
-│   └── SupportChatHub.cs       # SignalR chat hỗ trợ khách hàng
+│   ├── SeatHub.cs              # Quản lý đặt ghế real-time
+│   └── NotificationHub.cs      # SignalR thông báo (ví dụ POS)
 ├── Services/
 │   ├── BookingService.cs       # Logic tính tiền, giảm giá, khóa ghế DB
 │   ├── PayOSService.cs         # Tích hợp PayOS tạo link thanh toán QR

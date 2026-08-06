@@ -34,7 +34,7 @@ Các thay đổi mới nhất tập trung vào tích hợp cổng thanh toán, q
 - **Thanh toán PayOS**: Tích hợp trực tiếp cổng thanh toán trực tuyến PayOS vào Backend ASP.NET Core (`PayOSService`, `ApiPaymentController`), tự động tạo QR Code thanh toán, xử lý callback webhook và duy trì luồng tạm ứng/hủy vé.
 - **Quản lý Vé (My Tickets)**: Nâng cấp và chuyển đổi module `cancel-booking` thành `my-tickets`, tối ưu giao diện theo chuẩn YAGNI cho phép xem danh sách vé đã mua và lịch sử đặt vé.
 - **Dữ liệu & Seeding**: Tự động seed dữ liệu mẫu hoàn chỉnh (Phim, Suất chiếu, Phòng chiếu, Combo đồ ăn, Voucher) trực tiếp trên SQL Server database.
-- **Tối ưu Real-time SignalR**: Khắc phục lỗi timeout kết nối WebSocket SignalR trên Vercel proxy (`/supportChatHub`), tự động dọn dẹp ghost users và hỗ trợ tự động kết nối lại (reconnect/rejoin) cho minigame CineMatch.
+- **Tối ưu Real-time SignalR**: Tự động dọn dẹp ghost users và hỗ trợ tự động kết nối lại (reconnect/rejoin) cho các tính năng real-time.
 - **Giao diện POS Staff**: Tối ưu hóa UI thông báo đơn hàng Staff POS với kiểu hiển thị collapsible chi tiết theo phong cách CFD.
 
 ---
