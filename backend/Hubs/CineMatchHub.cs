@@ -35,11 +35,11 @@ namespace appweb.Hubs
         public async Task FindMatch(string userId, string userName, string genre)
         {
             // 1. Cleanup old ghosts (disconnected > 15s)
-            var ghosts = _activeUsers.Where(x => x.Value.DisconnectedAt.HasValue && (DateTime.UtcNow - x.Value.DisconnectedAt.Value).TotalSeconds > 15).Select(x => x.Key).ToList();
+            var ghosts = _activeUsers.Where(x => x.Value.DisconnectedAt.HasValue && (DateTime.UtcNow - x.Value.DisconnectedAt.Value).TotalSeconds > 120).Select(x => x.Key).ToList();
             foreach (var ghost in ghosts) _activeUsers.TryRemove(ghost, out _);
 
             // 2. Cleanup old rooms where someone didn't accept for > 30s
-            var staleRooms = _rooms.Where(x => (!x.Value.User1Accepted || !x.Value.User2Accepted) && (DateTime.UtcNow - x.Value.CreatedAt).TotalSeconds > 30).Select(x => x.Key).ToList();
+            var staleRooms = _rooms.Where(x => (!x.Value.User1Accepted || !x.Value.User2Accepted) && (DateTime.UtcNow - x.Value.CreatedAt).TotalSeconds > 120).Select(x => x.Key).ToList();
             foreach (var r in staleRooms) _rooms.TryRemove(r, out _);
 
             // 3. Check if user is already in a room
@@ -126,6 +126,13 @@ namespace appweb.Hubs
                     Connections = new Random().Next(5, 50),
                     Rating = Math.Round(new Random().NextDouble() * (5.0 - 4.0) + 4.0, 1)
                 });
+
+                // Auto-accept both sides to avoid race condition
+                room.User1Accepted = true;
+                room.User2Accepted = true;
+
+                await Clients.Client(room.User1.ConnectionId).SendAsync("OnBothAccepted");
+                await Clients.Client(room.User2.ConnectionId).SendAsync("OnBothAccepted");
             }
         }
 
@@ -203,8 +210,23 @@ namespace appweb.Hubs
             if (roomKV.Value != null)
             {
                 var room = roomKV.Value;
-                if (room.User1.ConnectionId == Context.ConnectionId) room.User1.DisconnectedAt = DateTime.UtcNow;
-                else room.User2.DisconnectedAt = DateTime.UtcNow;
+                string partnerConnectionId;
+                if (room.User1.ConnectionId == Context.ConnectionId)
+                {
+                    room.User1.DisconnectedAt = DateTime.UtcNow;
+                    partnerConnectionId = room.User2.ConnectionId;
+                }
+                else
+                {
+                    room.User2.DisconnectedAt = DateTime.UtcNow;
+                    partnerConnectionId = room.User1.ConnectionId;
+                }
+
+                try
+                {
+                    await Clients.Client(partnerConnectionId).SendAsync("OnPartnerDisconnected");
+                }
+                catch { /* Partner may also be disconnected */ }
             }
 
             await base.OnDisconnectedAsync(exception);

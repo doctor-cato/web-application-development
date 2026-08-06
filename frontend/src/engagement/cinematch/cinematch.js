@@ -24,6 +24,7 @@ const DEMO_MODE = false;
 
 
 let connection = null;
+let matchFoundAt = 0;
 
 
 
@@ -111,10 +112,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
-    state.userId = session?.email || session?.id || 'demo_' + Math.random().toString(36).slice(2, 8);
+    state.userId = session?.id || session?.email || 'demo_' + Math.random().toString(36).slice(2, 8);
     state.userName = session?.fullname || session?.name || session?.username || "Người dùng";
 
-    if (!DEMO_MODE) initSignalR();
+    if (!DEMO_MODE) await initSignalR();
 
     setupFormSelection();
     setupEventHandlers();
@@ -126,9 +127,59 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 });
 
+async function refreshTokenIfNeeded() {
+    try {
+        const rt = localStorage.getItem('refresh_token');
+        const token = localStorage.getItem('jwt_token');
+        if (!token || !rt) return;
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            const expiresIn = payload.exp * 1000 - Date.now();
+            if (expiresIn > 5 * 60 * 1000) return;
+        } catch(e) { }
+        const response = await fetch(`${API_BASE_URL}/auth/refresh-token`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token, refreshToken: rt })
+        });
+        if (response.ok) {
+            const data = await response.json();
+            localStorage.setItem('jwt_token', data.token);
+            localStorage.setItem('refresh_token', data.refreshToken);
+        }
+    } catch(e) {
+        console.warn('Token refresh failed:', e);
+    }
+}
+
+function showConnectionStatus(message, type = 'info') {
+    let statusEl = document.getElementById('signalr-status');
+    if (!statusEl) {
+        statusEl = document.createElement('div');
+        statusEl.id = 'signalr-status';
+        statusEl.style.cssText = 'position:fixed;top:80px;left:50%;transform:translateX(-50%);padding:10px 24px;border-radius:12px;font-size:0.9rem;z-index:9999;transition:all 0.4s ease;font-family:inherit;backdrop-filter:blur(10px);box-shadow:0 4px 20px rgba(0,0,0,0.3);';
+        document.body.appendChild(statusEl);
+    }
+    const colors = {
+        info: { bg: 'rgba(0,240,255,0.15)', border: 'rgba(0,240,255,0.4)', color: '#00f0ff' },
+        error: { bg: 'rgba(255,42,95,0.15)', border: 'rgba(255,42,95,0.4)', color: '#ff2a5f' },
+        success: { bg: 'rgba(13,242,134,0.15)', border: 'rgba(13,242,134,0.4)', color: '#0df286' }
+    };
+    const c = colors[type] || colors.info;
+    statusEl.style.background = c.bg;
+    statusEl.style.border = `1px solid ${c.border}`;
+    statusEl.style.color = c.color;
+    statusEl.textContent = message;
+    statusEl.style.opacity = '1';
+    if (type === 'success') {
+        setTimeout(() => { statusEl.style.opacity = '0'; }, 3000);
+    }
+}
+
 async function initSignalR() {
     if (!window.signalR) {
         console.warn("SignalR SDK not loaded");
+        showConnectionStatus('⚠ Không tải được module kết nối realtime', 'error');
         return;
     }
 
@@ -136,32 +187,31 @@ async function initSignalR() {
         return;
     }
 
+    await refreshTokenIfNeeded();
+
     connection = new signalR.HubConnectionBuilder()
         .withUrl(getSignalRUrl(), {
             accessTokenFactory: () => localStorage.getItem('jwt_token') || localStorage.getItem('auth_token') || ''
         })
-        .withAutomaticReconnect()
+        .withAutomaticReconnect([0, 2000, 5000, 10000, 30000])
         .build();
 
     connection.on("OnMatchFound", (data) => {
         clearTimers();
+        matchFoundAt = Date.now();
         state.roomId = data.roomId;
         state.currentMatch = { name: data.partnerName };
-        state.isUser1 = true;
 
         switchStep('sync');
         if (DOM.sync.partnerName) DOM.sync.partnerName.innerText = data.partnerName;
-
-        setTimeout(() => {
-            if (connection && connection.state === signalR.HubConnectionState.Connected) {
-                connection.invoke("AcceptMatch", state.roomId).catch(err => console.error(err));
-            }
-        }, 1500);
     });
 
     connection.on("OnBothAccepted", () => {
         state.bothAccepted = true;
-        onBothAccepted();
+        const elapsed = Date.now() - matchFoundAt;
+        const minSyncTime = 2500;
+        const delay = Math.max(0, minSyncTime - elapsed);
+        setTimeout(() => onBothAccepted(), delay);
     });
 
     connection.on("OnMessageReceived", (senderId, senderName, message) => {
@@ -184,33 +234,70 @@ async function initSignalR() {
     });
 
     connection.on("OnPartnerDisconnected", () => {
-        appendChat('Hệ thống', 'Đối tác đã ngắt kết nối. Vui lòng tải lại trang để tìm người mới.', 'system');
+        appendChat('Hệ thống', 'Đối tác đã ngắt kết nối. Nhấn nút bên dưới để tìm người mới.', 'system');
+        if (DOM.room.chatLog) {
+            const retryDiv = document.createElement('div');
+            retryDiv.style.textAlign = 'center';
+            retryDiv.style.marginTop = '10px';
+            retryDiv.innerHTML = `<button onclick="window.startMatching()" style="padding:10px 24px;border-radius:20px;border:2px solid #ff2a5f;background:rgba(255,42,95,0.15);color:#ff2a5f;cursor:pointer;font-family:inherit;font-size:0.9rem;"><i class="fas fa-rotate-right"></i> Tìm người mới</button>`;
+            DOM.room.chatLog.appendChild(retryDiv);
+            DOM.room.chatLog.scrollTop = DOM.room.chatLog.scrollHeight;
+        }
     });
 
     connection.onreconnecting(error => {
-        console.warn("SignalR reconnecting due to Vercel proxy timeout...", error);
+        console.warn("SignalR reconnecting...", error);
+        showConnectionStatus('🔄 Đang kết nối lại...', 'info');
     });
 
     connection.onreconnected(async (connectionId) => {
-        console.log("SignalR reconnected automatically:", connectionId);
+        console.log("SignalR reconnected:", connectionId);
+        showConnectionStatus('✅ Đã kết nối lại thành công!', 'success');
         try {
             if (state.roomId) {
-                console.log("Rejoining active room:", state.roomId);
                 await connection.invoke("RejoinRoom", state.roomId, state.userId);
             } else if (DOM.steps.radar && DOM.steps.radar.style.display !== 'none') {
-                console.log("Rejoining matchmaking queue...");
                 await joinSignalRQueue();
             }
         } catch (err) {
-            console.error("Error during reconnect recovery:", err);
+            console.error("Reconnect recovery error:", err);
         }
+    });
+
+    connection.onclose(async (error) => {
+        console.warn("SignalR connection closed:", error);
+        showConnectionStatus('❌ Mất kết nối. Đang thử kết nối lại...', 'error');
+        setTimeout(async () => {
+            try {
+                await refreshTokenIfNeeded();
+                connection = null;
+                await initSignalR();
+                showConnectionStatus('✅ Đã kết nối lại!', 'success');
+                if (DOM.steps.radar && DOM.steps.radar.style.display !== 'none') {
+                    await joinSignalRQueue();
+                }
+            } catch(e) {
+                console.error("Reconnect failed:", e);
+                showConnectionStatus('❌ Không thể kết nối lại. Vui lòng tải lại trang.', 'error');
+            }
+        }, 3000);
     });
 
     try {
         await connection.start();
         console.log("SignalR initialized for CineMatch");
+        showConnectionStatus('✅ Đã kết nối realtime thành công!', 'success');
     } catch (e) {
         console.error("SignalR init error:", e);
+        showConnectionStatus('❌ Không thể kết nối. Đang thử lại...', 'error');
+        try {
+            await refreshTokenIfNeeded();
+            await connection.start();
+            showConnectionStatus('✅ Đã kết nối realtime thành công!', 'success');
+        } catch(retryErr) {
+            console.error("SignalR retry failed:", retryErr);
+            showConnectionStatus('❌ Không thể kết nối realtime. Kiểm tra đăng nhập hoặc tải lại trang.', 'error');
+        }
     }
 }
 
@@ -251,16 +338,17 @@ async function joinSignalRQueue() {
         if (!connection || connection.state === signalR.HubConnectionState.Disconnected) {
             await initSignalR();
         }
-        let attempts = 0;
-        while (connection && connection.state === signalR.HubConnectionState.Connecting && attempts < 15) {
-            await new Promise(r => setTimeout(r, 200));
-            attempts++;
+        
+        let retries = 0;
+        while ((!connection || connection.state !== signalR.HubConnectionState.Connected) && retries < 5) {
+            await new Promise(r => setTimeout(r, 1000));
+            retries++;
         }
+
         if (connection && connection.state === signalR.HubConnectionState.Connected) {
-            console.log("Joined CineMatch queue:", state.userId, state.userName, state.preferences.genre);
             await connection.invoke("FindMatch", state.userId, state.userName, state.preferences.genre);
         } else {
-            console.error("SignalR connection not ready, state:", connection?.state);
+            showConnectionStatus('❌ Kết nối không sẵn sàng. Vui lòng tải lại.', 'error');
         }
     } catch (err) {
         console.error("Error joining SignalR queue:", err);
@@ -341,37 +429,49 @@ window.startMatching = async function startMatching() {
     window.currentInviteData = null;
     window.currentInviteKey = null;
 
+    if (!DEMO_MODE && (!connection || connection.state !== signalR.HubConnectionState.Connected)) {
+        showConnectionStatus('🔄 Đang kết nối...', 'info');
+        await initSignalR();
+        if (!connection || connection.state !== signalR.HubConnectionState.Connected) {
+            showConnectionStatus('❌ Không thể kết nối. Vui lòng kiểm tra mạng và thử lại.', 'error');
+            return;
+        }
+    }
+
     switchStep('radar');
 
     state.timers.radar = setInterval(spawnRadarNode, 800);
 
-    let searchTimeLeft = 45;
-    if (DOM.radar.timer) DOM.radar.timer.innerText = `00:${searchTimeLeft < 10 ? '0' : ''}${searchTimeLeft}`;
-    if (DOM.radar.statusText) DOM.radar.statusText.innerText = "Đang tìm kiếm sảnh chờ phù hợp (45s)...";
+    let searchTimeElapsed = 0;
+    if (DOM.radar.timer) DOM.radar.timer.innerText = '00:00';
+    if (DOM.radar.statusText) DOM.radar.statusText.innerText = 'Đang tìm kiếm người cùng xem phim...';
 
     state.timers.status = setInterval(() => {
-        searchTimeLeft--;
-        if (searchTimeLeft >= 0) {
-            const secs = searchTimeLeft;
-            if (DOM.radar.timer) DOM.radar.timer.innerText = `00:${secs < 10 ? '0' : ''}${secs}`;
-        } else {
-            if (state.timers.status) {
-                clearInterval(state.timers.status);
-                state.timers.status = null;
-            }
-        }
+        searchTimeElapsed++;
+        const mins = Math.floor(searchTimeElapsed / 60);
+        const secs = searchTimeElapsed % 60;
+        if (DOM.radar.timer) DOM.radar.timer.innerText = `${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
     }, 1000);
 
-    const onTimeoutComplete = () => {
-        clearTimers();
-        if (!state.roomId) {
-            switchStep('candidates');
-            window.renderLobby([]);
+    state.timers.searchTimeout = setInterval(async () => {
+        if (!state.roomId && !DEMO_MODE && connection && connection.state === signalR.HubConnectionState.Connected) {
+            try {
+                await connection.invoke("FindMatch", state.userId, state.userName, state.preferences.genre);
+            } catch(e) {
+                console.warn("Re-join queue failed:", e);
+            }
+        } else if (!state.roomId && !DEMO_MODE) {
+            await initSignalR();
+            if (connection && connection.state === signalR.HubConnectionState.Connected) {
+                try {
+                    await connection.invoke("FindMatch", state.userId, state.userName, state.preferences.genre);
+                } catch(e) { console.warn("Re-join after reconnect failed:", e); }
+            }
         }
-    };
+    }, 30000);
 
     if (DEMO_MODE) {
-        state.timers.searchTimeout = setTimeout(() => {
+        state.timers.demoMatch = setTimeout(() => {
             clearTimers();
             switchStep('candidates');
             window.renderLobby([
@@ -380,7 +480,6 @@ window.startMatching = async function startMatching() {
             ]);
         }, 15000);
     } else {
-        state.timers.searchTimeout = setTimeout(onTimeoutComplete, 45000);
         await joinSignalRQueue();
     }
 };
@@ -446,13 +545,13 @@ window.renderLobby = function(candidates) {
                 <div style="font-size: 3rem; color: var(--neon-cyan); margin-bottom: 15px; opacity: 0.8;">
                     <i class="fa-solid fa-user-slash"></i>
                 </div>
-                <h3 style="color: white; font-size: 1.3rem; margin-bottom: 10px;">Không tìm thấy người cùng trực tuyến</h3>
+                <h3 style="color: white; font-size: 1.3rem; margin-bottom: 10px;">Chưa tìm thấy người phù hợp</h3>
                 <p style="color: var(--text-muted); font-size: 0.95rem; max-width: 450px; margin: 0 auto 25px auto; line-height: 1.5;">
-                    Hệ thống đã quét 15 giây nhưng hiện chưa có người dùng nào phù hợp với tiêu chí của bạn trong sảnh chờ.
+                    Hiện chưa có người dùng nào phù hợp với tiêu chí của bạn. Hãy thử lại hoặc thay đổi tiêu chí.
                 </p>
                 <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
                     <button onclick="window.startMatching()" class="neon-btn" style="padding: 12px 25px; font-size: 0.95rem; justify-content: center;">
-                        <i class="fa-solid fa-rotate-right"></i> Quét Tìm Lại (15s)
+                        <i class="fa-solid fa-rotate-right"></i> Tìm Lại
                     </button>
                     <button onclick="window.cancelSearch()" class="cancel-btn" style="padding: 12px 25px; font-size: 0.95rem;">
                         <i class="fa-solid fa-sliders"></i> Thay Đổi Tiêu Chí
